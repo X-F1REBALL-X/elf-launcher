@@ -4,10 +4,10 @@ A PS5 launcher for ELF payloads. Open it after the console is already exploited.
 
 Page: https://x-f1reball-x.github.io/elf-launcher/
 
-Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/0.0.6
+Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/v0.0.6
 
 - [elf-launcher.elf](https://github.com/X-F1REBALL-X/elf-launcher/raw/main/launcher/elf-launcher.elf) installs the home tile.
-- [elf-launcher-data.zip](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/0.0.6/elf-launcher-data.zip) is the payload folders. Copy its contents to `/data/elf-launcher` on the console.
+- [elf-launcher-data.zip](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/v0.0.6/elf-launcher-data.zip) is the payload folders. Copy its contents to `/data/elf-launcher` on the console.
 
 ## How it works
 
