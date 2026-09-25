@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ps5-elfs host</title>
+<style>
+html,body{margin:0;padding:0;background:#000;color:#2a9fff;font:22px/1.4 "Segoe UI",system-ui,sans-serif}
+#wrap{max-width:1100px;margin:0 auto;padding:24px 18px 60px}
+h1{margin:0 0 8px;font-size:34px;letter-spacing:.2em;text-transform:uppercase;color:#2a9fff;text-shadow:0 0 18px rgba(42,159,255,.45)}
+#sub{margin:0 0 18px;color:#fff;font-size:22px;font-weight:600}
+#status{min-height:1.4em;margin:0 0 8px;color:#5eb6ff;font-size:24px;font-weight:700}
+#progwrap{display:none;margin:0 0 18px;background:rgba(0,30,55,.85);border:1px solid rgba(42,159,255,.35);border-radius:10px;height:18px;overflow:hidden}
+#progwrap.show{display:block}
+#progbar{height:100%;width:0%;background:linear-gradient(90deg,#1a6fb5,#2a9fff);box-shadow:0 0 12px rgba(42,159,255,.55);transition:width .2s linear}
+#progbar.indeterminate{width:40% !important;animation:indeterminate 1.1s ease-in-out infinite}
+@keyframes indeterminate{0%{transform:translateX(-120%)}100%{transform:translateX(280%)}}
+#hdr{display:none;align-items:center;gap:14px;margin:0 0 16px}
+#hdr.show{display:flex}
+#back{background:#1a6fb5;color:#fff;border:0;border-radius:12px;padding:12px 20px;font-size:22px;font-weight:700;cursor:pointer;min-width:72px}
+#back:active{background:#2a9fff;color:#001}
+#ftitle{margin:0;color:#9ad2ff;font-size:28px;font-weight:700}
+#folders{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.folder{display:block;background:rgba(0,30,55,.75);border:2px solid rgba(42,159,255,.4);border-radius:16px;padding:22px 18px;text-align:left;cursor:pointer;color:#2a9fff;min-height:96px;box-shadow:0 0 18px rgba(42,159,255,.12)}
+.folder:active,.folder:focus{background:rgba(26,111,181,.55);border-color:#2a9fff;outline:0}
+.folder .fname{display:block;color:#fff;font-size:24px;font-weight:700;margin-bottom:8px}
+.folder .fcount{display:block;color:#5eb6ff;font-size:18px}
+#view{display:none}
+#view.show{display:block}
+#home.show{display:block}
+#home{display:block}
+table{width:100%;border-collapse:collapse;background:rgba(0,20,40,.55);margin-bottom:8px}
+th,td{padding:12px 12px;border-bottom:1px solid rgba(42,159,255,.25);text-align:left;vertical-align:middle}
+th{color:#9ad2ff;font-size:18px}
+td.n{color:#fff;font-weight:600;font-size:18px}
+td.v{color:#5eb6ff;white-space:nowrap}
+td.d{color:#cfe9ff;font-size:16px}
+button.run{background:#1a6fb5;color:#fff;border:0;border-radius:10px;padding:10px 16px;font-size:18px;font-weight:700;cursor:pointer}
+button.run:active{background:#2a9fff;color:#001}
+button.run[disabled]{opacity:.5}
+#openhost{display:inline-block;background:#1a6fb5;color:#fff;text-decoration:none;border-radius:12px;padding:14px 22px;font-size:22px;font-weight:700}
+.empty{color:#9ad2ff;padding:20px 0}
+</style></head><body>
+<div id="wrap">
+<h1>ps5-elfs</h1>
+<p id="sub">Tap a folder - then Send each ELF to elfldr (9021)</p>
+<p id="status">Ready</p>
+<div id="progwrap" aria-hidden="true"><div id="progbar"></div></div>
+<div id="hdr"><button type="button" id="back" aria-label="Back">&larr; Back</button><h2 id="ftitle"></h2></div>
+<div id="home" class="show"></div>
+<div id="view"></div>
+</div>
+<script>
+(function(){
+var FOLDERS=[
+{id:"loader",label:"Loader"},
+{id:"system",label:"System / power"},
+{id:"network",label:"Network"},
+{id:"debug",label:"Debug"},
+{id:"kernel",label:"Kernel"},
+{id:"storage",label:"Storage"},
+{id:"homebrew",label:"Homebrew"},
+{id:"media",label:"Media"},
+{id:"utils",label:"Utils"},
+{id:"own",label:"Own"},
+{id:"optional-etahen",label:"Optional HEN"}
+];
+var PAYLOADS=[
+{folder:"debug",path:"debug/gdbsrv-ps5.elf",name:"gdbsrv-ps5.elf",version:"v0.9",info:"GDB stub server for PS5",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/debug/gdbsrv-ps5.elf"},
+{folder:"debug",path:"debug/klogsrv-ps5.elf",name:"klogsrv-ps5.elf",version:"v0.9",info:"Kernel log server",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/debug/klogsrv-ps5.elf"},
+{folder:"debug",path:"debug/notify_test.elf",name:"notify_test.elf",version:"1.0",info:"Notification test payload",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/debug/notify_test.elf"},
+{folder:"debug",path:"debug/ps5debug-NG.elf",name:"ps5debug-NG.elf",version:"1.3.2",info:"PS5 debugger (userland TCP in SceShellCore)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/debug/ps5debug-NG.elf"},
+{folder:"debug",path:"debug/ps5debug.elf",name:"ps5debug.elf",version:"0.0.1",info:"Classic PS5Debug ELF (older)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/debug/ps5debug.elf"},
+{folder:"cheats",path:"cheats/CheatRunner.elf",name:"CheatRunner.elf",version:"v0.17",info:"Cheat trainer homebrew",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/cheats/CheatRunner.elf"},
+{folder:"apps",path:"apps/PS5HostPayloads.elf",name:"PS5HostPayloads.elf",version:"1.0",info:"Host payloads bundle ELF",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/apps/PS5HostPayloads.elf"},
+{folder:"pkg",path:"pkg/fetchpkg.elf",name:"fetchpkg.elf",version:"v0.3.3",info:"PKG fetch helper for PS5",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/pkg/fetchpkg.elf"},
+{folder:"apps",path:"apps/kura-loader-ps5.elf",name:"kura-loader-ps5.elf",version:"v1.6.50",info:"Kura console-side loader payload",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/apps/kura-loader-ps5.elf"},
+{folder:"apps",path:"apps/launchpad-install.elf",name:"launchpad-install.elf",version:"v0.2",info:"Launchpad installer",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/apps/launchpad-install.elf"},
+{folder:"apps",path:"apps/payload-manager.elf",name:"payload-manager.elf",version:"v0.5.1",info:"Payload Manager UI",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/apps/payload-manager.elf"},
+{folder:"pkg",path:"pkg/pkg-manager.elf",name:"pkg-manager.elf",version:"v1.2.4",info:"On-console PKG manager",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/pkg/pkg-manager.elf"},
+{folder:"pkg",path:"pkg/pkg_install.elf",name:"pkg_install.elf",version:"v0.34",info:"PKG install helper (from websrv PKGInstall.zip)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/pkg/pkg_install.elf"},
+{folder:"webkit",path:"webkit/webkit-autoloader-installer.elf",name:"webkit-autoloader-installer.elf",version:"v0.4.0",info:"WebKit autoloader installer",url:"https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/webkit/webkit-autoloader-installer.elf"},
+{folder:"webkit",path:"webkit/wk-autoloader.elf",name:"wk-autoloader.elf",version:"v0.2.5",info:"WK Autoloader",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/webkit/wk-autoloader.elf"},
+{folder:"kernel",path:"kernel/kexp.bin",name:"kexp.bin",version:"local",info:"Kernel exploit helper binary (not ELF)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/kernel/kexp.bin"},
+{folder:"kernel",path:"kernel/kstuff-lite.elf",name:"kstuff-lite.elf",version:"v1.11",info:"kstuff-lite kernel patches (EchoStretch)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/kernel/kstuff-lite.elf"},
+{folder:"kernel",path:"kernel/kstuff-ps5-payload-dev.elf",name:"kstuff-ps5-payload-dev.elf",version:"v2025-01-26",info:"Classic kstuff kernel helper (org release)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/kernel/kstuff-ps5-payload-dev.elf"},
+{folder:"kernel",path:"kernel/kstuff-toggle-1.elf",name:"kstuff-toggle-1.elf",version:"0.6",info:"Toggle kstuff on/off variant 1",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/kernel/kstuff-toggle-1.elf"},
+{folder:"kernel",path:"kernel/kstuff-toggle-2.elf",name:"kstuff-toggle-2.elf",version:"0.6",info:"Toggle kstuff on/off variant 2",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/kernel/kstuff-toggle-2.elf"},
+{folder:"kernel",path:"kernel/kstuff-toggle-3.elf",name:"kstuff-toggle-3.elf",version:"0.6",info:"Toggle kstuff on/off variant 3",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/kernel/kstuff-toggle-3.elf"},
+{folder:"kernel",path:"kernel/kstuff-v1.6.7.elf",name:"kstuff-v1.6.7.elf",version:"v1.6.7",info:"kstuff build v1.6.7 from community mirror",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/kernel/kstuff-v1.6.7.elf"},
+{folder:"kernel",path:"kernel/ps5-linux-loader.elf",name:"ps5-linux-loader.elf",version:"v2.5",info:"Linux loader (rest-mode path)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/kernel/ps5-linux-loader.elf"},
+{folder:"loader",path:"loader/elfldr-ps5.elf",name:"elfldr-ps5.elf",version:"v0.26",info:"ELF loader daemon (port 9021)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/loader/elfldr-ps5.elf"},
+{folder:"media",path:"media/plutotv-install.elf",name:"plutotv-install.elf",version:"latest",info:"Pluto TV media app installer",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/media/plutotv-install.elf"},
+{folder:"media",path:"media/svtplay-install.elf",name:"svtplay-install.elf",version:"latest",info:"SVT Play media app installer",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/media/svtplay-install.elf"},
+{folder:"media",path:"media/tv4play-install.elf",name:"tv4play-install.elf",version:"latest",info:"TV4 Play media app installer",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/media/tv4play-install.elf"},
+{folder:"files",path:"files/BFpilot.elf",name:"BFpilot.elf",version:"v0.4.4",info:"Browser-based lightweight file manager",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/files/BFpilot.elf"},
+{folder:"ftp",path:"ftp/ftpsrv-drakmor.elf",name:"ftpsrv-drakmor.elf",version:"1.16-ng-stable",info:"Drakmor ftpsrv fork (NG stable)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/ftp/ftpsrv-drakmor.elf"},
+{folder:"ftp",path:"ftp/ftpsrv-ps5-install.elf",name:"ftpsrv-ps5-install.elf",version:"v0.21.1",info:"ftpsrv installer ELF",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/ftp/ftpsrv-ps5-install.elf"},
+{folder:"ftp",path:"ftp/ftpsrv-ps5.elf",name:"ftpsrv-ps5.elf",version:"v0.21.1",info:"FTP server for jailbroken PS5",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/ftp/ftpsrv-ps5.elf"},
+{folder:"network",path:"network/nanodns.elf",name:"nanodns.elf",version:"0.4",info:"PS4/PS5 DNS proxy",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/network/nanodns.elf"},
+{folder:"ftp",path:"ftp/ps5_ftp_server.elf",name:"ps5_ftp_server.elf",version:"v2.0",info:"High-speed FTP server",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/ftp/ps5_ftp_server.elf"},
+{folder:"pkg",path:"pkg/ps5upload.elf",name:"ps5upload.elf",version:"v5.33.2",info:"Fast PKG/homebrew transfer payload",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/pkg/ps5upload.elf"},
+{folder:"files",path:"files/web-file-mgr.elf",name:"web-file-mgr.elf",version:"v1.9",info:"Web UI file manager",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/files/web-file-mgr.elf"},
+{folder:"network",path:"network/websrv-ps5.elf",name:"websrv-ps5.elf",version:"v0.34",info:"HTTP homebrew launcher / websrv",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/network/websrv-ps5.elf"},
+{folder:"ftp",path:"ftp/zftpd-ps5-zhttp.elf",name:"zftpd-ps5-zhttp.elf",version:"v1.5.0",info:"zftpd with HTTP (PS5)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/ftp/zftpd-ps5-zhttp.elf"},
+{folder:"ftp",path:"ftp/zftpd-ps5.elf",name:"zftpd-ps5.elf",version:"v1.5.0",info:"Zero-copy FTP daemon (PS5)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/ftp/zftpd-ps5.elf"},
+{folder:"hen",path:"hen/Goldengames-PS5-Jailbreak.elf",name:"Goldengames-PS5-Jailbreak.elf",version:"v1.1.1",info:"Autoloader jailbreak bundle - OPTIONAL (large)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/hen/Goldengames-PS5-Jailbreak.elf"},
+{folder:"hen",path:"hen/Lapy-JB-Daemon.elf",name:"Lapy-JB-Daemon.elf",version:"v1.2",info:"Standalone JB daemon (etaHEN-like API) - OPTIONAL",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/hen/Lapy-JB-Daemon.elf"},
+{folder:"hen",path:"hen/etaHEN-2.5B.bin",name:"etaHEN-2.5B.bin",version:"2.5B",info:"etaHEN AIO HEN payload (.bin not ELF) - OPTIONAL",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/hen/etaHEN-2.5B.bin"},
+{folder:"hen",path:"hen/onionHEN.elf",name:"onionHEN.elf",version:"v0.0.13",info:"Alternate HEN enabler (optional)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/hen/onionHEN.elf"},
+{folder:"storage",path:"storage/SMPlusGui.elf",name:"SMPlusGui.elf",version:"v1.0.1",info:"Web GUI for ShadowMountPlus",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/storage/SMPlusGui.elf"},
+{folder:"storage",path:"storage/dump_installer.elf",name:"dump_installer.elf",version:"1.07",info:"Install dumped apps",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/storage/dump_installer.elf"},
+{folder:"storage",path:"storage/dump_runner.elf",name:"dump_runner.elf",version:"v1.02",info:"Runner for dump workflow",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/storage/dump_runner.elf"},
+{folder:"storage",path:"storage/game-compressor.elf",name:"game-compressor.elf",version:"v1.0.4",info:"Compress/repair ShadowMountPlus games",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/storage/game-compressor.elf"},
+{folder:"storage",path:"storage/garlic-savemgr-v1.13.1.elf",name:"garlic-savemgr-v1.13.1.elf",version:"v1.13.1",info:"Garlic save mgr alternate build from mirror",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/storage/garlic-savemgr-v1.13.1.elf"},
+{folder:"storage",path:"storage/garlic-savemgr.elf",name:"garlic-savemgr.elf",version:"v1.7",info:"Local save manager (prefer author v1.7 over older mirror)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/storage/garlic-savemgr.elf"},
+{folder:"storage",path:"storage/ps5-app-dumper.elf",name:"ps5-app-dumper.elf",version:"v1.11",info:"Dump installed PS5 apps",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/storage/ps5-app-dumper.elf"},
+{folder:"storage",path:"storage/shadowmountplus.elf",name:"shadowmountplus.elf",version:"1.7beta1",info:"ShadowMountPlus game mount helper",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/storage/shadowmountplus.elf"},
+{folder:"system",path:"system/SystemStateManager.elf",name:"SystemStateManager.elf",version:"1.0.0",info:"TCP control for reboot/rest/shutdown/eject",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/system/SystemStateManager.elf"},
+{folder:"system",path:"system/TM44.elf",name:"TM44.elf",version:"0.1",info:"Minimal rest-mode / EnterStandby payload",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/system/TM44.elf"},
+{folder:"system",path:"system/poweroff.elf",name:"poweroff.elf",version:"1.0",info:"Power off PS5",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/system/poweroff.elf"},
+{folder:"system",path:"system/reboot-masterps0.elf",name:"reboot-masterps0.elf",version:"1.0",info:"Reboot PS5 (MasterPS0)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/system/reboot-masterps0.elf"},
+{folder:"system",path:"system/reboot.elf",name:"reboot.elf",version:"own-built",info:"Userspace reboot via reboot(RB_AUTOBOOT)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/system/reboot.elf"},
+{folder:"system",path:"system/suspend-masterps0.elf",name:"suspend-masterps0.elf",version:"1.0",info:"Rest mode template (MasterPS0)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/system/suspend-masterps0.elf"},
+{folder:"system",path:"system/suspend.elf",name:"suspend.elf",version:"own-built",info:"Rest mode via sceSystemStateMgrEnterStandby",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/system/suspend.elf"},
+{folder:"utils",path:"utils/BackPork.elf",name:"BackPork.elf",version:"0.1",info:"Sideload system libraries into games",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/utils/BackPork.elf"},
+{folder:"cheats",path:"cheats/Common_FPS_PS5.elf",name:"Common_FPS_PS5.elf",version:"v1.1.0",info:"Universal FPS overlay",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/cheats/Common_FPS_PS5.elf"},
+{folder:"utils",path:"utils/LinkDev.elf",name:"LinkDev.elf",version:"v0.4.2",info:"Remote Play / link device helper",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/utils/LinkDev.elf"},
+{folder:"utils",path:"utils/OffAct.elf",name:"OffAct.elf",version:"v0.4.2",info:"Offline account activator",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/utils/OffAct.elf"},
+{folder:"utils",path:"utils/ps5-self-pager-full-system.elf",name:"ps5-self-pager-full-system.elf",version:"v1.2",info:"SELF pager / decrypt helper variant",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/utils/ps5-self-pager-full-system.elf"},
+{folder:"utils",path:"utils/ps5-self-pager-game.elf",name:"ps5-self-pager-game.elf",version:"v1.2",info:"SELF pager / decrypt helper variant",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/utils/ps5-self-pager-game.elf"},
+{folder:"utils",path:"utils/ps5-self-pager-shellcore.elf",name:"ps5-self-pager-shellcore.elf",version:"v1.2",info:"SELF pager / decrypt helper variant",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/utils/ps5-self-pager-shellcore.elf"},
+{folder:"utils",path:"utils/ps5-self-pager-system-common-lib.elf",name:"ps5-self-pager-system-common-lib.elf",version:"v1.2",info:"SELF pager / decrypt helper variant",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/utils/ps5-self-pager-system-common-lib.elf"},
+{folder:"utils",path:"utils/rp-get-pin.elf",name:"rp-get-pin.elf",version:"v0.1.1",info:"Get Remote Play pairing PIN",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/utils/rp-get-pin.elf"},
+{folder:"debug",path:"debug/shsrv-ps5.elf",name:"shsrv-ps5.elf",version:"v0.20",info:"Telnet-like shell server (port 2323)",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/debug/shsrv-ps5.elf"},
+{folder:"files",path:"files/wfm-7zip-helper.elf",name:"wfm-7zip-helper.elf",version:"v1.9",info:"7zip helper for web file manager",url:"https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/files/wfm-7zip-helper.elf"},
+{folder:"system",path:"system/reboot-own.elf",name:"reboot-own.elf",version:"own-built",info:"Userspace reboot via reboot(RB_AUTOBOOT)",url:""},
+{folder:"system",path:"system/suspend-own.elf",name:"suspend-own.elf",version:"own-built",info:"Rest mode via sceSystemStateMgrEnterStandby",url:""}
+];
+var statusEl=document.getElementById('status');
+var homeEl=document.getElementById('home');
+var viewEl=document.getElementById('view');
+var hdrEl=document.getElementById('hdr');
+var titleEl=document.getElementById('ftitle');
+var backBtn=document.getElementById('back');
+var progWrap=document.getElementById('progwrap');
+var progBar=document.getElementById('progbar');
+var currentFolder=null;
+var pollTimer=null;
+
+function setStatus(t){statusEl.textContent=t;}
+
+function showProgress(on){
+  if(on){
+    progWrap.className='show';
+    progWrap.setAttribute('aria-hidden','false');
+  }else{
+    progWrap.className='';
+    progWrap.setAttribute('aria-hidden','true');
+    progBar.className='';
+    progBar.style.width='0%';
+  }
+}
+
+function setProgressPct(pct){
+  progBar.className='';
+  if(pct<0){
+    progBar.className='indeterminate';
+    progBar.style.width='40%';
+  }else{
+    if(pct>100)pct=100;
+    if(pct<0)pct=0;
+    progBar.style.width=pct+'%';
+  }
+}
+
+function stopPoll(){
+  if(pollTimer){clearInterval(pollTimer);pollTimer=null;}
+}
+
+var apiBase='';
+function startPoll(){
+  stopPoll();
+  pollTimer=setInterval(function(){
+    fetch(apiBase+'/progress').then(function(r){return r.json();}).then(function(j){
+      if(!j)return;
+      if(j.phase==='idle'){
+        if(typeof j.pct==='number' && j.pct>=100)setProgressPct(100);
+        return;
+      }
+      if(typeof j.pct==='number')setProgressPct(j.pct);
+    }).catch(function(){});
+  },250);
+}
+
+function countIn(folder){
+  var n=0,i;
+  for(i=0;i<PAYLOADS.length;i++){if(PAYLOADS[i].folder===folder)n++;}
+  return n;
+}
+
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function getHashFolder(){
+  var h=location.hash||'';
+  var m=h.match(/folder=([a-z0-9\-]+)/i);
+  return m?m[1]:null;
+}
+
+function setHashFolder(id){
+  if(id){location.hash='folder='+id;}
+  else if(location.hash){location.hash='';}
+}
+
+function showHome(){
+  currentFolder=null;
+  hdrEl.className='';
+  viewEl.className='';
+  viewEl.innerHTML='';
+  homeEl.className='show';
+  var html='<div id="folders">';
+  var i,f,n;
+  for(i=0;i<FOLDERS.length;i++){
+    f=FOLDERS[i];
+    n=countIn(f.id);
+    html+='<button type="button" class="folder" data-folder="'+esc(f.id)+'">';
+    html+='<span class="fname">'+esc(f.label)+'</span>';
+    html+='<span class="fcount">'+n+' item'+(n===1?'':'s')+'</span>';
+    html+='</button>';
+  }
+  html+='</div>';
+  homeEl.innerHTML=html;
+  var cards=homeEl.querySelectorAll('.folder');
+  for(i=0;i<cards.length;i++){
+    cards[i].addEventListener('click',function(ev){
+      var id=ev.currentTarget.getAttribute('data-folder');
+      setHashFolder(id);
+      showFolder(id);
+    });
+  }
+}
+
+function findPayload(path){
+  var i;
+  for(i=0;i<PAYLOADS.length;i++){if(PAYLOADS[i].path===path)return PAYLOADS[i];}
+  return null;
+}
+
+function showFolder(id){
+  var label=id,i,f,list=[],p,html;
+  for(i=0;i<FOLDERS.length;i++){if(FOLDERS[i].id===id){label=FOLDERS[i].label;break;}}
+  currentFolder=id;
+  homeEl.className='';
+  homeEl.innerHTML='';
+  hdrEl.className='show';
+  titleEl.textContent=label;
+  viewEl.className='show';
+  for(i=0;i<PAYLOADS.length;i++){if(PAYLOADS[i].folder===id)list.push(PAYLOADS[i]);}
+  if(!list.length){
+    viewEl.innerHTML='<p class="empty">No payloads in this folder.</p>';
+    return;
+  }
+  html='<table><thead><tr><th>Payload</th><th>Version</th><th>Info</th><th></th></tr></thead><tbody>';
+  for(i=0;i<list.length;i++){
+    p=list[i];
+    html+='<tr data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'">';
+    html+='<td class="n">'+esc(p.name)+'</td>';
+    html+='<td class="v">'+esc(p.version)+'</td>';
+    html+='<td class="d">'+esc(p.info)+'</td>';
+    html+='<td class="a"><button type="button" class="run">Send</button></td>';
+    html+='</tr>';
+  }
+  html+='</tbody></table>';
+  viewEl.innerHTML=html;
+  var rows=viewEl.querySelectorAll('tr[data-path]');
+  for(i=0;i<rows.length;i++){
+    (function(tr){
+      var btn=tr.querySelector('button.run');
+      btn.addEventListener('click',function(){
+        var path=tr.getAttribute('data-path');
+        var name=tr.getAttribute('data-name');
+        var meta=findPayload(path);
+        var onConsole=(location.hostname==='127.0.0.1'||location.hostname==='localhost');
+        btn.disabled=true;
+        if(!onConsole){
+          var fileUrl=(meta&&meta.url)?meta.url:path;
+          var onPs5=/PlayStation/i.test(navigator.userAgent);
+          showProgress(true);
+          setProgressPct(-1);
+          if(onPs5){
+            setStatus('Sending '+name+' to the launcher...');
+            askLauncher(fileUrl);
+            setProgressPct(100);
+            showProgress(false);
+            setStatus('Sent '+name+' to the launcher.');
+            btn.disabled=false;
+            return;
+          }
+          setStatus('Downloading '+name+'...');
+          fetch(fileUrl).then(function(r){
+            if(!r.ok)throw new Error('HTTP '+r.status);
+            return r.blob();
+          }).then(function(blob){
+            var u=URL.createObjectURL(blob);
+            var a=document.createElement('a');
+            a.href=u;
+            a.download=name;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(function(){URL.revokeObjectURL(u);},1500);
+            setProgressPct(100);
+            showProgress(false);
+            setStatus('Downloaded '+name+'. Upload it by FTP to /data');
+          }).catch(function(e){
+            showProgress(false);
+            setStatus('Download failed: '+e);
+          }).then(function(){btn.disabled=false;});
+          return;
+        }
+        apiBase='';
+        showProgress(true);
+        setProgressPct(-1);
+        setStatus('Preparing '+name+'...');
+        startPoll();
+        fetch(apiBase+'/ensure?path='+encodeURIComponent(path),{method:'POST'})
+          .then(function(r){return r.text().then(function(t){return {ok:r.ok,t:t,status:r.status};});})
+          .then(function(ens){
+            if(!ens.ok){
+              stopPoll();
+              showProgress(false);
+              setStatus(ens.t||'Ensure failed');
+              btn.disabled=false;
+              return null;
+            }
+            var source='cache';
+            try{
+              var j=JSON.parse(ens.t);
+              if(j && j.source)source=j.source;
+            }catch(e){}
+            if(source==='download'){
+              setStatus('Downloaded '+name+' - sending...');
+              setProgressPct(100);
+            }else{
+              setStatus('Cached '+name+' - sending...');
+              setProgressPct(100);
+            }
+            return fetch(apiBase+'/run?path='+encodeURIComponent(path),{method:'POST'})
+              .then(function(r){return r.text().then(function(t){return {ok:r.ok,t:t,source:source};});});
+          })
+          .then(function(res){
+            if(!res)return;
+            stopPoll();
+            showProgress(false);
+            if(res.ok){
+              if(res.source==='download')setStatus('Downloaded and sent '+name);
+              else setStatus('Sent '+name);
+            }else{
+              setStatus(res.t||'Failed');
+            }
+          })
+          .catch(function(e){
+            stopPoll();
+            showProgress(false);
+            if(apiBase)setStatus('Launcher is off. Send ps5-elfs-host.elf to elfldr on port 9021.');
+            else setStatus('Error: '+e);
+          })
+          .then(function(){btn.disabled=false;});
+      });
+    })(rows[i]);
+  }
+}
+
+backBtn.addEventListener('click',function(){
+  setHashFolder(null);
+  showHome();
+});
+
+window.addEventListener('hashchange',function(){
+  var id=getHashFolder();
+  if(id)showFolder(id); else showHome();
+});
+
+function askLauncher(fileUrl){
+  var img=new Image();
+  img.src='http://127.0.0.1:9021/?uri='+encodeURIComponent(fileUrl);
+}
+if(/PlayStation/i.test(navigator.userAgent)){
+  setStatus('Loading elfldr...');
+  askLauncher('https://raw.githubusercontent.com/X-F1REBALL-X/ps5-elfs/main/loader/elfldr-ps5.elf');
+}
+var start=getHashFolder();
+if(start)showFolder(start); else showHome();
+})();
+</script>
+</body></html>

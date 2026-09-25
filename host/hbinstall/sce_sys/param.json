@@ -1,0 +1,11 @@
+{
+    "titleId": "BREW10090",
+    "applicationCategoryType": 65536,
+    "deeplinkUri": "http://127.0.0.1:1000/",
+    "localizedParameters": {
+	"defaultLanguage": "en-US",
+	"en-US": {
+	    "titleName": "Elf launcher"
+	}
+    }
+}
