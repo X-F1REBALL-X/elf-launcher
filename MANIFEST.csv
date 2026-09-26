@@ -1,5 +1,5 @@
 path,size,sha256,source_repo,tag,date,license,purpose
-launcher/elf-launcher.elf,4367608,f240c1f55e42e8bb69c63778a1aa00dc51e0d377e49949caaab3c907f599a6ae,https://github.com/X-F1REBALL-X/elf-launcher,0.0.6,2026-09-25,own,Installs the home tile and serves the launcher page from the console
+launcher/elf-launcher.elf,4367608,c7939070c40e5224db65cfa34311ae5511cd1c27476c9d9fdf76f9511546be36,https://github.com/X-F1REBALL-X/elf-launcher,0.0.7,2026-09-26,own,Installs the home tile and serves the launcher page from the console
 debug/gdbsrv-ps5.elf,174248,80952d75f423768b95385f0944e5a5c2f417dcc10c22c1bb6516a923ad8894e5,https://github.com/ps5-payload-dev/gdbsrv,v0.9,2026-08-02,GPL-3.0,GDB stub server for PS5
 debug/klogsrv-ps5.elf,136016,e828ec144231f81547cb58bc7d2c396fa984be0c2295f31364b58017816dcceb,https://github.com/ps5-payload-dev/klogsrv,v0.9,2026-08-02,GPL-3.0,Kernel log server
 debug/notify_test.elf,109496,a06cf9ace6e13f3c0241a709c6a8d23969d74e6559ec2a2290298f480f62da79,https://github.com/MasterPS0/PS5-Power-Payloads-Project,1.0,2026-07-06,NOASSERTION,Notification test payload

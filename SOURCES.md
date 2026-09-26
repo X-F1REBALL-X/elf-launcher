@@ -29,7 +29,7 @@ Prefer official release assets. Hashes in MANIFEST.csv / MANIFEST.md.
 | `pkg/pkg_install.elf` | https://github.com/ps5-payload-dev/websrv | v0.34 / 2026-08-02 | GPL-3.0 | PKG install helper (from websrv PKGInstall.zip) |
 | `webkit/wk-autoloader.elf` | https://github.com/X-F1REBALL-X/WK-AutoLoader | v0.2.5 / 2026-09-22 | unknown | WK-AutoLoader |
 | `webkit/webkit-autoloader-installer.elf` | https://github.com/itsPLK/ps5-webkit-autoloader | v0.4.0 / 2026-08-24 | GPL-3.0 | WebKit autoloader installer |
-| `launcher/elf-launcher.elf` | https://github.com/X-F1REBALL-X/elf-launcher | 0.0.6 / 2026-09-25 | own | Installs the home tile and serves the launcher page from the console |
+| `launcher/elf-launcher.elf` | https://github.com/X-F1REBALL-X/elf-launcher | 0.0.7 / 2026-09-26 | own | Installs the home tile and serves the launcher page from the console |
 | `kernel/kexp.bin` | local-sjb-work | local / 2026-09-22 | unknown | Kernel exploit helper binary (not ELF) - Seed from /workspace/sjb-work/payloads |
 | `kernel/kstuff-lite.elf` | https://github.com/EchoStretch/kstuff-lite | v1.11 / 2026-09-20 | NOASSERTION | kstuff-lite kernel patches (EchoStretch) |
 | `kernel/kstuff-ps5-payload-dev.elf` | https://github.com/ps5-payload-dev/kstuff | v2025-01-26 / 2025-01-25 | NOASSERTION | Classic kstuff kernel helper (org release) |

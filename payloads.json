@@ -7,7 +7,7 @@
       "path": "launcher/elf-launcher.elf",
       "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf",
       "description": "Installs the home screen tile and serves this page from the console.",
-      "version": "0.0.6",
+      "version": "0.0.7",
       "category": "Launcher",
       "author": "X-F1REBALL-X",
       "size": 4367608,

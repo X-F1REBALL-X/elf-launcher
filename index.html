@@ -130,6 +130,9 @@ button.run[disabled]{opacity:.55}
 button.run.sent{background:linear-gradient(#eaffea,#3dce62 52%,#128a34);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 4px 0 #0b5a20;text-shadow:0 2px 0 #0b5a20}
 button.run.busy{background-color:#0a4d94;background-image:linear-gradient(#b8ffc4,#1f9a45);background-repeat:no-repeat;background-position:left center;background-size:0% 100%}
 button.run.busy[disabled]{opacity:1}
+button.run.kill{margin-left:8px;padding:10px 18px;background:linear-gradient(#ffb0b8,#d01232 55%,#8a0c22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 0 #4a0612;text-shadow:0 2px 0 #4a0612}
+button.run.kill:active{transform:translateY(4px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 1px 0 #4a0612}
+button.run.kill[disabled]{opacity:.55}
 #openhost{display:inline-block;color:#fff;text-decoration:none;border-radius:14px;padding:14px 22px;font-size:22px;font-weight:800;
   background:linear-gradient(#6ec0ff,#1574d6);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 6px 0 #08325c}
 .empty{color:#9ad2ff;padding:20px 0}
@@ -184,7 +187,7 @@ var FOLDERS=[
 {id:"utils",label:"Tools"}
 ];
 var PAYLOADS=[
-{folder:"launcher",path:"launcher/elf-launcher.elf",name:"elf-launcher.elf",version:"0.0.6",info:"Installs the home screen tile and serves this page from the console.",url:"https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf",by:"X-F1REBALL-X"},
+{folder:"launcher",path:"launcher/elf-launcher.elf",name:"elf-launcher.elf",version:"0.0.7",info:"Installs the home screen tile and serves this page from the console.",url:"https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf",by:"X-F1REBALL-X"},
 {folder:"debug",path:"debug/gdbsrv-ps5.elf",name:"gdbsrv-ps5.elf",version:"v0.9",info:"GDB server for debugging a process.",url:"https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/debug/gdbsrv-ps5.elf",by:"ps5-payload-dev"},
 {folder:"debug",path:"debug/klogsrv-ps5.elf",name:"klogsrv-ps5.elf",version:"v0.9",info:"Streams the kernel log to a PC.",url:"https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/debug/klogsrv-ps5.elf",by:"ps5-payload-dev"},
 {folder:"debug",path:"debug/notify_test.elf",name:"notify_test.elf",version:"1.0",info:"Shows one test notification.",url:"https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/debug/notify_test.elf",by:"MasterPS0"},
@@ -350,6 +353,16 @@ function rememberActive(name){
   try{ sessionStorage.setItem('ps5elfs-active', s); }catch(e2){}
   document.cookie='ps5elfs-active='+encodeURIComponent(s)+'; path=/; max-age=31536000';
 }
+function forgetActive(name){
+  var m=loadActive();
+  var s;
+  if(!m[name]) return;
+  delete m[name];
+  s=JSON.stringify(m);
+  try{ localStorage.setItem('ps5elfs-active', s); }catch(e){}
+  try{ sessionStorage.setItem('ps5elfs-active', s); }catch(e2){}
+  document.cookie='ps5elfs-active='+encodeURIComponent(s)+'; path=/; max-age=31536000';
+}
 function clearActive(){
   try{ localStorage.removeItem('ps5elfs-active'); }catch(e){}
   try{ sessionStorage.removeItem('ps5elfs-active'); }catch(e2){}
@@ -445,7 +458,7 @@ function applyRemembered(){
   for(i=0;i<rows.length;i++){
     name=rows[i].getAttribute('data-name');
     if(!isActiveName(name)) continue;
-    btn=rows[i].querySelector('button.run');
+    btn=rows[i].querySelector('button.run:not(.kill)') || rows[i].querySelector('button.run');
     if(!btn) continue;
     btn.className='run sent';
     btn.textContent='Active';
@@ -513,6 +526,77 @@ function endBar(btn, text, name){
     btn.disabled=false;
   }, 380);
 }
+function isProtectedKillName(name){
+  var n=(name||'').toLowerCase();
+  var base=n.split('/').pop();
+  return base==='elfldr-ps5.elf' || base==='elfldr.elf' || base==='payload-manager.elf' || base==='pldmgr.elf';
+}
+function processNameMatches(procName, payloadName){
+  var p=(procName||'').toLowerCase();
+  var n=(payloadName||'').toLowerCase();
+  var base=n.split('/').pop();
+  var pbase=p.split('/').pop();
+  if(p===n || p===base || pbase===base || pbase===n) return true;
+  if(p===base || pbase===base) return true;
+  var trunc=base.substring(0,15);
+  if(trunc && (pbase.indexOf(trunc)===0 || trunc.indexOf(pbase)===0 || p.indexOf(trunc)===0)) return true;
+  if(pbase && (base.indexOf(pbase)===0 || pbase.indexOf(base)===0)) return true;
+  return false;
+}
+function resetSendBtn(btn){
+  if(!btn) return;
+  btn.className='run';
+  btn.style.backgroundSize='';
+  btn.style.transition='';
+  btn.textContent='Send';
+  btn.disabled=false;
+}
+function killPayload(name, sendBtn){
+  if(isProtectedKillName(name)){
+    setStatus('Cannot kill '+name+' (protected)');
+    return;
+  }
+  forgetActive(name);
+  resetSendBtn(sendBtn);
+  setStatus('Looking up '+name+'...');
+  fetch('http://127.0.0.1:8084/processes_list').then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(function(data){
+    var procs=(data && data.processes) ? data.processes : [];
+    var matches=[], i, pr, pname;
+    for(i=0;i<procs.length;i++){
+      pr=procs[i];
+      pname=pr.name||'';
+      if(isProtectedKillName(pname)) continue;
+      if(processNameMatches(pname, name)) matches.push(pr);
+    }
+    if(!matches.length){
+      setStatus('No running process for '+name);
+      return;
+    }
+    var killed=0, failed=0, pending=matches.length;
+    function doneOne(ok){
+      if(ok) killed++; else failed++;
+      pending--;
+      if(pending>0) return;
+      if(killed && !failed) setStatus('Killed '+name);
+      else if(killed) setStatus('Killed '+name+' ('+failed+' failed)');
+      else setStatus('Kill failed for '+name);
+    }
+    for(i=0;i<matches.length;i++){
+      (function(pid){
+        fetch('http://127.0.0.1:8084/process_kill?pid='+encodeURIComponent(pid)).then(function(r){
+          return r.json().catch(function(){ return {ok:false}; });
+        }).then(function(j){
+          doneOne(!!(j && j.ok));
+        }).catch(function(){ doneOne(false); });
+      })(matches[i].pid);
+    }
+  }).catch(function(){
+    setStatus('Kill failed: Load payload-manager.elf first (port 8084)');
+  });
+}
 function showFolder(id){
   var label=id,i,f,list=[],p,html;
   if(id==='auto') label='Auto';
@@ -545,30 +629,22 @@ function showFolder(id){
     html+='<div class="d">'+esc(p.info)+'</div>';
     var on=isActiveName(p.name);
     var label=on?'Active':(onPs5?'Send':'Download');
-    html+='<div class="a"><span class="halo"><button type="button" class="run'+(on?' sent':'')+'">'+label+'</button></span></div>';
+    html+='<div class="a"><span class="halo"><button type="button" class="run'+(on?' sent':'')+'">'+label+'</button></span>';
+    if(onPs5) html+='<button type="button" class="run kill">Kill</button>';
+    html+='</div>';
     html+='</div></div>';
   }
   viewEl.innerHTML=html;
   var rows=viewEl.querySelectorAll('[data-path]');
   for(i=0;i<rows.length;i++){
     (function(tr){
-      var btn=tr.querySelector('button.run');
+      var btn=tr.querySelector('button.run:not(.kill)') || tr.querySelector('button.run');
+      var killBtn=tr.querySelector('button.run.kill');
       btn.addEventListener('click',function(){
         var path=tr.getAttribute('data-path');
         var name=tr.getAttribute('data-name');
         var meta=findPayload(path);
         var onConsole=(location.hostname==='127.0.0.1'||location.hostname==='localhost');
-        var elfldrRunning=document.getElementById('status').textContent.indexOf('Elfldr Ready')>=0 || document.getElementById('status').textContent.indexOf('Already active')>=0;
-        if(btn.textContent==='Sent' || btn.textContent==='Active' || btn.textContent==='Downloaded' || (name==='elfldr-ps5.elf' && elfldrRunning)){
-          btn.className='run sent';
-          btn.textContent='Active';
-          btn.disabled=false;
-          setStatus('Already active');
-          if(/PlayStation/i.test(navigator.userAgent)){
-            askLauncher('https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/loader/already-active.elf');
-          }
-          return;
-        }
         btn.disabled=true;
         startBar(btn);
         if(!onConsole){
@@ -620,6 +696,12 @@ function showFolder(id){
         btn.disabled=false;
         return;
       });
+      if(killBtn){
+        killBtn.addEventListener('click',function(){
+          var name=tr.getAttribute('data-name');
+          killPayload(name, btn);
+        });
+      }
     })(rows[i]);
   }
   var autoBoxes=viewEl.getElementsByTagName('input');
@@ -644,10 +726,10 @@ function showFolder(id){
       node=box.parentNode;
       while(node && (!node.getAttribute || !node.getAttribute('data-name'))) node=node.parentNode;
       if(!node) continue;
-      btn=node.querySelector('button.run');
+      btn=node.querySelector('button.run:not(.kill)') || node.querySelector('button.run');
       if(!btn) continue;
       text=btn.textContent;
-      if(text==='Active' || text==='Sent' || text==='Downloaded') continue;
+      if(text==='Downloaded') continue;
       queue.push(btn);
     }
     if(!queue.length){ setStatus(onPs5?'Mark payloads first':'Mark files first'); return; }

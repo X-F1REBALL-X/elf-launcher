@@ -4,10 +4,10 @@ A PS5 launcher for ELF payloads. Open it after the console is already exploited.
 
 Page: https://x-f1reball-x.github.io/elf-launcher/
 
-Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/v0.0.6
+Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/v0.0.7
 
 - [elf-launcher.elf](https://github.com/X-F1REBALL-X/elf-launcher/raw/main/launcher/elf-launcher.elf) installs the home tile.
-- [elf-launcher-data.zip](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/v0.0.6/elf-launcher-data.zip) is the payload folders. Copy its contents to `/data/elf-launcher` on the console.
+- [elf-launcher-data.zip](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/v0.0.7/elf-launcher-data.zip) is the payload folders. Copy its contents to `/data/elf-launcher` on the console.
 
 ## How it works
 
@@ -17,7 +17,8 @@ Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/v0.0.6
 4. On a phone or a PC the same button is **Download**.
 5. **Select** marks several files. **Multi load** sends them one after another. On a phone that button is **Multi download**.
 6. **Auto** saves a list. The next time the page opens, those files send themselves after 3 seconds. **Cancel** stops that.
-7. A file that is already running in this session shows **Active** and is not sent again.
+7. **Send** always re-sends the payload, even if the row shows **Active** or **Sent**.
+8. **Kill** (PS5 only, next to Send) closes a running payload process. Requires **payload-manager.elf** running on the console (`127.0.0.1:8084`).
 
 Circle goes back. Triangle refreshes the page. Cross confirms. Square closes the launcher.
 
@@ -29,7 +30,7 @@ Same files as the page.
 
 | Payload | Version | What it does | Download |
 |---|---|---|---|
-| `elf-launcher.elf` | `0.0.6` | Installs the home screen tile and serves this page from the console. | [Download](https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf) |
+| `elf-launcher.elf` | `0.0.7` | Installs the home screen tile and serves this page from the console. | [Download](https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf) |
 
 ### Loader
 
