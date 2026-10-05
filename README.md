@@ -13,7 +13,6 @@ Home-screen and browser ELF payload launcher for PS5.
 
 - [elf-launcher.elf](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.3/elf-launcher.elf) – launcher payload
 - [elf-launcher-install.elf](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.3/elf-launcher-install.elf) – home-screen installer
-- [elf-launcher-data.zip](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.3/elf-launcher-data.zip) – web UI + catalog
 - [SHA256SUMS.txt](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.3/SHA256SUMS.txt)
 
 ## Usage
