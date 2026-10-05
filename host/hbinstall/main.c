@@ -1313,13 +1313,12 @@ static void run_headless_auto(void) {
     }
   }
 
-  /* Empty queue: do not consume the one-shot; allow a later mark/download. */
+  /* Empty queue: do not consume the one-shot; allow a later mark/download.
+   * Stay silent when nothing is marked Auto (avoid a notify every jailbreak). */
   if (e == 0) {
     if (from_list && n > 0) {
       for (i = 0; i < n; i++)
         notify("Skipped %s (file missing)", listed[i]);
-    } else {
-      notify("AutoPayload empty");
     }
     return;
   }
