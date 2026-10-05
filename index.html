@@ -139,9 +139,10 @@ button.run.update:active{transform:translateY(3px);box-shadow:inset 0 1px 0 rgba
 button.run.update[disabled]{opacity:.55}
 .empty{color:#9ad2ff;padding:16px 0}
 .foldrow{display:flex;flex-wrap:nowrap;gap:6px;margin:0 0 6px}
-.foldrow button{flex:1 1 0;min-width:0;border:0;cursor:pointer;color:#eaf6ff;font:inherit;font-size:13px;font-weight:800;padding:6px 8px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.foldrow button{flex:1 1 0;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:4px;border:0;cursor:pointer;color:#eaf6ff;font:inherit;font-size:13px;font-weight:800;padding:6px 8px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   background:linear-gradient(#1a4d7a,#0c2c4a);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 3px 0 #06111c}
 .foldrow button.active{background:linear-gradient(#7ec8ff,#1c82e4 55%,#0a4d94);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 2px #fff,0 3px 0 #062848}
+.foldrow button .ncount{flex:0 0 auto;min-width:18px;height:18px;padding:0 5px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#061422;font-size:11px;font-weight:900;line-height:1}
 .homeOpt{margin-top:16px;text-align:left}
 .homeQ{margin:0 0 8px;color:#fff;font-size:16px;font-weight:800}
 .homeChoices{display:flex;gap:10px;margin:8px 0}
@@ -1490,7 +1491,7 @@ function bindSubfolds(){
   }
 }
 function folderChipsHtml(selected){
-  var items=[], i, f, html, mid, row, j, it;
+  var items=[], i, f, html, mid, row, j, it, n;
   for(i=0;i<FOLDERS.length;i++){
     f=FOLDERS[i];
     items.push({id:f.id, label:f.label});
@@ -1501,7 +1502,8 @@ function folderChipsHtml(selected){
     html+='<div class="foldrow">';
     for(j=row*mid; j<items.length && j<(row+1)*mid; j++){
       it=items[j];
-      html+='<button type="button" class="subfold'+(selected===it.id?' active':'')+'" data-sub="'+esc(it.id)+'">'+esc(it.label)+'</button>';
+      n=countIn(it.id);
+      html+='<button type="button" class="subfold'+(selected===it.id?' active':'')+'" data-sub="'+esc(it.id)+'"><span>'+esc(it.label)+'</span><span class="ncount">'+n+'</span></button>';
     }
     html+='</div>';
   }
