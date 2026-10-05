@@ -7,13 +7,13 @@ Home-screen and browser ELF payload launcher for PS5.
 **Version 1.1.6** - Open browser runs disk AutoPayload like Leave closed; stays silent when nothing to do.
 
 - Live page: https://x-f1reball-x.github.io/elf-launcher/
-- Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/1.1.4
+- Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/1.1.6
 
 ## Downloads
 
-- [elf-launcher.elf](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.4/elf-launcher.elf) - launcher payload
-- [elf-launcher-install.elf](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.4/elf-launcher-install.elf) - home-screen installer
-- [SHA256SUMS.txt](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.4/SHA256SUMS.txt)
+- [elf-launcher.elf](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.6/elf-launcher.elf) - launcher payload
+- [elf-launcher-install.elf](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.6/elf-launcher-install.elf) - home-screen installer
+- [SHA256SUMS.txt](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.6/SHA256SUMS.txt)
 
 ## Usage
 
