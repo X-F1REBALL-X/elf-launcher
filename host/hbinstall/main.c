@@ -1283,13 +1283,14 @@ static int existing_names(char in[][AUTO_NAME_MAX], int n,
 static void run_headless_auto(void) {
   char listed[AUTO_MAX][AUTO_NAME_MAX];
   char use[AUTO_MAX][AUTO_NAME_MAX];
-  int n, e, i, sent = 0;
+  int n, e, i, sent = 0, skipped = 0;
   char path[512];
-  /* Headless Auto counts as the one-shot for this jailbreak/boot. */
-  write_boot_auto_done();
+  int from_list;
+
   sleep(1);
   n = read_auto_list(listed, AUTO_MAX);
   e = existing_names(listed, n, use, AUTO_MAX);
+  from_list = n > 0;
   if (e == 0) {
     scan_page_storage();
     e = existing_names(storage_names, storage_name_count, use, AUTO_MAX);
@@ -1308,18 +1309,59 @@ static void run_headless_auto(void) {
         joined[used] = 0;
       }
       write_auto_names(joined);
+      from_list = 1;
     }
   }
+
+  /* Empty queue: do not consume the one-shot; allow a later mark/download. */
+  if (e == 0) {
+    if (from_list && n > 0) {
+      for (i = 0; i < n; i++)
+        notify("Skipped %s (file missing)", listed[i]);
+    } else {
+      notify("AutoPayload empty");
+    }
+    return;
+  }
+
+  /* Notify listed names that are missing on disk before sending the rest. */
+  if (from_list && n > e) {
+    for (i = 0; i < n; i++) {
+      int found = 0, j;
+      for (j = 0; j < e; j++) {
+        if (!strcmp(listed[i], use[j])) {
+          found = 1;
+          break;
+        }
+      }
+      if (!found) {
+        notify("Skipped %s (file missing)", listed[i]);
+        skipped++;
+      }
+    }
+  }
+
+  /* Non-empty runnable queue: consume one-shot for this jailbreak/boot. */
+  write_boot_auto_done();
+
   for (i = 0; i < e; i++) {
-    if (auto_disk_path(use[i], path, sizeof(path)))
+    if (auto_disk_path(use[i], path, sizeof(path))) {
+      notify("Skipped %s (file missing)", use[i]);
+      skipped++;
       continue;
+    }
     if (push_elfldr(path) == 0) {
       sent++;
       usleep(400000);
+    } else {
+      notify("Skipped %s (send failed)", use[i]);
+      skipped++;
     }
   }
   if (sent > 0)
     notify("AutoPayload %d", sent);
+  else if (skipped > 0)
+    notify("AutoPayload skipped");
 }
 
 static void *headless_auto_thread(void *arg) {
