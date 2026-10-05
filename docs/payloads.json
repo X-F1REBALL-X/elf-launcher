@@ -11,9 +11,9 @@
       "version": "1.1.3",
       "category": "Loader",
       "author": "X-F1REBALL-X",
-      "size": 1339144,
-      "checksum": "faa1ef42b731b52b778ad5d825453c6d665cfb9f6c844f59e404385efe5026ba",
-      "sha256": "faa1ef42b731b52b778ad5d825453c6d665cfb9f6c844f59e404385efe5026ba"
+      "size": 1027704,
+      "checksum": "93082ac6df4320078cf86f4e3417c6a75a30eb99a6b14de9d0da1f0fdc818412",
+      "sha256": "93082ac6df4320078cf86f4e3417c6a75a30eb99a6b14de9d0da1f0fdc818412"
     },
     {
       "name": "elfldr-ps5.elf",
