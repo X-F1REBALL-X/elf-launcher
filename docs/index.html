@@ -153,6 +153,15 @@ button.run.update[disabled]{opacity:.55}
 #autobanner.show{display:flex}
 #autobanner p{margin:0;color:#fff;font-size:16px;font-weight:800;line-height:1.35}
 #autobannercancel{border:0;cursor:pointer;color:#fff;font:inherit;font-size:15px;font-weight:800;padding:8px 14px;border-radius:999px;background:linear-gradient(#e24b4b,#8d1c1c);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #3a0808}
+#catupdate{display:none;margin:0 0 12px;padding:12px 14px;border-radius:12px;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(#1f6b3a,#0d3a1e);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 3px 0 #06111c}
+#catupdate.show{display:flex}
+#catupdate p{margin:0;color:#fff;font-size:16px;font-weight:800;line-height:1.35}
+#catupdatebtn{flex:0 0 auto;border:0;cursor:pointer;color:#fff;font:inherit;font-size:15px;font-weight:800;padding:8px 16px;border-radius:999px;background:linear-gradient(#8cf0a8,#1ea84a 55%,#0d6b2c);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #063816}
+#catupdatebtn:hover,#catupdatebtn:focus{outline:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 2px #fff,0 3px 0 #063816}
+#catupdatebtn:disabled{opacity:.6;cursor:default}
+.updact{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px}
+.updver{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff3c4;font-size:12px;font-weight:800;line-height:1.5;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.elf .a .updver{margin-left:6px;vertical-align:middle}
 #credit{margin:28px 0 0;text-align:center;color:#9ad2ff;font-size:14px;font-weight:700;text-shadow:0 2px 0 #061422}
 </style></head><body>
 <div id="corner"><span id="deviceinfo" class="ps5mark">PS5</span><span id="deviceip">looking...</span></div>
@@ -174,6 +183,7 @@ button.run.update[disabled]{opacity:.55}
 <p id="sub">Pick Elf Files on the left. Download saves the ELF. Load sends it to elfldr (9021).</p>
 <p id="status">Ready</p>
 <div id="autobanner"><p id="autobannertext">AutoPayload starts in 3 seconds. Square or Cancel stops it.</p><button type="button" id="autobannercancel">Cancel</button></div>
+<div id="catupdate"><p id="catupdatetext">Updates available for downloaded files.</p><span class="updact"><span id="catupdatever" class="updver"></span><button type="button" id="catupdatebtn">Update</button></span></div>
 <div id="progwrap" aria-hidden="true"><div id="progbar"></div></div>
 <div id="hdr"><h2 id="ftitle"></h2></div>
 <div id="home" class="show"></div>
@@ -556,8 +566,8 @@ function dedupePayloads(list){
   for(j=0;j<order.length;j++) out.push(map[order[j]]);
   return out;
 }
-function refreshCatalog(done){
-  setStatus('Refreshing catalog...');
+/* Fetch every source and build the merged list. Does not touch PAYLOADS. */
+function fetchRemoteCatalog(done){
   var sources=CATALOG_SOURCES && CATALOG_SOURCES.length ? CATALOG_SOURCES : [{name:'catalog',url:CATALOG_SOURCE}];
   var jobs=[];
   var si;
@@ -589,8 +599,14 @@ function refreshCatalog(done){
         out.push(m);
       }
     }
-    if(live){
-      PAYLOADS=dedupePayloads(out);
+    done(live ? dedupePayloads(out) : null, live, names);
+  }, function(){ done(null, 0, []); });
+}
+function refreshCatalog(done){
+  setStatus('Refreshing catalog...');
+  fetchRemoteCatalog(function(list, live, names){
+    if(list){
+      PAYLOADS=list;
       setStatus('Catalog '+PAYLOADS.length+' ('+live+' sources: '+names.join(', ')+')');
       if(done) done(true);
     }else{
@@ -600,8 +616,9 @@ function refreshCatalog(done){
     }
   });
 }
-/* First open fetches every repo once. Later opens reuse this cache (no repo hit).
-   Manual Refresh clears it. Disk Download/Load checks are separate. */
+/* First open fetches every repo once. Later opens show this cache right away and
+   check saved files against the repos in the background (Update banner).
+   Update and manual Refresh clear it. Disk Download/Load checks are separate. */
 var CATALOG_CACHE_KEY='ps5elfs-catalog-1.0.0';
 function readCatalogCache(){
   var raw='';
@@ -624,7 +641,175 @@ function clearCatalogCache(){
   try{ localStorage.removeItem(CATALOG_CACHE_KEY); }catch(e){}
   try{ sessionStorage.removeItem(CATALOG_CACHE_KEY); }catch(e2){}
 }
-
+/* Downloaded-file update check (console only).
+   The cached list is shown right away. In the background the repos are fetched
+   and every file already saved on the console disk is compared (sha256 sidecar,
+   else size) with the fresh catalog. Only when a saved file is out of date does
+   the Update banner appear. New catalog entries alone do not show it.
+   Update = refresh the list + re-download just those saved files (/update). */
+var CATALOG_RECHECK_MS=30*60*1000;
+var catalogCheckBusy=false;
+var catalogUpdating=false;
+var catalogRecheckTimer=null;
+var pendingUpdates=[];
+/* Small caption shown beside an Update button: catalog version, else short sha. */
+function updateVerLabel(e){
+  var v=String(e && e.version || '').replace(/^\s+|\s+$/g,'');
+  if(v) return (/^v/i.test(v) ? v : 'v'+v);
+  var sum=String(e && e.checksum || '');
+  return sum ? sum.slice(0,7) : '';
+}
+function localMatchesEntry(meta, e){
+  var localSum=String(meta.checksum||meta.sha256||'').toLowerCase();
+  var catSum=String(e.checksum||'').toLowerCase();
+  if(localSum.length===64 && catSum.length===64) return localSum===catSum;
+  if(e.size && (meta.size|0)>0) return (meta.size|0)===(e.size|0);
+  return true; /* nothing to compare: treat as current */
+}
+/* list -> [{path, entries:[...]}] grouped by disk path, catalog order kept. */
+function groupByPath(list){
+  var map={}, out=[], i, m;
+  for(i=0;i<list.length;i++){
+    m=list[i];
+    if(!m || !m.path) continue;
+    if(!map[m.path]){ map[m.path]={path:m.path, entries:[]}; out.push(map[m.path]); }
+    map[m.path].entries.push(m);
+  }
+  return out;
+}
+function findDownloadedUpdates(list, done){
+  var groups=groupByPath(list||[]), found=[], idx=0, inflight=0;
+  function pump(){
+    if(idx>=groups.length && inflight===0){ done(found); return; }
+    while(inflight<4 && idx<groups.length){
+      inflight++;
+      (function(g){
+        localMeta(g.path).then(function(meta){
+          var i, target=null;
+          if(!meta || !meta.ok || !meta.exists) return;
+          for(i=0;i<g.entries.length;i++){ if(localMatchesEntry(meta, g.entries[i])) return; }
+          /* Saved file matches no catalog row for that path: it is out of date. */
+          for(i=0;i<g.entries.length;i++){
+            if(g.entries[i].url && g.entries[i].checksum){ target=g.entries[i]; break; }
+          }
+          if(target) found.push({path:g.path, entry:target, localSize:(meta.size|0)});
+        }).catch(function(){}).then(function(){ inflight--; pump(); });
+      })(groups[idx++]);
+    }
+  }
+  pump();
+}
+function showUpdateBanner(list){
+  var box=document.getElementById('catupdate');
+  var lab=document.getElementById('catupdatetext');
+  var btn=document.getElementById('catupdatebtn');
+  var ver=document.getElementById('catupdatever');
+  var names=[], vers=[], i, v;
+  for(i=0;i<list.length && i<3;i++){
+    names.push(list[i].entry.name);
+    v=updateVerLabel(list[i].entry);
+    if(v) vers.push(v);
+  }
+  var t=(list.length===1 ? 'Update available for 1 downloaded file: ' : 'Updates available for '+list.length+' downloaded files: ')+
+    names.join(', ')+(list.length>names.length?', ...':'')+'.';
+  if(lab) lab.textContent=t;
+  if(ver){
+    ver.textContent=vers.join(' \u00b7 ')+(list.length>3?' \u2026':'');
+    ver.style.display=vers.length?'':'none';
+  }
+  if(btn){ btn.disabled=false; btn.textContent='Update'; }
+  if(box) box.className='show';
+}
+function hideUpdateBanner(){
+  var box=document.getElementById('catupdate');
+  if(box) box.className='';
+}
+function scheduleCatalogRecheck(){
+  if(!isConsoleHost()) return;
+  if(catalogRecheckTimer) clearTimeout(catalogRecheckTimer);
+  catalogRecheckTimer=setTimeout(function(){ checkDownloadedUpdates(null); }, CATALOG_RECHECK_MS);
+}
+/* fresh: a list just fetched from the repos, or null to fetch now. */
+function checkDownloadedUpdates(fresh){
+  if(!isConsoleHost() || catalogCheckBusy || catalogUpdating) return;
+  catalogCheckBusy=true;
+  function withList(list){
+    if(!list || !list.length){ catalogCheckBusy=false; scheduleCatalogRecheck(); return; }
+    findDownloadedUpdates(list, function(found){
+      catalogCheckBusy=false;
+      scheduleCatalogRecheck();
+      if(catalogUpdating) return;
+      pendingUpdates=found;
+      if(found.length) showUpdateBanner(found); else hideUpdateBanner();
+    });
+  }
+  if(fresh) withList(fresh);
+  else fetchRemoteCatalog(function(list){ withList(list); });
+}
+function rerenderCatalogViews(){
+  if(currentFolder) showFolder(currentFolder); else showHome();
+  applyRemembered();
+  if(isConsoleHost() && currentFolder!=='downloaded') showDownloadedFolderCount();
+}
+function updateOneFile(u){
+  var q='/update?path='+encodeURIComponent(u.path)+
+    '&url='+encodeURIComponent(u.entry.url)+
+    '&sha256='+encodeURIComponent(u.entry.checksum);
+  if(u.entry.size) q+='&size='+encodeURIComponent(String(u.entry.size|0));
+  return fetch(q).then(function(r){
+    return r.json().then(function(j){ return {ok:r.ok,j:j}; });
+  }).then(function(res){
+    if(!res.ok || !res.j || !res.j.ok) throw new Error((res.j && res.j.message)||'update failed');
+    return true;
+  });
+}
+function applyCatalogUpdate(){
+  if(catalogUpdating) return;
+  catalogUpdating=true;
+  var btn=document.getElementById('catupdatebtn');
+  if(btn){ btn.disabled=true; btn.textContent='Updating...'; }
+  clearCatalogCache();
+  var before=PAYLOADS;
+  refreshCatalog(function(ok){
+    if(!ok || !PAYLOADS || !PAYLOADS.length){
+      /* Repos unreachable: keep the old list and the button so the user can retry. */
+      PAYLOADS=before;
+      writeCatalogCache(PAYLOADS);
+      catalogUpdating=false;
+      setStatus('Update failed: catalog offline. Try again.');
+      if(btn){ btn.disabled=false; btn.textContent='Update'; }
+      return;
+    }
+    writeCatalogCache(PAYLOADS);
+    /* Re-check against the list just fetched, then re-download only saved files. */
+    findDownloadedUpdates(PAYLOADS, function(todo){
+      var i=0, done=0, failed=[];
+      function next(){
+        if(i>=todo.length){
+          showProgress(false);
+          catalogUpdating=false;
+          pendingUpdates=failed;
+          if(failed.length){
+            showUpdateBanner(failed);
+            setStatus('Updated '+done+' of '+todo.length+' files. Failed: '+failed.map(function(f){return f.entry.name;}).join(', '));
+          }else{
+            hideUpdateBanner();
+            setStatus(todo.length ? 'Updated '+done+' file'+(done===1?'':'s')+'. Catalog '+PAYLOADS.length : 'Catalog updated ('+PAYLOADS.length+')');
+          }
+          rerenderCatalogViews();
+          scheduleCatalogRecheck();
+          return;
+        }
+        var u=todo[i++];
+        setStatus('Updating '+u.entry.name+' ('+i+'/'+todo.length+')...');
+        showProgress(true);
+        setProgressPct(Math.round((i-1)*100/todo.length));
+        updateOneFile(u).then(function(){ done++; }, function(){ failed.push(u); }).then(next);
+      }
+      next();
+    });
+  });
+}
 function catalogFor(name, path){
   var i,p;
   for(i=0;i<PAYLOADS.length;i++){
@@ -1284,7 +1469,7 @@ function needsUpdate(meta, catalog){
   }
   return false;
 }
-function runUpdate(path, catalog, btn, row){
+function runUpdate(path, catalog, btn, row, verEl){
   if(!catalog || !catalog.url || !catalog.checksum){
     setStatus('Update missing catalog checksum');
     return;
@@ -1310,6 +1495,7 @@ function runUpdate(path, catalog, btn, row){
     setProgressPct(100);
     setStatus('Updated '+catalog.name+' ('+(res.j.bytes||catalog.size)+' bytes)');
     if(btn.parentNode) btn.parentNode.removeChild(btn);
+    if(verEl && verEl.parentNode) verEl.parentNode.removeChild(verEl);
     /* File is still local, so the main button stays Load. */
     if(row){
       var primary=row.querySelector('button.run:not(.kill):not(.update)');
@@ -1883,10 +2069,18 @@ function showFolder(id){
             ub.type='button';
             ub.className='run update';
             ub.textContent='Update';
+            var uv=null, uvt=updateVerLabel(meta0);
+            if(uvt){
+              uv=document.createElement('span');
+              uv.className='updver';
+              uv.textContent=uvt;
+              uv.title='Catalog version';
+            }
             ub.addEventListener('click',function(){
-              runUpdate(path0, meta0, ub, tr0);
+              runUpdate(path0, meta0, ub, tr0, uv);
             });
             act.appendChild(ub);
+            if(uv) act.appendChild(uv);
           }).catch(function(){
             /* Unknown disk state: do not show Download or Load. */
             if(btn0){ btn0.disabled=true; btn0.textContent='\u2026'; btn0.removeAttribute('data-act'); }
@@ -2242,6 +2436,11 @@ if(autoBannerBtn) autoBannerBtn.onclick=function(){
   padCancelAuto();
   return false;
 };
+var catUpdateBtn=document.getElementById('catupdatebtn');
+if(catUpdateBtn) catUpdateBtn.onclick=function(){
+  applyCatalogUpdate();
+  return false;
+};
 function bootAfterCatalog(){
   var start=getHashFolder();
   if(start)showFolder(start); else showHome();
@@ -2257,11 +2456,15 @@ function bootAfterCatalog(){
   if(cached){
     PAYLOADS=cached;
     bootAfterCatalog();
+    /* Show the cached list now; check saved files against the repos shortly after. */
+    setTimeout(function(){ checkDownloadedUpdates(null); }, 2500);
     return;
   }
   refreshCatalog(function(ok){
     if(ok && PAYLOADS && PAYLOADS.length) writeCatalogCache(PAYLOADS);
     bootAfterCatalog();
+    if(ok) setTimeout(function(){ checkDownloadedUpdates(PAYLOADS); }, 1500);
+    else scheduleCatalogRecheck();
   });
 })();
 })();
