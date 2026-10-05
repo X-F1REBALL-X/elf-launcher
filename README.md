@@ -1,5 +1,11 @@
 # Elf Launcher
 
+## Preview
+
+![Elf Launcher preview](docs/screenshots/home.png)
+
+Live page: https://x-f1reball-x.github.io/elf-launcher/
+
 **Elf Launcher 1.0.0**
 
 Home-screen and browser ELF payload launcher for PS5.
