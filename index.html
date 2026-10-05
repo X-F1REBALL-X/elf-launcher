@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ELF Launcher v1.0.39-test</title>
+<title>ELF Launcher 1.0.0</title>
 <link rel="icon" type="image/jpeg" href="icons/launcher-home.jpg?v=7">
 <link rel="apple-touch-icon" href="icons/launcher-home.jpg?v=7">
 <style>
@@ -192,7 +192,7 @@ var FOLDERS=[
 {id:"system",label:"System"},
 {id:"tools",label:"Tools"}
 ];
-var APP_VERSION="1.0.48-test";
+var APP_VERSION="1.0.0";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
@@ -601,7 +601,7 @@ function refreshCatalog(done){
 }
 /* First open fetches every repo once. Later opens reuse this cache (no repo hit).
    Manual Refresh clears it. Disk Download/Load checks are separate. */
-var CATALOG_CACHE_KEY='ps5elfs-catalog-1.0.25-test';
+var CATALOG_CACHE_KEY='ps5elfs-catalog-1.0.0';
 function readCatalogCache(){
   var raw='';
   try{ raw=localStorage.getItem(CATALOG_CACHE_KEY)||''; }catch(e){}
