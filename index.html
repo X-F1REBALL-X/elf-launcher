@@ -201,7 +201,7 @@ var FOLDERS=[
 {id:"system",label:"System"},
 {id:"tools",label:"Tools"}
 ];
-var APP_VERSION="1.1.4";
+var APP_VERSION="1.1.5";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
@@ -325,7 +325,7 @@ en:{
  homeHint:'Mark Auto in AutoPayload. AutoPayload runs once after each jailbreak. Choose delay 3 seconds or 0. Cancel stops it. Leave closed closes this page afterwards.',
  autoStarts:'AutoPayload starts in 3 seconds',autoStartsNow:'AutoPayload starts now',autoRunning:'AutoPayload running',cancelHint:'Press Cancel or Square to stop.',cancel:'Cancel',
  autoCancelled:'Auto cancelled',autoDone:'AutoPayload done',closingBrowser:'Closing browser',
- autoEmpty:'AutoPayload skipped: queue empty',autoAlreadyDone:'AutoPayload already ran this jailbreak',autoWaiting:'Waiting for elfldr...',autoWaitGiveUp:'AutoPayload skipped: elfldr not ready',
+ autoEmpty:'AutoPayload: nothing to run',autoAlreadyDone:'AutoPayload already ran this jailbreak',autoWaiting:'Waiting for elfldr...',autoWaitGiveUp:'AutoPayload: elfldr not found, nothing ran',
  download:'Download',payload:'Payload',loaded:'Loaded',downloadedBtn:'Downloaded',fail:'Failed',update:'Update',updating:'Updating...',
  del:'Delete',close:'Close',auto:'Auto',select:'Select',multi:'Multi Payload',colPayload:'Payload',colVer:'Ver',
  noSaved:'No payloads saved on this console.',savedOnConsole:'Saved payloads are listed on the console.',checkingSaved:'Checking saved payloads...',
@@ -1611,16 +1611,22 @@ function autoQueueCount(){
   for(i=0;i<PAYLOADS.length;i++){ if(PAYLOADS[i] && isAutoName(PAYLOADS[i].name)) n++; }
   return n;
 }
+/* Nothing to do (already ran / empty queue): stay silent like headless C. Only clear our own banner/status. */
+function quietAuto(){
+  var cur=statusEl ? statusEl.textContent : '';
+  hideAutoBanner();
+  if(cur && (cur===t('autoWaiting') || cur===t('autoStarts') || cur===t('autoStartsNow') || cur===t('autoRunning'))) setStatus('');
+}
 function skipAutoMsg(key){
   setStatus(t(key));
   hideAutoBanner();
 }
 function startAutoRun(){
   if(autoStop) return;
-  if(!bootAutoAllowed()){ skipAutoMsg('autoAlreadyDone'); return; }
+  if(!bootAutoAllowed()){ quietAuto(); return; }
   if(!autoQueueCount()){
     /* Empty queue must NOT mark one-shot done — user can still mark Auto later this JB. */
-    skipAutoMsg('autoEmpty');
+    quietAuto();
     return;
   }
   markBootAutoDone();
@@ -1641,8 +1647,8 @@ function startAutoRun(){
 function beginAutoAfterPause(){
   var delay;
   autoWaitingElfldr=false;
-  if(!bootAutoAllowed()){ skipAutoMsg('autoAlreadyDone'); return; }
-  if(!autoQueueCount()){ skipAutoMsg('autoEmpty'); return; }
+  if(!bootAutoAllowed()){ quietAuto(); return; }
+  if(!autoQueueCount()){ quietAuto(); return; }
   autoStop=false;
   autoRunning=false;
   delay=autoDelaySec();
@@ -1670,9 +1676,9 @@ function beginAutoAfterPause(){
 function watchElfldrThenAuto(){
   if(!/PlayStation/i.test(navigator.userAgent)) return;
   refreshBootAutoFlag(function(done){
-    if(done){ skipAutoMsg('autoAlreadyDone'); return; }
-    if(!bootAutoAllowed()){ skipAutoMsg('autoAlreadyDone'); return; }
-    if(!autoQueueCount()){ skipAutoMsg('autoEmpty'); return; }
+    if(done){ quietAuto(); return; }
+    if(!bootAutoAllowed()){ quietAuto(); return; }
+    if(!autoQueueCount()){ quietAuto(); return; }
     var tries=0;
     autoWaitingElfldr=true;
     autoStop=false;
@@ -1680,10 +1686,10 @@ function watchElfldrThenAuto(){
     setStatus(t('autoWaiting'));
     function tick(){
       if(autoStop){ autoWaitingElfldr=false; return; }
-      if(!bootAutoAllowed()){ autoWaitingElfldr=false; skipAutoMsg('autoAlreadyDone'); return; }
+      if(!bootAutoAllowed()){ autoWaitingElfldr=false; quietAuto(); return; }
       probeElfldr(function(ready){
         if(autoStop){ autoWaitingElfldr=false; return; }
-        if(!bootAutoAllowed()){ autoWaitingElfldr=false; skipAutoMsg('autoAlreadyDone'); return; }
+        if(!bootAutoAllowed()){ autoWaitingElfldr=false; quietAuto(); return; }
         if(ready){
           autoWaitingElfldr=false;
           beginAutoAfterPause();
