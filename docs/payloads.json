@@ -25,7 +25,8 @@
       "category": "Loader",
       "author": "ps5-payload-dev",
       "size": 448952,
-      "checksum": "02543da21bb8168e3892004c7fa44c13b4c5dd6d6e9b7c79c18035bf69cd6a39"
+      "checksum": "02543da21bb8168e3892004c7fa44c13b4c5dd6d6e9b7c79c18035bf69cd6a39",
+      "source_direct": "https://github.com/ps5-payload-dev/elfldr/releases/download/v0.26/elfldr-ps5.elf"
     },
     {
       "name": "etaHEN-2.5B.bin",
@@ -37,13 +38,14 @@
       "category": "HEN",
       "author": "LightningMods",
       "size": 4678728,
-      "checksum": "4845cac45095361b8983b14d6690622183b0dcfbf6d7fda16e161aa91ff0531e"
+      "checksum": "4845cac45095361b8983b14d6690622183b0dcfbf6d7fda16e161aa91ff0531e",
+      "source_direct": "https://github.com/etaHEN/etaHEN/releases/download/2.5B/etaHEN-2.5B.bin"
     },
     {
       "name": "Goldengames-PS5-Jailbreak.elf",
       "filename": "Goldengames-PS5-Jailbreak.elf",
-      "path": "webkit/Goldengames-PS5-Jailbreak.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/webkit/Goldengames-PS5-Jailbreak.elf",
+      "path": "hen/Goldengames-PS5-Jailbreak.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/hen/Goldengames-PS5-Jailbreak.elf",
       "description": "Home screen jailbreak, then starts the payload you picked.",
       "version": "v1.1.1",
       "category": "HEN",
@@ -54,14 +56,15 @@
     {
       "name": "Lapy-JB-Daemon.elf",
       "filename": "Lapy-JB-Daemon.elf",
-      "path": "utils/Lapy-JB-Daemon.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/Lapy-JB-Daemon.elf",
+      "path": "hen/Lapy-JB-Daemon.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/hen/Lapy-JB-Daemon.elf",
       "description": "Unsandboxes homebrew apps so they run without etaHEN.",
       "version": "v1.2",
       "category": "HEN",
       "author": "ArkSama",
       "size": 154280,
-      "checksum": "13559b858fc33cc7fa3dc89e10dccf139070d99ee5d378dd75c969293700799e"
+      "checksum": "13559b858fc33cc7fa3dc89e10dccf139070d99ee5d378dd75c969293700799e",
+      "source_direct": "https://github.com/itsPLK/PS5-Lapy-JB-Daemon/releases/download/v1.2/lapy_jb_daemon-v1.2.elf"
     },
     {
       "name": "onionHEN.elf",
@@ -73,25 +76,27 @@
       "category": "HEN",
       "author": "aydencharles",
       "size": 4326024,
-      "checksum": "aa3f98847948e2ae8ea600c3f437e28247a0a4f8b73651a046d2859924bf97b3"
+      "checksum": "aa3f98847948e2ae8ea600c3f437e28247a0a4f8b73651a046d2859924bf97b3",
+      "source_direct": "https://github.com/aydencharles/onionHEN/releases/download/v0.0.13/OnionHEN.elf"
     },
     {
       "name": "kstuff-lite.elf",
       "filename": "kstuff-lite.elf",
-      "path": "kernel/kstuff-lite.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/kernel/kstuff-lite.elf",
+      "path": "hen/kstuff-lite.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/hen/kstuff-lite.elf",
       "description": "kstuff-lite kernel patches (EchoStretch)",
       "version": "v1.11",
       "category": "HEN",
       "author": "EchoStretch",
       "size": 1737080,
-      "checksum": "ab9a6cb4d3b1daf139d4d646e402b1cf569071acd64599c936d7a3a6164dc779"
+      "checksum": "ab9a6cb4d3b1daf139d4d646e402b1cf569071acd64599c936d7a3a6164dc779",
+      "source_direct": "https://github.com/EchoStretch/kstuff-lite/releases/download/v1.11/kstuff.elf"
     },
     {
       "name": "kstuff-v1.6.7.elf",
       "filename": "kstuff-v1.6.7.elf",
-      "path": "kernel/kstuff-v1.6.7.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/kernel/kstuff-v1.6.7.elf",
+      "path": "hen/kstuff-v1.6.7.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/hen/kstuff-v1.6.7.elf",
       "description": "kstuff build v1.6.7 from community mirror",
       "version": "v1.6.7",
       "category": "HEN",
@@ -102,19 +107,20 @@
     {
       "name": "webkit-autoloader-installer.elf",
       "filename": "webkit-autoloader-installer.elf",
-      "path": "webkit/webkit-autoloader-installer.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/webkit/webkit-autoloader-installer.elf",
+      "path": "hen/webkit-autoloader-installer.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/hen/webkit-autoloader-installer.elf",
       "description": "Installs the WK-AutoLoader tile on the home screen.",
       "version": "v0.5.2",
       "category": "HEN",
       "author": "itsPLK",
       "size": 2311424,
-      "checksum": "f990e48e8330231d2066a7b8ab6dc25fda83b2cc36cb426c472b35b33767451a"
+      "checksum": "f990e48e8330231d2066a7b8ab6dc25fda83b2cc36cb426c472b35b33767451a",
+      "source_direct": "https://github.com/itsPLK/ps5-webkit-autoloader/releases/download/v0.5.2/webkit-autoloader-installer_v0.5.2.elf"
     },
     {
       "name": "wk-autoloader.elf",
       "filename": "wk-autoloader.elf",
-      "path": "webkit/wk-autoloader.elf",
+      "path": "hen/wk-autoloader.elf",
       "url": "https://github.com/X-F1REBALL-X/wk-autoloader-relapse/releases/download/v1.0.0/installer.elf",
       "description": "WK Autoloader installer for the home screen (no PC host needed).",
       "version": "v1.0.0",
@@ -126,8 +132,8 @@
     {
       "name": "fetchpkg.elf",
       "filename": "fetchpkg.elf",
-      "path": "pkg/fetchpkg.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/pkg/fetchpkg.elf",
+      "path": "apps/fetchpkg.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/apps/fetchpkg.elf",
       "description": "Downloads official game updates and merges split PKG parts.",
       "version": "v0.3.3",
       "category": "Apps",
@@ -169,25 +175,27 @@
       "category": "Apps",
       "author": "itsPLK",
       "size": 2410776,
-      "checksum": "62b3ba2a4937c2afc502f9a4e7242cca538610ebb4ae2800c7c6f72e7f268e7c"
+      "checksum": "62b3ba2a4937c2afc502f9a4e7242cca538610ebb4ae2800c7c6f72e7f268e7c",
+      "source_direct": "https://github.com/itsPLK/ps5-payload-manager/releases/download/v0.5.2/pldmgr_v0.5.2.elf"
     },
     {
       "name": "pkg-manager.elf",
       "filename": "pkg-manager.elf",
-      "path": "pkg/pkg-manager.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/pkg/pkg-manager.elf",
+      "path": "apps/pkg-manager.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/apps/pkg-manager.elf",
       "description": "Installs, deletes, and manages PKGs on the console.",
       "version": "v1.4.1",
       "category": "Apps",
       "author": "itsPLK",
       "size": 1939016,
-      "checksum": "09adaff13b858bb3db519faaea673ee3fa67298081e608d32f6501ed6e9f706e"
+      "checksum": "09adaff13b858bb3db519faaea673ee3fa67298081e608d32f6501ed6e9f706e",
+      "source_direct": "https://github.com/itsPLK/ps5-pkg-manager/releases/download/v1.4.1/pkg-manager_v1.4.1.elf"
     },
     {
       "name": "pkg_install.elf",
       "filename": "pkg_install.elf",
-      "path": "pkg/pkg_install.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/pkg/pkg_install.elf",
+      "path": "apps/pkg_install.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/apps/pkg_install.elf",
       "description": "Installs a PKG that was staged by websrv.",
       "version": "v0.34",
       "category": "Apps",
@@ -210,14 +218,15 @@
     {
       "name": "ps5upload.elf",
       "filename": "ps5upload.elf",
-      "path": "pkg/ps5upload.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/pkg/ps5upload.elf",
+      "path": "apps/ps5upload.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/apps/ps5upload.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
       "version": "v5.41.0",
       "category": "Apps",
       "author": "phantomptr",
       "size": 2263520,
-      "checksum": "90db08434228a08554e06a949f26457fb25c9b607f126fa63616b8d261426dee"
+      "checksum": "90db08434228a08554e06a949f26457fb25c9b607f126fa63616b8d261426dee",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v5.41.0/ps5upload-5.41.0.elf"
     },
     {
       "name": "BFpilot.elf",
@@ -229,13 +238,14 @@
       "category": "Files",
       "author": "ItsBlurf",
       "size": 1810632,
-      "checksum": "5a8237630260026ad054d71fbbe661e433ac9ffa2cb4eea2785769c1eb7ee1c1"
+      "checksum": "5a8237630260026ad054d71fbbe661e433ac9ffa2cb4eea2785769c1eb7ee1c1",
+      "source_direct": "https://github.com/ItsBlurf/BFpilot/releases/download/v0.4.4/bfpilot.elf"
     },
     {
       "name": "ftpsrv-ps5-install.elf",
       "filename": "ftpsrv-ps5-install.elf",
-      "path": "ftp/ftpsrv-ps5-install.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/ftp/ftpsrv-ps5-install.elf",
+      "path": "files/ftpsrv-ps5-install.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/files/ftpsrv-ps5-install.elf",
       "description": "Installs ftpsrv so it launches from the home screen.",
       "version": "v0.21.1",
       "category": "Files",
@@ -246,26 +256,28 @@
     {
       "name": "ftpsrv-ps5.elf",
       "filename": "ftpsrv-ps5.elf",
-      "path": "ftp/ftpsrv-ps5.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/ftp/ftpsrv-ps5.elf",
+      "path": "files/ftpsrv-ps5.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/files/ftpsrv-ps5.elf",
       "description": "FTP server on port 2121, with SELF decrypt and system remount.",
       "version": "v0.21.1",
       "category": "Files",
       "author": "ps5-payload-dev",
       "size": 191864,
-      "checksum": "7d4b31c83eae4e056580482a3a074e1db25922efc74ac1e439473b45d71a5938"
+      "checksum": "7d4b31c83eae4e056580482a3a074e1db25922efc74ac1e439473b45d71a5938",
+      "source_direct": "https://github.com/ps5-payload-dev/ftpsrv/releases/download/v0.21.1/ftpsrv-ps5.elf"
     },
     {
       "name": "nanodns.elf",
       "filename": "nanodns.elf",
-      "path": "network/nanodns.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/network/nanodns.elf",
+      "path": "files/nanodns.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/files/nanodns.elf",
       "description": "DNS proxy. Can block Sony update servers.",
       "version": "0.4",
       "category": "Files",
       "author": "Drakmor",
       "size": 132352,
-      "checksum": "fcfb7d47c3b295560ea1603dc015f7c4950353ef0faca16428bd425680ef1fc5"
+      "checksum": "fcfb7d47c3b295560ea1603dc015f7c4950353ef0faca16428bd425680ef1fc5",
+      "source_direct": "https://github.com/drakmor/nanoDNS/releases/download/0.4/nanodns.elf"
     },
     {
       "name": "web-file-mgr.elf",
@@ -277,19 +289,21 @@
       "category": "Files",
       "author": "owendswang",
       "size": 345432,
-      "checksum": "711cb076e887fcd55d973ade8b84bb6c22720be295bfde18e32761f6e0479a3e"
+      "checksum": "711cb076e887fcd55d973ade8b84bb6c22720be295bfde18e32761f6e0479a3e",
+      "source_direct": "https://github.com/owendswang/ps5-web-file-manager/releases/download/v1.9/web-file-mgr-v1.9.elf"
     },
     {
       "name": "websrv-ps5.elf",
       "filename": "websrv-ps5.elf",
-      "path": "network/websrv-ps5.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/network/websrv-ps5.elf",
+      "path": "files/websrv-ps5.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/files/websrv-ps5.elf",
       "description": "Web server: launch homebrew, browse files, and read SMB shares.",
       "version": "v0.34",
       "category": "Files",
       "author": "ps5-payload-dev",
       "size": 1597864,
-      "checksum": "54730c867c6e1148536fdcb370e63a7762d989ea87b62488ad4caff64d43f263"
+      "checksum": "54730c867c6e1148536fdcb370e63a7762d989ea87b62488ad4caff64d43f263",
+      "source_direct": "https://github.com/ps5-payload-dev/websrv/releases/download/v0.34/websrv-ps5.elf"
     },
     {
       "name": "wfm-7zip-helper.elf",
@@ -349,7 +363,8 @@
       "category": "Storage",
       "author": "earthonion",
       "size": 1665456,
-      "checksum": "b0fc2fcdda977d2a1207d77148746859b7ea7f3cfcad02828a7a9b49651807f5"
+      "checksum": "b0fc2fcdda977d2a1207d77148746859b7ea7f3cfcad02828a7a9b49651807f5",
+      "source_direct": "https://git.etawen.dev/earthonion/garlic-savemgr/releases/download/v1.13.1/garlic-savemgr.elf"
     },
     {
       "name": "mounter.elf",
@@ -369,11 +384,12 @@
       "path": "storage/ps5-app-dumper.elf",
       "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/storage/ps5-app-dumper.elf",
       "description": "Dumps installed games to files.",
-      "version": "v2.00",
+      "version": "v2.10",
       "category": "Storage",
       "author": "EchoStretch",
-      "size": 1344216,
-      "checksum": "b6fea71afb8937fcd1a933116c620e989acba25b7049eaeaa00cdc1bd604d686"
+      "size": 1410752,
+      "checksum": "c850f1df6f2787824d6ddeeed69ce4144e00569b32135973401c2985cfb0345b",
+      "source_direct": "https://github.com/EchoStretch/ps5-app-dumper/releases/download/v2.10/ps5-app-dumper_v2.10.elf"
     },
     {
       "name": "shadowmountplus.elf",
@@ -381,11 +397,12 @@
       "path": "storage/shadowmountplus.elf",
       "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/storage/shadowmountplus.elf",
       "description": "Mounts dumped games from internal storage or USB.",
-      "version": "1.7beta2",
+      "version": "1.7beta3",
       "category": "Storage",
       "author": "Drakmor",
-      "size": 2437704,
-      "checksum": "3f716a7b2220c7e87e87452ae05cad689ef842d3beb4cdad6c526cb6dfc2b6b5"
+      "size": 2437848,
+      "checksum": "2a7427e20ba7a70bd8cd01e47eb00ee7ca82db82dff3da7884f48f9c3fcbe95a",
+      "source_direct": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta3/ShadowMountPlus_1.7beta3.zip"
     },
     {
       "name": "SMPlusGui.elf",
@@ -522,8 +539,8 @@
     {
       "name": "actremotelink_agent.elf",
       "filename": "actremotelink_agent.elf",
-      "path": "utils/actremotelink_agent.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/actremotelink_agent.elf",
+      "path": "tools/actremotelink_agent.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/actremotelink_agent.elf",
       "description": "Offline account tools and Remote Play helpers for ActRemoteLink.",
       "version": "v2.0",
       "category": "Tools",
@@ -534,8 +551,8 @@
     {
       "name": "actremotelink_pin_notify.elf",
       "filename": "actremotelink_pin_notify.elf",
-      "path": "utils/actremotelink_pin_notify.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/actremotelink_pin_notify.elf",
+      "path": "tools/actremotelink_pin_notify.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/actremotelink_pin_notify.elf",
       "description": "Shows the Remote Play pairing PIN as a notification.",
       "version": "v2.0",
       "category": "Tools",
@@ -546,32 +563,34 @@
     {
       "name": "BackPork.elf",
       "filename": "BackPork.elf",
-      "path": "utils/BackPork.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/BackPork.elf",
+      "path": "tools/BackPork.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/BackPork.elf",
       "description": "Mounts replacement libraries into a game when it launches.",
       "version": "0.1",
       "category": "Tools",
       "author": "BestPig",
       "size": 99800,
-      "checksum": "d74e4cd119b2bb1fd423f2f5b1c9a7f096b3e588c753af1ab48b983d56216a52"
+      "checksum": "d74e4cd119b2bb1fd423f2f5b1c9a7f096b3e588c753af1ab48b983d56216a52",
+      "source_direct": "https://github.com/BestPig/BackPork/releases/download/0.1/ps5-backpork.elf"
     },
     {
       "name": "CheatRunner.elf",
       "filename": "CheatRunner.elf",
-      "path": "cheats/CheatRunner.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/cheats/CheatRunner.elf",
+      "path": "tools/CheatRunner.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/CheatRunner.elf",
       "description": "Loads cheats into a running game.",
       "version": "v0.17.2",
       "category": "Tools",
       "author": "notmaj0r",
       "size": 10091832,
-      "checksum": "36ad03e236e6603aaaf05d95ed3399c7b54475a9bceba085cbe02899bc88ae0f"
+      "checksum": "36ad03e236e6603aaaf05d95ed3399c7b54475a9bceba085cbe02899bc88ae0f",
+      "source_direct": "https://github.com/notmaj0r/CheatRunner/releases/download/v0.17.2/CheatRunner.elf"
     },
     {
       "name": "Common_FPS_PS5.elf",
       "filename": "Common_FPS_PS5.elf",
-      "path": "cheats/Common_FPS_PS5.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/cheats/Common_FPS_PS5.elf",
+      "path": "tools/Common_FPS_PS5.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/Common_FPS_PS5.elf",
       "description": "Draws an FPS counter over the game.",
       "version": "v1.2.1",
       "category": "Tools",
@@ -582,8 +601,8 @@
     {
       "name": "gdbsrv-ps5.elf",
       "filename": "gdbsrv-ps5.elf",
-      "path": "debug/gdbsrv-ps5.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/debug/gdbsrv-ps5.elf",
+      "path": "tools/gdbsrv-ps5.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/gdbsrv-ps5.elf",
       "description": "GDB server for debugging a process.",
       "version": "v0.9",
       "category": "Tools",
@@ -594,20 +613,21 @@
     {
       "name": "klogsrv-ps5.elf",
       "filename": "klogsrv-ps5.elf",
-      "path": "debug/klogsrv-ps5.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/debug/klogsrv-ps5.elf",
+      "path": "tools/klogsrv-ps5.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/klogsrv-ps5.elf",
       "description": "Streams the kernel log to a PC.",
       "version": "v0.9",
       "category": "Tools",
       "author": "ps5-payload-dev",
       "size": 136016,
-      "checksum": "e828ec144231f81547cb58bc7d2c396fa984be0c2295f31364b58017816dcceb"
+      "checksum": "e828ec144231f81547cb58bc7d2c396fa984be0c2295f31364b58017816dcceb",
+      "source_direct": "https://github.com/ps5-payload-dev/klogsrv/releases/download/v0.9/klogsrv-ps5.elf"
     },
     {
       "name": "LinkDev.elf",
       "filename": "LinkDev.elf",
-      "path": "utils/LinkDev.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/LinkDev.elf",
+      "path": "tools/LinkDev.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/LinkDev.elf",
       "description": "Pairs Remote Play on a jailbroken console.",
       "version": "v0.4.2",
       "category": "Tools",
@@ -618,8 +638,8 @@
     {
       "name": "notify_test.elf",
       "filename": "notify_test.elf",
-      "path": "debug/notify_test.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/debug/notify_test.elf",
+      "path": "tools/notify_test.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/notify_test.elf",
       "description": "Shows one test notification.",
       "version": "1.0",
       "category": "Tools",
@@ -630,8 +650,8 @@
     {
       "name": "OffAct.elf",
       "filename": "OffAct.elf",
-      "path": "utils/OffAct.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/OffAct.elf",
+      "path": "tools/OffAct.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/OffAct.elf",
       "description": "Activates a local account without PSN.",
       "version": "v0.4.2",
       "category": "Tools",
@@ -642,8 +662,8 @@
     {
       "name": "patch-bundle-loader-prospero.elf",
       "filename": "patch-bundle-loader-prospero.elf",
-      "path": "utils/patch-bundle-loader-prospero.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/patch-bundle-loader-prospero.elf",
+      "path": "tools/patch-bundle-loader-prospero.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/patch-bundle-loader-prospero.elf",
       "description": "XML app patch system for PS5. Opens a page at port 23900.",
       "version": "34252662366",
       "category": "Tools",
@@ -654,8 +674,8 @@
     {
       "name": "ps5-self-pager-full-system.elf",
       "filename": "ps5-self-pager-full-system.elf",
-      "path": "utils/ps5-self-pager-full-system.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/ps5-self-pager-full-system.elf",
+      "path": "tools/ps5-self-pager-full-system.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/ps5-self-pager-full-system.elf",
       "description": "Decrypts /system and /system_ex to USB or /data.",
       "version": "v1.2",
       "category": "Tools",
@@ -666,8 +686,8 @@
     {
       "name": "ps5-self-pager-game.elf",
       "filename": "ps5-self-pager-game.elf",
-      "path": "utils/ps5-self-pager-game.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/ps5-self-pager-game.elf",
+      "path": "tools/ps5-self-pager-game.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/ps5-self-pager-game.elf",
       "description": "Decrypts the game app0 and patch0 to USB or /data.",
       "version": "v1.2",
       "category": "Tools",
@@ -678,8 +698,8 @@
     {
       "name": "ps5-self-pager-shellcore.elf",
       "filename": "ps5-self-pager-shellcore.elf",
-      "path": "utils/ps5-self-pager-shellcore.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/ps5-self-pager-shellcore.elf",
+      "path": "tools/ps5-self-pager-shellcore.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/ps5-self-pager-shellcore.elf",
       "description": "Decrypts SceShellCore.elf to USB or /data.",
       "version": "v1.2",
       "category": "Tools",
@@ -690,8 +710,8 @@
     {
       "name": "ps5-self-pager-system-common-lib.elf",
       "filename": "ps5-self-pager-system-common-lib.elf",
-      "path": "utils/ps5-self-pager-system-common-lib.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/ps5-self-pager-system-common-lib.elf",
+      "path": "tools/ps5-self-pager-system-common-lib.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/ps5-self-pager-system-common-lib.elf",
       "description": "Decrypts /system/common/lib to USB or /data.",
       "version": "v1.2",
       "category": "Tools",
@@ -702,20 +722,21 @@
     {
       "name": "ps5debug-NG.elf",
       "filename": "ps5debug-NG.elf",
-      "path": "debug/ps5debug-NG.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/debug/ps5debug-NG.elf",
+      "path": "tools/ps5debug-NG.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/ps5debug-NG.elf",
       "description": "Debugger that runs inside SceShellCore.",
       "version": "1.3.2",
       "category": "Tools",
       "author": "Pharaoh2k",
       "size": 4059688,
-      "checksum": "949b0e6e0fe3f24f4a820319fd76d9ccb92f9770cbb1a64b09a8eca5c1fc9ff3"
+      "checksum": "949b0e6e0fe3f24f4a820319fd76d9ccb92f9770cbb1a64b09a8eca5c1fc9ff3",
+      "source_direct": "https://github.com/Pharaoh2k/ps5debug-NG/releases/download/1.3.2/ps5debug-NG_v1.3.2.elf"
     },
     {
       "name": "rp-get-pin.elf",
       "filename": "rp-get-pin.elf",
-      "path": "utils/rp-get-pin.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/utils/rp-get-pin.elf",
+      "path": "tools/rp-get-pin.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/rp-get-pin.elf",
       "description": "Shows the Remote Play pairing PIN.",
       "version": "v0.1.1",
       "category": "Tools",
@@ -726,14 +747,15 @@
     {
       "name": "shsrv-ps5.elf",
       "filename": "shsrv-ps5.elf",
-      "path": "debug/shsrv-ps5.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/debug/shsrv-ps5.elf",
+      "path": "tools/shsrv-ps5.elf",
+      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/shsrv-ps5.elf",
       "description": "Command shell on port 2323.",
       "version": "v0.20",
       "category": "Tools",
       "author": "ps5-payload-dev",
       "size": 986184,
-      "checksum": "fa4ccb2587bb61be317df0d001f668b17ebf9b4aafad87acf691b1fb8da0bd2d"
+      "checksum": "fa4ccb2587bb61be317df0d001f668b17ebf9b4aafad87acf691b1fb8da0bd2d",
+      "source_direct": "https://github.com/ps5-payload-dev/shsrv/releases/download/v0.20/shsrv-ps5.elf"
     }
   ]
 }
