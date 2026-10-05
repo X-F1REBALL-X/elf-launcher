@@ -857,32 +857,71 @@ function fetchCatalogText(url){
     return r.text();
   });
 }
-/* Same ELF filename + same version is one row. Different versions stay.
-   No version: filename+checksum, else filename+size. */
+/* Same product (version-stripped base) + channel (beta|stable) is one row.
+   Beta and stable stay as separate channels. */
+function productChannel(m){
+  var blob=(String(m&&m.version||'')+' '+String(m&&m.name||'')+' '+String(m&&m.path||'')).toLowerCase();
+  return /beta/.test(blob) ? 'beta' : 'stable';
+}
 function dedupeKey(m){
   var base=normBase(m.name||m.path||'');
-  var ver=String(m.version==null?'':m.version).replace(/^\s+|\s+$/g,'').toLowerCase();
   if(!base) return '';
-  if(ver) return 'f:'+base+'|v:'+ver;
-  var sum=String(m.checksum||'').toLowerCase();
-  if(sum && sum.length===64) return 'f:'+base+'|c:'+sum;
-  if((m.size|0)>0) return 'f:'+base+'|s:'+(m.size|0);
-  return 'f:'+base+'|n';
+  return 'f:'+base+'|ch:'+productChannel(m);
 }
 /* 0 = author/dev URL, 1 = GitHub catalog mirror, 2 = itsPLK mirror. Lower wins. */
 function entryRank(m){
   var url;
   if(m && m.sourceName==='pinned') return -1;
   url=String(m && m.url || '');
+  if(m && m.source_direct && !isItsplkMirrorUrl(m.source_direct)) return 0;
   if(!isItsplkMirrorUrl(url) && !isGithubElfLauncherMirror(url)) return 0;
   if(m.sourceName==='X-F1REBALL-X' || isGithubElfLauncherMirror(url)) return 1;
   return 2;
 }
+/* Parse version-ish tokens for comparison. Higher tuple wins. */
+function parseVerParts(v){
+  v=String(v==null?'':v).toLowerCase().replace(/^\s+|\s+$/g,'');
+  if(!v) return null;
+  var m=v.match(/v?(\d+(?:\.\d+)*)([a-z]+)?(\d*)/i);
+  if(!m) return null;
+  var nums=m[1].split('.').map(function(x){ return parseInt(x,10)||0; });
+  var tag=(m[2]||'').toLowerCase();
+  var tagN=parseInt(m[3],10)||0;
+  var tagRank=0;
+  if(tag==='alpha') tagRank=-30;
+  else if(tag==='beta' || tag==='b') tagRank=-20;
+  else if(tag==='rc') tagRank=-10;
+  else if(tag) tagRank=-5;
+  return {nums:nums, tagRank:tagRank, tagN:tagN, raw:v};
+}
+function cmpVerParts(a, b){
+  if(!a && !b) return 0;
+  if(!a) return -1;
+  if(!b) return 1;
+  var n=Math.max(a.nums.length, b.nums.length), i, av, bv;
+  for(i=0;i<n;i++){
+    av=a.nums[i]|0; bv=b.nums[i]|0;
+    if(av!==bv) return av>bv ? 1 : -1;
+  }
+  if(a.tagRank!==b.tagRank) return a.tagRank>b.tagRank ? 1 : -1;
+  if(a.tagN!==b.tagN) return a.tagN>b.tagN ? 1 : -1;
+  return 0;
+}
 function betterEntry(a, b){
+  var va=parseVerParts(a&&a.version), vb=parseVerParts(b&&b.version);
+  var cv=cmpVerParts(va, vb);
+  if(cv) return cv>0 ? a : b;
   var ra=entryRank(a), rb=entryRank(b);
   if(ra!==rb) return ra<rb ? a : b;
   if((a.sourceName==='X-F1REBALL-X')!==(b.sourceName==='X-F1REBALL-X'))
     return a.sourceName==='X-F1REBALL-X' ? a : b;
+  /* Prefer our ideal folder/category path when otherwise tied. */
+  var fa=String(a.folder||a.category||'').toLowerCase();
+  var fb=String(b.folder||b.category||'').toLowerCase();
+  var our=['loader','hen','apps','files','storage','media','system','tools','launcher'];
+  var ia=our.indexOf(fa), ib=our.indexOf(fb);
+  if(ia>=0 && ib<0) return a;
+  if(ib>=0 && ia<0) return b;
   return a;
 }
 function dedupePayloads(list){
@@ -1744,25 +1783,34 @@ function endBar(btn, state, name){
 }
 function isProtectedKillName(name){
   var n=(name||'').toLowerCase();
-  var base=n.split('/').pop();
-  return base==='elfldr-ps5.elf' || base==='elfldr.elf' || base==='payload-manager.elf' || base==='pldmgr.elf';
+  var base=n.split('/').pop().replace(/\.(elf|bin)$/,'');
+  return base==='elfldr-ps5' || base==='elfldr' || base==='payload-manager' || base==='pldmgr';
 }
 function normBase(s){
   s=String(s==null?'':s).replace(/^\s+|\s+$/g,'').toLowerCase();
   if(!s) return '';
   var b=s.split('/').pop().split('\\').pop();
-  return String(b||'').replace(/^\s+|\s+$/g,'');
+  b=String(b||'').replace(/^\s+|\s+$/g,'');
+  b=b.replace(/\.(elf|bin)$/,'');
+  /* Strip trailing version tokens: _v1.2.3, -v1.2.3, _1.7beta3, -2.5B, etc. */
+  var prev;
+  do {
+    prev=b;
+    b=b.replace(/[_-](?:v?\d+(?:\.\d+)*(?:[-_]?(?:alpha|beta|rc)\d*)?[a-z]?|own-built)$/,'');
+  } while(b!==prev);
+  if(b==='payload-manager' || b==='pldmgr') b='pldmgr';
+  return b;
 }
 /* elfldr labels the child payload.elf until the ELF sets its own name. */
 function isElfldrPlaceholder(procName){
-  return normBase(procName)==='payload.elf';
+  return normBase(procName)==='payload';
 }
 function processNameMatches(procName, payloadName){
   var p=normBase(procName);
   var base=normBase(payloadName);
   /* Empty/whitespace names match everything via indexOf('') — never treat them as loaded. */
   if(!p || !base) return false;
-  if(p==='payload.elf') return base==='payload.elf';
+  if(p==='payload') return base==='payload';
   if(p===base) return true;
   /* Orbis ki_comm is COMMLEN 19. Only an exact 19-char truncation, never a shorter prefix. */
   if(p.length===19 && base.length>19 && base.substring(0,19)===p) return true;
