@@ -276,7 +276,7 @@ static int host_ends(const char *host, size_t hlen, const char *suf) {
 static int url_allowed_for_update(const char *url) {
   const char *host, *slash, *at, *colon;
   size_t hlen;
-  /* Catalog payloads live on GitHub releases, GitLab raw, or GitHub Pages.
+  /* Catalog payloads live on GitHub releases, raw.githubusercontent.com, or GitHub Pages.
    * Redirect CDNs (release-assets, objects, blob) are followed after this check. */
   if (!url || strncmp(url, "https://", 8))
     return 0;
@@ -295,8 +295,6 @@ static int url_allowed_for_update(const char *url) {
   if (host_ends(host, hlen, "github.com") ||
       host_ends(host, hlen, "githubusercontent.com") ||
       host_ends(host, hlen, "github.io") ||
-      host_ends(host, hlen, "gitlab.com") ||
-      host_ends(host, hlen, "gitlab.io") ||
       host_ends(host, hlen, "git.etawen.dev"))
     return 1;
   return 0;

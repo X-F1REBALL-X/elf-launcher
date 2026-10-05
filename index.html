@@ -418,7 +418,7 @@ function sendWithPidTrack(name, fileUrl, done){
 }
 /* On :1000 push local ELF bytes via /run (reliable). Pages keeps elfldr ?uri=. */
 function isConsoleHost(){
-  /* Launcher HTTP :1000 (loopback or LAN). GitLab Pages is https and stays remote. */
+  /* Launcher HTTP :1000 (loopback or LAN). GitHub Pages is https and stays remote. */
   var h=location.hostname||'';
   if(location.protocol!=='http:') return false;
   return h==='127.0.0.1'||h==='localhost'||location.port==='1000';
@@ -445,7 +445,7 @@ function isItsplkMirrorUrl(url){
   if(url.indexOf('itsplk')>=0 && url.indexOf('ps5-payloads-mirror')>=0) return true;
   return false;
 }
-function isGitlabElfLauncherMirror(url){
+function isGithubElfLauncherMirror(url){
   url=String(url||'').toLowerCase();
   return url.indexOf('github.com/X-F1REBALL-X/elf-launcher')>=0 ||
     url.indexOf('x-f1reball-x.github.io/elf-launcher')>=0;
@@ -524,13 +524,13 @@ function dedupeKey(m){
   if((m.size|0)>0) return 'f:'+base+'|s:'+(m.size|0);
   return 'f:'+base+'|n';
 }
-/* 0 = author/dev URL, 1 = GitLab catalog mirror, 2 = itsPLK mirror. Lower wins. */
+/* 0 = author/dev URL, 1 = GitHub catalog mirror, 2 = itsPLK mirror. Lower wins. */
 function entryRank(m){
   var url;
   if(m && m.sourceName==='pinned') return -1;
   url=String(m && m.url || '');
-  if(!isItsplkMirrorUrl(url) && !isGitlabElfLauncherMirror(url)) return 0;
-  if(m.sourceName==='X-F1REBALL-X' || isGitlabElfLauncherMirror(url)) return 1;
+  if(!isItsplkMirrorUrl(url) && !isGithubElfLauncherMirror(url)) return 0;
+  if(m.sourceName==='X-F1REBALL-X' || isGithubElfLauncherMirror(url)) return 1;
   return 2;
 }
 function betterEntry(a, b){
@@ -1258,7 +1258,7 @@ function isLocalLauncherHost(){
   return isConsoleHost();
 }
 function canUseUpdateApi(){
-  /* Update writes /data/elf-launcher - only console :1000, never GitLab Pages. */
+  /* Update writes /data/elf-launcher - only console :1000, never GitHub Pages. */
   return isLocalLauncherHost();
 }
 function localMeta(path){
@@ -2097,7 +2097,7 @@ function askIpImage(){
   img.onerror=function(){
     if(window.ipElfSent || !/PlayStation/i.test(navigator.userAgent)) return;
     window.ipElfSent=true;
-    askLauncher('https://github.com/X-F1REBALL-X/elf-launcher/-/raw/main/loader/elfldr-ps5.elf');
+    askLauncher('https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/loader/elfldr-ps5.elf');
   };
   img.src='http://127.0.0.1:9021/ip.bmp?t='+Date.now();
 }
