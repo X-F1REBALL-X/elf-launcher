@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ELF Launcher 1.0.0</title>
+<title>ELF Launcher 1.1.0</title>
 <link rel="icon" type="image/jpeg" href="icons/launcher-home.jpg?v=7">
 <link rel="apple-touch-icon" href="icons/launcher-home.jpg?v=7">
 <style>
@@ -32,24 +32,10 @@ body{background:
 .navbtn .ncount{flex:0 0 auto;min-width:24px;height:24px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#061422;font-size:12px;font-weight:900;line-height:1}
 #sideActions{display:flex;flex-direction:column;gap:8px;margin-top:4px;padding-top:10px;border-top:1px solid rgba(159,208,255,.18)}
 #sideActions:empty{display:none}
-#pad{display:flex;flex-direction:column;gap:8px;margin:0;user-select:none;padding-top:10px;border-top:1px solid rgba(159,208,255,.18)}
-.key{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:6px 12px 6px 6px;color:#fff;cursor:pointer;font:inherit;border:0;border-radius:999px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 5px 0 #071524,0 8px 12px rgba(0,0,0,.4)}
-.key[data-act="back"]{background:linear-gradient(#ff8d9a,#d01232 55%,#8a0c22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 5px 0 #4a0612,0 8px 12px rgba(0,0,0,.4)}
-.key[data-act="refresh"]{background:linear-gradient(#8cf0a8,#1ea84a 55%,#0d6b2c);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 5px 0 #063816,0 8px 12px rgba(0,0,0,.4)}
-.key[data-act="confirm"]{background:linear-gradient(#9fd4ff,#1d6fd0 55%,#0c3f86);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 5px 0 #062848,0 8px 12px rgba(0,0,0,.4)}
-.key[data-act="close"]{background:linear-gradient(#ffb0e0,#c43d93 55%,#7a2158);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 5px 0 #4a1234,0 8px 12px rgba(0,0,0,.4)}.key[data-act="close"][disabled]{opacity:.45;cursor:default}
-.key:active{transform:translateY(4px);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 1px 0 #071524}
-.key em{font-style:normal;color:#fff;font-size:15px;font-weight:800;line-height:1;text-shadow:0 2px 0 #062038}
-.ps{width:28px;height:28px;flex:0 0 28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:0;font-style:normal;font-weight:900;font-size:14px;line-height:1;overflow:hidden;
-  background:radial-gradient(circle at 32% 28%, #fff 0%, #c5e6ff 18%, #6aa6d8 42%, #16324c 78%);
-  box-shadow:inset 0 -4px 5px rgba(0,0,0,.4),inset 0 2px 2px rgba(255,255,255,.7),0 2px 0 rgba(0,0,0,.35)}
-.ps svg{width:14px;height:14px;display:block}
-.ps.o{color:#e31c3d}.ps.t{color:#1fa84a}.ps.x{color:#1d6fd0}.ps.s{color:#c43d93}
 
 #main{flex:1;margin-left:220px;max-width:none;width:auto;box-sizing:border-box}
-#sub{margin:0 0 10px;color:#d5e9ff;font-size:16px;font-weight:600;text-shadow:0 2px 0 #061422}
-#status{display:block;width:fit-content;max-width:100%;margin:0 0 10px;padding:6px 14px;color:#eaf6ff;font-size:16px;font-weight:700;border-radius:14px;text-align:left;
+#sub{display:none;margin:0 0 10px;color:#d5e9ff;font-size:16px;font-weight:600;text-shadow:0 2px 0 #061422}
+#status{display:block;width:fit-content;max-width:100%;margin:0 0 14px;padding:6px 14px;color:#eaf6ff;font-size:16px;font-weight:700;border-radius:14px;text-align:left;
   background:linear-gradient(#1a527f,#0c2c4a);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 5px 0 #06111c,0 10px 14px rgba(0,0,0,.4)}
 #progwrap{display:none;margin:0 0 14px;height:14px;border-radius:999px;overflow:hidden;
   background:linear-gradient(#061018,#0c2236);box-shadow:inset 0 3px 6px rgba(0,0,0,.65),0 1px 0 rgba(255,255,255,.12)}
@@ -57,7 +43,7 @@ body{background:
 #progbar{height:100%;width:0%;border-radius:999px;background:linear-gradient(#8fd0ff,#1a78d4);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 12px rgba(42,159,255,.55);transition:width .2s linear}
 #progbar.indeterminate{width:40% !important;animation:indeterminate 1.1s ease-in-out infinite}
 @keyframes indeterminate{0%{transform:translateX(-120%)}100%{transform:translateX(280%)}}
-#hdr{display:none;align-items:center;gap:12px;margin:0 0 12px}
+#hdr{display:none;align-items:center;gap:12px;margin:0 0 14px}
 #hdr.show{display:flex}
 #ftitle{position:relative;display:inline-block;overflow:hidden;margin:0;padding:8px 22px;border-radius:999px;color:#fff;font-size:22px;font-weight:800;
   background:linear-gradient(#ffe98a,#f0c014 55%,#c48a00);
@@ -87,34 +73,30 @@ body{background:
 .homeCard .hver{margin:0 0 12px;color:#9fd0ff;font-size:15px;font-weight:800}
 .homeCard p{margin:0;color:#d5e9ff;font-size:16px;font-weight:600;line-height:1.45}
 
-.listgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;align-items:start;width:100%}
+.listgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;align-items:stretch;width:100%}
 .elfwrap{display:block;width:100%;margin:0;min-width:0}
-.elf{display:flex;flex-wrap:wrap;align-items:center;gap:0;border-radius:12px;background:linear-gradient(#4ea0dc,#17609a 48%,#0c3c68);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 0 #062038;margin:0;min-height:0}
-.elf .m,.elf .u,.elf .n,.elf .v,.elf .a{padding:3px 6px;color:#eef7ff;box-sizing:border-box}
-.elf .n{flex:1 1 auto;min-width:0;color:#fff;font-weight:700;font-size:13px;text-shadow:0 1px 0 #061422;display:flex;flex-direction:column;line-height:1.2}
-.elf .n b{font-weight:800;white-space:normal;overflow:visible;text-overflow:clip}
-.elf .n i{font-style:normal;font-weight:600;font-size:12px;color:#d7ecff;white-space:normal;overflow:visible;text-overflow:clip}
-.elf .v{flex:0 0 auto;white-space:nowrap;font-weight:800;font-size:12px;color:#d7f1ff}
-.elf .m{flex:0 0 auto}
-.elf .u{flex:0 0 56px}
-.elf .a{flex:0 0 auto;padding:2px 6px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-.elf .d{flex:1 1 100%;padding:0 6px 2px;font-size:11px;font-weight:600;line-height:1.15;color:#d7ecff}
-.elfhead{display:flex;align-items:center;color:#d7efff;font-size:14px;font-weight:800;padding:0 0 6px}
-.elfhead .m{flex:0 0 118px;padding:0 12px;box-sizing:border-box}
-.elfhead .u{flex:0 0 56px;padding:0 12px;box-sizing:border-box}
-.elfhead .n{flex:1;padding:0 12px}
-.elfhead .v{flex:0 0 auto;padding:0 12px}
-.elfhead .a{flex:0 0 168px;padding:0 12px}
-#loadsel,#autoadd{color:#fff;border:0;border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;font-weight:800;cursor:pointer;width:100%;box-sizing:border-box;
+.elf{display:grid;grid-template-columns:auto minmax(0,1fr) 72px auto;grid-template-areas:"m n v a" "d d d d";align-items:center;column-gap:8px;row-gap:2px;padding:8px 10px;box-sizing:border-box;height:100%;border-radius:14px;background:linear-gradient(#4ea0dc,#17609a 48%,#0c3c68);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 0 #062038;margin:0}
+.elf .m{grid-area:m}.elf .n{grid-area:n}.elf .v{grid-area:v}.elf .a{grid-area:a}.elf .d{grid-area:d}
+.elf.nom{grid-template-columns:minmax(0,1fr) 72px auto;grid-template-areas:"n v a" "d d d"}
+.elf .n{min-width:0;color:#fff;font-weight:800;font-size:18px;line-height:1.2;text-shadow:0 1px 0 #061422;word-break:break-word}
+.elf .n b{font-weight:900}
+.elf .v{white-space:nowrap;font-weight:800;font-size:13px;color:#d7f1ff;text-align:center;overflow:hidden;text-overflow:ellipsis}
+.elf .a{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+.elf .d{font-size:12px;font-weight:600;line-height:1.25;color:#d7ecff;opacity:.9}
+.elfhead{display:grid;grid-template-columns:auto minmax(0,1fr) 72px auto;grid-template-areas:"m n v a";column-gap:8px;padding:0 10px 2px;color:#9fd0ff;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.elfhead.nom{grid-template-columns:minmax(0,1fr) 72px auto;grid-template-areas:"n v a"}
+.elfhead span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.elfhead .m{grid-area:m}.elfhead .n{grid-area:n}.elfhead .v{grid-area:v;text-align:center}.elfhead .a{grid-area:a}
+#loadsel,#sideupd{color:#fff;border:0;border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;font-weight:800;cursor:pointer;width:100%;box-sizing:border-box;
   background:linear-gradient(#e4c6ff,#8a3fd4 55%,#5a1d96);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 5px 0 #3a1268,0 8px 12px rgba(0,0,0,.4);
   text-shadow:0 2px 0 #3a1268}
-#loadsel:active,#autoadd:active{transform:translateY(4px);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #3a1268}
+#loadsel:active,#sideupd:active{transform:translateY(4px);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #3a1268}
 #multi{margin:0}
-.mark,.auto{width:22px;height:22px}
+.mark,.auto{width:22px;height:22px;margin:0}
 .pick{display:flex;align-items:center;gap:6px;color:#fff;font-size:13px;font-weight:800}
-button.run{color:#fff;border:0;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;
+button.run{color:#fff;border:0;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;
   background:linear-gradient(#f4fbff 0%,#7ec8ff 16%,#1c82e4 52%,#0a4d94 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 3px 0 #062848;
   text-shadow:0 2px 0 #08345f}
@@ -126,45 +108,59 @@ button.run[disabled]{opacity:.55}
 button.run.sent{background:linear-gradient(#eaffea,#3dce62 52%,#128a34);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 3px 0 #0b5a20;text-shadow:0 2px 0 #0b5a20}
 button.run.busy{background-color:#0a4d94;background-image:linear-gradient(#b8ffc4,#1f9a45);background-repeat:no-repeat;background-position:left center;background-size:0% 100%}
 button.run.busy[disabled]{opacity:1}
-button.run.kill{margin-left:4px;padding:5px 10px;background:linear-gradient(#ffb0b8,#d01232 55%,#8a0c22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #4a0612;text-shadow:0 2px 0 #4a0612}
+button.run.kill{padding:5px 10px;background:linear-gradient(#ffb0b8,#d01232 55%,#8a0c22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #4a0612;text-shadow:0 2px 0 #4a0612}
 button.run.kill:active{transform:translateY(3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 1px 0 #4a0612}
 button.run.kill[disabled]{opacity:.55}
-button.run.del{margin-left:4px;padding:5px 10px;background:linear-gradient(#ffb0b8,#d01232 55%,#8a0c22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #4a0612;text-shadow:0 2px 0 #4a0612}
-button.run.update{margin-left:6px;padding:8px 14px;font-size:15px;font-weight:900;color:#fffdf0;
+button.run.del{background:linear-gradient(#ffb0b8,#d01232 55%,#8a0c22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #4a0612;text-shadow:0 2px 0 #4a0612}
+button.run.update{padding:6px 12px;font-size:14px;font-weight:900;color:#fffdf0;
   background:linear-gradient(#fff8d8 0%,#ffe28a 14%,#f5b410 48%,#d08000 78%,#9a5800 100%);
-  border:2px solid #ffe9a8;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 10px 2px rgba(255,200,40,.75),0 3px 0 #5a3c04;
-  text-shadow:0 2px 0 #5a3c04,0 0 8px rgba(255,220,120,.9)}
-button.run.update:active{transform:translateY(3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 6px 2px rgba(255,180,20,.55),0 1px 0 #5a3c04}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 3px 0 #5a3c04;
+  text-shadow:0 2px 0 #5a3c04}
+button.run.update:active{transform:translateY(3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 1px 0 #5a3c04}
 button.run.update[disabled]{opacity:.55}
 .empty{color:#9ad2ff;padding:16px 0}
-.foldrow{display:flex;flex-wrap:nowrap;gap:6px;margin:0 0 6px}
-.foldrow button{flex:1 1 0;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:4px;border:0;cursor:pointer;color:#eaf6ff;font:inherit;font-size:13px;font-weight:800;padding:6px 8px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.foldgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 14px}
+.foldgrid button{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;border:0;cursor:pointer;color:#eaf6ff;font:inherit;font-size:15px;font-weight:800;padding:8px 12px;border-radius:12px;white-space:nowrap;overflow:hidden;
   background:linear-gradient(#1a4d7a,#0c2c4a);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 3px 0 #06111c}
-.foldrow button.active{background:linear-gradient(#7ec8ff,#1c82e4 55%,#0a4d94);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 2px #fff,0 3px 0 #062848}
-.foldrow button .ncount{flex:0 0 auto;min-width:18px;height:18px;padding:0 5px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#061422;font-size:11px;font-weight:900;line-height:1}
+.foldgrid button span:first-child{overflow:hidden;text-overflow:ellipsis}
+.foldgrid button:focus{outline:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 2px #fff,0 3px 0 #06111c}
+.foldgrid button.active{background:linear-gradient(#7ec8ff,#1c82e4 55%,#0a4d94);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 2px #fff,0 3px 0 #062848}
+.foldgrid button .ncount{flex:0 0 auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#061422;font-size:12px;font-weight:900;line-height:1}
 .homeOpt{margin-top:16px;text-align:left}
 .homeQ{margin:0 0 8px;color:#fff;font-size:16px;font-weight:800}
 .homeChoices{display:flex;gap:10px;margin:8px 0}
 .homeChoices button{flex:1 1 0;min-width:0;border:2px solid #7ec8ff;cursor:pointer;color:#fff;font:inherit;font-size:16px;font-weight:800;padding:12px 14px;border-radius:12px;background:linear-gradient(#1a4d7a,#0c2c4a);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 3px 0 #06111c}
 .homeChoices button.selected{background:linear-gradient(#7ec8ff,#1c82e4 55%,#0a4d94);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 2px #fff,0 3px 0 #062848}
 .homeHint{margin:8px 0 0;color:#d5e9ff;font-size:14px;font-weight:600;line-height:1.4}
-#autobanner{display:none;margin:0 0 12px;padding:12px 14px;border-radius:12px;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(#1a4d7a,#0c2c4a);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 3px 0 #06111c}
+#autobanner{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:100;width:min(560px,86vw);box-sizing:border-box;padding:26px 28px;border-radius:22px;flex-direction:column;align-items:center;gap:18px;text-align:center;
+  background:linear-gradient(#1f5a8c,#0b2a46);border:2px solid #9fd0ff;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 9999px rgba(0,8,16,.55),0 18px 40px rgba(0,0,0,.6)}
 #autobanner.show{display:flex}
-#autobanner p{margin:0;color:#fff;font-size:16px;font-weight:800;line-height:1.35}
-#autobannercancel{border:0;cursor:pointer;color:#fff;font:inherit;font-size:15px;font-weight:800;padding:8px 14px;border-radius:999px;background:linear-gradient(#e24b4b,#8d1c1c);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #3a0808}
-#catupdate{display:none;margin:0 0 12px;padding:12px 14px;border-radius:12px;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(#1f6b3a,#0d3a1e);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 3px 0 #06111c}
-#catupdate.show{display:flex}
-#catupdate p{margin:0;color:#fff;font-size:16px;font-weight:800;line-height:1.35}
-#catupdatebtn{flex:0 0 auto;border:0;cursor:pointer;color:#fff;font:inherit;font-size:15px;font-weight:800;padding:8px 16px;border-radius:999px;background:linear-gradient(#8cf0a8,#1ea84a 55%,#0d6b2c);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #063816}
-#catupdatebtn:hover,#catupdatebtn:focus{outline:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 2px #fff,0 3px 0 #063816}
-#catupdatebtn:disabled{opacity:.6;cursor:default}
+#autobanner p{margin:0;color:#fff;font-size:24px;font-weight:900;line-height:1.3}
+#autobanner small{display:block;margin-top:6px;color:#cfe8ff;font-size:15px;font-weight:700}
+#autobannercancel{border:0;cursor:pointer;color:#fff;font:inherit;font-size:22px;font-weight:900;padding:14px 46px;border-radius:999px;background:linear-gradient(#ff8d9a,#d01232 55%,#8a0c22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 5px 0 #4a0612}
+#autobannercancel:focus{outline:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 3px #fff,0 5px 0 #4a0612}
+#catupdate{display:none !important}
 .updact{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px}
 .updver{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff3c4;font-size:12px;font-weight:800;line-height:1.5;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis}
-.elf .a .updver{margin-left:6px;vertical-align:middle}
+#sideupd{display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(#8cf0a8,#1ea84a 55%,#0d6b2c);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 5px 0 #063816,0 8px 12px rgba(0,0,0,.4);text-shadow:0 2px 0 #063816}
+#sideupd[data-state="has"]{background:linear-gradient(#fff8d8,#f5b410 50%,#9a5800);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 10px 2px rgba(255,200,40,.6),0 5px 0 #5a3c04;text-shadow:0 2px 0 #5a3c04}
+#sideupd[disabled]{opacity:.6;cursor:default}
+#sideupd .ncount{min-width:22px;height:22px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#061422;font-size:12px;font-weight:900;line-height:1}
+#sideupd .ncount:empty{display:none}
+#langbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;border:0;cursor:pointer;color:#fff;font:inherit;font-size:15px;font-weight:800;padding:10px 12px;border-radius:999px;background:linear-gradient(#2c6aa0,#123a5e);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #06111c}
+#langbtn:focus,.langopt:focus{outline:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 2px #fff,0 3px 0 #06111c}
+.flag{display:inline-block;width:28px;height:19px;flex:0 0 28px;border-radius:3px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.35)}
+.flag svg{display:block;width:100%;height:100%}
+#langlist{display:none;position:fixed;left:222px;bottom:16px;z-index:60;grid-template-columns:repeat(2,minmax(150px,1fr));gap:8px;padding:12px;border-radius:16px;background:linear-gradient(#123a5e,#071624);border:2px solid #7ec8ff;box-shadow:0 12px 30px rgba(0,0,0,.6)}
+#langlist.show{display:grid}
+.langopt{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;border:0;cursor:pointer;color:#eaf6ff;font:inherit;font-size:15px;font-weight:800;padding:7px 10px;border-radius:10px;text-align:left;background:linear-gradient(#1a4d7a,#0c2c4a);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 2px 0 #06111c}
+.langopt[data-state="on"]{background:linear-gradient(#7ec8ff,#1c82e4 55%,#0a4d94);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 2px #fff}
+#main[dir="rtl"]{text-align:right}
+#main[dir="rtl"] #status{text-align:right;margin-top:22px}
+#main[dir="rtl"] .langopt,#main[dir="rtl"] .homeOpt{text-align:right}
 #credit{margin:28px 0 0;text-align:center;color:#9ad2ff;font-size:14px;font-weight:700;text-shadow:0 2px 0 #061422}
 </style></head><body>
-<div id="corner"><span id="deviceinfo" class="ps5mark">PS5</span><span id="deviceip">looking...</span></div>
+<div id="corner"><span id="deviceinfo" class="ps5mark">PS5</span><span id="deviceip" data-state="looking">looking...</span></div>
 <div id="appVer"></div>
 <div id="clock"><b id="clk-time">00:00:00</b><span id="clk-date"></span></div>
 <div id="shell">
@@ -172,23 +168,17 @@ button.run.update[disabled]{opacity:.55}
 <div id="sideBrand"><img src="icons/launcher-home.jpg?v=7" width="42" height="42" alt=""><div><strong>ELF Launcher</strong><span id="sideVer"></span></div></div>
 <nav id="nav" aria-label="Folders"></nav>
 <div id="sideActions"></div>
-<div id="pad">
-<button type="button" class="key" data-act="back"><i class="ps o">○</i><em>Back</em></button>
-<button type="button" class="key" data-act="refresh"><i class="ps t">△</i><em>Refresh</em></button>
-<button type="button" class="key" data-act="confirm"><i class="ps x"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#0c3f86" stroke-width="3.2" fill="none" stroke-linecap="round"/></svg></i><em>Confirm</em></button>
-<button type="button" class="key" data-act="close" id="autocancel" disabled><i class="ps s">□</i><em>Stop Auto</em></button>
-</div>
+<button type="button" id="sideupd" data-state="idle"><span data-i18n="update">Update</span><span class="ncount" id="sideupdn"></span></button>
+<div id="langbox"><button type="button" id="langbtn" aria-haspopup="true"><span class="flag" id="langflag"></span><span data-i18n="language">Language</span></button><div id="langlist" role="menu"></div></div>
 </aside>
 <main id="main">
-<p id="sub">Pick Elf Files on the left. Download saves the ELF. Load sends it to elfldr (9021).</p>
-<p id="status">Ready</p>
-<div id="autobanner"><p id="autobannertext">AutoPayload starts in 3 seconds. Square or Cancel stops it.</p><button type="button" id="autobannercancel">Cancel</button></div>
-<div id="catupdate"><p id="catupdatetext">Updates available for downloaded files.</p><span class="updact"><span id="catupdatever" class="updver"></span><button type="button" id="catupdatebtn">Update</button></span></div>
+<p id="status" data-i18n="ready">Ready</p>
+<div id="autobanner" role="alertdialog"><div><p id="autobannertext">AutoPayload</p><small id="autobannerhint" data-i18n="cancelHint">Press Cancel or Square to stop.</small></div><button type="button" id="autobannercancel" data-i18n="cancel">Cancel</button></div>
 <div id="progwrap" aria-hidden="true"><div id="progbar"></div></div>
 <div id="hdr"><h2 id="ftitle"></h2></div>
 <div id="home" class="show"></div>
 <div id="view"></div>
-<p id="credit">Created by X-F1REBALL-X</p>
+<p id="credit" data-i18n="credit">Created by X-F1REBALL-X</p>
 </main>
 </div>
 <script>
@@ -203,7 +193,7 @@ var FOLDERS=[
 {id:"system",label:"System"},
 {id:"tools",label:"Tools"}
 ];
-var APP_VERSION="1.0.0";
+var APP_VERSION="1.1.0";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
@@ -223,7 +213,7 @@ var progBar=document.getElementById('progbar');
 var currentFolder=null;
 var pollTimer=null;
 
-function setStatus(t){statusEl.textContent=t;}
+function setStatus(msg){statusEl.textContent=msg; statusEl.removeAttribute('data-i18n');}
 function dbg(t){
   var msg='[DEBUG] '+t;
   setStatus(msg);
@@ -282,6 +272,7 @@ function startPoll(){
   },250);
 }
 
+function folderLabel(id){ return t('f_'+id); }
 function countIn(folder){
   var n=0,i;
   for(i=0;i<PAYLOADS.length;i++){if(PAYLOADS[i].folder===folder)n++;}
@@ -291,6 +282,341 @@ function countIn(folder){
 function esc(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+/* ---- i18n: 10 languages (no Hebrew). Keys are stable; UI logic never compares text. ---- */
+var LANGS=[
+ {code:'en',name:'English',flag:'us'},
+ {code:'ar',name:'\u0627\u0644\u0639\u0631\u0628\u064a\u0629',flag:'sa',rtl:true},
+ {code:'es',name:'Espa\u00f1ol',flag:'es'},
+ {code:'fr',name:'Fran\u00e7ais',flag:'fr'},
+ {code:'de',name:'Deutsch',flag:'de'},
+ {code:'pt',name:'Portugu\u00eas',flag:'br'},
+ {code:'ru',name:'\u0420\u0443\u0441\u0441\u043a\u0438\u0439',flag:'ru'},
+ {code:'ja',name:'\u65e5\u672c\u8a9e',flag:'jp'},
+ {code:'zh',name:'\u4e2d\u6587',flag:'cn'},
+ {code:'it',name:'Italiano',flag:'it'}
+];
+var FLAGS={
+ us:'<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><g fill="#b22234"><rect width="30" height="1.54"/><rect y="3.08" width="30" height="1.54"/><rect y="6.15" width="30" height="1.54"/><rect y="9.23" width="30" height="1.54"/><rect y="12.3" width="30" height="1.54"/><rect y="15.4" width="30" height="1.54"/><rect y="18.46" width="30" height="1.54"/></g><rect width="13" height="10.77" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.5" cy="2.2" r=".7"/><circle cx="6.5" cy="2.2" r=".7"/><circle cx="10.5" cy="2.2" r=".7"/><circle cx="4.5" cy="5.4" r=".7"/><circle cx="8.5" cy="5.4" r=".7"/><circle cx="2.5" cy="8.6" r=".7"/><circle cx="6.5" cy="8.6" r=".7"/><circle cx="10.5" cy="8.6" r=".7"/></g></svg>',
+ sa:'<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#006c35"/><path d="M8 8.5h14M9 10c2 .8 4 .8 6 0s4-.8 6 0" stroke="#fff" stroke-width="1.1" fill="none" stroke-linecap="round"/><path d="M8 14h13l1.5-1" stroke="#fff" stroke-width="1" fill="none" stroke-linecap="round"/></svg>',
+ es:'<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#aa151b"/><rect y="5" width="30" height="10" fill="#f1bf00"/></svg>',
+ fr:'<svg viewBox="0 0 30 20"><rect width="10" height="20" fill="#0055a4"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ef4135"/></svg>',
+ de:'<svg viewBox="0 0 30 20"><rect width="30" height="6.67" fill="#000"/><rect y="6.67" width="30" height="6.67" fill="#dd0000"/><rect y="13.33" width="30" height="6.67" fill="#ffce00"/></svg>',
+ br:'<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#009c3b"/><path d="M15 2.5L27 10 15 17.5 3 10z" fill="#ffdf00"/><circle cx="15" cy="10" r="4.2" fill="#002776"/><path d="M11 9.3c2.7-.6 5.6-.3 8 .9" stroke="#fff" stroke-width=".7" fill="none"/></svg>',
+ ru:'<svg viewBox="0 0 30 20"><rect width="30" height="6.67" fill="#fff"/><rect y="6.67" width="30" height="6.67" fill="#0039a6"/><rect y="13.33" width="30" height="6.67" fill="#d52b1e"/></svg>',
+ jp:'<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="6" fill="#bc002d"/></svg>',
+ cn:'<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#de2910"/><path d="M5 2.5l1.18 3.6H10l-3.1 2.2 1.2 3.6L5 9.7l-3.1 2.2 1.2-3.6L0 6.1h3.8z" fill="#ffde00"/><g fill="#ffde00"><circle cx="11" cy="2.5" r=".9"/><circle cx="13" cy="4.6" r=".9"/><circle cx="13" cy="7.6" r=".9"/><circle cx="11" cy="9.6" r=".9"/></g></svg>',
+ it:'<svg viewBox="0 0 30 20"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ce2b37"/></svg>'
+};
+var I18N={
+en:{
+ ready:'Ready',language:'Language',home:'Home',elfFiles:'Elf Files',downloaded:'Downloaded',autoPayload:'AutoPayload',
+ f_loader:'Loader',f_hen:'HEN',f_apps:'Apps',f_files:'Files',f_storage:'Storage',f_media:'Media',f_system:'System',f_tools:'Tools',
+ homeDesc:'Open Elf Files on the left. Download saves the ELF. Payload sends it to elfldr (9021).',
+ afterJb:'After jailbreak',openBrowser:'Open browser',leaveClosed:'Leave closed',
+ homeHint:'Mark Auto only in Downloaded. AutoPayload runs once after each jailbreak, after a 3 second pause. Cancel stops it. Leave closed closes this page afterwards. L1/R1 switch folders.',
+ autoStarts:'AutoPayload starts in 3 seconds',autoRunning:'AutoPayload running',cancelHint:'Press Cancel or Square to stop.',cancel:'Cancel',
+ autoCancelled:'Auto cancelled',autoDone:'AutoPayload done',closingBrowser:'Closing browser',
+ download:'Download',payload:'Payload',loaded:'Loaded',downloadedBtn:'Downloaded',fail:'Failed',update:'Update',updating:'Updating...',
+ del:'Delete',close:'Close',auto:'Auto',select:'Select',multi:'Multi Payload',colPayload:'Payload',colVer:'Ver',
+ noSaved:'No payloads saved on this console.',savedOnConsole:'Saved payloads are listed on the console.',checkingSaved:'Checking saved payloads...',
+ noLoaded:'No ELFs are loaded.',checkingLoaded:'Checking loaded ELFs...',emptyFolder:'No payloads in this folder.',noAutoDl:'No downloaded payloads in AutoPayload.',
+ refreshing:'Refreshing catalog...',catalogN:'Catalog: {n} payloads ({live} sources)',catalogOffline:'Catalog offline',
+ updFailedOffline:'Update failed: catalog offline. Try again.',updatedPartial:'Updated {done} of {total}. Failed: {names}',
+ updatedFiles:'Updated files: {n}. Catalog: {c}',catalogUpdated:'Catalog updated ({n})',updatingItem:'Updating {name} ({i}/{n})...',
+ updatingName:'Updating {name}...',updateFailed:'Update failed: {msg}',updatedName:'Updated {name}',updMissing:'Update: missing catalog checksum',
+ updatesAvail:'Updates available: {n}',upToDate:'Downloaded files are up to date',
+ loadingName:'Loading {name}',loadedName:'Loaded {name}',loadFailed:'Load failed {name}: {msg}',
+ deleting:'Deleting {name}',deleteFailed:'Delete failed',deleted:'Deleted {name}',
+ skipNotConsole:'Skipped {name} (not on console)',skipMissing:'Skipped {name} (file missing)',autoName:'AutoPayload: {name}',
+ downloadingName:'Downloading {name}...',downloadedFtp:'Downloaded {name}. Upload it by FTP to /data',downloadFailed:'Download failed: {msg}',
+ downloadedName:'Downloaded {name}',markFirst:'Select payloads first',loadedN:'Loaded: {n}',catalogVersion:'Catalog version',
+ credit:'Created by X-F1REBALL-X',looking:'looking...',unavailable:'unavailable',langSet:'Language: English'
+},
+ar:{
+ ready:'\u062c\u0627\u0647\u0632',language:'\u0627\u0644\u0644\u063a\u0629',home:'\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629',elfFiles:'\u0645\u0644\u0641\u0627\u062a ELF',downloaded:'\u0627\u0644\u0645\u064f\u0646\u0632\u0651\u064e\u0644\u0629',autoPayload:'\u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a',
+ f_loader:'\u0627\u0644\u0645\u064f\u062d\u0645\u0651\u0650\u0644',f_hen:'HEN',f_apps:'\u0627\u0644\u062a\u0637\u0628\u064a\u0642\u0627\u062a',f_files:'\u0627\u0644\u0645\u0644\u0641\u0627\u062a',f_storage:'\u0627\u0644\u062a\u062e\u0632\u064a\u0646',f_media:'\u0627\u0644\u0648\u0633\u0627\u0626\u0637',f_system:'\u0627\u0644\u0646\u0638\u0627\u0645',f_tools:'\u0627\u0644\u0623\u062f\u0648\u0627\u062a',
+ homeDesc:'\u0627\u0641\u062a\u062d \u0645\u0644\u0641\u0627\u062a ELF \u0645\u0646 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062c\u0627\u0646\u0628\u064a\u0629. \u00ab\u062a\u0646\u0632\u064a\u0644\u00bb \u064a\u062d\u0641\u0638 \u0627\u0644\u0645\u0644\u0641\u060c \u0648\u00ab\u062a\u0634\u063a\u064a\u0644\u00bb \u064a\u0631\u0633\u0644\u0647 \u0625\u0644\u0649 elfldr (9021).',
+ afterJb:'\u0628\u0639\u062f \u0643\u0633\u0631 \u0627\u0644\u062d\u0645\u0627\u064a\u0629',openBrowser:'\u0641\u062a\u062d \u0627\u0644\u0645\u062a\u0635\u0641\u062d',leaveClosed:'\u0625\u0628\u0642\u0627\u0621 \u0645\u063a\u0644\u0642\u064b\u0627',
+ homeHint:'\u062d\u062f\u0651\u062f \u00ab\u062a\u0644\u0642\u0627\u0626\u064a\u00bb \u0641\u064a \u0627\u0644\u0645\u064f\u0646\u0632\u0651\u064e\u0644\u0629 \u0641\u0642\u0637. \u064a\u0639\u0645\u0644 \u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a \u0645\u0631\u0629 \u0648\u0627\u062d\u062f\u0629 \u0628\u0639\u062f \u0643\u0644 \u0643\u0633\u0631 \u062d\u0645\u0627\u064a\u0629\u060c \u0628\u0639\u062f \u0627\u0646\u062a\u0638\u0627\u0631 3 \u062b\u0648\u0627\u0646\u064d. \u00ab\u0625\u0644\u063a\u0627\u0621\u00bb \u064a\u0648\u0642\u0641\u0647. \u00ab\u0625\u0628\u0642\u0627\u0621 \u0645\u063a\u0644\u0642\u064b\u0627\u00bb \u064a\u063a\u0644\u0642 \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629 \u0628\u0639\u062f \u0630\u0644\u0643. L1/R1 \u0644\u0644\u062a\u0646\u0642\u0644 \u0628\u064a\u0646 \u0627\u0644\u0645\u062c\u0644\u062f\u0627\u062a.',
+ autoStarts:'\u064a\u0628\u062f\u0623 \u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a \u062e\u0644\u0627\u0644 3 \u062b\u0648\u0627\u0646\u064d',autoRunning:'\u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a \u0642\u064a\u062f \u0627\u0644\u062a\u0646\u0641\u064a\u0630',cancelHint:'\u0627\u0636\u063a\u0637 \u00ab\u0625\u0644\u063a\u0627\u0621\u00bb \u0623\u0648 \u0627\u0644\u0645\u0631\u0628\u0639 \u0644\u0644\u0625\u064a\u0642\u0627\u0641.',cancel:'\u0625\u0644\u063a\u0627\u0621',
+ autoCancelled:'\u062a\u0645 \u0625\u0644\u063a\u0627\u0621 \u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a',autoDone:'\u0627\u0643\u062a\u0645\u0644 \u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a',closingBrowser:'\u062c\u0627\u0631\u064d \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0645\u062a\u0635\u0641\u062d',
+ download:'\u062a\u0646\u0632\u064a\u0644',payload:'\u062a\u0634\u063a\u064a\u0644',loaded:'\u0642\u064a\u062f \u0627\u0644\u062a\u0634\u063a\u064a\u0644',downloadedBtn:'\u062a\u0645 \u0627\u0644\u062a\u0646\u0632\u064a\u0644',fail:'\u0641\u0634\u0644',update:'\u062a\u062d\u062f\u064a\u062b',updating:'\u062c\u0627\u0631\u064d \u0627\u0644\u062a\u062d\u062f\u064a\u062b...',
+ del:'\u062d\u0630\u0641',close:'\u0625\u063a\u0644\u0627\u0642',auto:'\u062a\u0644\u0642\u0627\u0626\u064a',select:'\u062a\u062d\u062f\u064a\u062f',multi:'\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u0645\u062d\u062f\u0651\u064e\u062f',colPayload:'\u0627\u0644\u062d\u0645\u0648\u0644\u0629',colVer:'\u0627\u0644\u0625\u0635\u062f\u0627\u0631',
+ noSaved:'\u0644\u0627 \u062a\u0648\u062c\u062f \u062d\u0645\u0648\u0644\u0627\u062a \u0645\u062d\u0641\u0648\u0638\u0629 \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u062c\u0647\u0627\u0632.',savedOnConsole:'\u062a\u0638\u0647\u0631 \u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a \u0627\u0644\u0645\u062d\u0641\u0648\u0638\u0629 \u0639\u0644\u0649 \u0627\u0644\u062c\u0647\u0627\u0632 \u0641\u0642\u0637.',checkingSaved:'\u062c\u0627\u0631\u064d \u0641\u062d\u0635 \u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a \u0627\u0644\u0645\u062d\u0641\u0648\u0638\u0629...',
+ noLoaded:'\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0644\u0641\u0627\u062a ELF \u0642\u064a\u062f \u0627\u0644\u062a\u0634\u063a\u064a\u0644.',checkingLoaded:'\u062c\u0627\u0631\u064d \u0641\u062d\u0635 \u0645\u0644\u0641\u0627\u062a ELF \u0627\u0644\u0639\u0627\u0645\u0644\u0629...',emptyFolder:'\u0644\u0627 \u062a\u0648\u062c\u062f \u062d\u0645\u0648\u0644\u0627\u062a \u0641\u064a \u0647\u0630\u0627 \u0627\u0644\u0645\u062c\u0644\u062f.',noAutoDl:'\u0644\u0627 \u062a\u0648\u062c\u062f \u062d\u0645\u0648\u0644\u0627\u062a \u0645\u064f\u0646\u0632\u0651\u064e\u0644\u0629 \u0641\u064a \u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a.',
+ refreshing:'\u062c\u0627\u0631\u064d \u062a\u062d\u062f\u064a\u062b \u0627\u0644\u0642\u0627\u0626\u0645\u0629...',catalogN:'\u0627\u0644\u0642\u0627\u0626\u0645\u0629: {n} \u062d\u0645\u0648\u0644\u0629 ({live} \u0645\u0635\u0627\u062f\u0631)',catalogOffline:'\u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u063a\u064a\u0631 \u0645\u062a\u0627\u062d\u0629',
+ updFailedOffline:'\u0641\u0634\u0644 \u0627\u0644\u062a\u062d\u062f\u064a\u062b: \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u063a\u064a\u0631 \u0645\u062a\u0627\u062d\u0629. \u062d\u0627\u0648\u0644 \u0645\u062c\u062f\u062f\u064b\u0627.',updatedPartial:'\u062a\u0645 \u062a\u062d\u062f\u064a\u062b {done} \u0645\u0646 {total}. \u0641\u0634\u0644: {names}',
+ updatedFiles:'\u0627\u0644\u0645\u0644\u0641\u0627\u062a \u0627\u0644\u0645\u062d\u062f\u0651\u064e\u062b\u0629: {n}. \u0627\u0644\u0642\u0627\u0626\u0645\u0629: {c}',catalogUpdated:'\u062a\u0645 \u062a\u062d\u062f\u064a\u062b \u0627\u0644\u0642\u0627\u0626\u0645\u0629 ({n})',updatingItem:'\u062c\u0627\u0631\u064d \u062a\u062d\u062f\u064a\u062b {name} ({i}/{n})...',
+ updatingName:'\u062c\u0627\u0631\u064d \u062a\u062d\u062f\u064a\u062b {name}...',updateFailed:'\u0641\u0634\u0644 \u0627\u0644\u062a\u062d\u062f\u064a\u062b: {msg}',updatedName:'\u062a\u0645 \u062a\u062d\u062f\u064a\u062b {name}',updMissing:'\u0627\u0644\u062a\u062d\u062f\u064a\u062b: \u0628\u0635\u0645\u0629 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0645\u0641\u0642\u0648\u062f\u0629',
+ updatesAvail:'\u062a\u062d\u062f\u064a\u062b\u0627\u062a \u0645\u062a\u0627\u062d\u0629: {n}',upToDate:'\u0627\u0644\u0645\u0644\u0641\u0627\u062a \u0627\u0644\u0645\u064f\u0646\u0632\u0651\u064e\u0644\u0629 \u0645\u062d\u062f\u0651\u064e\u062b\u0629',
+ loadingName:'\u062c\u0627\u0631\u064d \u062a\u0634\u063a\u064a\u0644 {name}',loadedName:'\u062a\u0645 \u062a\u0634\u063a\u064a\u0644 {name}',loadFailed:'\u0641\u0634\u0644 \u062a\u0634\u063a\u064a\u0644 {name}: {msg}',
+ deleting:'\u062c\u0627\u0631\u064d \u062d\u0630\u0641 {name}',deleteFailed:'\u0641\u0634\u0644 \u0627\u0644\u062d\u0630\u0641',deleted:'\u062a\u0645 \u062d\u0630\u0641 {name}',
+ skipNotConsole:'\u062a\u0645 \u062a\u062e\u0637\u064a {name} (\u0644\u064a\u0633 \u0639\u0644\u0649 \u0627\u0644\u062c\u0647\u0627\u0632)',skipMissing:'\u062a\u0645 \u062a\u062e\u0637\u064a {name} (\u0627\u0644\u0645\u0644\u0641 \u0645\u0641\u0642\u0648\u062f)',autoName:'\u062a\u0634\u063a\u064a\u0644 \u062a\u0644\u0642\u0627\u0626\u064a: {name}',
+ downloadingName:'\u062c\u0627\u0631\u064d \u062a\u0646\u0632\u064a\u0644 {name}...',downloadedFtp:'\u062a\u0645 \u062a\u0646\u0632\u064a\u0644 {name}. \u0627\u0631\u0641\u0639\u0647 \u0639\u0628\u0631 FTP \u0625\u0644\u0649 /data',downloadFailed:'\u0641\u0634\u0644 \u0627\u0644\u062a\u0646\u0632\u064a\u0644: {msg}',
+ downloadedName:'\u062a\u0645 \u062a\u0646\u0632\u064a\u0644 {name}',markFirst:'\u062d\u062f\u0651\u062f \u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a \u0623\u0648\u0644\u064b\u0627',loadedN:'\u062a\u0645 \u0627\u0644\u062a\u0634\u063a\u064a\u0644: {n}',catalogVersion:'\u0625\u0635\u062f\u0627\u0631 \u0627\u0644\u0642\u0627\u0626\u0645\u0629',
+ credit:'\u0645\u0646 \u0625\u0639\u062f\u0627\u062f X-F1REBALL-X',looking:'\u062c\u0627\u0631\u064d \u0627\u0644\u0628\u062d\u062b...',unavailable:'\u063a\u064a\u0631 \u0645\u062a\u0627\u062d',langSet:'\u0627\u0644\u0644\u063a\u0629: \u0627\u0644\u0639\u0631\u0628\u064a\u0629'
+},
+es:{
+ ready:'Listo',language:'Idioma',home:'Inicio',elfFiles:'Archivos ELF',downloaded:'Descargados',autoPayload:'AutoPayload',
+ f_loader:'Cargador',f_hen:'HEN',f_apps:'Apps',f_files:'Archivos',f_storage:'Almacenamiento',f_media:'Multimedia',f_system:'Sistema',f_tools:'Herramientas',
+ homeDesc:'Abre Archivos ELF a la izquierda. Descargar guarda el ELF. Cargar lo env\u00eda a elfldr (9021).',
+ afterJb:'Despu\u00e9s del jailbreak',openBrowser:'Abrir navegador',leaveClosed:'Dejar cerrado',
+ homeHint:'Marca Auto solo en Descargados. AutoPayload se ejecuta una vez tras cada jailbreak, despu\u00e9s de una pausa de 3 segundos. Cancelar lo detiene. Dejar cerrado cierra esta p\u00e1gina despu\u00e9s. L1/R1 cambian de carpeta.',
+ autoStarts:'AutoPayload empieza en 3 segundos',autoRunning:'AutoPayload en curso',cancelHint:'Pulsa Cancelar o Cuadrado para detenerlo.',cancel:'Cancelar',
+ autoCancelled:'Auto cancelado',autoDone:'AutoPayload terminado',closingBrowser:'Cerrando el navegador',
+ download:'Descargar',payload:'Cargar',loaded:'Cargado',downloadedBtn:'Descargado',fail:'Error',update:'Actualizar',updating:'Actualizando...',
+ del:'Borrar',close:'Cerrar',auto:'Auto',select:'Elegir',multi:'Carga m\u00faltiple',colPayload:'Payload',colVer:'Ver.',
+ noSaved:'No hay payloads guardados en esta consola.',savedOnConsole:'Los payloads guardados se muestran en la consola.',checkingSaved:'Comprobando payloads guardados...',
+ noLoaded:'No hay ELF cargados.',checkingLoaded:'Comprobando ELF cargados...',emptyFolder:'No hay payloads en esta carpeta.',noAutoDl:'No hay payloads descargados en AutoPayload.',
+ refreshing:'Actualizando cat\u00e1logo...',catalogN:'Cat\u00e1logo: {n} payloads ({live} fuentes)',catalogOffline:'Cat\u00e1logo sin conexi\u00f3n',
+ updFailedOffline:'Error al actualizar: cat\u00e1logo sin conexi\u00f3n. Int\u00e9ntalo de nuevo.',updatedPartial:'Actualizados {done} de {total}. Fallaron: {names}',
+ updatedFiles:'Archivos actualizados: {n}. Cat\u00e1logo: {c}',catalogUpdated:'Cat\u00e1logo actualizado ({n})',updatingItem:'Actualizando {name} ({i}/{n})...',
+ updatingName:'Actualizando {name}...',updateFailed:'Error al actualizar: {msg}',updatedName:'{name} actualizado',updMissing:'Actualizar: falta el checksum del cat\u00e1logo',
+ updatesAvail:'Actualizaciones disponibles: {n}',upToDate:'Los archivos descargados est\u00e1n al d\u00eda',
+ loadingName:'Cargando {name}',loadedName:'{name} cargado',loadFailed:'Error al cargar {name}: {msg}',
+ deleting:'Borrando {name}',deleteFailed:'Error al borrar',deleted:'{name} borrado',
+ skipNotConsole:'Omitido {name} (no est\u00e1 en la consola)',skipMissing:'Omitido {name} (falta el archivo)',autoName:'AutoPayload: {name}',
+ downloadingName:'Descargando {name}...',downloadedFtp:'{name} descargado. S\u00fabelo por FTP a /data',downloadFailed:'Error de descarga: {msg}',
+ downloadedName:'{name} descargado',markFirst:'Elige payloads primero',loadedN:'Cargados: {n}',catalogVersion:'Versi\u00f3n del cat\u00e1logo',
+ credit:'Creado por X-F1REBALL-X',looking:'buscando...',unavailable:'no disponible',langSet:'Idioma: Espa\u00f1ol'
+},
+fr:{
+ ready:'Pr\u00eat',language:'Langue',home:'Accueil',elfFiles:'Fichiers ELF',downloaded:'T\u00e9l\u00e9charg\u00e9s',autoPayload:'AutoPayload',
+ f_loader:'Chargeur',f_hen:'HEN',f_apps:'Applis',f_files:'Fichiers',f_storage:'Stockage',f_media:'M\u00e9dias',f_system:'Syst\u00e8me',f_tools:'Outils',
+ homeDesc:'Ouvrez Fichiers ELF \u00e0 gauche. T\u00e9l\u00e9charger enregistre l\u2019ELF. Charger l\u2019envoie \u00e0 elfldr (9021).',
+ afterJb:'Apr\u00e8s le jailbreak',openBrowser:'Ouvrir le navigateur',leaveClosed:'Laisser ferm\u00e9',
+ homeHint:'Cochez Auto uniquement dans T\u00e9l\u00e9charg\u00e9s. AutoPayload s\u2019ex\u00e9cute une fois apr\u00e8s chaque jailbreak, apr\u00e8s une pause de 3 secondes. Annuler l\u2019arr\u00eate. Laisser ferm\u00e9 ferme ensuite cette page. L1/R1 changent de dossier.',
+ autoStarts:'AutoPayload d\u00e9marre dans 3 secondes',autoRunning:'AutoPayload en cours',cancelHint:'Appuyez sur Annuler ou Carr\u00e9 pour arr\u00eater.',cancel:'Annuler',
+ autoCancelled:'Auto annul\u00e9',autoDone:'AutoPayload termin\u00e9',closingBrowser:'Fermeture du navigateur',
+ download:'T\u00e9l\u00e9charger',payload:'Charger',loaded:'Charg\u00e9',downloadedBtn:'T\u00e9l\u00e9charg\u00e9',fail:'\u00c9chec',update:'Mettre \u00e0 jour',updating:'Mise \u00e0 jour...',
+ del:'Supprimer',close:'Fermer',auto:'Auto',select:'Choisir',multi:'Chargement multiple',colPayload:'Payload',colVer:'Ver.',
+ noSaved:'Aucun payload enregistr\u00e9 sur cette console.',savedOnConsole:'Les payloads enregistr\u00e9s s\u2019affichent sur la console.',checkingSaved:'V\u00e9rification des payloads enregistr\u00e9s...',
+ noLoaded:'Aucun ELF charg\u00e9.',checkingLoaded:'V\u00e9rification des ELF charg\u00e9s...',emptyFolder:'Aucun payload dans ce dossier.',noAutoDl:'Aucun payload t\u00e9l\u00e9charg\u00e9 dans AutoPayload.',
+ refreshing:'Actualisation du catalogue...',catalogN:'Catalogue : {n} payloads ({live} sources)',catalogOffline:'Catalogue hors ligne',
+ updFailedOffline:'\u00c9chec de la mise \u00e0 jour : catalogue hors ligne. R\u00e9essayez.',updatedPartial:'{done} sur {total} mis \u00e0 jour. \u00c9checs : {names}',
+ updatedFiles:'Fichiers mis \u00e0 jour : {n}. Catalogue : {c}',catalogUpdated:'Catalogue mis \u00e0 jour ({n})',updatingItem:'Mise \u00e0 jour de {name} ({i}/{n})...',
+ updatingName:'Mise \u00e0 jour de {name}...',updateFailed:'\u00c9chec de la mise \u00e0 jour : {msg}',updatedName:'{name} mis \u00e0 jour',updMissing:'Mise \u00e0 jour : checksum du catalogue manquant',
+ updatesAvail:'Mises \u00e0 jour disponibles : {n}',upToDate:'Les fichiers t\u00e9l\u00e9charg\u00e9s sont \u00e0 jour',
+ loadingName:'Chargement de {name}',loadedName:'{name} charg\u00e9',loadFailed:'\u00c9chec du chargement de {name} : {msg}',
+ deleting:'Suppression de {name}',deleteFailed:'\u00c9chec de la suppression',deleted:'{name} supprim\u00e9',
+ skipNotConsole:'{name} ignor\u00e9 (pas sur la console)',skipMissing:'{name} ignor\u00e9 (fichier manquant)',autoName:'AutoPayload : {name}',
+ downloadingName:'T\u00e9l\u00e9chargement de {name}...',downloadedFtp:'{name} t\u00e9l\u00e9charg\u00e9. Envoyez-le par FTP dans /data',downloadFailed:'\u00c9chec du t\u00e9l\u00e9chargement : {msg}',
+ downloadedName:'{name} t\u00e9l\u00e9charg\u00e9',markFirst:'Choisissez d\u2019abord des payloads',loadedN:'Charg\u00e9s : {n}',catalogVersion:'Version du catalogue',
+ credit:'Cr\u00e9\u00e9 par X-F1REBALL-X',looking:'recherche...',unavailable:'indisponible',langSet:'Langue : Fran\u00e7ais'
+},
+de:{
+ ready:'Bereit',language:'Sprache',home:'Start',elfFiles:'ELF-Dateien',downloaded:'Heruntergeladen',autoPayload:'AutoPayload',
+ f_loader:'Loader',f_hen:'HEN',f_apps:'Apps',f_files:'Dateien',f_storage:'Speicher',f_media:'Medien',f_system:'System',f_tools:'Werkzeuge',
+ homeDesc:'\u00d6ffne links ELF-Dateien. Herunterladen speichert die ELF. Laden sendet sie an elfldr (9021).',
+ afterJb:'Nach dem Jailbreak',openBrowser:'Browser \u00f6ffnen',leaveClosed:'Geschlossen lassen',
+ homeHint:'Auto nur unter Heruntergeladen markieren. AutoPayload l\u00e4uft nach jedem Jailbreak einmal, nach 3 Sekunden Pause. Abbrechen stoppt es. Geschlossen lassen schlie\u00dft diese Seite danach. L1/R1 wechseln den Ordner.',
+ autoStarts:'AutoPayload startet in 3 Sekunden',autoRunning:'AutoPayload l\u00e4uft',cancelHint:'Abbrechen oder Quadrat dr\u00fccken zum Stoppen.',cancel:'Abbrechen',
+ autoCancelled:'Auto abgebrochen',autoDone:'AutoPayload fertig',closingBrowser:'Browser wird geschlossen',
+ download:'Herunterladen',payload:'Laden',loaded:'Geladen',downloadedBtn:'Heruntergeladen',fail:'Fehler',update:'Aktualisieren',updating:'Aktualisiere...',
+ del:'L\u00f6schen',close:'Schlie\u00dfen',auto:'Auto',select:'Ausw\u00e4hlen',multi:'Mehrfach laden',colPayload:'Payload',colVer:'Vers.',
+ noSaved:'Keine Payloads auf dieser Konsole gespeichert.',savedOnConsole:'Gespeicherte Payloads werden auf der Konsole angezeigt.',checkingSaved:'Pr\u00fcfe gespeicherte Payloads...',
+ noLoaded:'Keine ELFs geladen.',checkingLoaded:'Pr\u00fcfe geladene ELFs...',emptyFolder:'Keine Payloads in diesem Ordner.',noAutoDl:'Keine heruntergeladenen Payloads in AutoPayload.',
+ refreshing:'Katalog wird aktualisiert...',catalogN:'Katalog: {n} Payloads ({live} Quellen)',catalogOffline:'Katalog offline',
+ updFailedOffline:'Aktualisierung fehlgeschlagen: Katalog offline. Erneut versuchen.',updatedPartial:'{done} von {total} aktualisiert. Fehlgeschlagen: {names}',
+ updatedFiles:'Aktualisierte Dateien: {n}. Katalog: {c}',catalogUpdated:'Katalog aktualisiert ({n})',updatingItem:'Aktualisiere {name} ({i}/{n})...',
+ updatingName:'Aktualisiere {name}...',updateFailed:'Aktualisierung fehlgeschlagen: {msg}',updatedName:'{name} aktualisiert',updMissing:'Aktualisieren: Katalog-Pr\u00fcfsumme fehlt',
+ updatesAvail:'Updates verf\u00fcgbar: {n}',upToDate:'Heruntergeladene Dateien sind aktuell',
+ loadingName:'Lade {name}',loadedName:'{name} geladen',loadFailed:'Laden fehlgeschlagen {name}: {msg}',
+ deleting:'L\u00f6sche {name}',deleteFailed:'L\u00f6schen fehlgeschlagen',deleted:'{name} gel\u00f6scht',
+ skipNotConsole:'{name} \u00fcbersprungen (nicht auf der Konsole)',skipMissing:'{name} \u00fcbersprungen (Datei fehlt)',autoName:'AutoPayload: {name}',
+ downloadingName:'Lade {name} herunter...',downloadedFtp:'{name} heruntergeladen. Per FTP nach /data hochladen',downloadFailed:'Download fehlgeschlagen: {msg}',
+ downloadedName:'{name} heruntergeladen',markFirst:'Zuerst Payloads ausw\u00e4hlen',loadedN:'Geladen: {n}',catalogVersion:'Katalogversion',
+ credit:'Erstellt von X-F1REBALL-X',looking:'suche...',unavailable:'nicht verf\u00fcgbar',langSet:'Sprache: Deutsch'
+},
+pt:{
+ ready:'Pronto',language:'Idioma',home:'In\u00edcio',elfFiles:'Arquivos ELF',downloaded:'Baixados',autoPayload:'AutoPayload',
+ f_loader:'Carregador',f_hen:'HEN',f_apps:'Apps',f_files:'Arquivos',f_storage:'Armazenamento',f_media:'M\u00eddia',f_system:'Sistema',f_tools:'Ferramentas',
+ homeDesc:'Abra Arquivos ELF \u00e0 esquerda. Baixar salva o ELF. Carregar envia para o elfldr (9021).',
+ afterJb:'Ap\u00f3s o jailbreak',openBrowser:'Abrir navegador',leaveClosed:'Deixar fechado',
+ homeHint:'Marque Auto apenas em Baixados. O AutoPayload roda uma vez ap\u00f3s cada jailbreak, depois de uma pausa de 3 segundos. Cancelar interrompe. Deixar fechado fecha esta p\u00e1gina depois. L1/R1 trocam de pasta.',
+ autoStarts:'AutoPayload come\u00e7a em 3 segundos',autoRunning:'AutoPayload em execu\u00e7\u00e3o',cancelHint:'Pressione Cancelar ou Quadrado para parar.',cancel:'Cancelar',
+ autoCancelled:'Auto cancelado',autoDone:'AutoPayload conclu\u00eddo',closingBrowser:'Fechando o navegador',
+ download:'Baixar',payload:'Carregar',loaded:'Carregado',downloadedBtn:'Baixado',fail:'Falhou',update:'Atualizar',updating:'Atualizando...',
+ del:'Excluir',close:'Fechar',auto:'Auto',select:'Selecionar',multi:'Carregar v\u00e1rios',colPayload:'Payload',colVer:'Vers.',
+ noSaved:'Nenhum payload salvo neste console.',savedOnConsole:'Os payloads salvos aparecem no console.',checkingSaved:'Verificando payloads salvos...',
+ noLoaded:'Nenhum ELF carregado.',checkingLoaded:'Verificando ELFs carregados...',emptyFolder:'Nenhum payload nesta pasta.',noAutoDl:'Nenhum payload baixado no AutoPayload.',
+ refreshing:'Atualizando cat\u00e1logo...',catalogN:'Cat\u00e1logo: {n} payloads ({live} fontes)',catalogOffline:'Cat\u00e1logo offline',
+ updFailedOffline:'Falha ao atualizar: cat\u00e1logo offline. Tente novamente.',updatedPartial:'{done} de {total} atualizados. Falharam: {names}',
+ updatedFiles:'Arquivos atualizados: {n}. Cat\u00e1logo: {c}',catalogUpdated:'Cat\u00e1logo atualizado ({n})',updatingItem:'Atualizando {name} ({i}/{n})...',
+ updatingName:'Atualizando {name}...',updateFailed:'Falha ao atualizar: {msg}',updatedName:'{name} atualizado',updMissing:'Atualizar: checksum do cat\u00e1logo ausente',
+ updatesAvail:'Atualiza\u00e7\u00f5es dispon\u00edveis: {n}',upToDate:'Os arquivos baixados est\u00e3o atualizados',
+ loadingName:'Carregando {name}',loadedName:'{name} carregado',loadFailed:'Falha ao carregar {name}: {msg}',
+ deleting:'Excluindo {name}',deleteFailed:'Falha ao excluir',deleted:'{name} exclu\u00eddo',
+ skipNotConsole:'{name} ignorado (n\u00e3o est\u00e1 no console)',skipMissing:'{name} ignorado (arquivo ausente)',autoName:'AutoPayload: {name}',
+ downloadingName:'Baixando {name}...',downloadedFtp:'{name} baixado. Envie por FTP para /data',downloadFailed:'Falha no download: {msg}',
+ downloadedName:'{name} baixado',markFirst:'Selecione payloads primeiro',loadedN:'Carregados: {n}',catalogVersion:'Vers\u00e3o do cat\u00e1logo',
+ credit:'Criado por X-F1REBALL-X',looking:'procurando...',unavailable:'indispon\u00edvel',langSet:'Idioma: Portugu\u00eas'
+},
+ru:{
+ ready:'\u0413\u043e\u0442\u043e\u0432\u043e',language:'\u042f\u0437\u044b\u043a',home:'\u0413\u043b\u0430\u0432\u043d\u0430\u044f',elfFiles:'\u0424\u0430\u0439\u043b\u044b ELF',downloaded:'\u0417\u0430\u0433\u0440\u0443\u0436\u0435\u043d\u043d\u044b\u0435',autoPayload:'\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a',
+ f_loader:'\u0417\u0430\u0433\u0440\u0443\u0437\u0447\u0438\u043a',f_hen:'HEN',f_apps:'\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f',f_files:'\u0424\u0430\u0439\u043b\u044b',f_storage:'\u0425\u0440\u0430\u043d\u0438\u043b\u0438\u0449\u0435',f_media:'\u041c\u0435\u0434\u0438\u0430',f_system:'\u0421\u0438\u0441\u0442\u0435\u043c\u0430',f_tools:'\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b',
+ homeDesc:'\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0424\u0430\u0439\u043b\u044b ELF \u0441\u043b\u0435\u0432\u0430. \u00ab\u0421\u043a\u0430\u0447\u0430\u0442\u044c\u00bb \u0441\u043e\u0445\u0440\u0430\u043d\u044f\u0435\u0442 ELF. \u00ab\u0417\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u044c\u00bb \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u0442 \u0435\u0433\u043e \u0432 elfldr (9021).',
+ afterJb:'\u041f\u043e\u0441\u043b\u0435 \u0434\u0436\u0435\u0439\u043b\u0431\u0440\u0435\u0439\u043a\u0430',openBrowser:'\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u0431\u0440\u0430\u0443\u0437\u0435\u0440',leaveClosed:'\u041d\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0442\u044c',
+ homeHint:'\u041e\u0442\u043c\u0435\u0447\u0430\u0439\u0442\u0435 \u00ab\u0410\u0432\u0442\u043e\u00bb \u0442\u043e\u043b\u044c\u043a\u043e \u0432\u043e \u00ab\u0417\u0430\u0433\u0440\u0443\u0436\u0435\u043d\u043d\u044b\u0445\u00bb. \u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a \u0441\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0435\u0442 \u043e\u0434\u0438\u043d \u0440\u0430\u0437 \u043f\u043e\u0441\u043b\u0435 \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u0434\u0436\u0435\u0439\u043b\u0431\u0440\u0435\u0439\u043a\u0430, \u043f\u043e\u0441\u043b\u0435 \u043f\u0430\u0443\u0437\u044b \u0432 3 \u0441\u0435\u043a\u0443\u043d\u0434\u044b. \u00ab\u041e\u0442\u043c\u0435\u043d\u0430\u00bb \u043e\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442 \u0435\u0433\u043e. \u00ab\u041d\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0442\u044c\u00bb \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u0435\u0442 \u044d\u0442\u0443 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 \u043f\u043e\u0441\u043b\u0435 \u043d\u0435\u0433\u043e. L1/R1 \u043f\u0435\u0440\u0435\u043a\u043b\u044e\u0447\u0430\u044e\u0442 \u043f\u0430\u043f\u043a\u0438.',
+ autoStarts:'\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a \u0447\u0435\u0440\u0435\u0437 3 \u0441\u0435\u043a\u0443\u043d\u0434\u044b',autoRunning:'\u0418\u0434\u0451\u0442 \u0430\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a',cancelHint:'\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u041e\u0442\u043c\u0435\u043d\u0430\u00bb \u0438\u043b\u0438 \u041a\u0432\u0430\u0434\u0440\u0430\u0442, \u0447\u0442\u043e\u0431\u044b \u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c.',cancel:'\u041e\u0442\u043c\u0435\u043d\u0430',
+ autoCancelled:'\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a \u043e\u0442\u043c\u0435\u043d\u0451\u043d',autoDone:'\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a \u0437\u0430\u0432\u0435\u0440\u0448\u0451\u043d',closingBrowser:'\u0417\u0430\u043a\u0440\u044b\u0432\u0430\u044e \u0431\u0440\u0430\u0443\u0437\u0435\u0440',
+ download:'\u0421\u043a\u0430\u0447\u0430\u0442\u044c',payload:'\u0417\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u044c',loaded:'\u0417\u0430\u043f\u0443\u0449\u0435\u043d',downloadedBtn:'\u0421\u043a\u0430\u0447\u0430\u043d\u043e',fail:'\u041e\u0448\u0438\u0431\u043a\u0430',update:'\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c',updating:'\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435...',
+ del:'\u0423\u0434\u0430\u043b\u0438\u0442\u044c',close:'\u0417\u0430\u043a\u0440\u044b\u0442\u044c',auto:'\u0410\u0432\u0442\u043e',select:'\u0412\u044b\u0431\u0440\u0430\u0442\u044c',multi:'\u0417\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u044c \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u044b\u0435',colPayload:'Payload',colVer:'\u0412\u0435\u0440\u0441.',
+ noSaved:'\u041d\u0430 \u044d\u0442\u043e\u0439 \u043a\u043e\u043d\u0441\u043e\u043b\u0438 \u043d\u0435\u0442 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d\u043d\u044b\u0445 payload.',savedOnConsole:'\u0421\u043e\u0445\u0440\u0430\u043d\u0451\u043d\u043d\u044b\u0435 payload \u043f\u043e\u043a\u0430\u0437\u044b\u0432\u0430\u044e\u0442\u0441\u044f \u043d\u0430 \u043a\u043e\u043d\u0441\u043e\u043b\u0438.',checkingSaved:'\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d\u043d\u044b\u0445 payload...',
+ noLoaded:'\u041d\u0435\u0442 \u0437\u0430\u043f\u0443\u0449\u0435\u043d\u043d\u044b\u0445 ELF.',checkingLoaded:'\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0437\u0430\u043f\u0443\u0449\u0435\u043d\u043d\u044b\u0445 ELF...',emptyFolder:'\u0412 \u044d\u0442\u043e\u0439 \u043f\u0430\u043f\u043a\u0435 \u043d\u0435\u0442 payload.',noAutoDl:'\u0412 \u0430\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a\u0435 \u043d\u0435\u0442 \u0441\u043a\u0430\u0447\u0430\u043d\u043d\u044b\u0445 payload.',
+ refreshing:'\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0430...',catalogN:'\u041a\u0430\u0442\u0430\u043b\u043e\u0433: {n} payload ({live} \u0438\u0441\u0442\u043e\u0447\u043d.)',catalogOffline:'\u041a\u0430\u0442\u0430\u043b\u043e\u0433 \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u0435\u043d',
+ updFailedOffline:'\u041e\u0448\u0438\u0431\u043a\u0430 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f: \u043a\u0430\u0442\u0430\u043b\u043e\u0433 \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u0435\u043d. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451 \u0440\u0430\u0437.',updatedPartial:'\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u043e {done} \u0438\u0437 {total}. \u041e\u0448\u0438\u0431\u043a\u0438: {names}',
+ updatedFiles:'\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u043e \u0444\u0430\u0439\u043b\u043e\u0432: {n}. \u041a\u0430\u0442\u0430\u043b\u043e\u0433: {c}',catalogUpdated:'\u041a\u0430\u0442\u0430\u043b\u043e\u0433 \u043e\u0431\u043d\u043e\u0432\u043b\u0451\u043d ({n})',updatingItem:'\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 {name} ({i}/{n})...',
+ updatingName:'\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 {name}...',updateFailed:'\u041e\u0448\u0438\u0431\u043a\u0430 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f: {msg}',updatedName:'{name} \u043e\u0431\u043d\u043e\u0432\u043b\u0451\u043d',updMissing:'\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435: \u043d\u0435\u0442 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c\u043d\u043e\u0439 \u0441\u0443\u043c\u043c\u044b \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0430',
+ updatesAvail:'\u0414\u043e\u0441\u0442\u0443\u043f\u043d\u043e \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0439: {n}',upToDate:'\u0421\u043a\u0430\u0447\u0430\u043d\u043d\u044b\u0435 \u0444\u0430\u0439\u043b\u044b \u0430\u043a\u0442\u0443\u0430\u043b\u044c\u043d\u044b',
+ loadingName:'\u0417\u0430\u043f\u0443\u0441\u043a {name}',loadedName:'{name} \u0437\u0430\u043f\u0443\u0449\u0435\u043d',loadFailed:'\u041e\u0448\u0438\u0431\u043a\u0430 \u0437\u0430\u043f\u0443\u0441\u043a\u0430 {name}: {msg}',
+ deleting:'\u0423\u0434\u0430\u043b\u0435\u043d\u0438\u0435 {name}',deleteFailed:'\u041e\u0448\u0438\u0431\u043a\u0430 \u0443\u0434\u0430\u043b\u0435\u043d\u0438\u044f',deleted:'{name} \u0443\u0434\u0430\u043b\u0451\u043d',
+ skipNotConsole:'\u041f\u0440\u043e\u043f\u0443\u0449\u0435\u043d {name} (\u043d\u0435 \u043d\u0430 \u043a\u043e\u043d\u0441\u043e\u043b\u0438)',skipMissing:'\u041f\u0440\u043e\u043f\u0443\u0449\u0435\u043d {name} (\u043d\u0435\u0442 \u0444\u0430\u0439\u043b\u0430)',autoName:'\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a: {name}',
+ downloadingName:'\u0421\u043a\u0430\u0447\u0438\u0432\u0430\u043d\u0438\u0435 {name}...',downloadedFtp:'{name} \u0441\u043a\u0430\u0447\u0430\u043d. \u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u0435 \u0435\u0433\u043e \u043f\u043e FTP \u0432 /data',downloadFailed:'\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u043a\u0430\u0447\u0438\u0432\u0430\u043d\u0438\u044f: {msg}',
+ downloadedName:'{name} \u0441\u043a\u0430\u0447\u0430\u043d',markFirst:'\u0421\u043d\u0430\u0447\u0430\u043b\u0430 \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435 payload',loadedN:'\u0417\u0430\u043f\u0443\u0449\u0435\u043d\u043e: {n}',catalogVersion:'\u0412\u0435\u0440\u0441\u0438\u044f \u0432 \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0435',
+ credit:'\u0410\u0432\u0442\u043e\u0440: X-F1REBALL-X',looking:'\u043f\u043e\u0438\u0441\u043a...',unavailable:'\u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e',langSet:'\u042f\u0437\u044b\u043a: \u0420\u0443\u0441\u0441\u043a\u0438\u0439'
+},
+ja:{
+ ready:'\u6e96\u5099\u5b8c\u4e86',language:'\u8a00\u8a9e',home:'\u30db\u30fc\u30e0',elfFiles:'ELF\u30d5\u30a1\u30a4\u30eb',downloaded:'\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u6e08\u307f',autoPayload:'\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9',
+ f_loader:'\u30ed\u30fc\u30c0\u30fc',f_hen:'HEN',f_apps:'\u30a2\u30d7\u30ea',f_files:'\u30d5\u30a1\u30a4\u30eb',f_storage:'\u30b9\u30c8\u30ec\u30fc\u30b8',f_media:'\u30e1\u30c7\u30a3\u30a2',f_system:'\u30b7\u30b9\u30c6\u30e0',f_tools:'\u30c4\u30fc\u30eb',
+ homeDesc:'\u5de6\u306e\u300cELF\u30d5\u30a1\u30a4\u30eb\u300d\u3092\u958b\u3044\u3066\u304f\u3060\u3055\u3044\u3002\u300c\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u300d\u3067ELF\u3092\u4fdd\u5b58\u3057\u3001\u300c\u30ed\u30fc\u30c9\u300d\u3067elfldr (9021) \u306b\u9001\u4fe1\u3057\u307e\u3059\u3002',
+ afterJb:'\u8131\u7344\u5f8c',openBrowser:'\u30d6\u30e9\u30a6\u30b6\u3092\u958b\u304f',leaveClosed:'\u9589\u3058\u305f\u307e\u307e',
+ homeHint:'\u300c\u81ea\u52d5\u300d\u306f\u300c\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u6e08\u307f\u300d\u3067\u306e\u307f\u8a2d\u5b9a\u3067\u304d\u307e\u3059\u3002\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9\u306f\u8131\u7344\u3054\u3068\u306b1\u56de\u30013\u79d2\u5f85\u3063\u3066\u304b\u3089\u5b9f\u884c\u3055\u308c\u307e\u3059\u3002\u300c\u30ad\u30e3\u30f3\u30bb\u30eb\u300d\u3067\u505c\u6b62\u3057\u307e\u3059\u3002\u300c\u9589\u3058\u305f\u307e\u307e\u300d\u3092\u9078\u3076\u3068\u5b9f\u884c\u5f8c\u306b\u3053\u306e\u30da\u30fc\u30b8\u3092\u9589\u3058\u307e\u3059\u3002L1/R1\u3067\u30d5\u30a9\u30eb\u30c0\u3092\u5207\u308a\u66ff\u3048\u307e\u3059\u3002',
+ autoStarts:'3\u79d2\u5f8c\u306b\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9\u3092\u958b\u59cb\u3057\u307e\u3059',autoRunning:'\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9\u5b9f\u884c\u4e2d',cancelHint:'\u300c\u30ad\u30e3\u30f3\u30bb\u30eb\u300d\u307e\u305f\u306f\u25a1\u30dc\u30bf\u30f3\u3067\u505c\u6b62\u3057\u307e\u3059\u3002',cancel:'\u30ad\u30e3\u30f3\u30bb\u30eb',
+ autoCancelled:'\u81ea\u52d5\u5b9f\u884c\u3092\u30ad\u30e3\u30f3\u30bb\u30eb\u3057\u307e\u3057\u305f',autoDone:'\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9\u5b8c\u4e86',closingBrowser:'\u30d6\u30e9\u30a6\u30b6\u3092\u9589\u3058\u3066\u3044\u307e\u3059',
+ download:'\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9',payload:'\u30ed\u30fc\u30c9',loaded:'\u30ed\u30fc\u30c9\u6e08\u307f',downloadedBtn:'\u4fdd\u5b58\u6e08\u307f',fail:'\u5931\u6557',update:'\u66f4\u65b0',updating:'\u66f4\u65b0\u4e2d...',
+ del:'\u524a\u9664',close:'\u9589\u3058\u308b',auto:'\u81ea\u52d5',select:'\u9078\u629e',multi:'\u9078\u629e\u3057\u3066\u30ed\u30fc\u30c9',colPayload:'\u30da\u30a4\u30ed\u30fc\u30c9',colVer:'\u7248',
+ noSaved:'\u3053\u306e\u672c\u4f53\u306b\u4fdd\u5b58\u3055\u308c\u305f\u30da\u30a4\u30ed\u30fc\u30c9\u306f\u3042\u308a\u307e\u305b\u3093\u3002',savedOnConsole:'\u4fdd\u5b58\u6e08\u307f\u30da\u30a4\u30ed\u30fc\u30c9\u306f\u672c\u4f53\u3067\u8868\u793a\u3055\u308c\u307e\u3059\u3002',checkingSaved:'\u4fdd\u5b58\u6e08\u307f\u30da\u30a4\u30ed\u30fc\u30c9\u3092\u78ba\u8a8d\u4e2d...',
+ noLoaded:'\u30ed\u30fc\u30c9\u4e2d\u306eELF\u306f\u3042\u308a\u307e\u305b\u3093\u3002',checkingLoaded:'\u30ed\u30fc\u30c9\u4e2d\u306eELF\u3092\u78ba\u8a8d\u4e2d...',emptyFolder:'\u3053\u306e\u30d5\u30a9\u30eb\u30c0\u306b\u30da\u30a4\u30ed\u30fc\u30c9\u306f\u3042\u308a\u307e\u305b\u3093\u3002',noAutoDl:'\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9\u306b\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u6e08\u307f\u306e\u30da\u30a4\u30ed\u30fc\u30c9\u306f\u3042\u308a\u307e\u305b\u3093\u3002',
+ refreshing:'\u30ab\u30bf\u30ed\u30b0\u3092\u66f4\u65b0\u4e2d...',catalogN:'\u30ab\u30bf\u30ed\u30b0: {n}\u4ef6\uff08{live}\u30bd\u30fc\u30b9\uff09',catalogOffline:'\u30ab\u30bf\u30ed\u30b0\u306b\u63a5\u7d9a\u3067\u304d\u307e\u305b\u3093',
+ updFailedOffline:'\u66f4\u65b0\u5931\u6557: \u30ab\u30bf\u30ed\u30b0\u306b\u63a5\u7d9a\u3067\u304d\u307e\u305b\u3093\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002',updatedPartial:'{total}\u4ef6\u4e2d{done}\u4ef6\u3092\u66f4\u65b0\u3002\u5931\u6557: {names}',
+ updatedFiles:'\u66f4\u65b0\u3057\u305f\u30d5\u30a1\u30a4\u30eb: {n}\u4ef6\u3002\u30ab\u30bf\u30ed\u30b0: {c}\u4ef6',catalogUpdated:'\u30ab\u30bf\u30ed\u30b0\u3092\u66f4\u65b0\u3057\u307e\u3057\u305f\uff08{n}\u4ef6\uff09',updatingItem:'{name} \u3092\u66f4\u65b0\u4e2d\uff08{i}/{n}\uff09...',
+ updatingName:'{name} \u3092\u66f4\u65b0\u4e2d...',updateFailed:'\u66f4\u65b0\u5931\u6557: {msg}',updatedName:'{name} \u3092\u66f4\u65b0\u3057\u307e\u3057\u305f',updMissing:'\u66f4\u65b0: \u30ab\u30bf\u30ed\u30b0\u306e\u30c1\u30a7\u30c3\u30af\u30b5\u30e0\u304c\u3042\u308a\u307e\u305b\u3093',
+ updatesAvail:'\u66f4\u65b0\u3042\u308a: {n}\u4ef6',upToDate:'\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u6e08\u307f\u30d5\u30a1\u30a4\u30eb\u306f\u6700\u65b0\u3067\u3059',
+ loadingName:'{name} \u3092\u30ed\u30fc\u30c9\u4e2d',loadedName:'{name} \u3092\u30ed\u30fc\u30c9\u3057\u307e\u3057\u305f',loadFailed:'{name} \u306e\u30ed\u30fc\u30c9\u5931\u6557: {msg}',
+ deleting:'{name} \u3092\u524a\u9664\u4e2d',deleteFailed:'\u524a\u9664\u306b\u5931\u6557\u3057\u307e\u3057\u305f',deleted:'{name} \u3092\u524a\u9664\u3057\u307e\u3057\u305f',
+ skipNotConsole:'{name} \u3092\u30b9\u30ad\u30c3\u30d7\uff08\u672c\u4f53\u4ee5\u5916\uff09',skipMissing:'{name} \u3092\u30b9\u30ad\u30c3\u30d7\uff08\u30d5\u30a1\u30a4\u30eb\u306a\u3057\uff09',autoName:'\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9: {name}',
+ downloadingName:'{name} \u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u4e2d...',downloadedFtp:'{name} \u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3057\u307e\u3057\u305f\u3002FTP\u3067 /data \u306b\u30a2\u30c3\u30d7\u30ed\u30fc\u30c9\u3057\u3066\u304f\u3060\u3055\u3044',downloadFailed:'\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u5931\u6557: {msg}',
+ downloadedName:'{name} \u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3057\u307e\u3057\u305f',markFirst:'\u5148\u306b\u30da\u30a4\u30ed\u30fc\u30c9\u3092\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044',loadedN:'\u30ed\u30fc\u30c9\u6570: {n}',catalogVersion:'\u30ab\u30bf\u30ed\u30b0\u306e\u30d0\u30fc\u30b8\u30e7\u30f3',
+ credit:'\u5236\u4f5c: X-F1REBALL-X',looking:'\u691c\u7d22\u4e2d...',unavailable:'\u53d6\u5f97\u3067\u304d\u307e\u305b\u3093',langSet:'\u8a00\u8a9e: \u65e5\u672c\u8a9e'
+},
+zh:{
+ ready:'\u5c31\u7eea',language:'\u8bed\u8a00',home:'\u4e3b\u9875',elfFiles:'ELF \u6587\u4ef6',downloaded:'\u5df2\u4e0b\u8f7d',autoPayload:'\u81ea\u52a8\u8f7d\u8377',
+ f_loader:'\u52a0\u8f7d\u5668',f_hen:'HEN',f_apps:'\u5e94\u7528',f_files:'\u6587\u4ef6',f_storage:'\u5b58\u50a8',f_media:'\u5a92\u4f53',f_system:'\u7cfb\u7edf',f_tools:'\u5de5\u5177',
+ homeDesc:'\u5728\u5de6\u4fa7\u6253\u5f00\u201cELF \u6587\u4ef6\u201d\u3002\u201c\u4e0b\u8f7d\u201d\u4fdd\u5b58 ELF\uff0c\u201c\u52a0\u8f7d\u201d\u5c06\u5176\u53d1\u9001\u5230 elfldr (9021)\u3002',
+ afterJb:'\u8d8a\u72f1\u540e',openBrowser:'\u6253\u5f00\u6d4f\u89c8\u5668',leaveClosed:'\u4fdd\u6301\u5173\u95ed',
+ homeHint:'\u53ea\u80fd\u5728\u201c\u5df2\u4e0b\u8f7d\u201d\u4e2d\u52fe\u9009\u201c\u81ea\u52a8\u201d\u3002\u6bcf\u6b21\u8d8a\u72f1\u540e\uff0c\u81ea\u52a8\u8f7d\u8377\u4f1a\u5728\u6682\u505c 3 \u79d2\u540e\u8fd0\u884c\u4e00\u6b21\u3002\u201c\u53d6\u6d88\u201d\u53ef\u505c\u6b62\u3002\u9009\u62e9\u201c\u4fdd\u6301\u5173\u95ed\u201d\u4f1a\u5728\u8fd0\u884c\u540e\u5173\u95ed\u6b64\u9875\u9762\u3002L1/R1 \u5207\u6362\u6587\u4ef6\u5939\u3002',
+ autoStarts:'\u81ea\u52a8\u8f7d\u8377\u5c06\u5728 3 \u79d2\u540e\u5f00\u59cb',autoRunning:'\u81ea\u52a8\u8f7d\u8377\u8fd0\u884c\u4e2d',cancelHint:'\u6309\u201c\u53d6\u6d88\u201d\u6216\u65b9\u5757\u952e\u505c\u6b62\u3002',cancel:'\u53d6\u6d88',
+ autoCancelled:'\u5df2\u53d6\u6d88\u81ea\u52a8\u8fd0\u884c',autoDone:'\u81ea\u52a8\u8f7d\u8377\u5b8c\u6210',closingBrowser:'\u6b63\u5728\u5173\u95ed\u6d4f\u89c8\u5668',
+ download:'\u4e0b\u8f7d',payload:'\u52a0\u8f7d',loaded:'\u5df2\u52a0\u8f7d',downloadedBtn:'\u5df2\u4e0b\u8f7d',fail:'\u5931\u8d25',update:'\u66f4\u65b0',updating:'\u6b63\u5728\u66f4\u65b0...',
+ del:'\u5220\u9664',close:'\u5173\u95ed',auto:'\u81ea\u52a8',select:'\u9009\u62e9',multi:'\u6279\u91cf\u52a0\u8f7d',colPayload:'\u8f7d\u8377',colVer:'\u7248\u672c',
+ noSaved:'\u6b64\u4e3b\u673a\u4e0a\u6ca1\u6709\u5df2\u4fdd\u5b58\u7684\u8f7d\u8377\u3002',savedOnConsole:'\u5df2\u4fdd\u5b58\u7684\u8f7d\u8377\u4f1a\u5728\u4e3b\u673a\u4e0a\u663e\u793a\u3002',checkingSaved:'\u6b63\u5728\u68c0\u67e5\u5df2\u4fdd\u5b58\u7684\u8f7d\u8377...',
+ noLoaded:'\u6ca1\u6709\u5df2\u52a0\u8f7d\u7684 ELF\u3002',checkingLoaded:'\u6b63\u5728\u68c0\u67e5\u5df2\u52a0\u8f7d\u7684 ELF...',emptyFolder:'\u6b64\u6587\u4ef6\u5939\u4e2d\u6ca1\u6709\u8f7d\u8377\u3002',noAutoDl:'\u81ea\u52a8\u8f7d\u8377\u4e2d\u6ca1\u6709\u5df2\u4e0b\u8f7d\u7684\u8f7d\u8377\u3002',
+ refreshing:'\u6b63\u5728\u5237\u65b0\u76ee\u5f55...',catalogN:'\u76ee\u5f55\uff1a{n} \u4e2a\u8f7d\u8377\uff08{live} \u4e2a\u6765\u6e90\uff09',catalogOffline:'\u76ee\u5f55\u79bb\u7ebf',
+ updFailedOffline:'\u66f4\u65b0\u5931\u8d25\uff1a\u76ee\u5f55\u79bb\u7ebf\uff0c\u8bf7\u91cd\u8bd5\u3002',updatedPartial:'\u5df2\u66f4\u65b0 {done}/{total}\u3002\u5931\u8d25\uff1a{names}',
+ updatedFiles:'\u5df2\u66f4\u65b0\u6587\u4ef6\uff1a{n}\u3002\u76ee\u5f55\uff1a{c}',catalogUpdated:'\u76ee\u5f55\u5df2\u66f4\u65b0\uff08{n}\uff09',updatingItem:'\u6b63\u5728\u66f4\u65b0 {name}\uff08{i}/{n}\uff09...',
+ updatingName:'\u6b63\u5728\u66f4\u65b0 {name}...',updateFailed:'\u66f4\u65b0\u5931\u8d25\uff1a{msg}',updatedName:'\u5df2\u66f4\u65b0 {name}',updMissing:'\u66f4\u65b0\uff1a\u7f3a\u5c11\u76ee\u5f55\u6821\u9a8c\u548c',
+ updatesAvail:'\u6709\u53ef\u7528\u66f4\u65b0\uff1a{n}',upToDate:'\u5df2\u4e0b\u8f7d\u7684\u6587\u4ef6\u5747\u4e3a\u6700\u65b0',
+ loadingName:'\u6b63\u5728\u52a0\u8f7d {name}',loadedName:'\u5df2\u52a0\u8f7d {name}',loadFailed:'\u52a0\u8f7d {name} \u5931\u8d25\uff1a{msg}',
+ deleting:'\u6b63\u5728\u5220\u9664 {name}',deleteFailed:'\u5220\u9664\u5931\u8d25',deleted:'\u5df2\u5220\u9664 {name}',
+ skipNotConsole:'\u5df2\u8df3\u8fc7 {name}\uff08\u4e0d\u5728\u4e3b\u673a\u4e0a\uff09',skipMissing:'\u5df2\u8df3\u8fc7 {name}\uff08\u6587\u4ef6\u7f3a\u5931\uff09',autoName:'\u81ea\u52a8\u8f7d\u8377\uff1a{name}',
+ downloadingName:'\u6b63\u5728\u4e0b\u8f7d {name}...',downloadedFtp:'\u5df2\u4e0b\u8f7d {name}\u3002\u8bf7\u901a\u8fc7 FTP \u4e0a\u4f20\u5230 /data',downloadFailed:'\u4e0b\u8f7d\u5931\u8d25\uff1a{msg}',
+ downloadedName:'\u5df2\u4e0b\u8f7d {name}',markFirst:'\u8bf7\u5148\u9009\u62e9\u8f7d\u8377',loadedN:'\u5df2\u52a0\u8f7d\uff1a{n}',catalogVersion:'\u76ee\u5f55\u7248\u672c',
+ credit:'\u4f5c\u8005\uff1aX-F1REBALL-X',looking:'\u6b63\u5728\u67e5\u627e...',unavailable:'\u4e0d\u53ef\u7528',langSet:'\u8bed\u8a00\uff1a\u4e2d\u6587'
+},
+it:{
+ ready:'Pronto',language:'Lingua',home:'Home',elfFiles:'File ELF',downloaded:'Scaricati',autoPayload:'AutoPayload',
+ f_loader:'Loader',f_hen:'HEN',f_apps:'App',f_files:'File',f_storage:'Archiviazione',f_media:'Media',f_system:'Sistema',f_tools:'Strumenti',
+ homeDesc:'Apri File ELF a sinistra. Scarica salva l\u2019ELF. Carica lo invia a elfldr (9021).',
+ afterJb:'Dopo il jailbreak',openBrowser:'Apri il browser',leaveClosed:'Lascia chiuso',
+ homeHint:'Seleziona Auto solo in Scaricati. AutoPayload viene eseguito una volta dopo ogni jailbreak, dopo una pausa di 3 secondi. Annulla lo interrompe. Lascia chiuso chiude poi questa pagina. L1/R1 cambiano cartella.',
+ autoStarts:'AutoPayload parte tra 3 secondi',autoRunning:'AutoPayload in esecuzione',cancelHint:'Premi Annulla o Quadrato per fermarlo.',cancel:'Annulla',
+ autoCancelled:'Auto annullato',autoDone:'AutoPayload completato',closingBrowser:'Chiusura del browser',
+ download:'Scarica',payload:'Carica',loaded:'Caricato',downloadedBtn:'Scaricato',fail:'Errore',update:'Aggiorna',updating:'Aggiornamento...',
+ del:'Elimina',close:'Chiudi',auto:'Auto',select:'Seleziona',multi:'Carica selezionati',colPayload:'Payload',colVer:'Vers.',
+ noSaved:'Nessun payload salvato su questa console.',savedOnConsole:'I payload salvati sono elencati sulla console.',checkingSaved:'Controllo dei payload salvati...',
+ noLoaded:'Nessun ELF caricato.',checkingLoaded:'Controllo degli ELF caricati...',emptyFolder:'Nessun payload in questa cartella.',noAutoDl:'Nessun payload scaricato in AutoPayload.',
+ refreshing:'Aggiornamento catalogo...',catalogN:'Catalogo: {n} payload ({live} fonti)',catalogOffline:'Catalogo offline',
+ updFailedOffline:'Aggiornamento non riuscito: catalogo offline. Riprova.',updatedPartial:'Aggiornati {done} su {total}. Non riusciti: {names}',
+ updatedFiles:'File aggiornati: {n}. Catalogo: {c}',catalogUpdated:'Catalogo aggiornato ({n})',updatingItem:'Aggiornamento di {name} ({i}/{n})...',
+ updatingName:'Aggiornamento di {name}...',updateFailed:'Aggiornamento non riuscito: {msg}',updatedName:'{name} aggiornato',updMissing:'Aggiorna: checksum del catalogo mancante',
+ updatesAvail:'Aggiornamenti disponibili: {n}',upToDate:'I file scaricati sono aggiornati',
+ loadingName:'Caricamento di {name}',loadedName:'{name} caricato',loadFailed:'Caricamento di {name} non riuscito: {msg}',
+ deleting:'Eliminazione di {name}',deleteFailed:'Eliminazione non riuscita',deleted:'{name} eliminato',
+ skipNotConsole:'{name} saltato (non sulla console)',skipMissing:'{name} saltato (file mancante)',autoName:'AutoPayload: {name}',
+ downloadingName:'Download di {name}...',downloadedFtp:'{name} scaricato. Caricalo via FTP in /data',downloadFailed:'Download non riuscito: {msg}',
+ downloadedName:'{name} scaricato',markFirst:'Seleziona prima i payload',loadedN:'Caricati: {n}',catalogVersion:'Versione nel catalogo',
+ credit:'Creato da X-F1REBALL-X',looking:'ricerca...',unavailable:'non disponibile',langSet:'Lingua: Italiano'
+}
+};
+var LANG='en';
+function langInfo(code){ var i; for(i=0;i<LANGS.length;i++){ if(LANGS[i].code===code) return LANGS[i]; } return LANGS[0]; }
+function t(key, vars){
+  var d=I18N[LANG]||I18N.en, s=d[key];
+  if(s==null) s=I18N.en[key];
+  if(s==null) s=key;
+  if(vars) s=String(s).replace(/\{(\w+)\}/g,function(m,k){ return vars[k]!=null ? String(vars[k]) : m; });
+  return s;
+}
+function readLang(){
+  var v='', m;
+  try{ v=localStorage.getItem('ps5elfs-lang')||''; }catch(e){}
+  if(!v){ try{ m=document.cookie.match(/(?:^|; )ps5elfs-lang=([a-z]{2})/); if(m) v=m[1]; }catch(e2){} }
+  if(v==='he') v='en';
+  return I18N[v] ? v : 'en';
+}
+function saveLang(code){
+  try{ localStorage.setItem('ps5elfs-lang', code); }catch(e){}
+  try{ sessionStorage.setItem('ps5elfs-lang', code); }catch(e2){}
+  document.cookie='ps5elfs-lang='+code+'; path=/; max-age=31536000';
+}
+function applyStaticI18n(){
+  var info=langInfo(LANG), nodes, i, k, mainEl=document.getElementById('main'), fl=document.getElementById('langflag');
+  try{ document.documentElement.setAttribute('lang', LANG); }catch(e){}
+  if(mainEl){ if(info.rtl) mainEl.setAttribute('dir','rtl'); else mainEl.removeAttribute('dir'); }
+  var ab=document.getElementById('autobanner');
+  if(ab){ if(info.rtl) ab.setAttribute('dir','rtl'); else ab.removeAttribute('dir'); }
+  nodes=document.querySelectorAll('[data-i18n]');
+  for(i=0;i<nodes.length;i++){
+    k=nodes[i].getAttribute('data-i18n');
+    if(nodes[i].id==='status' && nodes[i].getAttribute('data-i18n-live')==='0') continue;
+    nodes[i].textContent=t(k);
+  }
+  if(fl) fl.innerHTML=FLAGS[info.flag]||'';
+  var ip=document.getElementById('deviceip');
+  if(ip){ var st=ip.getAttribute('data-state'); if(st==='looking'||st==='unavailable') ip.textContent=t(st); }
+  renderLangList();
+}
+function renderLangList(){
+  var box=document.getElementById('langlist'), html='', i, L;
+  if(!box) return;
+  for(i=0;i<LANGS.length;i++){
+    L=LANGS[i];
+    html+='<button type="button" class="langopt" role="menuitem" data-lang="'+L.code+'" data-state="'+(L.code===LANG?'on':'off')+'"'+(L.rtl?' dir="rtl"':'')+'><span class="flag">'+(FLAGS[L.flag]||'')+'</span><span>'+esc(L.name)+'</span></button>';
+  }
+  box.innerHTML=html;
+  var opts=box.querySelectorAll('.langopt');
+  for(i=0;i<opts.length;i++){
+    opts[i].onclick=function(){ setLang(this.getAttribute('data-lang')); toggleLangList(false); return false; };
+  }
+}
+function toggleLangList(force){
+  var box=document.getElementById('langlist'), on;
+  if(!box) return;
+  on=(force===true||force===false) ? force : box.getAttribute('data-state')!=='open';
+  box.setAttribute('data-state', on?'open':'closed');
+  box.className=on?'show':'';
+  if(on){ var cur=box.querySelector('.langopt[data-state="on"]')||box.querySelector('.langopt'); if(cur && cur.focus) try{ cur.focus(); }catch(e){} }
+}
+function setLang(code){
+  if(!I18N[code]) code='en';
+  LANG=code;
+  saveLang(code);
+  applyStaticI18n();
+  rerenderAfterLang();
+  setStatus(t('langSet'));
+}
+LANG=readLang();
 
 function getHashFolder(){
   var h=location.hash||'';
@@ -603,15 +929,15 @@ function fetchRemoteCatalog(done){
   }, function(){ done(null, 0, []); });
 }
 function refreshCatalog(done){
-  setStatus('Refreshing catalog...');
+  setStatus(t('refreshing'));
   fetchRemoteCatalog(function(list, live, names){
     if(list){
       PAYLOADS=list;
-      setStatus('Catalog '+PAYLOADS.length+' ('+live+' sources: '+names.join(', ')+')');
+      setStatus(t('catalogN',{n:PAYLOADS.length,live:live}));
       if(done) done(true);
     }else{
       PAYLOADS=PINNED_PAYLOADS.slice();
-      setStatus('Catalog offline');
+      setStatus(t('catalogOffline'));
       if(done) done(false);
     }
   });
@@ -619,7 +945,7 @@ function refreshCatalog(done){
 /* First open fetches every repo once. Later opens show this cache right away and
    check saved files against the repos in the background (Update banner).
    Update and manual Refresh clear it. Disk Download/Load checks are separate. */
-var CATALOG_CACHE_KEY='ps5elfs-catalog-1.0.0';
+var CATALOG_CACHE_KEY='ps5elfs-catalog-'+APP_VERSION;
 function readCatalogCache(){
   var raw='';
   try{ raw=localStorage.getItem(CATALOG_CACHE_KEY)||''; }catch(e){}
@@ -699,31 +1025,19 @@ function findDownloadedUpdates(list, done){
   }
   pump();
 }
-function showUpdateBanner(list){
-  var box=document.getElementById('catupdate');
-  var lab=document.getElementById('catupdatetext');
-  var btn=document.getElementById('catupdatebtn');
-  var ver=document.getElementById('catupdatever');
-  var names=[], vers=[], i, v;
-  for(i=0;i<list.length && i<3;i++){
-    names.push(list[i].entry.name);
-    v=updateVerLabel(list[i].entry);
-    if(v) vers.push(v);
-  }
-  var t=(list.length===1 ? 'Update available for 1 downloaded file: ' : 'Updates available for '+list.length+' downloaded files: ')+
-    names.join(', ')+(list.length>names.length?', ...':'')+'.';
-  if(lab) lab.textContent=t;
-  if(ver){
-    ver.textContent=vers.join(' \u00b7 ')+(list.length>3?' \u2026':'');
-    ver.style.display=vers.length?'':'none';
-  }
-  if(btn){ btn.disabled=false; btn.textContent='Update'; }
-  if(box) box.className='show';
+/* #catupdate global banner is gone. Pending updates show on the sidebar Update
+   button (badge + data-state="has") and as per-row Update buttons. */
+function paintSideUpdate(){
+  var b=document.getElementById('sideupd'), n=document.getElementById('sideupdn');
+  var k=pendingUpdates ? pendingUpdates.length : 0;
+  if(!b) return;
+  if(catalogUpdating){ b.setAttribute('data-state','busy'); b.disabled=true; }
+  else{ b.setAttribute('data-state', k ? 'has' : 'idle'); b.disabled=false; }
+  if(n) n.textContent=k ? String(k) : '';
+  b.title=k ? t('updatesAvail',{n:k}) : t('upToDate');
 }
-function hideUpdateBanner(){
-  var box=document.getElementById('catupdate');
-  if(box) box.className='';
-}
+function showUpdateBanner(list){ pendingUpdates=list||[]; paintSideUpdate(); }
+function hideUpdateBanner(){ pendingUpdates=[]; paintSideUpdate(); }
 function scheduleCatalogRecheck(){
   if(!isConsoleHost()) return;
   if(catalogRecheckTimer) clearTimeout(catalogRecheckTimer);
@@ -739,8 +1053,8 @@ function checkDownloadedUpdates(fresh){
       catalogCheckBusy=false;
       scheduleCatalogRecheck();
       if(catalogUpdating) return;
-      pendingUpdates=found;
       if(found.length) showUpdateBanner(found); else hideUpdateBanner();
+      if(currentFolder==='downloaded') showDownloadedFolder();
     });
   }
   if(fresh) withList(fresh);
@@ -750,6 +1064,15 @@ function rerenderCatalogViews(){
   if(currentFolder) showFolder(currentFolder); else showHome();
   applyRemembered();
   if(isConsoleHost() && currentFolder!=='downloaded') showDownloadedFolderCount();
+}
+function rerenderAfterLang(){
+  paintSideUpdate();
+  if(currentFolder) showFolder(currentFolder); else showHome();
+  applyRemembered();
+}
+/* Something is mid-action (download/load/update): do not swap the list under it. */
+function uiBusy(){
+  return catalogUpdating || !!(viewEl && viewEl.querySelector && viewEl.querySelector('button.run[data-state="busy"]'));
 }
 function updateOneFile(u){
   var q='/update?path='+encodeURIComponent(u.path)+
@@ -766,8 +1089,7 @@ function updateOneFile(u){
 function applyCatalogUpdate(){
   if(catalogUpdating) return;
   catalogUpdating=true;
-  var btn=document.getElementById('catupdatebtn');
-  if(btn){ btn.disabled=true; btn.textContent='Updating...'; }
+  paintSideUpdate();
   clearCatalogCache();
   var before=PAYLOADS;
   refreshCatalog(function(ok){
@@ -776,8 +1098,8 @@ function applyCatalogUpdate(){
       PAYLOADS=before;
       writeCatalogCache(PAYLOADS);
       catalogUpdating=false;
-      setStatus('Update failed: catalog offline. Try again.');
-      if(btn){ btn.disabled=false; btn.textContent='Update'; }
+      paintSideUpdate();
+      setStatus(t('updFailedOffline'));
       return;
     }
     writeCatalogCache(PAYLOADS);
@@ -788,26 +1110,43 @@ function applyCatalogUpdate(){
         if(i>=todo.length){
           showProgress(false);
           catalogUpdating=false;
-          pendingUpdates=failed;
           if(failed.length){
             showUpdateBanner(failed);
-            setStatus('Updated '+done+' of '+todo.length+' files. Failed: '+failed.map(function(f){return f.entry.name;}).join(', '));
+            setStatus(t('updatedPartial',{done:done,total:todo.length,names:failed.map(function(f){return f.entry.name;}).join(', ')}));
           }else{
             hideUpdateBanner();
-            setStatus(todo.length ? 'Updated '+done+' file'+(done===1?'':'s')+'. Catalog '+PAYLOADS.length : 'Catalog updated ('+PAYLOADS.length+')');
+            setStatus(todo.length ? t('updatedFiles',{n:done,c:PAYLOADS.length}) : t('catalogUpdated',{n:PAYLOADS.length}));
           }
           rerenderCatalogViews();
           scheduleCatalogRecheck();
           return;
         }
         var u=todo[i++];
-        setStatus('Updating '+u.entry.name+' ('+i+'/'+todo.length+')...');
+        setStatus(t('updatingItem',{name:u.entry.name,i:i,n:todo.length}));
         showProgress(true);
         setProgressPct(Math.round((i-1)*100/todo.length));
         updateOneFile(u).then(function(){ done++; }, function(){ failed.push(u); }).then(next);
       }
       next();
     });
+  });
+}
+/* Sidebar Update: on the console refresh + re-download outdated saved files;
+   elsewhere just refresh the catalog from the repos. */
+function sideUpdateClick(){
+  if(catalogUpdating) return;
+  if(isConsoleHost()){ applyCatalogUpdate(); return; }
+  catalogUpdating=true;
+  paintSideUpdate();
+  clearCatalogCache();
+  var before=PAYLOADS;
+  refreshCatalog(function(ok){
+    catalogUpdating=false;
+    if(ok && PAYLOADS && PAYLOADS.length) writeCatalogCache(PAYLOADS);
+    else PAYLOADS=before;
+    paintSideUpdate();
+    rerenderCatalogViews();
+    setStatus(ok ? t('catalogUpdated',{n:PAYLOADS.length}) : t('updFailedOffline'));
   });
 }
 function catalogFor(name, path){
@@ -838,32 +1177,32 @@ function sendPayload(name, path, fileUrl, done){
   if(isConsoleHost() && path){
     /* Load only. Missing file stays Download — do not fetch here. */
     snapshotPidSet(function(before){
-      setStatus('Loading '+name);
+      setStatus(t('loadingName',{name:name}));
       fetch('/run?path='+encodeURIComponent(path),{method:'POST'})
         .then(function(r){return r.text().then(function(t){return {ok:r.ok,t:t};});})
         .then(function(res){
         if(res.ok){
           rememberActive(name);
           if(before) trackNewPid(name, before, 12);
-          setStatus('Loaded '+name);
+          setStatus(t('loadedName',{name:name}));
           if(done) done(true);
         }else{
-          setStatus('Load failed '+name+': '+(res.t||'elfldr rejected'));
+          setStatus(t('loadFailed',{name:name,msg:(res.t||'elfldr rejected')}));
           if(done) done(false);
         }
       }).catch(function(e){
         showProgress(false);
         var msg=(e&&e.message)?String(e.message):String(e||'');
-        setStatus('Load failed '+name+(msg?(': '+msg):''));
+        setStatus(t('loadFailed',{name:name,msg:msg}));
         if(done) done(false);
       });
     });
     return;
   }
   /* Pages / remote: ask console host to pull by URL when possible; else direct. */
-  setStatus('Loading '+name);
+  setStatus(t('loadingName',{name:name}));
   sendWithPidTrack(name, fileUrl, function(){
-    setStatus('Loaded '+name);
+    setStatus(t('loadedName',{name:name}));
     if(done) done(true);
   });
 }
@@ -943,30 +1282,30 @@ function showDeleteBtn(tr){
   b=document.createElement('button');
   b.type='button';
   b.className='run del';
-  b.textContent='Delete';
+  b.textContent=t('del');
   b.addEventListener('click',function(){ deleteDownloaded(name, path, tr); });
   act.appendChild(b);
 }
 function deleteDownloaded(name, path, tr){
   if(!path) return;
-  setStatus('Deleting '+name);
+  setStatus(t('deleting',{name:name}));
   fetch('/file_delete?path='+encodeURIComponent(path)).then(function(r){
     return r.json().catch(function(){ return {ok:false}; });
   }).then(function(j){
-    if(!j || !j.ok){ setStatus('Delete failed'); return; }
+    if(!j || !j.ok){ setStatus(t('deleteFailed')); return; }
     setAuto(name, false);
     forgetActive(name);
     clearPayloadPid(name);
-    setStatus('Deleted '+name);
+    setStatus(t('deleted',{name:name}));
     if(downloadedCountKnown && currentFolder!=='downloaded' && downloadedCount>0) downloadedCount--;
     if(currentFolder==='downloaded') showDownloadedFolder();
     else if(currentFolder==='auto') showFolder('auto');
     else if(tr){
       setAutoBox(tr, false);
       var btn=tr.querySelector('button.run:not(.kill):not(.update):not(.del)');
-      finishPrimary(btn, 'Download', 'download');
+      finishPrimary(btn, 'download');
     }
-  }).catch(function(){ setStatus('Delete failed'); });
+  }).catch(function(){ setStatus(t('deleteFailed')); });
 }
 function autoCount(){
   var n=0, i;
@@ -987,13 +1326,37 @@ function browserStayOpen(){
   return v==='open';
 }
 function setBrowserStayOpen(on){
+  storeBrowserPref(on);
+  try{
+    fetch('/browser-pref?open='+(on?'1':'0'), {method:'GET', cache:'no-store'}).catch(function(){});
+  }catch(e3){}
+}
+function storeBrowserPref(on){
   var v=on?'open':'closed';
   try{ localStorage.setItem('ps5elfs-browser', v); }catch(e){}
   try{ sessionStorage.setItem('ps5elfs-browser', v); }catch(e2){}
   document.cookie='ps5elfs-browser='+v+'; path=/; max-age=31536000';
+}
+function paintBrowserChoice(on){
+  var all=homeEl.querySelectorAll ? homeEl.querySelectorAll('button[data-brows]') : [], j, mine;
+  for(j=0;j<all.length;j++){
+    mine=all[j].getAttribute('data-brows')===(on?'open':'closed');
+    all[j].className=mine?'selected':'';
+    all[j].setAttribute('data-state', mine?'on':'off');
+  }
+}
+/* The disk file /data/elf-launcher/open-after-jb is the truth on the console. */
+function syncBrowserPrefFromDisk(){
+  if(!isConsoleHost()) return;
   try{
-    fetch('/browser-pref?open='+(on?'1':'0'), {method:'GET', cache:'no-store'}).catch(function(){});
-  }catch(e3){}
+    fetch('/browser-pref',{method:'GET',cache:'no-store'}).then(function(r){
+      return r.json().catch(function(){ return null; });
+    }).then(function(j){
+      if(!j || j.ok!==true || typeof j.open!=='boolean') return;
+      storeBrowserPref(j.open);
+      if(!currentFolder) paintBrowserChoice(j.open);
+    }).catch(function(){});
+  }catch(e){}
 }
 var BOOT_AUTO_KEY='ps5elfs-boot-auto-done';
 /* null=unknown, true/false=synced. Disk on :1000 survives page/app reopens. */
@@ -1072,15 +1435,17 @@ function probeElfldr(cb){
   }
   fin(false);
 }
-function showAutoBanner(text){
+function showAutoBanner(key){
   var box=document.getElementById('autobanner');
   var lab=document.getElementById('autobannertext');
-  if(lab) lab.textContent=text;
-  if(box) box.className='show';
+  var btn=document.getElementById('autobannercancel');
+  if(lab){ lab.textContent=t(key); lab.setAttribute('data-i18n', key); }
+  if(box){ box.className='show'; box.setAttribute('data-state', key); }
+  if(btn && btn.focus) try{ btn.focus(); }catch(e){}
 }
 function hideAutoBanner(){
   var box=document.getElementById('autobanner');
-  if(box) box.className='';
+  if(box){ box.className=''; box.setAttribute('data-state','hidden'); }
 }
 /* One shot: arm only the first time elfldr is already listening. 3s pause, then load. */
 function autoQueueCount(){
@@ -1094,10 +1459,8 @@ function beginAutoAfterPause(){
   if(!autoQueueCount()) return;
   autoStop=false;
   autoRunning=false;
-  btn=document.getElementById('autocancel');
-  if(btn) btn.disabled=false;
-  showAutoBanner('AutoPayload starts in 3 seconds. Square or Cancel stops it.');
-  setStatus('AutoPayload in 3s. Square cancels.');
+  showAutoBanner('autoStarts');
+  setStatus(t('autoStarts'));
   if(autoTimer) clearTimeout(autoTimer);
   autoTimer=setTimeout(function(){
     autoTimer=null;
@@ -1105,16 +1468,14 @@ function beginAutoAfterPause(){
     if(!autoQueueCount()) return;
     markBootAutoDone();
     autoRunning=true;
-    showAutoBanner('AutoPayload running. Square or Cancel stops it.');
+    showAutoBanner('autoRunning');
     runAuto(function(loaded){
       autoRunning=false;
       hideAutoBanner();
-      var b=document.getElementById('autocancel');
-      if(b) b.disabled=true;
       if(autoStop) return;
       if(browserStayOpen()) return;
       if(!loaded) return;
-      setStatus('Closing browser');
+      setStatus(t('closingBrowser'));
       setTimeout(function(){ padClose(); }, 500);
     });
   }, 3000);
@@ -1143,60 +1504,54 @@ function watchElfldrThenAuto(){
   });
 }
 function runAuto(done){
-  var queue=[], i, p, btn;
+  var queue=[], i, p;
   for(i=0;i<PAYLOADS.length;i++){
     p=PAYLOADS[i];
     if(!p || !isAutoName(p.name)) continue;
     if(isProtectedKillName(p.name) || isProtectedKillName(p.path)) continue;
     queue.push(p);
   }
-  btn=document.getElementById('autocancel');
   if(!queue.length){
-    if(btn) btn.disabled=true;
     if(done) done(0);
     return;
   }
   if(autoStop){
-    if(btn) btn.disabled=true;
     hideAutoBanner();
     if(done) done(0);
     return;
   }
   autoStop=false;
-  if(btn) btn.disabled=false;
   var n=0;
   function step(){
     var item;
     if(autoStop){
-      if(btn) btn.disabled=true;
       hideAutoBanner();
-      setStatus('Auto cancelled');
+      setStatus(t('autoCancelled'));
       return;
     }
     if(n>=queue.length){
-      if(btn) btn.disabled=true;
-      setStatus('AutoPayload done');
+      setStatus(t('autoDone'));
       if(done) done(n);
       return;
     }
     item=queue[n++];
     if(!isConsoleHost()){
-      setStatus('Skip '+item.name+' (not on console)');
+      setStatus(t('skipNotConsole',{name:item.name}));
       setTimeout(step, 150);
       return;
     }
     localMeta(item.path).then(function(meta){
       if(!(meta && meta.ok && meta.exists)){
-        setStatus('Skip '+item.name+' (file missing)');
+        setStatus(t('skipMissing',{name:item.name}));
         setTimeout(step, 200);
         return;
       }
-      setStatus('AutoPayload '+item.name);
+      setStatus(t('autoName',{name:item.name}));
       sendPayload(item.name, item.path, (item.url||item.path), function(){
         setTimeout(step, 400);
       });
     }).catch(function(){
-      setStatus('Skip '+item.name+' (file missing)');
+      setStatus(t('skipMissing',{name:item.name}));
       setTimeout(step, 200);
     });
   }
@@ -1210,10 +1565,9 @@ function applyRemembered(){
   for(i=0;i<rows.length;i++){
     name=rows[i].getAttribute('data-name');
     if(!isActiveName(name)) continue;
-    btn=rows[i].querySelector('button.run:not(.kill):not(.update)') || rows[i].querySelector('button.run');
+    btn=primaryRun(rows[i]);
     if(!btn) continue;
-    btn.className='run load loaded';
-    btn.textContent='Payload';
+    finishPrimary(btn, 'loaded');
   }
 }
 
@@ -1241,16 +1595,16 @@ function renderNav(selected){
   if(!nav) return;
   var html='', i, active;
   html+='<button type="button" class="navbtn folder'+(!selected?' active':'')+'" data-folder="">';
-  html+='<span>Home</span></button>';
+  html+='<span>'+esc(t('home'))+'</span></button>';
   active=(selected==='elf' || isCatalogId(selected)) ? ' active' : '';
   html+='<button type="button" class="navbtn folder'+active+'" data-folder="elf">';
-  html+='<span>Elf Files</span><span class="ncount">'+PAYLOADS.length+'</span></button>';
+  html+='<span>'+esc(t('elfFiles'))+'</span><span class="ncount">'+PAYLOADS.length+'</span></button>';
   active=selected==='downloaded' ? ' active' : '';
   html+='<button type="button" class="navbtn folder'+active+'" data-folder="downloaded">';
-  html+='<span>Downloaded</span><span class="ncount">'+downloadedCount+'</span></button>';
+  html+='<span>'+esc(t('downloaded'))+'</span><span class="ncount">'+downloadedCount+'</span></button>';
   active=selected==='auto' ? ' active' : '';
   html+='<button type="button" class="navbtn folder'+active+'" data-folder="auto">';
-  html+='<span>AutoPayload</span><span class="ncount">'+autoCount()+'</span></button>';
+  html+='<span>'+esc(t('autoPayload'))+'</span><span class="ncount">'+autoCount()+'</span></button>';
   nav.innerHTML=html;
   var btns=nav.querySelectorAll('.navbtn');
   for(i=0;i<btns.length;i++){
@@ -1281,27 +1635,26 @@ function showHome(){
     '<img src="icons/launcher-home.jpg?v=7" width="72" height="72" alt="ELF Launcher">'+
     '<h1>ELF Launcher</h1>'+
     '<p class="hver">v'+esc(APP_VERSION)+'</p>'+
-    '<p>Open Elf Files on the left. Download saves the ELF. Load sends it to elfldr (9021).</p>'+
+    '<p>'+esc(t('homeDesc'))+'</p>'+
     '<div class="homeOpt">'+
-    '<p class="homeQ">After jailbreak</p>'+
+    '<p class="homeQ">'+esc(t('afterJb'))+'</p>'+
     '<div class="homeChoices">'+
-    '<button type="button" data-brows="open"'+(stay?' class="selected"':'')+'>Open browser</button>'+
-    '<button type="button" data-brows="closed"'+(!stay?' class="selected"':'')+'>Leave closed</button>'+
+    '<button type="button" data-brows="open" data-state="'+(stay?'on':'off')+'"'+(stay?' class="selected"':'')+'>'+esc(t('openBrowser'))+'</button>'+
+    '<button type="button" data-brows="closed" data-state="'+(!stay?'on':'off')+'"'+(!stay?' class="selected"':'')+'>'+esc(t('leaveClosed'))+'</button>'+
     '</div>'+
-    '<p class="homeHint">Mark Auto only in Downloaded. AutoPayload runs once after jailbreak — the first time elfldr is already listening, after a 3 second pause. Square or Cancel stops it. Later page or app opens do not auto-load again until the next jailbreak. Leave closed closes this page after that.</p>'+
+    '<p class="homeHint">'+esc(t('homeHint'))+'</p>'+
     '</div></div>';
-  var choices=homeEl.getElementsByTagName('button');
+  var choices=homeEl.querySelectorAll('button[data-brows]');
   var ci;
   for(ci=0;ci<choices.length;ci++){
     choices[ci].onclick=function(){
       var on=this.getAttribute('data-brows')==='open';
-      var all=homeEl.getElementsByTagName('button');
-      var j;
-      for(j=0;j<all.length;j++) all[j].className=all[j].getAttribute('data-brows')===(on?'open':'closed')?'selected':'';
+      paintBrowserChoice(on);
       setBrowserStayOpen(on);
     };
   }
   renderNav(null);
+  syncBrowserPrefFromDisk();
 }
 
 function findPayload(path){
@@ -1312,20 +1665,17 @@ function findPayload(path){
 
 function startBar(btn){
   btn.className='run busy';
+  btn.setAttribute('data-state','busy');
   btn.style.transition='background-size 8s linear';
   btn.style.backgroundSize='0% 100%';
-  setTimeout(function(){ if(btn.className.indexOf('busy')>=0) btn.style.backgroundSize='85% 100%'; }, 40);
+  setTimeout(function(){ if(btn.getAttribute('data-state')==='busy') btn.style.backgroundSize='85% 100%'; }, 40);
 }
-function endBar(btn, text, name, act, loaded){
+function endBar(btn, state, name){
   btn.style.transition='background-size .35s ease';
   btn.style.backgroundSize='100% 100%';
   setTimeout(function(){
-    btn.className='run'+(act==='download'?' download':(act==='load'?' load'+(loaded?' loaded':''):' sent'));
-    btn.style.backgroundSize='';
-    btn.style.transition='';
-    btn.textContent=text;
-    if(name) rememberActive(name);
-    btn.disabled=false;
+    finishPrimary(btn, state);
+    if(name && state==='loaded') rememberActive(name);
   }, 380);
 }
 function isProtectedKillName(name){
@@ -1389,35 +1739,42 @@ function primaryRun(node){
   return null;
 }
 function rowIsDownloaded(node){
-  var rb=primaryRun(node);
-  var act, t;
-  if(!rb) return false;
-  act=rb.getAttribute('data-act')||'';
-  if(act==='load') return true;
-  t=rb.textContent||'';
-  return t==='Payload' || t==='Loaded';
+  var st=(primaryRun(node)||{getAttribute:function(){return '';}}).getAttribute('data-state')||'';
+  return st==='load' || st==='loaded';
 }
-function finishPrimary(btn, text, act, loaded){
-  var node;
+/* Primary row button. state drives look, label, and logic (never the label text):
+   unknown | download | load | loaded | send | downloaded | fail | busy */
+var PRIMARY_LOOK={
+  unknown:{cls:'run',key:null,act:''},
+  download:{cls:'run download',key:'download',act:'download'},
+  load:{cls:'run load',key:'payload',act:'load'},
+  loaded:{cls:'run load loaded',key:'loaded',act:'load'},
+  send:{cls:'run load',key:'payload',act:'send'},
+  downloaded:{cls:'run sent',key:'downloadedBtn',act:'download'},
+  fail:{cls:'run',key:'fail',act:'send'}
+};
+function finishPrimary(btn, state){
+  var node, look;
   if(!btn) return;
-  btn.className='run'+(act==='download'?' download':(act==='load'?' load'+(loaded?' loaded':'' ):''));
+  look=PRIMARY_LOOK[state]||PRIMARY_LOOK.unknown;
+  btn.className=look.cls;
   btn.style.backgroundSize='';
   btn.style.transition='';
-  btn.textContent=text;
-  if(act) btn.setAttribute('data-act', act);
+  btn.textContent=look.key ? t(look.key) : '\u2026';
+  btn.setAttribute('data-state', state);
+  if(look.act) btn.setAttribute('data-act', look.act);
   else btn.removeAttribute('data-act');
-  btn.disabled=false;
+  btn.disabled=(state==='unknown');
   /* A file on disk means Auto can be marked right away, not only after a reopen. */
-  if(act==='load' || act==='download'){
+  if(state==='load' || state==='loaded' || state==='download'){
     node=btn;
     while(node && (!node.getAttribute || !node.getAttribute('data-name'))) node=node.parentNode;
-    if(node) setAutoBox(node, act==='load');
+    if(node) setAutoBox(node, state!=='download');
   }
 }
 function resetSendBtn(btn){
   if(!btn) return;
-  if(isConsoleHost()) finishPrimary(btn, 'Payload', 'load');
-  else finishPrimary(btn, 'Send', 'send');
+  finishPrimary(btn, isConsoleHost() ? 'load' : 'send');
 }
 function killByPid(name, pid, sendBtn, path){
   var q='/process_kill?pid='+encodeURIComponent(pid);
@@ -1516,12 +1873,13 @@ function needsUpdate(meta, catalog){
 }
 function runUpdate(path, catalog, btn, row, verEl){
   if(!catalog || !catalog.url || !catalog.checksum){
-    setStatus('Update missing catalog checksum');
+    setStatus(t('updMissing'));
     return;
   }
   btn.disabled=true;
-  btn.textContent='Updating...';
-  setStatus('Updating '+catalog.name+'...');
+  btn.setAttribute('data-state','busy');
+  btn.textContent=t('updating');
+  setStatus(t('updatingName',{name:catalog.name}));
   showProgress(true);
   setProgressPct(-1);
   var q='/update?path='+encodeURIComponent(path)+
@@ -1532,25 +1890,29 @@ function runUpdate(path, catalog, btn, row, verEl){
     showProgress(false);
     if(!res.ok || !res.j || !res.j.ok){
       var msg=(res.j && res.j.message) ? res.j.message : 'update failed';
-      setStatus('Update failed: '+msg);
+      setStatus(t('updateFailed',{msg:msg}));
       btn.disabled=false;
-      btn.textContent='Update';
+      btn.setAttribute('data-state','idle');
+      btn.textContent=t('update');
       return;
     }
     setProgressPct(100);
-    setStatus('Updated '+catalog.name+' ('+(res.j.bytes||catalog.size)+' bytes)');
+    setStatus(t('updatedName',{name:catalog.name}));
+    pendingUpdates=(pendingUpdates||[]).filter(function(u){ return u.path!==path; });
+    paintSideUpdate();
     if(btn.parentNode) btn.parentNode.removeChild(btn);
     if(verEl && verEl.parentNode) verEl.parentNode.removeChild(verEl);
     /* File is still local, so the main button stays Load. */
     if(row){
-      var primary=row.querySelector('button.run:not(.kill):not(.update)');
-      finishPrimary(primary, 'Payload', 'load');
+      var primary=primaryRun(row);
+      if(primary) finishPrimary(primary, 'load');
     }
   }).catch(function(e){
     showProgress(false);
     btn.disabled=false;
-    btn.textContent='Update';
-    setStatus('Update failed: '+e);
+    btn.setAttribute('data-state','idle');
+    btn.textContent=t('update');
+    setStatus(t('updateFailed',{msg:(e&&e.message)?e.message:String(e)}));
   });
 }
 
@@ -1588,7 +1950,7 @@ function showKillBtn(tr){
   var killBtn=document.createElement('button');
   killBtn.type='button';
   killBtn.className='run kill';
-  killBtn.textContent='Close';
+  killBtn.textContent=t('close');
   killBtn.addEventListener('click',function(){
     var sendBtn=tr.querySelector('button.run:not(.kill):not(.update)') || tr.querySelector('button.run');
     killPayload(name, sendBtn, path);
@@ -1612,11 +1974,12 @@ function payloadIsRunning(name, procs){
   return !!findRunningProc(name, procs);
 }
 function paintPayloadButton(tr){
-  var btn, base, on;
+  var btn, base, on, st;
   if(!tr) return;
-  btn=tr.querySelector('button.run:not(.kill):not(.update)');
-  if(!btn || btn.getAttribute('data-act')!=='load') return;
-  if(btn.className.indexOf('busy')>=0) return;
+  btn=primaryRun(tr);
+  if(!btn) return;
+  st=btn.getAttribute('data-state')||'';
+  if(st!=='load' && st!=='loaded') return;
   base=rowFileBase(tr);
   on=!!(lastProcs && base && payloadIsRunning(base, lastProcs));
   /* A load means it is running until that saved PID is gone. */
@@ -1624,7 +1987,7 @@ function paintPayloadButton(tr){
     var saved=getPayloadPid(base)|0;
     if(!(saved && lastProcs && !pidStillListed(saved, lastProcs))) on=true;
   }
-  finishPrimary(btn, on?'Loaded':'Payload', 'load', on);
+  finishPrimary(btn, on?'loaded':'load');
 }
 var procWatch=0;
 function watchRunning(){
@@ -1701,12 +2064,14 @@ function listLoadedPayloads(procs){
 }
 function wrapListGrid(){
   var rows=viewEl.querySelectorAll ? viewEl.querySelectorAll('.elfwrap') : [];
+  var heads=viewEl.querySelectorAll ? viewEl.querySelectorAll('.elfhead') : [];
   var i, grid, node;
   if(!rows.length) return;
   grid=document.createElement('div');
   grid.className='listgrid';
   node=rows[0].parentNode;
-  node.insertBefore(grid, rows[0]);
+  node.insertBefore(grid, heads.length ? heads[0] : rows[0]);
+  for(i=0;i<heads.length && i<2;i++) grid.appendChild(heads[i]);
   for(i=0;i<rows.length;i++) grid.appendChild(rows[i]);
 }
 function bindSubfolds(){
@@ -1722,52 +2087,56 @@ function bindSubfolds(){
   }
 }
 function folderChipsHtml(selected){
-  var items=[], i, f, html, mid, row, j, it, n;
+  var i, f, html='<div class="foldgrid">';
   for(i=0;i<FOLDERS.length;i++){
     f=FOLDERS[i];
-    items.push({id:f.id, label:f.label});
+    html+='<button type="button" class="subfold'+(selected===f.id?' active':'')+'" data-sub="'+esc(f.id)+'"><span>'+esc(folderLabel(f.id))+'</span><span class="ncount">'+countIn(f.id)+'</span></button>';
   }
-  mid=Math.ceil(items.length/2);
-  html='';
-  for(row=0;row<2;row++){
-    html+='<div class="foldrow">';
-    for(j=row*mid; j<items.length && j<(row+1)*mid; j++){
-      it=items[j];
-      n=countIn(it.id);
-      html+='<button type="button" class="subfold'+(selected===it.id?' active':'')+'" data-sub="'+esc(it.id)+'"><span>'+esc(it.label)+'</span><span class="ncount">'+n+'</span></button>';
-    }
-    html+='</div>';
-  }
-  return html;
+  return html+'</div>';
+}
+/* Two header cells, one above each list column, using the same grid as the rows. */
+function headHtml(withSelect){
+  var cls='elfhead'+(withSelect?'':' nom');
+  var one='<div class="'+cls+'">'+(withSelect?'<span class="m"></span>':'')+'<span class="n">'+esc(t('colPayload'))+'</span><span class="v">'+esc(t('colVer'))+'</span><span class="a"></span></div>';
+  return one+one;
 }
 /* Saved files are whatever /file_meta says exists under /data/elf-launcher/mirror.
    hbinstall exposes file_meta, update, and run. It has no file-delete route, so this list has no Delete button. */
+function pendingFor(path){
+  var i;
+  for(i=0;i<(pendingUpdates||[]).length;i++){ if(pendingUpdates[i].path===path) return pendingUpdates[i]; }
+  return null;
+}
 function paintDownloaded(found){
-  var html, i, item, p, sz;
+  var html, i, item, p, pend;
   noteDownloadedCount(found.length);
   if(currentFolder!=='downloaded') return;
   html=folderChipsHtml('downloaded');
   if(!found.length){
-    viewEl.innerHTML=html+'<p class="empty">No payloads saved on this console.</p>';
+    syncSideActions('');
+    viewEl.innerHTML=html+'<p class="empty">'+esc(t('noSaved'))+'</p>';
     bindSubfolds();
     return;
   }
   found.sort(function(a,b){
-    var an=(a.p&&a.p.name)||'';
-    var bn=(b.p&&b.p.name)||'';
+    var an=String((a.p&&a.p.name)||'').toLowerCase();
+    var bn=String((b.p&&b.p.name)||'').toLowerCase();
     return an<bn?-1:(an>bn?1:0);
   });
-  html+='<div class="elfhead"><span class="n">Payload</span><span class="v">Ver</span><span class="a">On disk</span></div>';
+  syncSideActions('<button type="button" id="loadsel">'+esc(t('multi'))+'</button>');
+  html+=headHtml(true);
   for(i=0;i<found.length;i++){
     item=found[i];
     p=item.p;
-    sz=(item.size|0);
+    pend=pendingFor(p.path);
     html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf">';
-    html+='<div class="n"><b>'+esc(p.name)+'</b><i>'+esc(p.path||'')+'</i></div>';
+    html+='<div class="m"><label class="pick"><input class="mark" type="checkbox" aria-label="'+esc(t('select'))+'"></label></div>';
+    html+='<div class="n"><b>'+esc(p.name)+'</b></div>';
     html+='<div class="v">'+esc(p.version||'')+'</div>';
     html+='<div class="a">';
-    html+='<label class="pick"><input class="auto" type="checkbox"'+(isAutoName(p.name)?' checked':'')+'><span>Auto</span></label>';
-    html+='<button type="button" class="run del">Delete</button>';
+    html+='<label class="pick"><input class="auto" type="checkbox"'+(isAutoName(p.name)?' checked':'')+'><span>'+esc(t('auto'))+'</span></label>';
+    if(pend) html+='<button type="button" class="run update" data-state="idle" title="'+esc(t('catalogVersion')+' '+updateVerLabel(pend.entry))+'">'+esc(t('update'))+'</button>';
+    html+='<button type="button" class="run del">'+esc(t('del'))+'</button>';
     html+='</div>';
     html+='</div></div>';
   }
@@ -1784,10 +2153,19 @@ function paintDownloaded(found){
       deleteDownloaded(node.getAttribute('data-name'), node.getAttribute('data-path'), node);
     });
   }
-  var autoBoxes=viewEl.getElementsByTagName('input');
+  var ups=viewEl.querySelectorAll('button.run.update');
+  for(di=0;di<ups.length;di++){
+    ups[di].addEventListener('click',function(ev){
+      var b=ev.currentTarget, node=b, pd;
+      while(node && (!node.getAttribute || !node.getAttribute('data-path'))) node=node.parentNode;
+      if(!node) return;
+      pd=pendingFor(node.getAttribute('data-path'));
+      if(pd) runUpdate(pd.path, pd.entry, b, null, null);
+    });
+  }
+  var autoBoxes=viewEl.querySelectorAll('input.auto');
   var ai;
   for(ai=0;ai<autoBoxes.length;ai++){
-    if(!autoBoxes[ai].className || autoBoxes[ai].className.indexOf('auto')<0) continue;
     autoBoxes[ai].onchange=function(){
       var node=this.parentNode;
       while(node && (!node.getAttribute || !node.getAttribute('data-name'))) node=node.parentNode;
@@ -1796,6 +2174,28 @@ function paintDownloaded(found){
       renderNav(currentFolder);
     };
   }
+  var loadBtn=document.getElementById('loadsel');
+  if(loadBtn) loadBtn.onclick=function(){
+    var marks=viewEl.querySelectorAll('input.mark'), queue=[], k, node;
+    for(k=0;k<marks.length;k++){
+      if(!marks[k].checked) continue;
+      node=marks[k].parentNode;
+      while(node && (!node.getAttribute || !node.getAttribute('data-path'))) node=node.parentNode;
+      if(node) queue.push({name:node.getAttribute('data-name'), path:node.getAttribute('data-path')});
+    }
+    if(!queue.length){ setStatus(t('markFirst')); return; }
+    var n=0, ok=0;
+    loadBtn.disabled=true;
+    function next(){
+      if(n>=queue.length){ loadBtn.disabled=false; setStatus(t('loadedN',{n:ok})); return; }
+      var it=queue[n++], cat=findPayload(it.path);
+      sendPayload(it.name, it.path, (cat&&cat.url)||it.path, function(res){
+        if(res!==false) ok++;
+        setTimeout(next, 600);
+      });
+    }
+    next();
+  };
 }
 function showDownloadedFolderCount(){
   var queue, n, inflight, idx;
@@ -1823,17 +2223,17 @@ function showDownloadedFolder(){
   homeEl.className='';
   homeEl.innerHTML='';
   hdrEl.className='show';
-  titleEl.textContent='Downloaded';
+  titleEl.textContent=t('downloaded');
   titleEl.className='beam';
   viewEl.className='show';
   syncSideActions('');
   renderNav('downloaded');
   if(!isConsoleHost()){
-    viewEl.innerHTML=folderChipsHtml('downloaded')+'<p class="empty">Saved payloads are listed on the console.</p>';
+    viewEl.innerHTML=folderChipsHtml('downloaded')+'<p class="empty">'+esc(t('savedOnConsole'))+'</p>';
     bindSubfolds();
     return;
   }
-  viewEl.innerHTML=folderChipsHtml('downloaded')+'<p class="empty">Checking saved payloads...</p>';
+  viewEl.innerHTML=folderChipsHtml('downloaded')+'<p class="empty">'+esc(t('checkingSaved'))+'</p>';
   bindSubfolds();
   queue=PAYLOADS.slice();
   found=[];
@@ -1866,7 +2266,7 @@ function showKillFolder(){
   homeEl.className='';
   homeEl.innerHTML='';
   hdrEl.className='show';
-  titleEl.textContent='Kill ELF';
+  titleEl.textContent=t('close');
   titleEl.className='beam';
   viewEl.className='show';
   syncSideActions('');
@@ -1874,10 +2274,10 @@ function showKillFolder(){
   if(location.protocol==='https:' || !isConsoleHost()){
     loadedKillCount=0;
     renderNav('kill');
-    viewEl.innerHTML='<p class="empty">No ELFs are loaded.</p>';
+    viewEl.innerHTML='<p class="empty">'+esc(t('noLoaded'))+'</p>';
     return;
   }
-  viewEl.innerHTML='<p class="empty">Checking loaded ELFs...</p>';
+  viewEl.innerHTML='<p class="empty">'+esc(t('checkingLoaded'))+'</p>';
   pldmgrFetch('/processes_list').then(function(data){
     var procs, list, html, i, item, p, rows;
     if(currentFolder!=='kill') return;
@@ -1886,20 +2286,21 @@ function showKillFolder(){
     loadedKillCount=list.length;
     renderNav('kill');
     if(!list.length){
-      viewEl.innerHTML='<p class="empty">No ELFs are loaded.</p>';
+      viewEl.innerHTML='<p class="empty">'+esc(t('noLoaded'))+'</p>';
       return;
     }
-    html='<div class="elfhead"><span class="n">Payload</span><span class="v">Ver</span><span class="a">Close</span></div>';
+    html=headHtml(false);
     for(i=0;i<list.length;i++){
       item=list[i];
       p=item.p;
-      html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf">';
-      html+='<div class="n"><b>'+esc(p.name)+'</b><i>'+esc(p.path||'')+'</i></div>';
+      html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom">';
+      html+='<div class="n"><b>'+esc(p.name)+'</b></div>';
       html+='<div class="v">'+esc(p.version||'')+'</div>';
-      html+='<div class="a"><button type="button" class="run kill">Close</button></div>';
+      html+='<div class="a"><button type="button" class="run kill">'+esc(t('close'))+'</button></div>';
       html+='</div></div>';
     }
     viewEl.innerHTML=html;
+    wrapListGrid();
     rows=viewEl.querySelectorAll('[data-path]');
     for(i=0;i<rows.length;i++){
       (function(tr){
@@ -1914,7 +2315,7 @@ function showKillFolder(){
     if(currentFolder!=='kill') return;
     loadedKillCount=0;
     renderNav('kill');
-    viewEl.innerHTML='<p class="empty">No ELFs are loaded.</p>';
+    viewEl.innerHTML='<p class="empty">'+esc(t('noLoaded'))+'</p>';
   });
 }
 function stripAutoChecks(){
@@ -1930,12 +2331,11 @@ function stripAutoChecks(){
   }
 }
 function showFolder(id){
-  var label=id,i,f,list=[],p,html,markOnly,catalogView;
+  var label,i,list=[],p,html,markOnly,catalogView;
   if(id==='elf') id=lastElfFolder||'loader';
   if(id==='kill'){ showKillFolder(); return; }
   if(id==='downloaded'){ showDownloadedFolder(); return; }
-  if(id==='auto') label='AutoPayload';
-  for(i=0;i<FOLDERS.length;i++){if(FOLDERS[i].id===id){label=FOLDERS[i].label;break;}}
+  label=(id==='auto') ? t('autoPayload') : (isCatalogId(id) ? folderLabel(id) : id);
   if(isCatalogId(id)) lastElfFolder=id;
   markOnly=(id==='auto');
   catalogView=isCatalogId(id);
@@ -1946,61 +2346,32 @@ function showFolder(id){
   titleEl.textContent=label;
   titleEl.className='beam';
   viewEl.className='show';
+  /* Multi/Select live only in Downloaded. */
+  syncSideActions('');
   renderNav(id);
   for(i=0;i<PAYLOADS.length;i++){
     if(id==='auto'){ if(isAutoName(PAYLOADS[i].name)) list.push(PAYLOADS[i]); }
     else if(PAYLOADS[i].folder===id) list.push(PAYLOADS[i]);
   }
   if(!list.length){
-    syncSideActions('');
-    viewEl.innerHTML=(catalogView?folderChipsHtml(id):'')+'<p class="empty">No payloads in this folder.</p>';
+    viewEl.innerHTML=(catalogView?folderChipsHtml(id):'')+'<p class="empty">'+esc(t('emptyFolder'))+'</p>';
     bindSubfolds();
     return;
   }
   var onPs5=/PlayStation/i.test(navigator.userAgent);
-  if(markOnly) syncSideActions('');
-  else syncSideActions('<button type="button" id="loadsel">Multi Payload</button>');
-  html=(catalogView?folderChipsHtml(id):'');
-  if(markOnly){
-    html+='<div class="elfhead"><span class="n">Payload</span><span class="v">Ver</span><span class="a"></span></div>';
-  }else{
-    html+='<div class="elfhead"><span class="m">Select</span><span class="n">Payload</span><span class="v">Ver</span><span class="a"></span></div>';
-  }
+  html=(catalogView?folderChipsHtml(id):'')+headHtml(false);
   for(i=0;i<list.length;i++){
     p=list[i];
-    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf">';
-    /* Auto checkbox is painted only by paintDownloaded. Never here. */
-    if(markOnly){
-      html+='';
-    }else{
-      html+='<div class="m"><label class="pick"><input class="mark" type="checkbox"><span>Select</span></label></div>';
-    }
+    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom">';
     html+='<div class="n"><b>'+esc(p.name)+'</b></div>';
     html+='<div class="v">'+esc(p.version)+'</div>';
     if(p.info && p.info!==p.name) html+='<div class="d">'+esc(p.info)+'</div>';
     var on=isActiveName(p.name);
-    var onConsoleRow=isConsoleHost();
-    var label, actAttr, disAttr, sentCls;
-    if(onConsoleRow){
-      /* Disk check fills Download or Load. Do not guess before /file_meta. */
-      label='\u2026';
-      actAttr='';
-      disAttr=' disabled';
-      sentCls='';
-    }else{
-      label=on?'Payload':(onPs5?'Payload':'Download');
-      actAttr=onPs5?' data-act="send"':' data-act="download"';
-      disAttr='';
-      sentCls=on?' load loaded':(onPs5?' load':' download');
-    }
-    /* Kill is not part of the catalog row. It is added only when this ELF is loaded. */
-    /* Auto is marked only in Downloaded, not in Elf Files or AutoPayload. */
+    var state;
+    if(isConsoleHost()) state='unknown'; /* Disk check fills Download or Load. */
+    else state=on?'loaded':(onPs5?'send':'download');
     if(markOnly) html+='<div class="a"></div>';
-    else{
-      html+='<div class="a">';
-      html+='<span class="halo"><button type="button" class="run'+sentCls+'"'+actAttr+disAttr+'>'+label+'</button></span>';
-      html+='</div>';
-    }
+    else html+='<div class="a"><button type="button" class="run" data-state="'+state+'">\u2026</button></div>';
     html+='</div></div>';
   }
   viewEl.innerHTML=html;
@@ -2010,30 +2381,30 @@ function showFolder(id){
   var rows=viewEl.querySelectorAll('[data-path]');
   for(i=0;i<rows.length;i++){
     (function(tr){
-      var btn=tr.querySelector('button.run:not(.kill):not(.update)') || tr.querySelector('button.run');
+      var btn=primaryRun(tr);
       if(!btn) return;
+      finishPrimary(btn, btn.getAttribute('data-state')||'unknown');
       btn.addEventListener('click',function(){
         var path=tr.getAttribute('data-path');
         var name=tr.getAttribute('data-name');
         var meta=findPayload(path);
-        var onConsole=isConsoleHost();
+        var state=btn.getAttribute('data-state')||'';
+        var fileUrl=(meta&&meta.url)?meta.url:path;
+        if(state==='unknown' || state==='busy') return;
         btn.disabled=true;
         startBar(btn);
-        if(!onConsole){
-          var fileUrl=(meta&&meta.url)?meta.url:path;
-          var onPs5=/PlayStation/i.test(navigator.userAgent);
-          showProgress(true);
-          setProgressPct(-1);
+        showProgress(true);
+        setProgressPct(-1);
+        if(!isConsoleHost()){
           if(onPs5){
             sendPayload(name, path, fileUrl, function(ok){
               setProgressPct(100);
               showProgress(false);
-              endBar(btn, ok===false?'Fail':'Payload', name, 'load', ok!==false);
-              btn.disabled=false;
+              endBar(btn, ok===false?'fail':'loaded', name);
             });
             return;
           }
-          setStatus('Downloading '+name+'...');
+          setStatus(t('downloadingName',{name:name}));
           fetch(fileUrl).then(function(r){
             if(!r.ok)throw new Error('HTTP '+r.status);
             return r.blob();
@@ -2048,39 +2419,34 @@ function showFolder(id){
             setTimeout(function(){URL.revokeObjectURL(u);},1500);
             setProgressPct(100);
             showProgress(false);
-            setStatus('Downloaded '+name+'. Upload it by FTP to /data');
-            endBar(btn, 'Downloaded', name, 'download', false);
+            setStatus(t('downloadedFtp',{name:name}));
+            endBar(btn, 'downloaded', null);
           }).catch(function(e){
             showProgress(false);
-            btn.className='run';
-            btn.style.backgroundSize='';
-            setStatus('Download failed: '+e);
-          }).then(function(){btn.disabled=false;});
-          return;
-        }
-        var fileUrl=(meta&&meta.url)?meta.url:path;
-        var act=btn.getAttribute('data-act')||'';
-        showProgress(true);
-        setProgressPct(-1);
-        if(act==='download'){
-          setStatus('Downloading '+name+'...');
-          downloadToFolder(path, meta).then(function(){
-            setProgressPct(100);
-            showProgress(false);
-            finishPrimary(btn, 'Payload', 'load');
-            if(downloadedCountKnown) downloadedCount++;
-            renderNav(currentFolder);
-            setStatus('Downloaded '+name);
-          }).catch(function(e){
-            showProgress(false);
-            finishPrimary(btn, 'Download', 'download');
-            setStatus('Download failed: '+(e&&e.message?e.message:e));
+            finishPrimary(btn, 'download');
+            setStatus(t('downloadFailed',{msg:(e&&e.message)?e.message:String(e)}));
           });
           return;
         }
-        if(act!=='load'){
+        if(state==='download'){
+          setStatus(t('downloadingName',{name:name}));
+          downloadToFolder(path, meta).then(function(){
+            setProgressPct(100);
+            showProgress(false);
+            finishPrimary(btn, 'load');
+            if(downloadedCountKnown) downloadedCount++;
+            renderNav(currentFolder);
+            setStatus(t('downloadedName',{name:name}));
+          }).catch(function(e){
+            showProgress(false);
+            finishPrimary(btn, 'download');
+            setStatus(t('downloadFailed',{msg:(e&&e.message)?e.message:String(e)}));
+          });
+          return;
+        }
+        if(state!=='load' && state!=='loaded'){
           showProgress(false);
-          btn.disabled=false;
+          finishPrimary(btn, state);
           return;
         }
         sendPayload(name, path, fileUrl, function(ok){
@@ -2088,22 +2454,21 @@ function showFolder(id){
           showProgress(false);
           /* File is still on disk. Stay on Load, do not flip back to Download. */
           if(ok!==false) rememberActive(name);
-          finishPrimary(btn, (ok!==false)?'Loaded':'Payload', 'load', ok!==false);
+          finishPrimary(btn, (ok!==false)?'loaded':'load');
         });
-        return;
       });
-      if(isConsoleHost()){
+      if(isConsoleHost() && !markOnly){
         (function(tr0, path0){
           var meta0=findPayload(path0);
-          var btn0=tr0.querySelector('button.run:not(.kill):not(.update)');
+          var btn0=primaryRun(tr0);
           localMeta(path0).then(function(meta){
             var exists=!!(meta && meta.ok && meta.exists);
             if(!exists){
-              finishPrimary(btn0, 'Download', 'download');
+              finishPrimary(btn0, 'download');
               setAutoBox(tr0, false);
               return;
             }
-            finishPrimary(btn0, 'Payload', 'load', !!(lastProcs && payloadIsRunning(rowFileBase(tr0), lastProcs)));
+            finishPrimary(btn0, (lastProcs && payloadIsRunning(rowFileBase(tr0), lastProcs)) ? 'loaded' : 'load');
             paintPayloadButton(tr0);
             setAutoBox(tr0, true);
             if(!canUseUpdateApi() || !meta0 || !meta0.checksum || !meta0.url) return;
@@ -2113,89 +2478,22 @@ function showFolder(id){
             var ub=document.createElement('button');
             ub.type='button';
             ub.className='run update';
-            ub.textContent='Update';
-            var uv=null, uvt=updateVerLabel(meta0);
-            if(uvt){
-              uv=document.createElement('span');
-              uv.className='updver';
-              uv.textContent=uvt;
-              uv.title='Catalog version';
-            }
+            ub.setAttribute('data-state','idle');
+            ub.textContent=t('update');
+            var uvt=updateVerLabel(meta0);
+            if(uvt) ub.title=t('catalogVersion')+' '+uvt;
             ub.addEventListener('click',function(){
-              runUpdate(path0, meta0, ub, tr0, uv);
+              runUpdate(path0, meta0, ub, tr0, null);
             });
-            act.appendChild(ub);
-            if(uv) act.appendChild(uv);
+            act.insertBefore(ub, act.firstChild);
           }).catch(function(){
             /* Unknown disk state: do not show Download or Load. */
-            if(btn0){ btn0.disabled=true; btn0.textContent='\u2026'; btn0.removeAttribute('data-act'); }
+            finishPrimary(btn0, 'unknown');
           });
         })(tr, tr.getAttribute('data-path'));
       }
     })(rows[i]);
   }
-  var autoBoxes=viewEl.getElementsByTagName('input');
-  for(i=0;i<autoBoxes.length;i++){
-    if(!autoBoxes[i].className || autoBoxes[i].className.indexOf('auto')<0) continue;
-    autoBoxes[i].onchange=function(){
-      if(currentFolder!=='downloaded'){
-        this.checked=false;
-        return;
-      }
-      var node=this.parentNode;
-      while(node && (!node.getAttribute || !node.getAttribute('data-name'))) node=node.parentNode;
-      if(!node) return;
-      setAuto(node.getAttribute('data-name'), !!this.checked);
-      renderNav(currentFolder);
-    };
-  }
-  var autoAddBtn=document.getElementById('autoadd');
-  if(autoAddBtn) autoAddBtn.onclick=function(){
-    var marks=viewEl.getElementsByTagName('input');
-    var added=0, k, box, node;
-    for(k=0;k<marks.length;k++){
-      box=marks[k];
-      if(!box.checked || !box.className || box.className.indexOf('mark')<0) continue;
-      node=box.parentNode;
-      while(node && (!node.getAttribute || !node.getAttribute('data-name'))) node=node.parentNode;
-      if(!node) continue;
-      if(!rowIsDownloaded(node)) continue;
-      setAuto(node.getAttribute('data-name'), true);
-      added++;
-    }
-    if(!added){ setStatus('Download it first'); return; }
-    setStatus('Added '+added+' to AutoPayload');
-    showFolder(currentFolder);
-  };
-  var loadBtn=document.getElementById('loadsel');
-  if(loadBtn) loadBtn.onclick=function(){
-    var marks=viewEl.getElementsByTagName('input');
-    var queue=[];
-    var k,box,node,btn,text;
-    for(k=0;k<marks.length;k++){
-      box=marks[k];
-      if(!box.checked || !box.className || box.className.indexOf('mark')<0) continue;
-      node=box.parentNode;
-      while(node && (!node.getAttribute || !node.getAttribute('data-name'))) node=node.parentNode;
-      if(!node) continue;
-      btn=node.querySelector('button.run:not(.kill):not(.update)') || node.querySelector('button.run');
-      if(!btn) continue;
-      text=btn.textContent;
-      if(text==='Downloaded' || text==='Download' || text==='\u2026') continue;
-      if(isConsoleHost() && btn.getAttribute('data-act')!=='load') continue;
-      queue.push(btn);
-    }
-    if(!queue.length){ setStatus(onPs5?'Mark payloads first':'Mark files first'); return; }
-    var n=0;
-    function next(){
-      if(n>=queue.length){ setStatus((onPs5?'Loaded ':'Downloaded ')+queue.length); return; }
-      queue[n].click();
-      n++;
-      setTimeout(next, 900);
-    }
-    next();
-  };
-  /* Kill only if this exact payload is running. No source / not loaded => no button. */
   refreshKillButtons();
   watchRunning();
   if(id==='auto' && isConsoleHost()) filterAutoToDownloaded();
@@ -2214,7 +2512,7 @@ function filterAutoToDownloaded(){
           if(tr.parentNode) tr.parentNode.removeChild(tr);
         }
         if(left===0 && currentFolder==='auto' && !viewEl.querySelector('[data-path]')){
-          viewEl.innerHTML='<p class="empty">No downloaded payloads in AutoPayload.</p>';
+          viewEl.innerHTML='<p class="empty">'+esc(t('noAutoDl'))+'</p>';
           renderNav('auto');
         } else if(left===0) renderNav('auto');
       }).catch(function(){ left--; });
@@ -2227,76 +2525,59 @@ window.addEventListener('hashchange',function(){
   if(id)showFolder(id); else showHome();
 });
 
-var padTarget=null;
-function isItem(el){
-  if(!el||!el.className) return false;
-  return el.className.indexOf('folder')>=0 || el.className.indexOf('navbtn')>=0 || el.className.indexOf('run')>=0;
-}
-document.addEventListener('focus',function(ev){
-  if(isItem(ev.target)) padTarget=ev.target;
-}, true);
 function padBack(){
+  var ll=document.getElementById('langlist');
+  if(ll && ll.getAttribute('data-state')==='open'){ toggleLangList(false); return; }
   if(currentFolder){ setHashFolder(null); showHome(); return; }
   history.back();
-}
-function padRefresh(){
-  padCancelAuto();
-  markBootAutoDone();
-  /* Manual refresh is allowed to hit the repos again. Automatic opens are not. */
-  clearCatalogCache();
-  var hash=location.hash||'';
-  location.href=location.pathname+'?v='+Date.now()+hash;
-}
-function padConfirm(){
-  var el=padTarget;
-  if(!el || !el.parentNode){
-    var found=document.querySelector?document.querySelector('button.navbtn.active, button.navbtn, button.run'):null;
-    el=found;
-  }
-  if(el && el.click) el.click();
 }
 function padClose(){
   try{ window.close(); }catch(err){}
 }
 function padCancelAuto(){
-  var btn=document.getElementById("autocancel");
   var live=!!(autoTimer || autoRunning);
-  /* Square must cancel during the 3s pause even if Stop Auto was still disabled. */
-  if(!live && btn && btn.disabled) return;
+  if(!live) return;
   autoStop=true;
   autoRunning=false;
   if(autoTimer) clearTimeout(autoTimer);
   autoTimer=null;
   hideAutoBanner();
-  if(btn) btn.disabled=true;
   markBootAutoDone();
-  setStatus('Auto cancelled');
+  setStatus(t('autoCancelled'));
 }
-function padAct(act){
-  if(act==='back') padBack();
-  else if(act==='refresh') padRefresh();
-  else if(act==='confirm') padConfirm();
-  else if(act==='close') padCancelAuto();
+/* L1/R1 cycle: Home, every catalog folder, Downloaded, AutoPayload. */
+function navOrder(){
+  var out=[''], i;
+  for(i=0;i<FOLDERS.length;i++) out.push(FOLDERS[i].id);
+  out.push('downloaded');
+  out.push('auto');
+  return out;
 }
-var padKeys=document.getElementById('pad').getElementsByTagName('button');
-var pi;
-for(pi=0;pi<padKeys.length;pi++){
-  padKeys[pi].onclick=function(){ padAct(this.getAttribute('data-act')); return false; };
+function stepFolder(dir){
+  var order=navOrder(), cur=currentFolder||'', idx=-1, i, next;
+  for(i=0;i<order.length;i++){ if(order[i]===cur){ idx=i; break; } }
+  if(idx<0) idx=0;
+  next=order[(idx+dir+order.length)%order.length];
+  if(!next){ setHashFolder(null); showHome(); }
+  else{ setHashFolder(next); showFolder(next); }
 }
-var padHeld=[false,false,false,false];
+/* No on-screen pad. Standard mapping: 1=Circle, 2=Square, 4=L1, 5=R1. */
+var padHeld={};
 function padTick(){
   var list=navigator.getGamepads?navigator.getGamepads():[];
-  var i,p,b,down;
+  var i,p,b,k,down;
   for(i=0;i<list.length;i++){
     p=list[i];
     if(!p||!p.buttons) continue;
     b=p.buttons;
-    down=[!!(b[0]&&b[0].pressed),!!(b[1]&&b[1].pressed),!!(b[2]&&b[2].pressed),!!(b[3]&&b[3].pressed)];
-    if(down[1]&&!padHeld[1]) padBack();
-    if(down[3]&&!padHeld[3]) padRefresh();
-    if(down[0]&&!padHeld[0]) padConfirm();
+    down={1:!!(b[1]&&b[1].pressed),2:!!(b[2]&&b[2].pressed),4:!!(b[4]&&b[4].pressed),5:!!(b[5]&&b[5].pressed)};
     if(down[2]&&!padHeld[2]) padCancelAuto();
-    padHeld=down;
+    if(!autoTimer && !autoRunning){
+      if(down[1]&&!padHeld[1]) padBack();
+      if(down[4]&&!padHeld[4]) stepFolder(-1);
+      if(down[5]&&!padHeld[5]) stepFolder(1);
+    }
+    for(k in down) padHeld[k]=down[k];
     break;
   }
   if(window.requestAnimationFrame) requestAnimationFrame(padTick);
@@ -2304,6 +2585,15 @@ function padTick(){
 }
 if(window.requestAnimationFrame) requestAnimationFrame(padTick);
 else setTimeout(padTick, 50);
+/* Keyboard fallback (also lets desktop testing use [ and ] / PageUp PageDown). */
+document.addEventListener('keydown',function(ev){
+  var k=ev.key||'';
+  if(autoTimer || autoRunning){ if(k==='Escape'){ padCancelAuto(); ev.preventDefault(); } return; }
+  var tg=ev.target && ev.target.tagName;
+  if(tg==='INPUT' || tg==='TEXTAREA') return;
+  if(k==='PageUp' || k==='['){ stepFolder(-1); ev.preventDefault(); }
+  else if(k==='PageDown' || k===']'){ stepFolder(1); ev.preventDefault(); }
+});
 
 function askLauncher(fileUrl, done){
   var img=new Image();
@@ -2316,7 +2606,7 @@ function askLauncher(fileUrl, done){
 }
 function showDeviceIp(ip){
   var el=document.getElementById('deviceip');
-  if(el && ip && privateIp(ip)) el.textContent=ip;
+  if(el && ip && privateIp(ip)){ el.textContent=ip; el.setAttribute('data-state','ip'); }
 }
 window.showDeviceIp=showDeviceIp;
 function askIpImage(){
@@ -2362,7 +2652,7 @@ function watchIp(){
   var t=setInterval(function(){
     var el=document.getElementById('deviceip');
     n++;
-    if(el && el.textContent.indexOf('looking')<0 && el.textContent.indexOf('unavailable')<0){
+    if(el && el.getAttribute('data-state')==='ip'){
       clearInterval(t);
       return;
     }
@@ -2396,7 +2686,7 @@ function privateIp(ip){
 function findLocalIp(){
   var RTC=window.RTCPeerConnection||window.webkitRTCPeerConnection||window.mozRTCPeerConnection;
   var el=document.getElementById('deviceip');
-  if(!RTC){ if(el) el.textContent='unavailable'; return; }
+  if(!RTC){ if(el && el.getAttribute('data-state')!=='ip'){ el.setAttribute('data-state','unavailable'); el.textContent=t('unavailable'); } return; }
   var found=false;
   function show(ip){
     if(found||!privateIp(ip)) return;
@@ -2446,7 +2736,7 @@ function findLocalIp(){
   }, 600);
   setTimeout(function(){
     var i;
-    if(!found&&el&&el.textContent.indexOf('looking')>=0) el.textContent='unavailable';
+    if(!found&&el&&el.getAttribute('data-state')==='looking'){ el.setAttribute('data-state','unavailable'); el.textContent=t('unavailable'); }
     for(i=0;i<pcs.length;i++){ try{ pcs[i].close(); }catch(err7){} }
   }, 5000);
 }
@@ -2458,7 +2748,13 @@ function tickClock(){
   var t=document.getElementById('clk-time');
   var dt=document.getElementById('clk-date');
   if(t) t.textContent=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
-  if(dt) dt.textContent=days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+  if(dt){
+    var txt='';
+    if(LANG!=='en'){
+      try{ txt=d.toLocaleDateString(LANG==='zh'?'zh-CN':(LANG==='pt'?'pt-BR':LANG),{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }catch(e){ txt=''; }
+    }
+    dt.textContent=txt || (days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear());
+  }
 }
 tickClock();
 setInterval(tickClock, 1000);
@@ -2471,45 +2767,66 @@ if(firstEntry) clearActive();
 var autoTimer=null;
 var autoStop=false;
 var autoRunning=false;
-var autoCancelBtn=document.getElementById('autocancel');
-if(autoCancelBtn) autoCancelBtn.onclick=function(){
-  padCancelAuto();
-  return false;
-};
 var autoBannerBtn=document.getElementById('autobannercancel');
 if(autoBannerBtn) autoBannerBtn.onclick=function(){
   padCancelAuto();
   return false;
 };
-var catUpdateBtn=document.getElementById('catupdatebtn');
-if(catUpdateBtn) catUpdateBtn.onclick=function(){
-  applyCatalogUpdate();
-  return false;
-};
+var sideUpdBtn=document.getElementById('sideupd');
+if(sideUpdBtn) sideUpdBtn.onclick=function(){ sideUpdateClick(); return false; };
+var langBtn=document.getElementById('langbtn');
+if(langBtn) langBtn.onclick=function(){ toggleLangList(); return false; };
+document.addEventListener('click',function(ev){
+  var box=document.getElementById('langbox'), n=ev.target;
+  while(n){ if(n===box) return; n=n.parentNode; }
+  toggleLangList(false);
+}, true);
+applyStaticI18n();
+paintSideUpdate();
 function bootAfterCatalog(){
   var start=getHashFolder();
   if(start)showFolder(start); else showHome();
   applyRemembered();
-  setStatus('Ready');
+  setStatus(t('ready'));
   if(isConsoleHost() && currentFolder!=='downloaded') showDownloadedFolderCount();
   /* Once after jailbreak/elfldr only — disk flag blocks later page/app opens. */
   syncAutoDisk();
+  syncBrowserPrefFromDisk();
   watchElfldrThenAuto();
+}
+/* Every open: show the cached list right away, then always fetch the repos,
+   swap in the fresh list, and compare saved files (Update badge). */
+function backgroundCatalogRefresh(tries){
+  fetchRemoteCatalog(function(list, live){
+    if(!list || !list.length){
+      if(tries>0) setTimeout(function(){ backgroundCatalogRefresh(tries-1); }, 8000);
+      else scheduleCatalogRecheck();
+      return;
+    }
+    function apply(){
+      if(uiBusy() || autoTimer || autoRunning){ setTimeout(apply, 1500); return; }
+      PAYLOADS=list;
+      writeCatalogCache(PAYLOADS);
+      rerenderCatalogViews();
+      setStatus(t('catalogN',{n:PAYLOADS.length,live:live}));
+      checkDownloadedUpdates(PAYLOADS);
+    }
+    apply();
+  });
 }
 (function bootCatalog(){
   var cached=readCatalogCache();
   if(cached){
     PAYLOADS=cached;
     bootAfterCatalog();
-    /* Show the cached list now; check saved files against the repos shortly after. */
-    setTimeout(function(){ checkDownloadedUpdates(null); }, 2500);
+    setTimeout(function(){ backgroundCatalogRefresh(2); }, 400);
     return;
   }
   refreshCatalog(function(ok){
     if(ok && PAYLOADS && PAYLOADS.length) writeCatalogCache(PAYLOADS);
     bootAfterCatalog();
     if(ok) setTimeout(function(){ checkDownloadedUpdates(PAYLOADS); }, 1500);
-    else scheduleCatalogRecheck();
+    else setTimeout(function(){ backgroundCatalogRefresh(2); }, 8000);
   });
 })();
 })();
