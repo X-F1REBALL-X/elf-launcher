@@ -140,6 +140,13 @@ button.run.update[disabled]{opacity:.55}
 #autobannercancel{border:0;cursor:pointer;color:#fff;font:inherit;font-size:22px;font-weight:900;padding:14px 46px;border-radius:999px;background:linear-gradient(#ff8d9a,#d01232 55%,#8a0c22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 5px 0 #4a0612}
 #autobannercancel:focus{outline:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 3px #fff,0 5px 0 #4a0612}
 #catupdate{display:none !important}
+#selfupd{display:none;position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:90;max-width:min(720px,92vw);box-sizing:border-box;padding:10px 14px;border-radius:14px;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;text-align:center;background:linear-gradient(#2a6aa0,#123a5e);border:2px solid #9fd0ff;box-shadow:0 10px 24px rgba(0,0,0,.45)}
+#selfupd.show{display:flex}
+#selfupd p{margin:0;color:#fff;font-size:15px;font-weight:800;line-height:1.35}
+#selfupd .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#selfupd button{border:0;cursor:pointer;color:#fff;font:inherit;font-size:14px;font-weight:900;padding:8px 16px;border-radius:999px}
+#selfupddl{background:linear-gradient(#8cf0a8,#1ea84a 55%,#0d6b2c);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 3px 0 #063816}
+#selfupdx{background:linear-gradient(#7aa7c8,#2a4d6a);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #06111c}
 .updact{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px}
 .updver{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff3c4;font-size:12px;font-weight:800;line-height:1.5;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis}
 #sideupd{display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(#8cf0a8,#1ea84a 55%,#0d6b2c);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 5px 0 #063816,0 8px 12px rgba(0,0,0,.4);text-shadow:0 2px 0 #063816}
@@ -174,6 +181,7 @@ button.run.update[disabled]{opacity:.55}
 <main id="main">
 <p id="status" data-i18n="ready">Ready</p>
 <div id="autobanner" role="alertdialog"><div><p id="autobannertext">AutoPayload</p><small id="autobannerhint" data-i18n="cancelHint">Press Cancel or Square to stop.</small></div><button type="button" id="autobannercancel" data-i18n="cancel">Cancel</button></div>
+<div id="selfupd" role="status"><p id="selfupdtxt"></p><div class="acts"><button type="button" id="selfupddl" data-i18n="selfUpdateDl">Download update</button><button type="button" id="selfupdx" data-i18n="selfUpdateLater">Later</button></div></div>
 <div id="progwrap" aria-hidden="true"><div id="progbar"></div></div>
 <div id="hdr"><h2 id="ftitle"></h2></div>
 <div id="home" class="show"></div>
@@ -330,7 +338,7 @@ en:{
  skipNotConsole:'Skipped {name} (not on console)',skipMissing:'Skipped {name} (file missing)',autoName:'AutoPayload: {name}',
  downloadingName:'Downloading {name}...',downloadedFtp:'Downloaded {name}. Upload it by FTP to /data',downloadFailed:'Download failed: {msg}',
  downloadedName:'Downloaded {name}',markFirst:'Select payloads first',loadedN:'Loaded: {n}',catalogVersion:'Catalog version',
- credit:'Created by X-F1REBALL-X',looking:'looking...',unavailable:'unavailable',langSet:'Language: English'
+ credit:'Created by X-F1REBALL-X',looking:'looking...',unavailable:'unavailable',langSet:'Language: English',selfUpdate:'Elf Launcher {ver} is available',selfUpdateDl:'Download update',selfUpdateLater:'Later',selfUpdating:'Downloading Elf Launcher {ver}...',selfUpdated:'Downloaded Elf Launcher {ver}. Load it to apply.',selfUpdateFail:'Launcher update failed: {msg}'
 },
 ar:{
  ready:'\u062c\u0627\u0647\u0632',language:'\u0627\u0644\u0644\u063a\u0629',home:'\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629',elfFiles:'\u0645\u0644\u0641\u0627\u062a ELF',downloaded:'\u0627\u0644\u0645\u064f\u0646\u0632\u0651\u064e\u0644\u0629',autoPayload:'\u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a',
@@ -2783,6 +2791,115 @@ document.addEventListener('click',function(ev){
 }, true);
 applyStaticI18n();
 paintSideUpdate();
+var SELFUPD_DISMISS_KEY='ps5elfs-selfupd-dismiss';
+var selfUpdateInfo=null;
+function cmpSemver(a,b){
+  function parts(v){
+    v=String(v||'').replace(/^[vV]/,'').replace(/^\s+|\s+$/g,'');
+    var m=v.match(/^(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
+    if(!m) return [0,0,0];
+    return [parseInt(m[1],10)||0, parseInt(m[2],10)||0, parseInt(m[3],10)||0];
+  }
+  var A=parts(a), B=parts(b), i;
+  for(i=0;i<3;i++){ if(A[i]>B[i]) return 1; if(A[i]<B[i]) return -1; }
+  return 0;
+}
+function hideSelfUpdateBanner(){
+  var box=document.getElementById('selfupd');
+  if(box) box.classList.remove('show');
+}
+function showSelfUpdateBanner(info){
+  selfUpdateInfo=info||null;
+  var box=document.getElementById('selfupd');
+  var txt=document.getElementById('selfupdtxt');
+  if(!box || !txt || !info || !info.version) return;
+  txt.textContent=t('selfUpdate',{ver:info.version});
+  box.classList.add('show');
+}
+function dismissSelfUpdate(){
+  if(selfUpdateInfo && selfUpdateInfo.version){
+    try{ localStorage.setItem(SELFUPD_DISMISS_KEY, String(selfUpdateInfo.version)); }catch(e){}
+  }
+  hideSelfUpdateBanner();
+}
+function pickLauncherCatalogEntry(list){
+  var i, p, fn;
+  for(i=0;i<(list||[]).length;i++){
+    p=list[i]||{};
+    fn=String(p.filename||p.name||'').split('/').pop().toLowerCase();
+    if(fn==='elf-launcher.elf') return p;
+  }
+  return null;
+}
+function checkSelfUpdate(){
+  var urls=[
+    'https://x-f1reball-x.github.io/elf-launcher/payloads.json',
+    'https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/payloads.json'
+  ];
+  var idx=0;
+  function tryNext(){
+    if(idx>=urls.length) return;
+    var u=urls[idx++];
+    fetch(u,{cache:'no-store'}).then(function(r){
+      if(!r.ok) throw new Error('http '+r.status);
+      return r.json();
+    }).then(function(j){
+      var list=(j && j.payloads) ? j.payloads : (Array.isArray(j)?j:[]);
+      var ent=pickLauncherCatalogEntry(list);
+      if(!ent || !ent.version){ tryNext(); return; }
+      if(cmpSemver(ent.version, APP_VERSION)<=0){ hideSelfUpdateBanner(); return; }
+      var dismissed='';
+      try{ dismissed=localStorage.getItem(SELFUPD_DISMISS_KEY)||''; }catch(e){}
+      if(dismissed && cmpSemver(dismissed, ent.version)>=0){ hideSelfUpdateBanner(); return; }
+      showSelfUpdateBanner({
+        version:String(ent.version),
+        url:ent.url||ent.source_direct||'',
+        checksum:ent.checksum||ent.sha256||'',
+        size:ent.size|0,
+        path:ent.path||('mirror/'+String(ent.filename||'elf-launcher.elf').split('/').pop()),
+        name:ent.name||'elf-launcher.elf'
+      });
+    }).catch(function(){ tryNext(); });
+  }
+  tryNext();
+}
+function downloadSelfUpdate(){
+  if(!selfUpdateInfo || !selfUpdateInfo.url){
+    setStatus(t('selfUpdateFail',{msg:'missing url'}));
+    return;
+  }
+  var info=selfUpdateInfo;
+  var btn=document.getElementById('selfupddl');
+  if(btn){ btn.disabled=true; }
+  setStatus(t('selfUpdating',{ver:info.version}));
+  if(isConsoleHost() && info.checksum){
+    downloadToFolder(info.path, {
+      url:info.url, checksum:info.checksum, size:info.size, name:info.name
+    }).then(function(){
+      setStatus(t('selfUpdated',{ver:info.version}));
+      hideSelfUpdateBanner();
+      try{ localStorage.setItem(SELFUPD_DISMISS_KEY, String(info.version)); }catch(e){}
+      /* Load the new launcher ELF so the console applies it. */
+      sendPayload(info.name, info.path, info.url, function(){
+        if(btn) btn.disabled=false;
+      });
+    }).catch(function(e){
+      if(btn) btn.disabled=false;
+      setStatus(t('selfUpdateFail',{msg:(e&&e.message)?e.message:String(e)}));
+    });
+    return;
+  }
+  try{ window.open(info.url, '_blank'); }catch(e2){}
+  setStatus(t('selfUpdated',{ver:info.version}));
+  hideSelfUpdateBanner();
+  if(btn) btn.disabled=false;
+}
+(function wireSelfUpdate(){
+  var dl=document.getElementById('selfupddl');
+  var dx=document.getElementById('selfupdx');
+  if(dl) dl.onclick=function(){ downloadSelfUpdate(); };
+  if(dx) dx.onclick=function(){ dismissSelfUpdate(); };
+})();
 function bootAfterCatalog(){
   var start=getHashFolder();
   if(start)showFolder(start); else showHome();
@@ -2793,6 +2910,7 @@ function bootAfterCatalog(){
   syncAutoDisk();
   syncBrowserPrefFromDisk();
   watchElfldrThenAuto();
+  setTimeout(checkSelfUpdate, 900);
 }
 /* Every open: show the cached list right away, then always fetch the repos,
    swap in the fresh list, and compare saved files (Update badge). */
