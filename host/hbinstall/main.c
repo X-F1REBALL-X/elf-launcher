@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <strings.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -701,6 +702,53 @@ static void start_fresh_browser(void) {
 
 #define OPEN_AFTER_JB_PATH "/data/elf-launcher/open-after-jb"
 #define WKAL_MARK_PATH "/data/elf-launcher/from-wkal"
+#define BOOT_AUTO_DONE_PATH "/data/elf-launcher/boot-auto-done"
+
+static int64_t mono_secs(void) {
+  struct timespec ts;
+  if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
+    return 0;
+  return (int64_t)ts.tv_sec;
+}
+
+static void clear_boot_auto_done(void) { unlink(BOOT_AUTO_DONE_PATH); }
+
+/* Stamp is CLOCK_MONOTONIC seconds. After reboot the clock restarts near 0, so
+ * a stamp larger than "now" is from the previous boot and AutoPayload may run
+ * once again. */
+static int boot_auto_done(void) {
+  FILE *f;
+  long long stamped = 0;
+  int64_t now;
+  f = fopen(BOOT_AUTO_DONE_PATH, "r");
+  if (!f)
+    return 0;
+  if (fscanf(f, "%lld", &stamped) != 1) {
+    fclose(f);
+    unlink(BOOT_AUTO_DONE_PATH);
+    return 0;
+  }
+  fclose(f);
+  now = mono_secs();
+  if (stamped < 0 || (int64_t)stamped > now) {
+    unlink(BOOT_AUTO_DONE_PATH);
+    return 0;
+  }
+  return 1;
+}
+
+static int write_boot_auto_done(void) {
+  FILE *f;
+  mkdir("/data", 0755);
+  if (mkdir("/data/elf-launcher", 0755) && errno != EEXIST)
+    return -1;
+  f = fopen(BOOT_AUTO_DONE_PATH, "w");
+  if (!f)
+    return -1;
+  fprintf(f, "%lld\n", (long long)mono_secs());
+  fclose(f);
+  return 0;
+}
 
 /* Missing file means closed. Only a file whose first byte is 1 opens the browser. */
 static int open_after_jb(void) {
@@ -1193,6 +1241,8 @@ static void run_headless_auto(void) {
   char use[AUTO_MAX][AUTO_NAME_MAX];
   int n, e, i, sent = 0;
   char path[512];
+  /* Headless Auto counts as the one-shot for this jailbreak/boot. */
+  write_boot_auto_done();
   sleep(1);
   n = read_auto_list(listed, AUTO_MAX);
   e = existing_names(listed, n, use, AUTO_MAX);
@@ -1246,6 +1296,10 @@ static void serve(void) {
   char path[512];
   int from_wkal = consume_wkal_mark();
   int want_open;
+
+  /* Fresh WK/jailbreak send: allow AutoPayload once again this boot. */
+  if (from_wkal)
+    clear_boot_auto_done();
 
   /* Manual send always takes over :1000 and always opens the page.
    * A WK send leaves the from-wkal mark. If :1000 is already up, do not
@@ -1353,6 +1407,34 @@ static void serve(void) {
       }
       snprintf(json, sizeof(json), "{\"ok\":true,\"ready\":%s}",
                ready ? "true" : "false");
+      send_json(c, 1, json, strlen(json));
+      close(c);
+      continue;
+    }
+    /* Persist AutoPayload one-shot across page/app opens until reboot or WK. */
+    if (!strcmp(p, "boot-auto")) {
+      char flag[8];
+      char json[64];
+      int done;
+      flag[0] = 0;
+      if (q)
+        qget(q + 1, "done", flag, sizeof(flag));
+      if (flag[0] == '1') {
+        if (write_boot_auto_done()) {
+          const char *err = "{\"ok\":false,\"message\":\"could not save\"}";
+          send_json(c, 0, err, strlen(err));
+          close(c);
+          continue;
+        }
+        done = 1;
+      } else if (flag[0] == '0') {
+        clear_boot_auto_done();
+        done = 0;
+      } else {
+        done = boot_auto_done();
+      }
+      snprintf(json, sizeof(json), "{\"ok\":true,\"done\":%s}",
+               done ? "true" : "false");
       send_json(c, 1, json, strlen(json));
       close(c);
       continue;
