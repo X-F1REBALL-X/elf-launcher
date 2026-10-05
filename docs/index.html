@@ -2826,7 +2826,7 @@ function showSelfUpdateBanner(info){
   txt.textContent=t('selfUpdate',{ver:info.version});
   var dl=document.getElementById('selfupddl');
   var dx=document.getElementById('selfupdx');
-  if(dl){ dl.textContent=t('selfUpdateDl'); dl.disabled=false; }
+  if(dl){ dl.textContent=t('update'); dl.disabled=false; }
   if(dx) dx.textContent=t('selfUpdateLater');
   box.classList.add('show');
 }
