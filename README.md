@@ -2,9 +2,9 @@
 
 Home-screen and browser ELF payload launcher for PS5.
 
-![Elf Launcher 1.1.4](docs/screenshots/home.png)
+![Elf Launcher 1.1.5](docs/screenshots/home.png)
 
-**Version 1.1.4**
+**Version 1.1.5** - AutoPayload stays silent when nothing is marked or it already ran this jailbreak.
 
 - Live page: https://x-f1reball-x.github.io/elf-launcher/
 - Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/1.1.4
