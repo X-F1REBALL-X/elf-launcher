@@ -996,20 +996,62 @@ function setBrowserStayOpen(on){
   }catch(e3){}
 }
 var BOOT_AUTO_KEY='ps5elfs-boot-auto-done';
+/* null=unknown, true/false=synced. Disk on :1000 survives page/app reopens. */
+var bootAutoDoneCached=null;
 function bootAutoFlag(){
-  /* This browser session only. A new open after WK starts clean and can load AutoPayload once. */
+  if(bootAutoDoneCached===true) return true;
+  if(bootAutoDoneCached===false) return false;
   var v='';
   try{ v=sessionStorage.getItem(BOOT_AUTO_KEY)||''; }catch(e){}
-  return v==='1';
+  if(v==='1') return true;
+  try{ v=localStorage.getItem(BOOT_AUTO_KEY)||''; }catch(e2){}
+  if(v==='1') return true;
+  try{
+    var m=document.cookie.match(/(?:^|; )ps5elfs-boot-auto-done=([^;]*)/);
+    if(m && m[1]==='1') return true;
+  }catch(e3){}
+  return false;
 }
 function bootAutoAllowed(){
-  /* First time elfldr is already listening only. Not on later opens, and not after it already ran. */
+  /* Once after jailbreak/elfldr. Later page or app opens do not auto-load again. */
   return !bootAutoFlag();
 }
 function markBootAutoDone(){
+  bootAutoDoneCached=true;
   try{ sessionStorage.setItem(BOOT_AUTO_KEY,'1'); }catch(e){}
-  try{ localStorage.removeItem(BOOT_AUTO_KEY); }catch(e2){}
-  document.cookie=BOOT_AUTO_KEY+'=; path=/; max-age=0';
+  try{ localStorage.setItem(BOOT_AUTO_KEY,'1'); }catch(e2){}
+  document.cookie=BOOT_AUTO_KEY+'=1; path=/; max-age=31536000';
+  if(isConsoleHost()){
+    try{ fetch('/boot-auto?done=1',{method:'GET',cache:'no-store'}).catch(function(){}); }catch(e3){}
+  }
+}
+/* Sync the one-shot flag from disk on the console (survives WebView restarts). */
+function refreshBootAutoFlag(cb){
+  function finish(done){
+    bootAutoDoneCached=!!done;
+    if(done){
+      try{ sessionStorage.setItem(BOOT_AUTO_KEY,'1'); }catch(e){}
+      try{ localStorage.setItem(BOOT_AUTO_KEY,'1'); }catch(e2){}
+      document.cookie=BOOT_AUTO_KEY+'=1; path=/; max-age=31536000';
+    }else{
+      /* Server says this boot has not run Auto yet — drop stale browser flags. */
+      try{ sessionStorage.removeItem(BOOT_AUTO_KEY); }catch(e3){}
+      try{ localStorage.removeItem(BOOT_AUTO_KEY); }catch(e4){}
+      document.cookie=BOOT_AUTO_KEY+'=; path=/; max-age=0';
+    }
+    if(cb) try{ cb(!!done); }catch(e5){}
+  }
+  if(!isConsoleHost()){
+    finish(bootAutoFlag());
+    return;
+  }
+  try{
+    fetch('/boot-auto',{method:'GET',cache:'no-store'}).then(function(r){
+      return r.json().catch(function(){ return {}; });
+    }).then(function(j){
+      finish(!!(j && j.done));
+    }).catch(function(){ finish(bootAutoFlag()); });
+  }catch(e){ finish(bootAutoFlag()); }
 }
 /* True when elfldr is already listening on 9021 (loaded before these payloads). */
 function probeElfldr(cb){
@@ -1077,25 +1119,28 @@ function beginAutoAfterPause(){
     });
   }, 3000);
 }
-/* Auto Load only after the first detection that elfldr is already listening. */
+/* Auto Load once after jailbreak: first time elfldr is already listening. */
 function watchElfldrThenAuto(){
   if(!/PlayStation/i.test(navigator.userAgent)) return;
-  if(!bootAutoAllowed()) return;
-  var tries=0;
-  function tick(){
+  refreshBootAutoFlag(function(done){
+    if(done) return;
     if(!bootAutoAllowed()) return;
-    probeElfldr(function(ready){
+    var tries=0;
+    function tick(){
       if(!bootAutoAllowed()) return;
-      if(ready){
-        beginAutoAfterPause();
-        return;
-      }
-      tries++;
-      /* Keep watching while this page stays open. Do not mark done if elfldr is absent. */
-      if(tries<45) setTimeout(tick, 1000);
-    });
-  }
-  tick();
+      probeElfldr(function(ready){
+        if(!bootAutoAllowed()) return;
+        if(ready){
+          beginAutoAfterPause();
+          return;
+        }
+        tries++;
+        /* Keep watching while this page stays open. Do not mark done if elfldr is absent. */
+        if(tries<45) setTimeout(tick, 1000);
+      });
+    }
+    tick();
+  });
 }
 function runAuto(done){
   var queue=[], i, p, btn;
@@ -1243,7 +1288,7 @@ function showHome(){
     '<button type="button" data-brows="open"'+(stay?' class="selected"':'')+'>Open browser</button>'+
     '<button type="button" data-brows="closed"'+(!stay?' class="selected"':'')+'>Leave closed</button>'+
     '</div>'+
-    '<p class="homeHint">Mark Auto only in Downloaded. AutoPayload runs once, the first time elfldr is already listening, after a 3 second pause. Square or Cancel stops it. Later page opens do not auto-load again. Leave closed closes this page after that.</p>'+
+    '<p class="homeHint">Mark Auto only in Downloaded. AutoPayload runs once after jailbreak — the first time elfldr is already listening, after a 3 second pause. Square or Cancel stops it. Later page or app opens do not auto-load again until the next jailbreak. Leave closed closes this page after that.</p>'+
     '</div></div>';
   var choices=homeEl.getElementsByTagName('button');
   var ci;
@@ -2447,7 +2492,7 @@ function bootAfterCatalog(){
   applyRemembered();
   setStatus('Ready');
   if(isConsoleHost() && currentFolder!=='downloaded') showDownloadedFolderCount();
-  /* Not on every open. Only the first time elfldr is already listening, after a 3s pause. */
+  /* Once after jailbreak/elfldr only — disk flag blocks later page/app opens. */
   syncAutoDisk();
   watchElfldrThenAuto();
 }
