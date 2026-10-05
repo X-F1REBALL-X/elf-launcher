@@ -1296,20 +1296,22 @@ static void serve(void) {
   char path[512];
   int from_wkal = consume_wkal_mark();
   int want_open;
+  int already_up = http_port_open();
 
-  /* Fresh WK/jailbreak send: allow AutoPayload once again this boot. */
-  if (from_wkal)
+  /* Clear AutoPayload one-shot only on a real fresh JB / first bind of :1000.
+   * Attaching to an already-up server (later WK page opens) must keep the flag. */
+  if (from_wkal && !already_up)
     clear_boot_auto_done();
 
   /* Manual send always takes over :1000 and always opens the page.
    * A WK send leaves the from-wkal mark. If :1000 is already up, do not
    * reinstall: apply the saved open or closed choice here, and when closed
-   * load Auto without a visible page. */
-  if (http_port_open()) {
+   * load Auto only if it has not already run this jailbreak. */
+  if (already_up) {
     if (from_wkal) {
       if (wk_wants_open())
         launch_browser_now();
-      else
+      else if (!boot_auto_done())
         run_headless_auto();
       return;
     }
@@ -1411,7 +1413,7 @@ static void serve(void) {
       close(c);
       continue;
     }
-    /* Persist AutoPayload one-shot across page/app opens until reboot or WK. */
+    /* Persist AutoPayload one-shot across page/app opens until reboot or fresh JB. */
     if (!strcmp(p, "boot-auto")) {
       char flag[8];
       char json[64];
