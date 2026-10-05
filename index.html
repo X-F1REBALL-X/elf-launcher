@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ELF Launcher 1.1.0</title>
+<title>ELF Launcher 1.1.1</title>
 <link rel="icon" type="image/jpeg" href="icons/launcher-home.jpg?v=7">
 <link rel="apple-touch-icon" href="icons/launcher-home.jpg?v=7">
 <style>
@@ -145,7 +145,7 @@ button.run.update[disabled]{opacity:.55}
 #selfupd p{margin:0;color:#fff;font-size:15px;font-weight:800;line-height:1.35}
 #selfupd .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 #selfupd button{border:0;cursor:pointer;color:#fff;font:inherit;font-size:14px;font-weight:900;padding:8px 16px;border-radius:999px}
-#selfupddl{background:linear-gradient(#8cf0a8,#1ea84a 55%,#0d6b2c);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 3px 0 #063816}
+#selfupddl{background:linear-gradient(#fff8d8,#f5b410 50%,#9a5800);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 10px 2px rgba(255,200,40,.6),0 3px 0 #5a3c04;text-shadow:0 2px 0 #5a3c04}
 #selfupdx{background:linear-gradient(#7aa7c8,#2a4d6a);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #06111c}
 .updact{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px}
 .updver{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff3c4;font-size:12px;font-weight:800;line-height:1.5;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis}
@@ -181,7 +181,7 @@ button.run.update[disabled]{opacity:.55}
 <main id="main">
 <p id="status" data-i18n="ready">Ready</p>
 <div id="autobanner" role="alertdialog"><div><p id="autobannertext">AutoPayload</p><small id="autobannerhint" data-i18n="cancelHint">Press Cancel or Square to stop.</small></div><button type="button" id="autobannercancel" data-i18n="cancel">Cancel</button></div>
-<div id="selfupd" role="status"><p id="selfupdtxt"></p><div class="acts"><button type="button" id="selfupddl" data-i18n="selfUpdateDl">Download update</button><button type="button" id="selfupdx" data-i18n="selfUpdateLater">Later</button></div></div>
+<div id="selfupd" role="status"><p id="selfupdtxt"></p><div class="acts"><button type="button" id="selfupddl" data-i18n="update">Update</button><button type="button" id="selfupdx" data-i18n="selfUpdateLater">Later</button></div></div>
 <div id="progwrap" aria-hidden="true"><div id="progbar"></div></div>
 <div id="hdr"><h2 id="ftitle"></h2></div>
 <div id="home" class="show"></div>
@@ -201,11 +201,11 @@ var FOLDERS=[
 {id:"system",label:"System"},
 {id:"tools",label:"Tools"}
 ];
-var APP_VERSION="1.1.0";
+var APP_VERSION="1.1.1";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
-  {name:"X-F1REBALL-X",url:"https://x-f1reball-x.github.io/elf-launcher/payloads.json"},
+  {name:"X-F1REBALL-X",url:"https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/payloads.json"},
   {name:"itsPLK raw",url:"https://raw.githubusercontent.com/itsPLK/ps5-payloads-mirror/main/payloads.json"}
 ];
 var CATALOG_SOURCE=CATALOG_SOURCES[0].url;
@@ -362,7 +362,7 @@ ar:{
  skipNotConsole:'\u062a\u0645 \u062a\u062e\u0637\u064a {name} (\u0644\u064a\u0633 \u0639\u0644\u0649 \u0627\u0644\u062c\u0647\u0627\u0632)',skipMissing:'\u062a\u0645 \u062a\u062e\u0637\u064a {name} (\u0627\u0644\u0645\u0644\u0641 \u0645\u0641\u0642\u0648\u062f)',autoName:'\u062a\u0634\u063a\u064a\u0644 \u062a\u0644\u0642\u0627\u0626\u064a: {name}',
  downloadingName:'\u062c\u0627\u0631\u064d \u062a\u0646\u0632\u064a\u0644 {name}...',downloadedFtp:'\u062a\u0645 \u062a\u0646\u0632\u064a\u0644 {name}. \u0627\u0631\u0641\u0639\u0647 \u0639\u0628\u0631 FTP \u0625\u0644\u0649 /data',downloadFailed:'\u0641\u0634\u0644 \u0627\u0644\u062a\u0646\u0632\u064a\u0644: {msg}',
  downloadedName:'\u062a\u0645 \u062a\u0646\u0632\u064a\u0644 {name}',markFirst:'\u062d\u062f\u0651\u062f \u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a \u0623\u0648\u0644\u064b\u0627',loadedN:'\u062a\u0645 \u0627\u0644\u062a\u0634\u063a\u064a\u0644: {n}',catalogVersion:'\u0625\u0635\u062f\u0627\u0631 \u0627\u0644\u0642\u0627\u0626\u0645\u0629',
- credit:'\u0645\u0646 \u0625\u0639\u062f\u0627\u062f X-F1REBALL-X',looking:'\u062c\u0627\u0631\u064d \u0627\u0644\u0628\u062d\u062b...',unavailable:'\u063a\u064a\u0631 \u0645\u062a\u0627\u062d',langSet:'\u0627\u0644\u0644\u063a\u0629: \u0627\u0644\u0639\u0631\u0628\u064a\u0629'
+ credit:'\u0645\u0646 \u0625\u0639\u062f\u0627\u062f X-F1REBALL-X',looking:'\u062c\u0627\u0631\u064d \u0627\u0644\u0628\u062d\u062b...',unavailable:'\u063a\u064a\u0631 \u0645\u062a\u0627\u062d',langSet:'\u0627\u0644\u0644\u063a\u0629: \u0627\u0644\u0639\u0631\u0628\u064a\u0629',selfUpdate:'\u0625\u0635\u062f\u0627\u0631 Elf Launcher {ver} \u0645\u062a\u0627\u062d',selfUpdateDl:'\u062a\u0646\u0632\u064a\u0644 \u0627\u0644\u062a\u062d\u062f\u064a\u062b',selfUpdateLater:'\u0644\u0627\u062d\u0642\u064b\u0627',selfUpdating:'\u062c\u0627\u0631\u064d \u062a\u0646\u0632\u064a\u0644 Elf Launcher {ver}...',selfUpdated:'\u062a\u0645 \u062a\u0646\u0632\u064a\u0644 Elf Launcher {ver}. \u0634\u063a\u0651\u0650\u0644\u0647 \u0644\u0644\u062a\u0637\u0628\u064a\u0642.',selfUpdateFail:'\u0641\u0634\u0644 \u062a\u062d\u062f\u064a\u062b \u0627\u0644\u0645\u0634\u063a\u0651\u0650\u0644: {msg}'
 },
 es:{
  ready:'Listo',language:'Idioma',home:'Inicio',elfFiles:'Archivos ELF',downloaded:'Descargados',autoPayload:'AutoPayload',
@@ -386,7 +386,7 @@ es:{
  skipNotConsole:'Omitido {name} (no est\u00e1 en la consola)',skipMissing:'Omitido {name} (falta el archivo)',autoName:'AutoPayload: {name}',
  downloadingName:'Descargando {name}...',downloadedFtp:'{name} descargado. S\u00fabelo por FTP a /data',downloadFailed:'Error de descarga: {msg}',
  downloadedName:'{name} descargado',markFirst:'Elige payloads primero',loadedN:'Cargados: {n}',catalogVersion:'Versi\u00f3n del cat\u00e1logo',
- credit:'Creado por X-F1REBALL-X',looking:'buscando...',unavailable:'no disponible',langSet:'Idioma: Espa\u00f1ol'
+ credit:'Creado por X-F1REBALL-X',looking:'buscando...',unavailable:'no disponible',langSet:'Idioma: Espa\u00f1ol',selfUpdate:'Elf Launcher {ver} disponible',selfUpdateDl:'Descargar actualizaci\u00f3n',selfUpdateLater:'M\u00e1s tarde',selfUpdating:'Descargando Elf Launcher {ver}...',selfUpdated:'Elf Launcher {ver} descargado. C\u00e1rgalo para aplicar.',selfUpdateFail:'Error al actualizar el launcher: {msg}'
 },
 fr:{
  ready:'Pr\u00eat',language:'Langue',home:'Accueil',elfFiles:'Fichiers ELF',downloaded:'T\u00e9l\u00e9charg\u00e9s',autoPayload:'AutoPayload',
@@ -410,7 +410,7 @@ fr:{
  skipNotConsole:'{name} ignor\u00e9 (pas sur la console)',skipMissing:'{name} ignor\u00e9 (fichier manquant)',autoName:'AutoPayload : {name}',
  downloadingName:'T\u00e9l\u00e9chargement de {name}...',downloadedFtp:'{name} t\u00e9l\u00e9charg\u00e9. Envoyez-le par FTP dans /data',downloadFailed:'\u00c9chec du t\u00e9l\u00e9chargement : {msg}',
  downloadedName:'{name} t\u00e9l\u00e9charg\u00e9',markFirst:'Choisissez d\u2019abord des payloads',loadedN:'Charg\u00e9s : {n}',catalogVersion:'Version du catalogue',
- credit:'Cr\u00e9\u00e9 par X-F1REBALL-X',looking:'recherche...',unavailable:'indisponible',langSet:'Langue : Fran\u00e7ais'
+ credit:'Cr\u00e9\u00e9 par X-F1REBALL-X',looking:'recherche...',unavailable:'indisponible',langSet:'Langue : Fran\u00e7ais',selfUpdate:'Elf Launcher {ver} disponible',selfUpdateDl:'T\u00e9l\u00e9charger la mise \u00e0 jour',selfUpdateLater:'Plus tard',selfUpdating:'T\u00e9l\u00e9chargement d\u2019Elf Launcher {ver}...',selfUpdated:'Elf Launcher {ver} t\u00e9l\u00e9charg\u00e9. Chargez-le pour appliquer.',selfUpdateFail:'\u00c9chec de la mise \u00e0 jour du launcher : {msg}'
 },
 de:{
  ready:'Bereit',language:'Sprache',home:'Start',elfFiles:'ELF-Dateien',downloaded:'Heruntergeladen',autoPayload:'AutoPayload',
@@ -434,7 +434,7 @@ de:{
  skipNotConsole:'{name} \u00fcbersprungen (nicht auf der Konsole)',skipMissing:'{name} \u00fcbersprungen (Datei fehlt)',autoName:'AutoPayload: {name}',
  downloadingName:'Lade {name} herunter...',downloadedFtp:'{name} heruntergeladen. Per FTP nach /data hochladen',downloadFailed:'Download fehlgeschlagen: {msg}',
  downloadedName:'{name} heruntergeladen',markFirst:'Zuerst Payloads ausw\u00e4hlen',loadedN:'Geladen: {n}',catalogVersion:'Katalogversion',
- credit:'Erstellt von X-F1REBALL-X',looking:'suche...',unavailable:'nicht verf\u00fcgbar',langSet:'Sprache: Deutsch'
+ credit:'Erstellt von X-F1REBALL-X',looking:'suche...',unavailable:'nicht verf\u00fcgbar',langSet:'Sprache: Deutsch',selfUpdate:'Elf Launcher {ver} verf\u00fcgbar',selfUpdateDl:'Update laden',selfUpdateLater:'Sp\u00e4ter',selfUpdating:'Elf Launcher {ver} wird geladen...',selfUpdated:'Elf Launcher {ver} geladen. Zum Anwenden starten.',selfUpdateFail:'Launcher-Update fehlgeschlagen: {msg}'
 },
 pt:{
  ready:'Pronto',language:'Idioma',home:'In\u00edcio',elfFiles:'Arquivos ELF',downloaded:'Baixados',autoPayload:'AutoPayload',
@@ -458,7 +458,7 @@ pt:{
  skipNotConsole:'{name} ignorado (n\u00e3o est\u00e1 no console)',skipMissing:'{name} ignorado (arquivo ausente)',autoName:'AutoPayload: {name}',
  downloadingName:'Baixando {name}...',downloadedFtp:'{name} baixado. Envie por FTP para /data',downloadFailed:'Falha no download: {msg}',
  downloadedName:'{name} baixado',markFirst:'Selecione payloads primeiro',loadedN:'Carregados: {n}',catalogVersion:'Vers\u00e3o do cat\u00e1logo',
- credit:'Criado por X-F1REBALL-X',looking:'procurando...',unavailable:'indispon\u00edvel',langSet:'Idioma: Portugu\u00eas'
+ credit:'Criado por X-F1REBALL-X',looking:'procurando...',unavailable:'indispon\u00edvel',langSet:'Idioma: Portugu\u00eas',selfUpdate:'Elf Launcher {ver} dispon\u00edvel',selfUpdateDl:'Baixar atualiza\u00e7\u00e3o',selfUpdateLater:'Depois',selfUpdating:'Baixando Elf Launcher {ver}...',selfUpdated:'Elf Launcher {ver} baixado. Carregue para aplicar.',selfUpdateFail:'Falha ao atualizar o launcher: {msg}'
 },
 ru:{
  ready:'\u0413\u043e\u0442\u043e\u0432\u043e',language:'\u042f\u0437\u044b\u043a',home:'\u0413\u043b\u0430\u0432\u043d\u0430\u044f',elfFiles:'\u0424\u0430\u0439\u043b\u044b ELF',downloaded:'\u0417\u0430\u0433\u0440\u0443\u0436\u0435\u043d\u043d\u044b\u0435',autoPayload:'\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a',
@@ -482,7 +482,7 @@ ru:{
  skipNotConsole:'\u041f\u0440\u043e\u043f\u0443\u0449\u0435\u043d {name} (\u043d\u0435 \u043d\u0430 \u043a\u043e\u043d\u0441\u043e\u043b\u0438)',skipMissing:'\u041f\u0440\u043e\u043f\u0443\u0449\u0435\u043d {name} (\u043d\u0435\u0442 \u0444\u0430\u0439\u043b\u0430)',autoName:'\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a: {name}',
  downloadingName:'\u0421\u043a\u0430\u0447\u0438\u0432\u0430\u043d\u0438\u0435 {name}...',downloadedFtp:'{name} \u0441\u043a\u0430\u0447\u0430\u043d. \u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u0435 \u0435\u0433\u043e \u043f\u043e FTP \u0432 /data',downloadFailed:'\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u043a\u0430\u0447\u0438\u0432\u0430\u043d\u0438\u044f: {msg}',
  downloadedName:'{name} \u0441\u043a\u0430\u0447\u0430\u043d',markFirst:'\u0421\u043d\u0430\u0447\u0430\u043b\u0430 \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435 payload',loadedN:'\u0417\u0430\u043f\u0443\u0449\u0435\u043d\u043e: {n}',catalogVersion:'\u0412\u0435\u0440\u0441\u0438\u044f \u0432 \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0435',
- credit:'\u0410\u0432\u0442\u043e\u0440: X-F1REBALL-X',looking:'\u043f\u043e\u0438\u0441\u043a...',unavailable:'\u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e',langSet:'\u042f\u0437\u044b\u043a: \u0420\u0443\u0441\u0441\u043a\u0438\u0439'
+ credit:'\u0410\u0432\u0442\u043e\u0440: X-F1REBALL-X',looking:'\u043f\u043e\u0438\u0441\u043a...',unavailable:'\u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e',langSet:'\u042f\u0437\u044b\u043a: \u0420\u0443\u0441\u0441\u043a\u0438\u0439',selfUpdate:'\u0414\u043e\u0441\u0442\u0443\u043f\u0435\u043d Elf Launcher {ver}',selfUpdateDl:'\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435',selfUpdateLater:'\u041f\u043e\u0437\u0436\u0435',selfUpdating:'\u0421\u043a\u0430\u0447\u0438\u0432\u0430\u043d\u0438\u0435 Elf Launcher {ver}...',selfUpdated:'\u0421\u043a\u0430\u0447\u0430\u043d Elf Launcher {ver}. \u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u0435, \u0447\u0442\u043e\u0431\u044b \u043f\u0440\u0438\u043c\u0435\u043d\u0438\u0442\u044c.',selfUpdateFail:'\u041e\u0448\u0438\u0431\u043a\u0430 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u043b\u0430\u0443\u043d\u0447\u0435\u0440\u0430: {msg}'
 },
 ja:{
  ready:'\u6e96\u5099\u5b8c\u4e86',language:'\u8a00\u8a9e',home:'\u30db\u30fc\u30e0',elfFiles:'ELF\u30d5\u30a1\u30a4\u30eb',downloaded:'\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u6e08\u307f',autoPayload:'\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9',
@@ -506,7 +506,7 @@ ja:{
  skipNotConsole:'{name} \u3092\u30b9\u30ad\u30c3\u30d7\uff08\u672c\u4f53\u4ee5\u5916\uff09',skipMissing:'{name} \u3092\u30b9\u30ad\u30c3\u30d7\uff08\u30d5\u30a1\u30a4\u30eb\u306a\u3057\uff09',autoName:'\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9: {name}',
  downloadingName:'{name} \u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u4e2d...',downloadedFtp:'{name} \u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3057\u307e\u3057\u305f\u3002FTP\u3067 /data \u306b\u30a2\u30c3\u30d7\u30ed\u30fc\u30c9\u3057\u3066\u304f\u3060\u3055\u3044',downloadFailed:'\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u5931\u6557: {msg}',
  downloadedName:'{name} \u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3057\u307e\u3057\u305f',markFirst:'\u5148\u306b\u30da\u30a4\u30ed\u30fc\u30c9\u3092\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044',loadedN:'\u30ed\u30fc\u30c9\u6570: {n}',catalogVersion:'\u30ab\u30bf\u30ed\u30b0\u306e\u30d0\u30fc\u30b8\u30e7\u30f3',
- credit:'\u5236\u4f5c: X-F1REBALL-X',looking:'\u691c\u7d22\u4e2d...',unavailable:'\u53d6\u5f97\u3067\u304d\u307e\u305b\u3093',langSet:'\u8a00\u8a9e: \u65e5\u672c\u8a9e'
+ credit:'\u5236\u4f5c: X-F1REBALL-X',looking:'\u691c\u7d22\u4e2d...',unavailable:'\u53d6\u5f97\u3067\u304d\u307e\u305b\u3093',langSet:'\u8a00\u8a9e: \u65e5\u672c\u8a9e',selfUpdate:'Elf Launcher {ver} \u304c\u5229\u7528\u53ef\u80fd\u3067\u3059',selfUpdateDl:'\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8\u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9',selfUpdateLater:'\u5f8c\u3067',selfUpdating:'Elf Launcher {ver} \u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u4e2d...',selfUpdated:'Elf Launcher {ver} \u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3057\u307e\u3057\u305f\u3002\u9069\u7528\u3059\u308b\u306b\u306f\u8aad\u307f\u8fbc\u3093\u3067\u304f\u3060\u3055\u3044\u3002',selfUpdateFail:'\u30e9\u30f3\u30c1\u30e3\u30fc\u306e\u66f4\u65b0\u306b\u5931\u6557\u3057\u307e\u3057\u305f: {msg}'
 },
 zh:{
  ready:'\u5c31\u7eea',language:'\u8bed\u8a00',home:'\u4e3b\u9875',elfFiles:'ELF \u6587\u4ef6',downloaded:'\u5df2\u4e0b\u8f7d',autoPayload:'\u81ea\u52a8\u8f7d\u8377',
@@ -530,7 +530,7 @@ zh:{
  skipNotConsole:'\u5df2\u8df3\u8fc7 {name}\uff08\u4e0d\u5728\u4e3b\u673a\u4e0a\uff09',skipMissing:'\u5df2\u8df3\u8fc7 {name}\uff08\u6587\u4ef6\u7f3a\u5931\uff09',autoName:'\u81ea\u52a8\u8f7d\u8377\uff1a{name}',
  downloadingName:'\u6b63\u5728\u4e0b\u8f7d {name}...',downloadedFtp:'\u5df2\u4e0b\u8f7d {name}\u3002\u8bf7\u901a\u8fc7 FTP \u4e0a\u4f20\u5230 /data',downloadFailed:'\u4e0b\u8f7d\u5931\u8d25\uff1a{msg}',
  downloadedName:'\u5df2\u4e0b\u8f7d {name}',markFirst:'\u8bf7\u5148\u9009\u62e9\u8f7d\u8377',loadedN:'\u5df2\u52a0\u8f7d\uff1a{n}',catalogVersion:'\u76ee\u5f55\u7248\u672c',
- credit:'\u4f5c\u8005\uff1aX-F1REBALL-X',looking:'\u6b63\u5728\u67e5\u627e...',unavailable:'\u4e0d\u53ef\u7528',langSet:'\u8bed\u8a00\uff1a\u4e2d\u6587'
+ credit:'\u4f5c\u8005\uff1aX-F1REBALL-X',looking:'\u6b63\u5728\u67e5\u627e...',unavailable:'\u4e0d\u53ef\u7528',langSet:'\u8bed\u8a00\uff1a\u4e2d\u6587',selfUpdate:'Elf Launcher {ver} \u53ef\u7528',selfUpdateDl:'\u4e0b\u8f7d\u66f4\u65b0',selfUpdateLater:'\u7a0d\u540e',selfUpdating:'\u6b63\u5728\u4e0b\u8f7d Elf Launcher {ver}...',selfUpdated:'\u5df2\u4e0b\u8f7d Elf Launcher {ver}\u3002\u8bf7\u52a0\u8f7d\u4ee5\u5e94\u7528\u3002',selfUpdateFail:'\u542f\u52a8\u5668\u66f4\u65b0\u5931\u8d25\uff1a{msg}'
 },
 it:{
  ready:'Pronto',language:'Lingua',home:'Home',elfFiles:'File ELF',downloaded:'Scaricati',autoPayload:'AutoPayload',
@@ -554,7 +554,7 @@ it:{
  skipNotConsole:'{name} saltato (non sulla console)',skipMissing:'{name} saltato (file mancante)',autoName:'AutoPayload: {name}',
  downloadingName:'Download di {name}...',downloadedFtp:'{name} scaricato. Caricalo via FTP in /data',downloadFailed:'Download non riuscito: {msg}',
  downloadedName:'{name} scaricato',markFirst:'Seleziona prima i payload',loadedN:'Caricati: {n}',catalogVersion:'Versione nel catalogo',
- credit:'Creato da X-F1REBALL-X',looking:'ricerca...',unavailable:'non disponibile',langSet:'Lingua: Italiano'
+ credit:'Creato da X-F1REBALL-X',looking:'ricerca...',unavailable:'non disponibile',langSet:'Lingua: Italiano',selfUpdate:'Elf Launcher {ver} disponibile',selfUpdateDl:'Scarica aggiornamento',selfUpdateLater:'Pi\u00f9 tardi',selfUpdating:'Download di Elf Launcher {ver}...',selfUpdated:'Elf Launcher {ver} scaricato. Caricalo per applicare.',selfUpdateFail:'Aggiornamento launcher non riuscito: {msg}'
 }
 };
 var LANG='en';
@@ -1075,6 +1075,14 @@ function rerenderCatalogViews(){
 }
 function rerenderAfterLang(){
   paintSideUpdate();
+  if(selfUpdateInfo && selfUpdateInfo.version){
+    var txt=document.getElementById('selfupdtxt');
+    if(txt) txt.textContent=t('selfUpdate',{ver:selfUpdateInfo.version});
+    var dl=document.getElementById('selfupddl');
+    var dx=document.getElementById('selfupdx');
+    if(dl) dl.textContent=t('update');
+    if(dx) dx.textContent=t('selfUpdateLater');
+  }
   if(currentFolder) showFolder(currentFolder); else showHome();
   applyRemembered();
 }
@@ -2793,6 +2801,8 @@ applyStaticI18n();
 paintSideUpdate();
 var SELFUPD_DISMISS_KEY='ps5elfs-selfupd-dismiss';
 var selfUpdateInfo=null;
+var SELFUPD_REPO_ELF='https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf';
+var SELFUPD_GH_RELEASES='https://api.github.com/repos/X-F1REBALL-X/elf-launcher/releases/latest';
 function cmpSemver(a,b){
   function parts(v){
     v=String(v||'').replace(/^[vV]/,'').replace(/^\s+|\s+$/g,'');
@@ -2814,6 +2824,10 @@ function showSelfUpdateBanner(info){
   var txt=document.getElementById('selfupdtxt');
   if(!box || !txt || !info || !info.version) return;
   txt.textContent=t('selfUpdate',{ver:info.version});
+  var dl=document.getElementById('selfupddl');
+  var dx=document.getElementById('selfupdx');
+  if(dl){ dl.textContent=t('selfUpdateDl'); dl.disabled=false; }
+  if(dx) dx.textContent=t('selfUpdateLater');
   box.classList.add('show');
 }
 function dismissSelfUpdate(){
@@ -2831,37 +2845,82 @@ function pickLauncherCatalogEntry(list){
   }
   return null;
 }
+function betterSelfInfo(a, b){
+  if(!a) return b;
+  if(!b) return a;
+  var c=cmpSemver(a.version, b.version);
+  if(c>0) return a;
+  if(c<0) return b;
+  if(a.checksum && !b.checksum) return a;
+  if(b.checksum && !a.checksum) return b;
+  return a;
+}
+/* Catalog tip (repo raw first, then Pages) + GitHub Releases latest. */
 function checkSelfUpdate(){
-  var urls=[
-    'https://x-f1reball-x.github.io/elf-launcher/payloads.json',
-    'https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/payloads.json'
-  ];
-  var idx=0;
-  function tryNext(){
-    if(idx>=urls.length) return;
-    var u=urls[idx++];
-    fetch(u,{cache:'no-store'}).then(function(r){
-      if(!r.ok) throw new Error('http '+r.status);
-      return r.json();
-    }).then(function(j){
-      var list=(j && j.payloads) ? j.payloads : (Array.isArray(j)?j:[]);
-      var ent=pickLauncherCatalogEntry(list);
-      if(!ent || !ent.version){ tryNext(); return; }
-      if(cmpSemver(ent.version, APP_VERSION)<=0){ hideSelfUpdateBanner(); return; }
-      var dismissed='';
-      try{ dismissed=localStorage.getItem(SELFUPD_DISMISS_KEY)||''; }catch(e){}
-      if(dismissed && cmpSemver(dismissed, ent.version)>=0){ hideSelfUpdateBanner(); return; }
-      showSelfUpdateBanner({
-        version:String(ent.version),
-        url:ent.url||ent.source_direct||'',
-        checksum:ent.checksum||ent.sha256||'',
-        size:ent.size|0,
-        path:ent.path||('mirror/'+String(ent.filename||'elf-launcher.elf').split('/').pop()),
-        name:ent.name||'elf-launcher.elf'
-      });
-    }).catch(function(){ tryNext(); });
+  var pending=3, best=null;
+  function doneOne(){
+    var dismissed='';
+    pending--;
+    if(pending>0) return;
+    if(!best || cmpSemver(best.version, APP_VERSION)<=0){ hideSelfUpdateBanner(); return; }
+    try{ dismissed=localStorage.getItem(SELFUPD_DISMISS_KEY)||''; }catch(e){}
+    if(dismissed && cmpSemver(dismissed, best.version)>=0){ hideSelfUpdateBanner(); return; }
+    showSelfUpdateBanner(best);
   }
-  tryNext();
+  function takeCatalog(text){
+    var j, list, ent, ver, sum;
+    try{ j=JSON.parse(text); }catch(e){ doneOne(); return; }
+    list=(j && j.payloads) ? j.payloads : (Array.isArray(j)?j:[]);
+    ent=pickLauncherCatalogEntry(list);
+    ver=String((ent && ent.version) || (j && (j.app_version||j.launcher_version)) || '').replace(/^\s+|\s+$/g,'');
+    sum=String((ent && (ent.checksum||ent.sha256)) || '').toLowerCase();
+    if(ver && cmpSemver(ver, APP_VERSION)>0){
+      best=betterSelfInfo(best, {
+        version:ver,
+        url:SELFUPD_REPO_ELF,
+        checksum:sum,
+        size:(ent && ent.size)|0,
+        path:'mirror/elf-launcher.elf',
+        name:'elf-launcher.elf',
+        source:'catalog'
+      });
+    }
+    doneOne();
+  }
+  function takeGh(text){
+    var j, tag, assets, i, a, url='', size=0, name='elf-launcher.elf';
+    try{ j=JSON.parse(text); }catch(e){ doneOne(); return; }
+    if(!j || j.draft){ doneOne(); return; }
+    tag=String(j.tag_name||j.name||'').replace(/^[vV]/,'').replace(/^\s+|\s+$/g,'');
+    assets=j.assets||[];
+    for(i=0;i<assets.length;i++){
+      a=assets[i]||{};
+      if(String(a.name||'').toLowerCase()==='elf-launcher.elf'){
+        url=a.browser_download_url||'';
+        size=a.size|0;
+        name=a.name||name;
+        break;
+      }
+    }
+    if(!url) url=SELFUPD_REPO_ELF;
+    if(tag && cmpSemver(tag, APP_VERSION)>0){
+      best=betterSelfInfo(best, {
+        version:tag,
+        url:url||SELFUPD_REPO_ELF,
+        checksum:'',
+        size:size,
+        path:'mirror/'+name,
+        name:name,
+        source:'github'
+      });
+    }
+    doneOne();
+  }
+  fetchCatalogText('https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/payloads.json')
+    .then(takeCatalog).catch(doneOne);
+  fetchCatalogText('https://x-f1reball-x.github.io/elf-launcher/payloads.json')
+    .then(takeCatalog).catch(doneOne);
+  fetchCatalogText(SELFUPD_GH_RELEASES).then(takeGh).catch(doneOne);
 }
 function downloadSelfUpdate(){
   if(!selfUpdateInfo || !selfUpdateInfo.url){
@@ -2870,29 +2929,43 @@ function downloadSelfUpdate(){
   }
   var info=selfUpdateInfo;
   var btn=document.getElementById('selfupddl');
+  /* Prefer repo tip binary; keep release asset URL if that is what won. */
+  if(info.source!=='github' || !info.url){
+    info.url=SELFUPD_REPO_ELF;
+  }
+  info.path='mirror/elf-launcher.elf';
+  info.name='elf-launcher.elf';
   if(btn){ btn.disabled=true; }
   setStatus(t('selfUpdating',{ver:info.version}));
-  if(isConsoleHost() && info.checksum){
+  function fail(e){
+    if(btn) btn.disabled=false;
+    setStatus(t('selfUpdateFail',{msg:(e&&e.message)?e.message:String(e)}));
+  }
+  function ok(){
+    setStatus(t('selfUpdated',{ver:info.version}));
+    hideSelfUpdateBanner();
+    try{ localStorage.setItem(SELFUPD_DISMISS_KEY, String(info.version)); }catch(e){}
+    if(btn) btn.disabled=false;
+  }
+  if(isConsoleHost() && info.checksum && info.checksum.length===64){
     downloadToFolder(info.path, {
       url:info.url, checksum:info.checksum, size:info.size, name:info.name
     }).then(function(){
       setStatus(t('selfUpdated',{ver:info.version}));
       hideSelfUpdateBanner();
       try{ localStorage.setItem(SELFUPD_DISMISS_KEY, String(info.version)); }catch(e){}
-      /* Load the new launcher ELF so the console applies it. */
-      sendPayload(info.name, info.path, info.url, function(){
-        if(btn) btn.disabled=false;
-      });
-    }).catch(function(e){
-      if(btn) btn.disabled=false;
-      setStatus(t('selfUpdateFail',{msg:(e&&e.message)?e.message:String(e)}));
+      sendPayload(info.name, info.path, info.url, function(){ if(btn) btn.disabled=false; });
+    }).catch(fail);
+    return;
+  }
+  if(/PlayStation/i.test(navigator.userAgent)){
+    sendPayload(info.name, null, info.url, function(okSend){
+      if(okSend) ok(); else fail(new Error('elfldr rejected'));
     });
     return;
   }
   try{ window.open(info.url, '_blank'); }catch(e2){}
-  setStatus(t('selfUpdated',{ver:info.version}));
-  hideSelfUpdateBanner();
-  if(btn) btn.disabled=false;
+  ok();
 }
 (function wireSelfUpdate(){
   var dl=document.getElementById('selfupddl');
