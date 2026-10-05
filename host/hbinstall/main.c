@@ -1394,10 +1394,11 @@ static void serve(void) {
    * page or run AutoPayload. Manual open still takes over :1000. */
   if (already_up) {
     if (from_wkal || !wk_wants_open()) {
+      /* Open browser still needs disk Auto (auto.list); page localStorage often empty. */
+      if (!boot_auto_done())
+        run_headless_auto();
       if (wk_wants_open())
         launch_browser_now();
-      else if (!boot_auto_done())
-        run_headless_auto();
       return;
     }
     kill_other_elf_launchers();
@@ -1430,9 +1431,13 @@ static void serve(void) {
     return;
   }
   puts("listening");
-  if (want_open)
+  /* Always run Auto from disk when the one-shot is free. Open browser used to
+   * rely on the WebView alone (localStorage), which often skipped the queue. */
+  if (want_open) {
+    if (!boot_auto_done())
+      run_headless_auto();
     start_fresh_browser();
-  else
+  } else
     start_headless_auto();
   /* Bind of :1000. Install the home icon once in the background. */
   start_home_icon_install_async(0);
