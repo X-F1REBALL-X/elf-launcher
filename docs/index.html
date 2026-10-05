@@ -196,7 +196,7 @@ var APP_VERSION="1.0.48-test";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
-  {name:"X-F1REBALL-X",url:"https://x-f1reball-x.gitlab.io/elf-launcher/payloads.json"},
+  {name:"X-F1REBALL-X",url:"https://x-f1reball-x.github.io/elf-launcher/payloads.json"},
   {name:"itsPLK raw",url:"https://raw.githubusercontent.com/itsPLK/ps5-payloads-mirror/main/payloads.json"}
 ];
 var CATALOG_SOURCE=CATALOG_SOURCES[0].url;
@@ -447,8 +447,8 @@ function isItsplkMirrorUrl(url){
 }
 function isGitlabElfLauncherMirror(url){
   url=String(url||'').toLowerCase();
-  return url.indexOf('gitlab.com/x-f1reball-x/elf-launcher')>=0 ||
-    url.indexOf('x-f1reball-x.gitlab.io/elf-launcher')>=0;
+  return url.indexOf('github.com/X-F1REBALL-X/elf-launcher')>=0 ||
+    url.indexOf('x-f1reball-x.github.io/elf-launcher')>=0;
 }
 /* Author/dev download URL beats the itsPLK mirror copy. */
 function pickPayloadUrl(item){
@@ -2097,7 +2097,7 @@ function askIpImage(){
   img.onerror=function(){
     if(window.ipElfSent || !/PlayStation/i.test(navigator.userAgent)) return;
     window.ipElfSent=true;
-    askLauncher('https://gitlab.com/X-F1REBALL-X/elf-launcher/-/raw/main/loader/elfldr-ps5.elf');
+    askLauncher('https://github.com/X-F1REBALL-X/elf-launcher/-/raw/main/loader/elfldr-ps5.elf');
   };
   img.src='http://127.0.0.1:9021/ip.bmp?t='+Date.now();
 }
