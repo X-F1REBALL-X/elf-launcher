@@ -1383,9 +1383,12 @@ static void serve(void) {
   int want_open;
   int already_up = http_port_open();
 
-  /* Clear AutoPayload one-shot only on a real fresh JB / first bind of :1000.
-   * Attaching to an already-up server (later WK page opens) must keep the flag. */
-  if (from_wkal && !already_up)
+  /* Clear AutoPayload one-shot on every fresh :1000 bind (new ELF after JB).
+   * from-wkal used to be required, but Hybrid often sends only elf-launcher.elf
+   * (no mark), so Open browser skipped Auto while Leave closed still ran. */
+  if (!already_up)
+    clear_boot_auto_done();
+  else if (from_wkal)
     clear_boot_auto_done();
 
   /* Leave closed / open preference applies with or without the from-wkal
@@ -1431,11 +1434,10 @@ static void serve(void) {
     return;
   }
   puts("listening");
-  /* Always run Auto from disk when the one-shot is free. Open browser used to
-   * rely on the WebView alone (localStorage), which often skipped the queue. */
+  /* Open browser: same disk Auto as Leave closed (do not gate on boot-auto-done
+   * here — flag was just cleared on fresh bind). Then open the WebView. */
   if (want_open) {
-    if (!boot_auto_done())
-      run_headless_auto();
+    run_headless_auto();
     start_fresh_browser();
   } else
     start_headless_auto();
@@ -1497,6 +1499,15 @@ static void serve(void) {
       snprintf(json, sizeof(json), "{\"ok\":true,\"ready\":%s}",
                ready ? "true" : "false");
       send_json(c, 1, json, strlen(json));
+      close(c);
+      continue;
+    }
+    /* Hybrid open-only / WK: clear one-shot and run disk Auto without re-sending ELF. */
+    if (!strcmp(p, "trigger-auto")) {
+      const char *ok = "{\"ok\":true,\"triggered\":true}";
+      clear_boot_auto_done();
+      start_headless_auto();
+      send_json(c, 1, ok, strlen(ok));
       close(c);
       continue;
     }
