@@ -4,7 +4,7 @@ Home-screen and browser ELF payload launcher for PS5.
 
 ![Elf Launcher 1.1.7](docs/screenshots/home.png)
 
-**Version 1.1.7** - Open browser Auto matches Leave closed (fresh bind always runs disk Auto).
+**Version 1.1.7**
 
 - Live page: https://x-f1reball-x.github.io/elf-launcher/
 - Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/1.1.7
@@ -15,19 +15,25 @@ Home-screen and browser ELF payload launcher for PS5.
 - [elf-launcher-install.elf](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.7/elf-launcher-install.elf) - home-screen installer
 - [SHA256SUMS.txt](https://github.com/X-F1REBALL-X/elf-launcher/releases/download/1.1.7/SHA256SUMS.txt)
 
+## Features
+
+- Send / download ELF payloads (elfldr on `9021`, UI on `:1000`)
+- **AutoPayload** - run marked ELFs once after each jailbreak (disk `auto.list`)
+- **Open browser** and **Leave closed** both run the same disk Auto
+- **10 languages:** en, ar, es, fr, de, pt, ru, ja, zh, it (picker; shared `ps5elfs-lang` with WK)
+- Self-update + home-screen icon install
+
 ## Usage
 
-1. Jailbreak the console and start elfldr (port 9021).
-2. Send `elf-launcher-install.elf` once to add Elf Launcher to the home screen, **or** open the live page in the console browser.
-3. Open **Elf Files** - *Download* saves an ELF, *Payload* sends it to elfldr.
-4. Mark payloads **Auto** in *AutoPayload* to run them once after each jailbreak.
-5. **Update** pulls the latest Elf Launcher from this repo.
+1. Jailbreak and start elfldr on `9021`.
+2. Send `elf-launcher-install.elf` once, or open via the live page / WK Hybrid.
+3. Mark Auto payloads; pick Open browser or Leave closed.
+4. Use **Update** when a newer build is available.
 
-## Repo layout
+## Layout
 
-- `docs/` - web UI for GitHub Pages (`index.html`, `payloads.json`, `icons/`, `screenshots/`)
-- `launcher/` - built `elf-launcher.elf` + sha256 (self-update source)
-- `host/hbinstall/` - home-screen installer source
-- Root `index.html` / `payloads.json` - same UI + catalog on `main` (raw)
+- `docs/` - GitHub Pages
+- `launcher/` - built ELF + sha256
+- `host/hbinstall/` - installer source
 
 Created by X-F1REBALL-X.
