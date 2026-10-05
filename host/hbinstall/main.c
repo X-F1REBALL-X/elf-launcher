@@ -30,6 +30,7 @@ int sceSystemServiceLaunchWebBrowser(const char *uri, void *);
 #define TITLE_ID "ELFL00001"
 #define PORT 1000
 #define HOME_ICON_VERSION "1.0.21"
+#define HOME_ICON_VER_PATH "/data/elf-launcher/home-icon.ver"
 
 #define INCASSET(name, file)                                                   \
   __asm__(".section .rodata\n"                                                 \
@@ -86,7 +87,7 @@ static int install_file(const char *path, const uint8_t *data, size_t size) {
 }
 
 
-/* Always (re)install home icon - no version stamp.
+/* Install home icon for ELFL00001. Skip when title + HOME_ICON_VERSION match.
  * Do NOT NEEDED-link libSceAppInstUtil (elfldr:9021 cannot load that).
  * Elevate, LoadStartModule, then InstallTitleDir via NID (like host/installer). */
 #define NID_LoadStart "wzvqT4UqKX8"
@@ -144,6 +145,44 @@ static int __attribute__((unused)) load_appinst_util(uint32_t *ah_out) {
   return 0;
 }
 
+
+static int home_icon_up_to_date(void) {
+  FILE *f;
+  char buf[64];
+  size_t n;
+  struct stat st;
+  if (stat("/user/app/" TITLE_ID "/sce_sys/param.json", &st))
+    return 0;
+  if (stat("/user/app/" TITLE_ID "/sce_sys/icon0.png", &st))
+    return 0;
+  f = fopen(HOME_ICON_VER_PATH, "r");
+  if (!f)
+    return 0;
+  if (!fgets(buf, sizeof(buf), f)) {
+    fclose(f);
+    return 0;
+  }
+  fclose(f);
+  n = strlen(buf);
+  while (n && (buf[n - 1] == '\n' || buf[n - 1] == '\r'))
+    buf[--n] = 0;
+  return !strcmp(buf, HOME_ICON_VERSION);
+}
+
+static void write_home_icon_ver(void) {
+  FILE *f;
+  mkdir("/data", 0755);
+  if (mkdir("/data/elf-launcher", 0755) && errno != EEXIST)
+    return;
+  f = fopen(HOME_ICON_VER_PATH, "w");
+  if (!f)
+    return;
+  fprintf(f, "%s\n", HOME_ICON_VERSION);
+  fclose(f);
+}
+
+static void clear_home_icon_ver(void) { unlink(HOME_ICON_VER_PATH); }
+
 static int install_home_icon(void) {
   int err = -1;
   uint32_t ah = 0;
@@ -197,6 +236,8 @@ static int install_home_icon(void) {
   err = InstallDir(TITLE_ID, "/user/app/", 0);
   if (!err && stat("/user/app/" TITLE_ID "/sce_sys/param.json", &st))
     err = -4;
+  if (!err)
+    write_home_icon_ver();
 out:
   if (Term)
     Term();
@@ -609,10 +650,12 @@ static volatile int home_icon_install_started;
 
 static void *install_home_icon_thread(void *arg) {
   int err;
-  (void)arg;
+  int force = (int)(intptr_t)arg;
   /* Elevate/AppInst is process-wide and can disrupt :1000 while WKAL
      is trying to navigate. Serve first; install tile after open window. */
   sleep(2);
+  if (!force && home_icon_up_to_date())
+    return NULL;
   err = install_home_icon();
   if (err)
     notify("Home icon install failed: 0x%08X", (unsigned)err);
@@ -621,11 +664,12 @@ static void *install_home_icon_thread(void *arg) {
   return NULL;
 }
 
-static void start_home_icon_install_async(void) {
+static void start_home_icon_install_async(int force) {
   pthread_t th;
   if (__sync_lock_test_and_set(&home_icon_install_started, 1))
     return;
-  if (pthread_create(&th, NULL, install_home_icon_thread, NULL)) {
+  if (pthread_create(&th, NULL, install_home_icon_thread,
+                      (void *)(intptr_t)force)) {
     /* Keep serving even if the worker could not start. */
     return;
   }
@@ -1303,12 +1347,12 @@ static void serve(void) {
   if (from_wkal && !already_up)
     clear_boot_auto_done();
 
-  /* Manual send always takes over :1000 and always opens the page.
-   * A WK send leaves the from-wkal mark. If :1000 is already up, do not
-   * reinstall: apply the saved open or closed choice here, and when closed
-   * load Auto only if it has not already run this jailbreak. */
+  /* Leave closed / open preference applies with or without the from-wkal
+   * mark. If :1000 is already up and we are not forcing a manual takeover
+   * (open preference + no mark), keep the live server and only open the
+   * page or run AutoPayload. Manual open still takes over :1000. */
   if (already_up) {
-    if (from_wkal) {
+    if (from_wkal || !wk_wants_open()) {
       if (wk_wants_open())
         launch_browser_now();
       else if (!boot_auto_done())
@@ -1319,15 +1363,12 @@ static void serve(void) {
     usleep(300000);
   }
 
-  if (from_wkal)
-    want_open = wk_wants_open();
-  else
-    want_open = 1;
+  want_open = wk_wants_open();
 
   if (bind_http(&s) != 0) {
     if (want_open)
       start_fresh_browser();
-    {
+    if (!home_icon_up_to_date()) {
       int err = install_home_icon();
       if (err)
         notify("Home icon install failed: 0x%08X", (unsigned)err);
@@ -1338,7 +1379,7 @@ static void serve(void) {
   }
   if (listen(s, 16) < 0) {
     close(s);
-    {
+    if (!home_icon_up_to_date()) {
       int err = install_home_icon();
       if (err)
         notify("Home icon install failed: 0x%08X", (unsigned)err);
@@ -1350,10 +1391,10 @@ static void serve(void) {
   puts("listening");
   if (want_open)
     start_fresh_browser();
-  else if (from_wkal)
+  else
     start_headless_auto();
   /* Bind of :1000. Install the home icon once in the background. */
-  start_home_icon_install_async();
+  start_home_icon_install_async(0);
   for (;;) {
     int c = accept(s, 0, 0);
     char *p;
@@ -1506,8 +1547,9 @@ static void serve(void) {
     if (!strcmp(p, "install-home")) {
       const char *resp =
           "{\"ok\":true,\"message\":\"Installing home icon\"}";
+      clear_home_icon_ver();
       home_icon_install_started = 0;
-      start_home_icon_install_async();
+      start_home_icon_install_async(1);
       send_json(c, 1, resp, strlen(resp));
       close(c);
       continue;
