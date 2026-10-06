@@ -19,14 +19,14 @@
       "name": "elfldr-ps5.elf",
       "filename": "elfldr-ps5.elf",
       "path": "loader/elfldr-ps5.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/loader/elfldr-ps5.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/elfldr-ps5.elf",
       "description": "Loads ELF payloads sent to port 9021.",
       "version": "v0.26",
       "category": "Loader",
       "author": "ps5-payload-dev",
       "size": 448952,
       "checksum": "02543da21bb8168e3892004c7fa44c13b4c5dd6d6e9b7c79c18035bf69cd6a39",
-      "source_direct": "https://github.com/ps5-payload-dev/elfldr/releases/download/v0.26/elfldr-ps5.elf"
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/elfldr-ps5.elf"
     },
     {
       "name": "etaHEN-2.5B.bin",
@@ -133,13 +133,14 @@
       "name": "fetchpkg.elf",
       "filename": "fetchpkg.elf",
       "path": "apps/fetchpkg.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/apps/fetchpkg.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/fetchpkg.elf",
       "description": "Downloads official game updates and merges split PKG parts.",
       "version": "v0.3.3",
       "category": "Apps",
       "author": "ps5-payload-dev",
       "size": 8217472,
-      "checksum": "f4dfd1986a5c8de568fc385b7e9302532ed6c56bf98014c19ac6b23c87729921"
+      "checksum": "f4dfd1986a5c8de568fc385b7e9302532ed6c56bf98014c19ac6b23c87729921",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/fetchpkg.elf"
     },
     {
       "name": "kura-loader-ps5.elf",
@@ -195,13 +196,14 @@
       "name": "pkg_install.elf",
       "filename": "pkg_install.elf",
       "path": "apps/pkg_install.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/apps/pkg_install.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/pkg_install.elf",
       "description": "Installs a PKG that was staged by websrv.",
       "version": "v0.34",
       "category": "Apps",
       "author": "ps5-payload-dev",
       "size": 110440,
-      "checksum": "f723641e32a3ada5c0033748072d373012f0003c401629dd05e3702036528569"
+      "checksum": "f723641e32a3ada5c0033748072d373012f0003c401629dd05e3702036528569",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/pkg_install.elf"
     },
     {
       "name": "PS5HostPayloads.elf",
@@ -321,25 +323,27 @@
       "name": "dump_installer.elf",
       "filename": "dump_installer.elf",
       "path": "storage/dump_installer.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/storage/dump_installer.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/dump_installer.elf",
       "description": "Installs a dumped game.",
       "version": "1.07",
       "category": "Storage",
       "author": "EchoStretch",
       "size": 1294504,
-      "checksum": "9b01c2051795d10a6923a2b4c8137a2895ecdf365e736e42cf6750ac707d6245"
+      "checksum": "9b01c2051795d10a6923a2b4c8137a2895ecdf365e736e42cf6750ac707d6245",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/dump_installer.elf"
     },
     {
       "name": "dump_runner.elf",
       "filename": "dump_runner.elf",
       "path": "storage/dump_runner.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/storage/dump_runner.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/dump_runner.elf",
       "description": "Runs a dumped game.",
       "version": "v1.02",
       "category": "Storage",
       "author": "EchoStretch",
       "size": 110776,
-      "checksum": "816ff23141f100004d882e53bfae80b6c29f6b9427df56524cd1a89403c40df4"
+      "checksum": "816ff23141f100004d882e53bfae80b6c29f6b9427df56524cd1a89403c40df4",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/dump_runner.elf"
     },
     {
       "name": "game-compressor.elf",
@@ -370,13 +374,14 @@
       "name": "mounter.elf",
       "filename": "mounter.elf",
       "path": "storage/mounter.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/storage/mounter.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/mounter.elf",
       "description": "Mounts PS5 saves for the PC Save Mounter tool.",
       "version": "v2.0.1",
       "category": "Storage",
       "author": "n0llptr",
       "size": 129760,
-      "checksum": "79194e4d3dacd64065617084268c61a9751362ae8982e4fde2ffa734ac9e0841"
+      "checksum": "79194e4d3dacd64065617084268c61a9751362ae8982e4fde2ffa734ac9e0841",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/mounter.elf"
     },
     {
       "name": "ps5-app-dumper.elf",
@@ -504,25 +509,27 @@
       "name": "reboot.elf",
       "filename": "reboot.elf",
       "path": "system/reboot.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/system/reboot.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/reboot.elf",
       "description": "Reboots the console.",
       "version": "own-built",
       "category": "System",
       "author": "X-F1REBALL-X",
       "size": 135184,
-      "checksum": "306aad2e95abd93e767ada2aba3e7b54c59d312977eda344ddb717405a3e1017"
+      "checksum": "306aad2e95abd93e767ada2aba3e7b54c59d312977eda344ddb717405a3e1017",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/reboot.elf"
     },
     {
       "name": "suspend.elf",
       "filename": "suspend.elf",
       "path": "system/suspend.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/system/suspend.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/suspend.elf",
       "description": "Puts the console into rest mode.",
       "version": "own-built",
       "category": "System",
       "author": "X-F1REBALL-X",
       "size": 99568,
-      "checksum": "2934a7adbf50a8e6931ce4ec2374bcd556b441b69d61954e2879a8beb15dc681"
+      "checksum": "2934a7adbf50a8e6931ce4ec2374bcd556b441b69d61954e2879a8beb15dc681",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/suspend.elf"
     },
     {
       "name": "SystemStateManager.elf",
@@ -540,25 +547,27 @@
       "name": "actremotelink_agent.elf",
       "filename": "actremotelink_agent.elf",
       "path": "tools/actremotelink_agent.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/actremotelink_agent.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_agent.elf",
       "description": "Offline account tools and Remote Play helpers for ActRemoteLink.",
       "version": "v2.0",
       "category": "Tools",
       "author": "francoataffarel",
       "size": 158144,
-      "checksum": "dffd7077d9edb5520819c66d4b08ee44ef0c5654860e1f0bd0ccda4b884bf396"
+      "checksum": "dffd7077d9edb5520819c66d4b08ee44ef0c5654860e1f0bd0ccda4b884bf396",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_agent.elf"
     },
     {
       "name": "actremotelink_pin_notify.elf",
       "filename": "actremotelink_pin_notify.elf",
       "path": "tools/actremotelink_pin_notify.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/actremotelink_pin_notify.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_pin_notify.elf",
       "description": "Shows the Remote Play pairing PIN as a notification.",
       "version": "v2.0",
       "category": "Tools",
       "author": "francoataffarel",
       "size": 115224,
-      "checksum": "f1e0aa745cdd8e3d65ac780193b317042e47da327ee632e2cbb25bc79108fe56"
+      "checksum": "f1e0aa745cdd8e3d65ac780193b317042e47da327ee632e2cbb25bc79108fe56",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_pin_notify.elf"
     },
     {
       "name": "BackPork.elf",
@@ -627,13 +636,14 @@
       "name": "LinkDev.elf",
       "filename": "LinkDev.elf",
       "path": "tools/LinkDev.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/LinkDev.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/LinkDev.elf",
       "description": "Pairs Remote Play on a jailbroken console.",
       "version": "v0.4.2",
       "category": "Tools",
       "author": "ps5-payload-dev",
       "size": 6540848,
-      "checksum": "102576e340bb6a931f0c2295934c419f08985a4957cd2c67a2b6243f8f266f74"
+      "checksum": "102576e340bb6a931f0c2295934c419f08985a4957cd2c67a2b6243f8f266f74",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/LinkDev.elf"
     },
     {
       "name": "notify_test.elf",
@@ -651,13 +661,14 @@
       "name": "OffAct.elf",
       "filename": "OffAct.elf",
       "path": "tools/OffAct.elf",
-      "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/tools/OffAct.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/OffAct.elf",
       "description": "Activates a local account without PSN.",
       "version": "v0.4.2",
       "category": "Tools",
       "author": "ps5-payload-dev",
       "size": 6549256,
-      "checksum": "db250c1f3cf01b879d0d5e22e77b2e24c096ba1e2da20ead2ab758165ba5ab4f"
+      "checksum": "db250c1f3cf01b879d0d5e22e77b2e24c096ba1e2da20ead2ab758165ba5ab4f",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/OffAct.elf"
     },
     {
       "name": "patch-bundle-loader-prospero.elf",
