@@ -142,6 +142,15 @@ button.run.update[disabled]{opacity:.55}
 #catupdate{display:none !important}
 #selfupd{display:none;position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:90;max-width:min(720px,92vw);box-sizing:border-box;padding:10px 14px;border-radius:14px;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;text-align:center;background:linear-gradient(#2a6aa0,#123a5e);border:2px solid #9fd0ff;box-shadow:0 10px 24px rgba(0,0,0,.45)}
 #selfupd.show{display:flex}
+#wkupd{display:none;position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:91;max-width:min(720px,92vw);box-sizing:border-box;padding:10px 14px;border-radius:14px;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;text-align:center;background:linear-gradient(#2a6aa0,#123a5e);border:2px solid #9fd0ff;box-shadow:0 10px 24px rgba(0,0,0,.45)}
+#wkupd.show{display:flex}
+#selfupd.show~#wkupd.show,#wkupd.show~#selfupd.show{top:78px}
+#wkupd p{margin:0;color:#fff;font-size:15px;font-weight:800;line-height:1.35}
+#wkupd .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#wkupd button{border:0;cursor:pointer;color:#fff;font:inherit;font-size:14px;font-weight:900;padding:8px 16px;border-radius:999px}
+#wkupddl{background:linear-gradient(#fff8d8,#f5b410 50%,#9a5800);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 10px 2px rgba(255,200,40,.6),0 3px 0 #5a3c04;text-shadow:0 2px 0 #5a3c04}
+#wkupdx{background:linear-gradient(#7aa7c8,#2a4d6a);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #06111c}
+#wkupddl:disabled{opacity:.6;cursor:default}
 #selfupd p{margin:0;color:#fff;font-size:15px;font-weight:800;line-height:1.35}
 #selfupd .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 #selfupd button{border:0;cursor:pointer;color:#fff;font:inherit;font-size:14px;font-weight:900;padding:8px 16px;border-radius:999px}
@@ -181,6 +190,7 @@ button.run.update[disabled]{opacity:.55}
 <main id="main">
 <p id="status" data-i18n="ready">Ready</p>
 <div id="autobanner" role="alertdialog"><div><p id="autobannertext">AutoPayload</p><small id="autobannerhint" data-i18n="cancelHint">Press Cancel or Square to stop.</small></div><button type="button" id="autobannercancel" data-i18n="cancel">Cancel</button></div>
+<div id="wkupd" role="status"><p id="wkupdtxt"></p><div class="acts"><button type="button" id="wkupddl">Update</button><button type="button" id="wkupdx">Later</button></div></div>
 <div id="selfupd" role="status"><p id="selfupdtxt"></p><div class="acts"><button type="button" id="selfupddl" data-i18n="update">Update</button><button type="button" id="selfupdx" data-i18n="selfUpdateLater">Later</button></div></div>
 <div id="progwrap" aria-hidden="true"><div id="progbar"></div></div>
 <div id="hdr"><h2 id="ftitle"></h2></div>
@@ -201,7 +211,7 @@ var FOLDERS=[
 {id:"system",label:"System"},
 {id:"tools",label:"Tools"}
 ];
-var APP_VERSION="1.1.7";
+var APP_VERSION="1.1.8";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
@@ -1178,6 +1188,7 @@ function rerenderCatalogViews(){
 }
 function rerenderAfterLang(){
   paintSideUpdate();
+  paintWkUpd();
   if(selfUpdateInfo && selfUpdateInfo.version){
     var txt=document.getElementById('selfupdtxt');
     if(txt) txt.textContent=t('selfUpdate',{ver:selfUpdateInfo.version});
@@ -3243,6 +3254,100 @@ function downloadSelfUpdate(){
   if(dl) dl.onclick=function(){ downloadSelfUpdate(); };
   if(dx) dx.onclick=function(){ dismissSelfUpdate(); };
 })();
+
+/* WK Autoloader update banner: WK passes its version in #wkver= when it opens
+   this page. Elf downloads the release ELF natively (:1000 /update, sha256)
+   and pushes it to elfldr (/run). */
+var WKU_I18N={
+ en:{wkUpd:'WK Autoloader {ver} is available',wkUpdInstalling:'Installing WK Autoloader {ver}...',wkUpdDone:'WK Autoloader {ver} installed',wkUpdFail:'WK Autoloader update failed: {msg}'},
+ ar:{wkUpd:'\u0625\u0635\u062f\u0627\u0631 WK Autoloader {ver} \u0645\u062a\u0627\u062d',wkUpdInstalling:'\u062c\u0627\u0631\u064d \u062a\u062b\u0628\u064a\u062a WK Autoloader {ver}...',wkUpdDone:'\u062a\u0645 \u062a\u062b\u0628\u064a\u062a WK Autoloader {ver}',wkUpdFail:'\u0641\u0634\u0644 \u062a\u062d\u062f\u064a\u062b WK Autoloader: {msg}'},
+ es:{wkUpd:'WK Autoloader {ver} disponible',wkUpdInstalling:'Instalando WK Autoloader {ver}...',wkUpdDone:'WK Autoloader {ver} instalado',wkUpdFail:'Error al actualizar WK Autoloader: {msg}'},
+ fr:{wkUpd:'WK Autoloader {ver} disponible',wkUpdInstalling:'Installation de WK Autoloader {ver}...',wkUpdDone:'WK Autoloader {ver} install\u00e9',wkUpdFail:'\u00c9chec de la mise \u00e0 jour de WK Autoloader : {msg}'},
+ de:{wkUpd:'WK Autoloader {ver} verf\u00fcgbar',wkUpdInstalling:'WK Autoloader {ver} wird installiert...',wkUpdDone:'WK Autoloader {ver} installiert',wkUpdFail:'WK-Autoloader-Update fehlgeschlagen: {msg}'},
+ pt:{wkUpd:'WK Autoloader {ver} dispon\u00edvel',wkUpdInstalling:'Instalando WK Autoloader {ver}...',wkUpdDone:'WK Autoloader {ver} instalado',wkUpdFail:'Falha ao atualizar o WK Autoloader: {msg}'},
+ ru:{wkUpd:'\u0414\u043e\u0441\u0442\u0443\u043f\u0435\u043d WK Autoloader {ver}',wkUpdInstalling:'\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0430 WK Autoloader {ver}...',wkUpdDone:'WK Autoloader {ver} \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d',wkUpdFail:'\u041e\u0448\u0438\u0431\u043a\u0430 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f WK Autoloader: {msg}'},
+ ja:{wkUpd:'WK Autoloader {ver} \u304c\u5229\u7528\u53ef\u80fd\u3067\u3059',wkUpdInstalling:'WK Autoloader {ver} \u3092\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u4e2d...',wkUpdDone:'WK Autoloader {ver} \u3092\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u3057\u307e\u3057\u305f',wkUpdFail:'WK Autoloader \u306e\u66f4\u65b0\u306b\u5931\u6557\u3057\u307e\u3057\u305f: {msg}'},
+ zh:{wkUpd:'WK Autoloader {ver} \u53ef\u7528',wkUpdInstalling:'\u6b63\u5728\u5b89\u88c5 WK Autoloader {ver}...',wkUpdDone:'\u5df2\u5b89\u88c5 WK Autoloader {ver}',wkUpdFail:'WK Autoloader \u66f4\u65b0\u5931\u8d25\uff1a{msg}'},
+ it:{wkUpd:'WK Autoloader {ver} disponibile',wkUpdInstalling:'Installazione di WK Autoloader {ver}...',wkUpdDone:'WK Autoloader {ver} installato',wkUpdFail:'Aggiornamento di WK Autoloader non riuscito: {msg}'}
+};
+(function(){ var l,k; for(l in WKU_I18N){ if(!I18N[l]) continue; for(k in WKU_I18N[l]) I18N[l][k]=WKU_I18N[l][k]; } })();
+var WKUPD_GH='https://api.github.com/repos/X-F1REBALL-X/wk-autoloader/releases/latest';
+var WKUPD_VER_KEY='elf-wk-installed-ver';
+var WKUPD_DISMISS_KEY='elf-wk-upd-dismiss';
+var WKUPD_DISK='wk-dual-payload.elf';
+var wkUpdInfo=null;
+function wkInstalledVer(){
+  var m=String(location.hash||'').match(/wkver=([0-9][0-9A-Za-z.\-]*)/), v='';
+  if(m){ v=m[1]; try{ localStorage.setItem(WKUPD_VER_KEY, v); }catch(e){} return v; }
+  try{ v=localStorage.getItem(WKUPD_VER_KEY)||''; }catch(e2){}
+  return v;
+}
+function paintWkUpd(){
+  var txt=document.getElementById('wkupdtxt'), dl=document.getElementById('wkupddl'), dx=document.getElementById('wkupdx');
+  if(!wkUpdInfo) return;
+  if(txt && !wkUpdInfo.busy) txt.textContent=t('wkUpd',{ver:wkUpdInfo.version});
+  if(dl) dl.textContent=t('update');
+  if(dx) dx.textContent=t('selfUpdateLater');
+}
+function hideWkUpd(){ var b=document.getElementById('wkupd'); if(b) b.classList.remove('show'); }
+function checkWkUpdate(){
+  if(!isConsoleHost()) return;
+  var cur=wkInstalledVer();
+  fetchCatalogText(WKUPD_GH).then(function(text){
+    var j, tag, assets, i, a, url='', sha='', size=0, dis='';
+    try{ j=JSON.parse(text); }catch(e){ return; }
+    if(!j || j.draft || j.prerelease) return;
+    tag=String(j.tag_name||j.name||'').replace(/^[vV]/,'').replace(/^\s+|\s+$/g,'');
+    if(!tag) return;
+    if(cur && cmpSemver(tag, cur)<=0) return;
+    try{ dis=localStorage.getItem(WKUPD_DISMISS_KEY)||''; }catch(e2){}
+    if(dis && cmpSemver(dis, tag)>=0) return;
+    assets=j.assets||[];
+    for(i=0;i<assets.length;i++){
+      a=assets[i]||{};
+      if(String(a.name||'').toLowerCase()===WKUPD_DISK){ url=a.browser_download_url||''; sha=String(a.digest||'').replace(/^sha256:/i,'').toLowerCase(); size=a.size|0; break; }
+    }
+    if(!url || sha.length!==64) return;
+    wkUpdInfo={version:tag,url:url,sha256:sha,size:size};
+    paintWkUpd();
+    var b=document.getElementById('wkupd'); if(b) b.classList.add('show');
+  }).catch(function(){});
+}
+function installWkUpdate(){
+  var info=wkUpdInfo; if(!info || info.busy) return;
+  var txt=document.getElementById('wkupdtxt'), dl=document.getElementById('wkupddl'), dx=document.getElementById('wkupdx');
+  function fail(e){
+    info.busy=false;
+    if(dl) dl.disabled=false; if(dx) dx.disabled=false;
+    if(txt) txt.textContent=t('wkUpdFail',{msg:(e&&e.message)?e.message:String(e)});
+  }
+  info.busy=true;
+  if(dl) dl.disabled=true; if(dx) dx.disabled=true;
+  if(txt) txt.textContent=t('wkUpdInstalling',{ver:info.version});
+  var q='/update?path='+encodeURIComponent(WKUPD_DISK)+'&url='+encodeURIComponent(info.url)+
+    '&sha256='+encodeURIComponent(info.sha256)+(info.size?('&size='+(info.size|0)):'');
+  fetch(q,{cache:'no-store'}).then(function(r){
+    return r.json().then(function(j){ return {ok:r.ok,j:j}; });
+  }).then(function(u){
+    if(!u.ok || !(u.j && u.j.ok)) throw new Error((u.j && (u.j.message||u.j.error))||'download failed');
+    return fetch('/run?path='+encodeURIComponent(WKUPD_DISK),{method:'POST',cache:'no-store'});
+  }).then(function(r){
+    return r.text().then(function(tx){ if(!r.ok) throw new Error(tx||('HTTP '+r.status)); });
+  }).then(function(){
+    try{ localStorage.setItem(WKUPD_VER_KEY, info.version); }catch(e){}
+    if(txt) txt.textContent=t('wkUpdDone',{ver:info.version});
+    setTimeout(hideWkUpd, 5000);
+  }).catch(fail);
+}
+(function wireWkUpd(){
+  var dl=document.getElementById('wkupddl'), dx=document.getElementById('wkupdx');
+  if(dl) dl.onclick=function(){ installWkUpdate(); };
+  if(dx) dx.onclick=function(){
+    if(wkUpdInfo){ try{ localStorage.setItem(WKUPD_DISMISS_KEY, wkUpdInfo.version); }catch(e){} }
+    hideWkUpd();
+  };
+  wkInstalledVer();
+})();
 function bootAfterCatalog(){
   var start=getHashFolder();
   if(start)showFolder(start); else showHome();
@@ -3254,6 +3359,7 @@ function bootAfterCatalog(){
   syncBrowserPrefFromDisk();
   watchElfldrThenAuto();
   setTimeout(checkSelfUpdate, 900);
+  setTimeout(checkWkUpdate, 1400);
 }
 /* Every open: show the cached list right away, then always fetch the repos,
    swap in the fresh list, and compare saved files (Update badge). */
