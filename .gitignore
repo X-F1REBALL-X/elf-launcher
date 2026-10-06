@@ -11,7 +11,8 @@ host/hbinstall/elf-launcher-install.elf
 /ftp/
 /hen/
 /kernel/
-/loader/
+/loader/*
+!/loader/elfldr-ps5.elf
 /media/
 /network/
 /pkg/
