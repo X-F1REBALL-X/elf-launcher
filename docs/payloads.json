@@ -172,7 +172,7 @@
       "url": "https://github.com/itsPLK/ps5-payload-manager/releases/download/v0.5.2/pldmgr_v0.5.2.elf",
       "description": "Home screen app that sends payloads to elfldr.",
       "version": "v0.5.2",
-      "category": "Apps",
+      "category": "Loader",
       "author": "itsPLK",
       "size": 2410776,
       "checksum": "62b3ba2a4937c2afc502f9a4e7242cca538610ebb4ae2800c7c6f72e7f268e7c",
