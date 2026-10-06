@@ -36,4 +36,4 @@ Home-screen and browser ELF payload launcher for PS5.
 - `launcher/` - built ELF + sha256
 - `host/hbinstall/` - installer source
 
-Created by X-F1REBALL-X.
+Developed by [X-F1REBALL-X](https://github.com/X-F1REBALL-X).
