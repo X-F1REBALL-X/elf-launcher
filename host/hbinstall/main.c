@@ -993,6 +993,48 @@ static int http_port_open(void) {
   return 1;
 }
 
+/* Build id reported by /version. A launcher with a different id than the one
+ * answering on :1000 replaces it; the same build leaves it running. */
+#ifndef LAUNCHER_BUILD_ID
+#define LAUNCHER_BUILD_ID __DATE__ " " __TIME__
+#endif
+
+/* 0 and the running server's build id in out, or -1 if it did not say. */
+static int running_build(char *out, size_t outsz) {
+  struct timeval tv = {2, 0};
+  static const char rq[] = "GET /version HTTP/1.0\r\nHost: 127.0.0.1\r\n\r\n";
+  char buf[1024];
+  const char *k, *e;
+  size_t got = 0, len;
+  ssize_t n;
+  int fd = connect_port(PORT);
+  if (fd < 0)
+    return -1;
+  setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+  setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+  if (send_all(fd, rq, sizeof(rq) - 1)) {
+    close(fd);
+    return -1;
+  }
+  while (got < sizeof(buf) - 1 && (n = recv(fd, buf + got, sizeof(buf) - 1 - got, 0)) > 0)
+    got += (size_t)n;
+  close(fd);
+  buf[got] = 0;
+  k = strstr(buf, "\"build\":\"");
+  if (!k)
+    return -1;
+  k += 9;
+  e = strchr(k, '"');
+  if (!e)
+    return -1;
+  len = (size_t)(e - k);
+  if (len >= outsz)
+    len = outsz - 1;
+  memcpy(out, k, len);
+  out[len] = 0;
+  return 0;
+}
+
 
 #include "update_impl.inc"
 
@@ -1643,7 +1685,7 @@ static int is_mutating(const char *p, const char *qs) {
   static const char *always[] = {"trigger-auto", "install-home", "file_delete",
                                  "update",       "process_kill", "relay",
                                  "run",          "upload",       "run_path",
-                                 "save_path",    "self_update",  "power", 0};
+                                 "save_path",    "self_update",  "power", "quit", 0};
   int i;
   for (i = 0; always[i]; i++)
     if (!strcmp(p, always[i]))
@@ -4644,6 +4686,20 @@ static void serve(void) {
   int want_open, accept_fail = 0;
   int port_busy = http_port_open();
   int already_up = port_busy && http_alive();
+  int newbuild = 0;
+  char rbuild[64] = "";
+
+  /* A different launcher build was sent while one is serving :1000: replace
+   * it whatever the open-after-jailbreak setting says. The same build sent
+   * again (jailbreak autoload) keeps the running server, so no loop and no
+   * second AutoPayload. */
+  if (already_up && !takeover) {
+    if (running_build(rbuild, sizeof(rbuild)) || strcmp(rbuild, LAUNCHER_BUILD_ID)) {
+      newbuild = 1;
+      takeover = 1;
+      evlog("info", "new launcher build %s replaces %s", LAUNCHER_BUILD_ID, rbuild[0] ? rbuild : "an older one");
+    }
+  }
 
   /* Clear AutoPayload one-shot on every fresh :1000 bind (new ELF after JB).
    * from-wkal used to be required, but Hybrid often sends only elf-launcher.elf
@@ -4682,7 +4738,9 @@ static void serve(void) {
     already_up = 1;
   }
 
-  want_open = takeover ? 0 : wk_wants_open();
+  /* Update hand-off: no browser. A newer build sent by hand: the setting
+   * decides whether the page opens. */
+  want_open = (takeover && !newbuild) ? 0 : wk_wants_open();
 
   /* The old server may need a moment to release :1000 after the kill. */
   for (tries = already_up ? 20 : 3; tries > 0; tries--) {
@@ -4729,9 +4787,14 @@ static void serve(void) {
   puts("listening");
   /* Open browser: same disk Auto as Leave closed (do not gate on boot-auto-done
    * here — flag was just cleared on fresh bind). Then open the WebView. */
-  if (takeover)
+  if (takeover) {
     notify("ELF Launcher updated");
-  else if (want_open) {
+    /* AutoPayload already ran this boot under the old server: never twice. */
+    if (newbuild && !boot_auto_done())
+      start_headless_auto();
+    if (newbuild && want_open)
+      start_fresh_browser();
+  } else if (want_open) {
     run_headless_auto();
     start_fresh_browser();
   } else
@@ -4968,8 +5031,8 @@ static void serve(void) {
     }
     if (!strcmp(p, "version")) {
       char vb[160];
-      snprintf(vb, sizeof(vb), "{\"ok\":true,\"pid\":%d,\"build\":\"%s %s\",\"icon\":\"%s\"}",
-               (int)getpid(), __DATE__, __TIME__, HOME_ICON_VERSION);
+      snprintf(vb, sizeof(vb), "{\"ok\":true,\"pid\":%d,\"build\":\"%s\",\"icon\":\"%s\"}",
+               (int)getpid(), LAUNCHER_BUILD_ID, HOME_ICON_VERSION);
       send_json(c, 1, vb, strlen(vb));
       close(c);
       continue;
@@ -4978,6 +5041,21 @@ static void serve(void) {
       handle_power(c, q ? q + 1 : "", is_post);
       close(c);
       continue;
+    }
+    if (!strcmp(p, "quit")) {
+      /* Stop this launcher cleanly so another build can take :1000. */
+      if (!is_post) {
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+        close(c);
+        continue;
+      }
+      evlog("info", "launcher quit from the page");
+      send_json_code(c, 200, "{\"ok\":true}");
+      close(c);
+      usleep(200000);
+      close(s);
+      sync();
+      exit(0);
     }
     if (!strcmp(p, "self_update")) {
       if (!is_post)
