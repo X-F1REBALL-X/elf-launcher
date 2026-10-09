@@ -6,6 +6,9 @@
 <meta name="color-scheme" content="dark">
 <script>(function(){ var v=""; try{ v=localStorage.getItem("ps5elfs-theme")||""; }catch(e){} if(!/^(gray|white|lavender|sky|gold|black)$/.test(v)) v=""; if(v){ document.documentElement.setAttribute("data-theme", v); if(v==="gold"||v==="black") document.documentElement.className+=" dark"; } })();</script>
 <style>
+/* Hebrew glyphs ship inside the launcher: a clean PS5 has no Hebrew font (squares). Heebo subset, OFL, Hebrew block only */
+@font-face{font-family:"ELF Hebrew";font-weight:400;font-display:swap;src:url(fonts/he-400.woff?v=1) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
+@font-face{font-family:"ELF Hebrew";font-weight:600 900;font-display:swap;src:url(fonts/he-700.woff?v=1) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
 :root{--bg:#f7f4ee;--void:var(--void);--deck:#fffdf9;--card:#fffdf8;--card2:#f4efe5;--edge:#e5ddcd;--edge2:#cfc2ab;
 --ink:#231c14;--ink2:#463b2d;--mute:#665a49;
 --pri:#4f46e5;--pri2:#7c3aed;--rose:#db2777;--mint:#047857;--amber:#b45309;--sky:#0369a1;--teal:#0f766e;--bad:#b91c1c;
@@ -14,7 +17,7 @@
 --s1:.25rem;--s2:.5rem;--s3:.75rem;--s4:1rem;--s5:1.25rem;--gap:var(--s4)}
 *{box-sizing:border-box}
 html{background:var(--bg);font-size:15px;-webkit-text-size-adjust:100%}
-body{margin:0;min-height:100vh;color:var(--ink);font:1rem/1.4 "Inter","Segoe UI","SF Pro Display","Helvetica Neue",system-ui,sans-serif;
+body{margin:0;min-height:100vh;color:var(--ink);font:1rem/1.4 "ELF Hebrew","Inter","Segoe UI","SF Pro Display","Helvetica Neue",system-ui,sans-serif;
 background:radial-gradient(70vw 60vh at 85% -10%,rgba(124,58,237,.06),transparent 60%),radial-gradient(60vw 55vh at -10% 110%,rgba(219,39,119,.05),transparent 60%),var(--bg);background-attachment:fixed}
 .wrap{display:flex;flex-direction:column;min-height:100vh;padding:var(--s4) var(--s5) var(--s5)}
 a{color:inherit}
@@ -436,7 +439,7 @@ button.dirty:after{content:"";position:absolute;top:.35rem;inset-inline-end:.35r
 button.dang{color:var(--bad)}
 #tvnote{margin:.4rem 0 0;color:var(--ink2);font-size:.88rem}
 #tvnote.warn{color:var(--amber);font-weight:700}#tvnote.err{color:var(--bad);font-weight:700}#tvnote.ok{color:var(--mint);font-weight:700}
-#tved{flex:1 1 auto;min-height:0;width:100%;box-sizing:border-box;margin:0;padding:.9rem 1rem;resize:none;background:#fffdf8;border:2px solid var(--pri);border-radius:var(--r2);color:#231c14;font:0.95rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;white-space:pre;overflow:auto;text-align:start;tab-size:4;outline:none;-webkit-overflow-scrolling:touch}
+#tved{flex:1 1 auto;min-height:0;width:100%;box-sizing:border-box;margin:0;padding:.9rem 1rem;resize:none;background:#fffdf8;border:2px solid var(--pri);border-radius:var(--r2);color:#231c14;font:0.95rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","ELF Hebrew",monospace;white-space:pre;overflow:auto;text-align:start;tab-size:4;outline:none;-webkit-overflow-scrolling:touch}
 #tved.wrap{white-space:pre-wrap;overflow-wrap:anywhere}
 #tved:focus{box-shadow:var(--ring)}
 .rslist{overflow:auto;min-height:0;-webkit-overflow-scrolling:touch}
@@ -449,7 +452,7 @@ button.dang{color:var(--bad)}
 @media (max-width:700px){.tvhead b{flex-basis:100%}#tved{font-size:.9rem}.rsrow>button{flex:1 1 auto}}
 #tvnote:empty{display:none}
 #tvbody{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;margin-top:.6rem}
-#tvpre{flex:1 1 auto;min-height:0;margin:0;padding:.9rem 1rem;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--void);border:1px solid var(--edge);border-radius:var(--r2);color:#231c14;font:0.95rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;white-space:pre;direction:ltr;text-align:left;tab-size:4}
+#tvpre{flex:1 1 auto;min-height:0;margin:0;padding:.9rem 1rem;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--void);border:1px solid var(--edge);border-radius:var(--r2);color:#231c14;font:0.95rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","ELF Hebrew",monospace;white-space:pre;direction:ltr;text-align:left;tab-size:4}
 #tvpre.wrap{white-space:pre-wrap;word-wrap:break-word;overflow-wrap:anywhere}
 #tvpre,#tved{unicode-bidi:plaintext}
 #tvpre:focus{outline:none;border-color:var(--pri)}
@@ -546,7 +549,7 @@ button.dang{color:var(--bad)}
 .bkwhat li b{font-size:.95rem}.bkwhat li span{font-size:.85rem;color:var(--ink2)}
 .bkplaces{display:inline-flex;flex-wrap:wrap;padding:3px;background:var(--deck);border:1px solid var(--edge);border-radius:999px}
 .bkplaces button{border-radius:999px}.bkplaces button.selected{color:#fff}.bkplaces button.selected:before{background:var(--pri2);border-color:var(--pri2)}
-.bkpath{direction:ltr;unicode-bidi:isolate;font-family:ui-monospace,Menlo,Consolas,monospace}
+.bkpath{direction:ltr;unicode-bidi:isolate;font-family:ui-monospace,Menlo,Consolas,"ELF Hebrew",monospace}
 .bkrow{display:flex;align-items:center;padding:.6rem .8rem;margin-top:.45rem;background:var(--card);border:1px solid var(--edge);border-radius:var(--r2)}
 .bkrow>div{flex:1 1 auto;display:flex;flex-direction:column;min-width:0}.bkrow small{color:var(--mute);font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bkstats{display:flex;flex-wrap:wrap;margin:var(--s2) 0}
@@ -4218,7 +4221,9 @@ var ICONS={
 function icon(n){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>'; }
 var OWNER='X-F1REBALL-X';
 function isMine(p){ return !!p && String(p.by||p.author||'')===OWNER; }
-function mineList(){ var a=allPayloads(), out=[], i; for(i=0;i<a.length;i++) if(isMine(a[i])) out.push(a[i]); return out; }
+/* reboot/suspend already live on the built-in Power tiles, so keep them off the home 'mine' list */
+var MINE_SKIP={'reboot.elf':1,'suspend.elf':1};
+function mineList(){ var a=allPayloads(), out=[], i; for(i=0;i<a.length;i++) if(isMine(a[i]) && !MINE_SKIP[a[i].name]) out.push(a[i]); return out; }
 var searchQ='';
 function searchList(q){
   var a=allPayloads(), out=[], i, s, words=String(q||'').toLowerCase().split(/\s+/).filter(function(w){ return !!w; }), k, ok;
