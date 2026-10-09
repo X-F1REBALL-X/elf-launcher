@@ -1,348 +1,388 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ELF Launcher 1.1.4</title>
-<link rel="icon" type="image/jpeg" href="icons/launcher-home.jpg?v=7">
-<link rel="apple-touch-icon" href="icons/launcher-home.jpg?v=7">
+<link rel="icon" type="image/jpeg" href="icons/launcher-home.jpg?v=8">
+<link rel="apple-touch-icon" href="icons/launcher-home.jpg?v=8">
 <meta name="color-scheme" content="dark">
 <style>
-:root{--ink:#f4efe6;--ink2:#cfc9be;--mute:#9a948a;--void:#0c0b0f;--deck:#15131a;--card:#1f1b26;--edge:#2c2833;--edge2:#3a3543;
---lime:#c8ff3d;--ember:#ff6a2b;--cyan:#3dd8ff;--violet:#b18cff;--blue:#5aa2ff;--teal:#8fc2bb;--warn:#ffb23d;--bad:#ff3d5a;--sk:-12deg;
+:root{--bg:#0b0d14;--void:#0b0d14;--deck:#121624;--card:#191e2f;--card2:#20263a;--edge:#252b40;--edge2:#343c58;
+--ink:#eef1fa;--ink2:#c3cadd;--mute:#8d95ad;
+--pri:#7c8cff;--pri2:#a78bfa;--rose:#f472b6;--mint:#34d399;--amber:#fbbf24;--sky:#60a5fa;--teal:#2dd4bf;--bad:#fb5a7a;
+--lime:var(--pri);--ember:var(--rose);--cyan:var(--sky);--violet:var(--pri2);--blue:var(--sky);--warn:var(--amber);
+--r:16px;--r2:11px;--ring:0 0 0 3px var(--bg),0 0 0 6px var(--pri);
 --s1:.25rem;--s2:.5rem;--s3:.75rem;--s4:1rem;--s5:1.25rem;--gap:var(--s4)}
 *{box-sizing:border-box}
-html{background:var(--void);font-size:15px}
-body{margin:0;min-height:100vh;color:var(--ink);font:1rem/1.35 "Bahnschrift","DIN Alternate","Segoe UI",system-ui,sans-serif;
-background:repeating-linear-gradient(135deg,rgba(255,255,255,.016) 0 2px,transparent 2px 14px),
-radial-gradient(60vw 50vh at 100% 0,rgba(255,106,43,.13),transparent 60%),
-radial-gradient(50vw 50vh at 0 100%,rgba(200,255,61,.06),transparent 60%),var(--void);background-attachment:fixed}
-[dir=rtl]{--sk:12deg}
-.wrap{display:flex;flex-direction:column;min-height:100vh;padding:var(--s3) var(--s5)}
-/* header: brand | status | device, clock, language */
-.bar{display:flex;align-items:center;padding:0 0 var(--s3);margin-bottom:var(--gap);border-bottom:2px solid var(--edge)}
-.brand{display:flex;align-items:center;min-width:0;flex:0 0 auto}
+html{background:var(--bg);font-size:15px;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:var(--ink);font:1rem/1.4 "Inter","Segoe UI","SF Pro Display","Helvetica Neue",system-ui,sans-serif;
+background:radial-gradient(70vw 60vh at 85% -10%,rgba(124,140,255,.16),transparent 60%),radial-gradient(60vw 50vh at -10% 110%,rgba(244,114,182,.10),transparent 60%),var(--bg);background-attachment:fixed}
+.wrap{display:flex;flex-direction:column;min-height:100vh;padding:var(--s4) var(--s5) var(--s5)}
+a{color:inherit}
+/* header */
+.bar{display:flex;align-items:center;flex-wrap:nowrap;margin-bottom:var(--gap);padding:var(--s2) var(--s3);background:rgba(18,22,36,.82);border:1px solid var(--edge);border-radius:calc(var(--r) + 4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.brand{display:flex;align-items:center;flex:0 0 auto;min-width:0}
 .brand>div{direction:ltr;text-align:left}
-.logo{flex:0 0 auto;width:2.6rem;height:2.6rem;margin-inline-end:var(--s3);display:flex;align-items:center;justify-content:center;color:var(--void);
-background:var(--lime);transform:skewX(var(--sk));box-shadow:0 0 1.2rem rgba(200,255,61,.25)}
-.logo svg{width:1.6rem;height:1.6rem;transform:skewX(calc(var(--sk)*-1))}
-.brand h1{margin:0;font-size:1.55rem;font-weight:900;letter-spacing:.22em;text-transform:uppercase;line-height:1.05;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
-.brand h1 b{color:var(--lime)}
-.meta{display:flex;align-items:center;margin-top:.2rem}
-.ver{color:var(--void);background:var(--ember);font-size:.72rem;font-weight:800;padding:0 .5em;margin-inline-end:.8em;letter-spacing:.06em;transform:skewX(var(--sk));direction:ltr;unicode-bidi:isolate}
-.by{color:var(--lime);font-size:.95rem;font-weight:800;letter-spacing:.08em;direction:ltr;unicode-bidi:isolate;white-space:nowrap;text-decoration:none;text-shadow:0 0 .6rem rgba(200,255,61,.35)}
-.live{display:flex;align-items:center;min-width:0;max-width:44%;margin:0 auto;padding:.45rem 1.1rem;background:var(--deck);border:2px solid rgba(200,255,61,.35);font-size:.9rem;font-weight:800;
-letter-spacing:.06em;white-space:nowrap;transform:skewX(var(--sk))}
-.live i{flex:0 0 auto;width:.7rem;height:.7rem;margin-inline-end:.65rem;background:var(--lime);box-shadow:0 0 .6rem var(--lime);transform:skewX(calc(var(--sk)*-1)) rotate(45deg)}
-#status{display:block;min-width:0;margin:0;overflow:hidden;text-overflow:ellipsis;transform:skewX(calc(var(--sk)*-1))}
+.logo{flex:0 0 auto;width:2.9rem;height:2.9rem;margin-inline-end:var(--s3);display:flex;align-items:center;justify-content:center;color:#fff;border-radius:14px;overflow:hidden;background:#121624;box-shadow:0 6px 18px rgba(124,140,255,.35)}
+.logo svg{width:1.65rem;height:1.65rem}
+.logo img{display:block;width:100%;height:100%;border-radius:inherit;object-fit:cover}
+.logo svg circle{fill:#0b0d14}
+.brand h1{margin:0;font-size:1.45rem;font-weight:800;letter-spacing:.01em;line-height:1.05;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.brand h1 b{background:linear-gradient(90deg,var(--pri),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.meta{display:flex;align-items:center;margin-top:.25rem}
+.ver{font-size:.72rem;font-weight:800;padding:.05rem .5rem;margin-inline-end:.6rem;border-radius:999px;color:var(--ink2);background:var(--card2);border:1px solid var(--edge2);direction:ltr;unicode-bidi:isolate}
+.by{font-size:.92rem;font-weight:800;color:var(--ink);text-decoration:none;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.by:after{content:"";display:inline-block;width:.45rem;height:.45rem;margin-inline-start:.4rem;border-radius:50%;background:var(--rose);vertical-align:.12em}
+.search{position:relative;flex:1 1 auto;min-width:8rem;max-width:34rem;margin:0 var(--s4)}
+.search svg{position:absolute;top:50%;left:.9rem;width:1.15rem;height:1.15rem;margin-top:-.575rem;color:var(--mute);pointer-events:none}
+#q{width:100%;min-height:2.8rem;padding:.4rem 1rem;padding-inline-start:2.6rem;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--edge2);border-radius:999px;outline:none;-webkit-appearance:none;appearance:none}
+#q::placeholder{color:var(--mute)}
+#q:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(124,140,255,.35)}
+#q::-webkit-search-cancel-button{-webkit-appearance:none}
+.live{display:flex;align-items:center;min-width:0;max-width:22rem;flex:0 1 auto;padding:.35rem .9rem;border-radius:999px;background:var(--card);border:1px solid var(--edge);font-size:.86rem;font-weight:700;color:var(--ink2);white-space:nowrap}
+.live i{flex:0 0 auto;width:.55rem;height:.55rem;margin-inline-end:.55rem;border-radius:50%;background:var(--mint);box-shadow:0 0 .6rem var(--mint)}
+#status{display:block;min-width:0;margin:0;overflow:hidden;text-overflow:ellipsis}
+#runchip{display:flex;align-items:center;flex:0 0 auto;margin-inline-start:var(--s3);min-height:2.6rem;padding:.2rem .9rem;font-size:.9rem}
+#runchip i{display:inline-block;width:.55rem;height:.55rem;margin-inline-end:.5rem;border-radius:50%;background:var(--mute)}
+#runchip[data-n]:not([data-n="0"]) i{background:var(--mint);box-shadow:0 0 .55rem var(--mint)}
+#runchip .ncount{margin-inline-start:.5rem}
 .sys{display:flex;align-items:center;flex:0 0 auto}
 .sys>*{margin-inline-start:var(--s4)}
-#corner{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;text-align:end}
-#deviceinfo{font-size:.95rem;font-weight:900;letter-spacing:.06em;color:var(--ink);white-space:nowrap;direction:ltr;unicode-bidi:isolate}
-#deviceinfo.ps5mark{color:var(--cyan)}
-#deviceip{font-size:.74rem;font-weight:700;color:var(--mute);white-space:nowrap;direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+#corner{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2;text-align:end}
+#deviceinfo{font-size:.92rem;font-weight:800;color:var(--ink);white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+#deviceinfo.ps5mark{color:var(--pri)}
+#deviceip{font-size:.74rem;font-weight:600;color:var(--mute);white-space:nowrap;direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
 #deviceip[data-state=ip]{color:var(--ink2)}
-#clock{display:flex;flex-direction:column;align-items:flex-end;padding-inline-start:var(--s4);border-inline-start:2px solid var(--edge);line-height:1.15}
-#clock b{font-size:1.25rem;font-weight:900;letter-spacing:.06em;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
-#clock span{font-size:.74rem;font-weight:700;color:var(--mute);white-space:nowrap}
+#clock{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}
+#clock b{font-size:1.2rem;font-weight:800;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+#clock span{font-size:.74rem;font-weight:600;color:var(--mute);white-space:nowrap}
 [dir=rtl] #corner,[dir=rtl] #clock{align-items:flex-start}
-/* buttons: skewed plate drawn by ::before so focus glow is never clipped */
-button{position:relative;z-index:0;min-height:2.6rem;padding:.3rem 1.1rem;font:inherit;font-size:.95rem;font-weight:800;letter-spacing:.04em;
-color:var(--ink);background:none;border:0;cursor:pointer;white-space:nowrap;outline:none}
-button:before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:.35em;right:.35em;background:var(--card);border:2px solid var(--edge2);
-transform:skewX(var(--sk));transition:box-shadow .12s,border-color .12s,background .12s}
-button:focus:before{border-color:var(--lime);box-shadow:0 0 0 3px rgba(200,255,61,.35),0 0 1rem rgba(200,255,61,.35)}
-button:focus{transform:scale(1.04);z-index:2}
-button[disabled]{cursor:default}
-.ncount{flex:0 0 auto;display:inline-block;min-width:1.7rem;padding:0 .4em;font-size:.78rem;font-weight:900;line-height:1.5;text-align:center;color:var(--ink);background:var(--void);border:1px solid var(--edge2);direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+/* buttons: plate in ::before (keeps the busy-progress fill) */
+button{position:relative;z-index:0;min-height:2.6rem;padding:.3rem 1.05rem;font:inherit;font-size:.95rem;font-weight:700;color:var(--ink);background:none;border:0;border-radius:var(--r2);cursor:pointer;white-space:nowrap;outline:none;-webkit-tap-highlight-color:transparent}
+button:before{content:"";position:absolute;z-index:-1;top:0;right:0;bottom:0;left:0;border-radius:inherit;background:var(--card2);border:1px solid var(--edge2);transition:background-color .12s,border-color .12s,box-shadow .12s}
+button:focus{z-index:2}
+button:focus:before,button:focus-visible:before{box-shadow:var(--ring)}
+button:active:before{filter:brightness(1.15)}
+button[disabled]{cursor:default;opacity:.45}
+.ncount{flex:0 0 auto;display:inline-block;min-width:1.7rem;padding:0 .45em;font-size:.76rem;font-weight:800;line-height:1.55;text-align:center;color:var(--ink2);background:rgba(255,255,255,.06);border-radius:999px;direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
 .ncount:empty{display:none}
-/* language menu */
+/* language */
 #langbox{position:relative;z-index:40}
-#langbtn{display:flex;align-items:center;min-height:2.5rem;font-size:.85rem;text-transform:uppercase}
-#langbtn:before{background:var(--deck)}
+#langbtn{display:flex;align-items:center;min-height:2.6rem;font-size:.85rem}
 #langbtn .flag{margin-inline-end:.55rem}
-#langlist{display:none;position:absolute;right:0;top:calc(100% + .5rem);z-index:60;width:28rem;max-width:calc(100vw - 2rem);padding:.6rem;
-grid-template-columns:1fr 1fr;grid-gap:.3rem;background:var(--deck);border:2px solid var(--lime);box-shadow:0 1.2rem 2.5rem rgba(0,0,0,.75)}
+#langlist{display:none;position:absolute;right:0;top:calc(100% + .5rem);z-index:60;width:28rem;max-width:calc(100vw - 2rem);padding:.6rem;grid-template-columns:1fr 1fr;grid-gap:.35rem;background:var(--deck);border:1px solid var(--edge2);border-radius:var(--r);box-shadow:0 1.2rem 2.5rem rgba(0,0,0,.7)}
 [dir=rtl] #langlist{right:auto;left:0}
 #langlist.show{display:grid}
-.langopt{display:flex;align-items:center;width:100%;min-height:2.6rem;font-size:.95rem;font-weight:700;text-align:start;letter-spacing:0}
-.langopt:before{left:0;right:0;transform:none;background:var(--void);border-color:var(--edge)}
+.langopt{display:flex;align-items:center;width:100%;min-height:2.6rem;font-size:.95rem;font-weight:600;text-align:start}
+.langopt:before{background:transparent;border-color:transparent}
 .langopt .flag{margin-inline-end:.6rem}
-.langopt[data-state=on]{color:var(--void)}.langopt[data-state=on]:before{background:var(--lime);border-color:var(--lime)}
-.flag{display:inline-block;width:1.5rem;height:1rem;flex:0 0 1.5rem;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+.langopt[data-state=on]{color:#0b0d14}.langopt[data-state=on]:before{background:var(--pri);border-color:var(--pri)}
+.flag{display:inline-block;width:1.5rem;height:1rem;flex:0 0 1.5rem;overflow:hidden;border-radius:3px;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
 .flag svg{display:block;width:100%;height:100%}
-/* layout: menu | view */
-#shell{flex:1;display:grid;grid-template-columns:16.5rem minmax(0,1fr);grid-gap:var(--gap);align-items:start}
-.panel{position:relative;display:flex;flex-direction:column;min-width:0;padding:var(--s3) var(--s5) var(--s4);
-background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0) 6rem),var(--deck);
-border:1px solid var(--edge);border-inline-start:4px solid var(--acc,var(--ember));
-clip-path:polygon(0 0,calc(100% - 1.1rem) 0,100% 1.1rem,100% 100%,0 100%)}
-[dir=rtl] .panel{clip-path:polygon(1.1rem 0,100% 0,100% 100%,0 100%,0 1.1rem)}
-[dir=rtl] .tiles button:before{clip-path:polygon(.9rem 0,100% 0,100% 100%,0 100%,0 .9rem)}
-.label,#ftitle{display:flex;align-items:center;margin:0 0 var(--s3);font-size:.78rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--acc,var(--ember));line-height:1.2}
-.label:before,#ftitle:before{content:"";flex:0 0 auto;width:.45rem;height:.45rem;margin-inline-end:var(--s2);background:currentColor;transform:rotate(45deg)}
-.label:after,#ftitle:after{content:"";flex:1;height:1px;margin-inline-start:var(--s3);background:linear-gradient(90deg,var(--edge2),transparent)}
-[dir=rtl] .label:after,[dir=rtl] #ftitle:after{background:linear-gradient(270deg,var(--edge2),transparent)}
-[dir=rtl] .label,[dir=rtl] #ftitle,[dir=rtl] .live,[dir=rtl] button,[dir=rtl] .sub,html[lang=ja] .label,html[lang=zh] .label{letter-spacing:0}
-.sub{display:flex;align-items:center;margin:var(--s4) 0 var(--s2);font-size:.74rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+/* layout */
+#shell{flex:1;display:grid;grid-template-columns:15.5rem minmax(0,1fr);grid-gap:var(--gap);align-items:start}
+.panel{position:relative;display:flex;flex-direction:column;min-width:0;padding:var(--s4) var(--s5) var(--s5);background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 7rem),var(--deck);border:1px solid var(--edge);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.label,#ftitle{display:flex;align-items:center;margin:0 0 var(--s3);font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);line-height:1.2}
+.label:before,#ftitle:before{content:"";flex:0 0 auto;width:.6rem;height:.6rem;margin-inline-end:.55rem;border-radius:3px;background:var(--acc,var(--pri))}
+#ftitle{font-size:1.25rem;letter-spacing:0;text-transform:none;color:var(--ink);font-weight:800}
+#ftitle:before{width:.75rem;height:.75rem;border-radius:4px}
+[dir=rtl] .label,html[lang=ja] .label,html[lang=zh] .label{letter-spacing:0}
+.sub{margin:var(--s4) 0 var(--s2);font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
 .k{color:var(--mute)}
-/* menu */
-#sidebar{--acc:var(--lime);position:sticky;top:var(--s3)}
-#nav{display:grid;grid-template-columns:minmax(0,1fr);grid-gap:var(--s2)}
-.navbtn{display:flex;align-items:center;width:100%;min-height:2.9rem;padding:.2rem .9rem;text-align:start;font-size:1rem}
-.navbtn:before{left:.2em;right:.2em}
-.navbtn>span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
-.navbtn>span:first-child:before{content:"";display:inline-block;width:.5rem;height:.5rem;margin-inline-end:.65rem;vertical-align:.1em;transform:rotate(45deg);background:var(--c,var(--lime))}
-.navbtn[data-folder=elf]{--c:var(--cyan)}.navbtn[data-folder=downloaded]{--c:var(--blue)}.navbtn[data-folder=auto]{--c:var(--violet)}
-.navbtn.active{color:var(--void)}.navbtn.active:before{background:var(--lime);border-color:var(--lime)}
-.navbtn.active>span:first-child:before{background:var(--void)}
-.navbtn.active .ncount{background:rgba(12,11,15,.85);border-color:transparent;color:var(--lime)}
+/* sidebar */
+#sidebar{position:sticky;top:var(--s4);padding:var(--s3)}
+#sidebar>.label{display:none}
+#nav{display:grid;grid-template-columns:minmax(0,1fr);grid-gap:.3rem}
+.navgrp{margin:var(--s3) .55rem .2rem;font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.navgrp:first-child{margin-top:.2rem}
+[dir=rtl] .navgrp{letter-spacing:0}
+.navbtn{display:flex;align-items:center;width:100%;min-height:2.75rem;padding:.2rem .7rem;text-align:start;font-size:.98rem;font-weight:600;color:var(--ink2)}
+.navbtn:before{background:transparent;border-color:transparent}
+.navbtn svg{flex:0 0 auto;width:1.2rem;height:1.2rem;margin-inline-end:.7rem;color:var(--c,var(--pri))}
+.navbtn>span:first-of-type{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.navbtn.active{color:var(--ink)}
+.navbtn.active:before{background:linear-gradient(90deg,rgba(124,140,255,.24),rgba(124,140,255,.06));border-color:rgba(124,140,255,.45)}
+[dir=rtl] .navbtn.active:before{background:linear-gradient(270deg,rgba(124,140,255,.24),rgba(124,140,255,.06))}
+.navbtn.active .ncount{background:var(--pri);color:#0b0d14}
+.navbtn[data-folder=mine]{--c:var(--rose)}.navbtn[data-folder=elf]{--c:var(--sky)}.navbtn[data-folder=downloaded]{--c:var(--mint)}.navbtn[data-folder=auto]{--c:var(--pri2)}
+.navbtn[data-folder=run]{--c:var(--mint)}.navbtn[data-folder=load]{--c:var(--amber)}.navbtn[data-folder=ps5]{--c:var(--teal)}
 #sideActions{display:grid;grid-gap:var(--s2);margin-top:var(--s3);padding-top:var(--s3);border-top:1px solid var(--edge)}
 #sideActions:empty{display:none}
-#loadsel{width:100%;color:var(--void)}#loadsel:before{background:var(--ember);border-color:var(--ember)}
+#loadsel{width:100%;color:#0b0d14}#loadsel:before{background:var(--rose);border-color:var(--rose)}
 #sideupd{display:flex;align-items:center;justify-content:center;width:100%;margin-top:var(--s3)}
 #sideupd .ncount{margin-inline-start:.6rem}
-#sideupd[data-state=has]{color:var(--void)}#sideupd[data-state=has]:before{background:var(--warn);border-color:var(--warn);box-shadow:0 0 1rem rgba(255,178,61,.45)}
-#sideupd[data-state=has] .ncount{background:var(--void);color:var(--warn);border-color:transparent}
+#sideupd[data-state=has]{color:#0b0d14}#sideupd[data-state=has]:before{background:var(--amber);border-color:var(--amber)}
+#sideupd[data-state=has] .ncount{background:#0b0d14;color:var(--amber)}
 #sideupd[data-state=busy]{color:var(--mute)}
 #sideupd[disabled]{opacity:.6}
-.menufoot{margin-top:var(--s4);padding-top:var(--s3);border-top:1px solid var(--edge);font-size:.74rem;line-height:1.35;color:var(--mute)}
-.menufoot b{display:block;color:var(--ink2);font-weight:800;direction:ltr;unicode-bidi:isolate}
+.menufoot{margin-top:var(--s3);padding:var(--s3) .55rem 0;border-top:1px solid var(--edge);font-size:.74rem;line-height:1.4;color:var(--mute)}
+.menufoot b{display:block;color:var(--ink2);font-weight:700;direction:ltr;unicode-bidi:isolate}
 [dir=rtl] .menufoot b{text-align:right}
-/* view panel: accent follows the open section */
+/* main */
 #main{min-width:0;display:flex;flex-direction:column}
-#viewpanel{--acc:var(--cyan)}
-#main[data-view=downloaded] #viewpanel{--acc:var(--blue)}
-#main[data-view=auto] #viewpanel{--acc:var(--violet)}
-#main[data-view=kill] #viewpanel{--acc:var(--ember)}
 #home{display:none}#home.show{display:grid}
 #home.show~#viewpanel{display:none}
-#hdr{display:none}#hdr.show{display:block}
-#ftitle{margin:0 0 var(--s3)}
+#hdr{display:none}#hdr.show{display:flex;align-items:center;margin-bottom:var(--s3)}
+#hdr #ftitle{flex:1;margin:0}
+#hdrx{display:flex;align-items:center}#hdrx>*{margin-inline-start:var(--s2)}
 #view{display:none}#view.show{display:block}
-#progwrap{display:none;position:relative;height:.55rem;margin:0 0 var(--s3);overflow:hidden;background:var(--void);border:1px solid var(--edge)}
+#viewpanel{--acc:var(--sky)}
+#main[data-view=mine] #viewpanel{--acc:var(--rose)}#main[data-view=downloaded] #viewpanel{--acc:var(--mint)}#main[data-view=auto] #viewpanel{--acc:var(--pri2)}
+#main[data-view=run] #viewpanel,#main[data-view=kill] #viewpanel{--acc:var(--mint)}#main[data-view=load] #viewpanel{--acc:var(--amber)}#main[data-view=ps5] #viewpanel{--acc:var(--teal)}
+#progwrap{display:none;position:relative;height:.4rem;margin:0 0 var(--s3);overflow:hidden;background:var(--bg);border-radius:999px}
 #progwrap.show{display:block}
-#progbar{height:100%;width:0;background:var(--lime);box-shadow:0 0 .6rem rgba(200,255,61,.5);transition:width .2s linear}
+#progbar{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--pri),var(--rose));transition:width .2s linear}
 #progbar.indeterminate{width:40%!important;animation:indeterminate 1.1s ease-in-out infinite}
 @keyframes indeterminate{0%{transform:translateX(-120%)}100%{transform:translateX(280%)}}
-/* folder tabs */
-.foldgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-gap:var(--s2);margin:0 0 var(--s4)}
-.foldgrid button{display:flex;align-items:center;justify-content:space-between;min-width:0;min-height:2.5rem;padding:.2rem .9rem;font-size:.92rem}
-.foldgrid button>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;margin-inline-end:.5rem}
-.foldgrid button.active{color:var(--void)}.foldgrid button.active:before{background:var(--c,var(--cyan));border-color:var(--c,var(--cyan))}
-.foldgrid button.active .ncount{background:rgba(12,11,15,.85);border-color:transparent;color:var(--c,var(--cyan))}
-.subfold[data-sub=loader]{--c:var(--lime)}.subfold[data-sub=hen]{--c:var(--ember)}.subfold[data-sub=apps]{--c:var(--cyan)}.subfold[data-sub=files]{--c:var(--blue)}
-.subfold[data-sub=storage]{--c:var(--violet)}.subfold[data-sub=media]{--c:var(--warn)}.subfold[data-sub=system]{--c:var(--teal)}.subfold[data-sub=tools]{--c:#ff8fb1}
-.foldgrid button>span:first-child:before{content:"";display:inline-block;width:.45rem;height:.45rem;margin-inline-end:.5rem;vertical-align:.12em;transform:rotate(45deg);background:var(--c,var(--cyan))}
-.foldgrid button.active>span:first-child:before{background:var(--void)}
-/* payload list: two columns of cards */
-.listgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-gap:.4rem var(--s4);align-items:stretch}
+/* category chips */
+.foldgrid,.catchips{display:flex;flex-wrap:wrap;margin:0 0 var(--s4)}
+.foldgrid button,.catchips button{display:flex;align-items:center;min-height:2.4rem;padding:.15rem .5rem .15rem .85rem;margin:0 .45rem .45rem 0;font-size:.9rem;font-weight:700;border-radius:999px}
+[dir=rtl] .foldgrid button,[dir=rtl] .catchips button{margin:0 0 .45rem .45rem;padding:.15rem .85rem .15rem .5rem}
+.foldgrid button:before,.catchips button:before{background:var(--card);border-color:var(--edge2)}
+.foldgrid button>span:first-child:before,.catchips button>span:first-child:before{content:"";display:inline-block;width:.6rem;height:.6rem;margin-inline-end:.5rem;border-radius:50%;vertical-align:.05em;background:var(--c,var(--sky))}
+.foldgrid button .ncount,.catchips button .ncount{margin-inline-start:.5rem}
+.foldgrid button.active{color:#0b0d14}.foldgrid button.active:before{background:var(--c,var(--sky));border-color:var(--c,var(--sky))}
+.foldgrid button.active>span:first-child:before{background:#0b0d14}
+.foldgrid button.active .ncount{background:rgba(11,13,20,.25);color:#0b0d14}
+.subfold[data-sub=loader]{--c:var(--pri)}.subfold[data-sub=hen]{--c:var(--rose)}.subfold[data-sub=apps]{--c:var(--mint)}.subfold[data-sub=files]{--c:var(--amber)}
+.subfold[data-sub=storage]{--c:var(--pri2)}.subfold[data-sub=media]{--c:var(--sky)}.subfold[data-sub=system]{--c:#94a3b8}.subfold[data-sub=tools]{--c:var(--teal)}
+/* payload rows */
+.listgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-gap:.55rem var(--s3);align-items:stretch}
 .elfwrap{min-width:0}
-.elf{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;grid-template-areas:"m n v a" "m d d a";grid-template-rows:1fr auto;align-items:center;grid-column-gap:var(--s3);grid-row-gap:.1rem;
-height:100%;min-height:3.2rem;padding:.35rem var(--s2) .35rem var(--s3);background:rgba(255,255,255,.025);border:1px solid var(--edge);border-inline-start:3px solid var(--edge2);transition:border-color .12s,background .12s}
-[dir=rtl] .elf{padding:.35rem var(--s3) .35rem var(--s2)}
-.elf.nom{grid-template-columns:auto minmax(0,1fr) auto auto;grid-template-areas:"i n v a" "i d d a"}
-.elf.nom:before{content:"ELF";grid-area:i;display:flex;align-items:center;justify-content:center;width:2.2rem;height:2.2rem;font-size:.62rem;font-weight:900;letter-spacing:.08em;color:var(--ink2);background:var(--void);border:1px solid var(--edge)}
-.elf:focus-within{border-color:rgba(200,255,61,.55);background:rgba(200,255,61,.05)}
+.elf{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;grid-template-areas:"m n v a" "m d d a";grid-template-rows:1fr auto;align-items:center;grid-column-gap:var(--s3);grid-row-gap:.1rem;height:100%;min-height:3.5rem;padding:.45rem .55rem .45rem .75rem;background:var(--card);border:1px solid var(--edge);border-radius:var(--r2);transition:border-color .12s,background-color .12s}
+[dir=rtl] .elf{padding:.45rem .75rem .45rem .55rem}
+.elf.nom{grid-template-areas:"i n v a" "i d d a"}
+.elf.nom:before{content:"ELF";grid-area:i;display:flex;align-items:center;justify-content:center;width:2.4rem;height:2.4rem;font-size:.62rem;font-weight:800;letter-spacing:.06em;color:var(--pri);background:rgba(124,140,255,.12);border-radius:9px}
+.elf:focus-within{border-color:var(--pri);background:var(--card2)}
 .elf .m{grid-area:m}.elf .n{grid-area:n}.elf .v{grid-area:v}.elf .a{grid-area:a}.elf .d{grid-area:d}
-.elf .n{min-width:0;font-size:1.05rem;font-weight:800;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.elf .n{min-width:0;font-size:1.02rem;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
 [dir=rtl] .elf .n,[dir=rtl] .elf .d{direction:ltr;text-align:right}
-.elf .n b{font-weight:800}
-.elf .v{justify-self:end;max-width:7.5rem;padding:0 .45em;font-size:.74rem;font-weight:800;line-height:1.5;color:var(--ink2);background:var(--card);border:1px solid var(--edge2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+.elf .n b{font-weight:700}
+.elf .v{justify-self:end;max-width:7.5rem;padding:0 .5em;font-size:.72rem;font-weight:700;line-height:1.6;color:var(--ink2);background:rgba(255,255,255,.06);border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
 .elf .v:empty{display:none}
-.elf .d{min-width:0;font-size:.78rem;line-height:1.25;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.elf .d{min-width:0;font-size:.78rem;line-height:1.3;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .elf .a{display:flex;align-items:center;justify-content:flex-end}
 .elf .a>*{margin-inline-start:var(--s1)}
-/* a row whose file is on the console: lime edge + icon */
-.elfhead{display:grid;grid-template-columns:minmax(0,1fr) auto;padding:0 var(--s3) var(--s1);font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
-.elfhead .m,.elfhead .a{display:none}
-.elfhead .v{text-align:end}
-[dir=rtl] .elfhead{letter-spacing:0}
-.empty{margin:var(--s2) 0;padding:var(--s3) var(--s4);font-size:.95rem;color:var(--ink2);border:1px dashed var(--edge2)}
+.elfhead{display:none}
+.empty{margin:var(--s2) 0;padding:var(--s4);font-size:.95rem;color:var(--ink2);text-align:center;background:rgba(255,255,255,.02);border:1px dashed var(--edge2);border-radius:var(--r2)}
 /* row buttons */
-button.run{min-width:6.4rem;min-height:2.15rem;padding:.15rem .9rem;font-size:.88rem}
-button.run.download{color:var(--lime)}button.run.download:before{background:rgba(200,255,61,.06);border-color:rgba(200,255,61,.6)}
-button.run.load{color:var(--void)}button.run.load:before{background:var(--lime);border-color:var(--lime)}
-button.run.load.loaded{color:var(--void)}button.run.load.loaded:before{background:var(--cyan);border-color:var(--cyan)}
-button.run.sent{color:var(--lime)}button.run.sent:before{background:rgba(200,255,61,.14);border-color:var(--lime)}
-button.run.update{color:var(--void)}button.run.update:before{background:var(--warn);border-color:var(--warn);box-shadow:0 0 .8rem rgba(255,178,61,.4)}
-button.run.del,button.run.kill{min-width:0;color:var(--bad)}button.run.del:before,button.run.kill:before{border-color:rgba(255,61,90,.7)}
-button.run.del:focus:before,button.run.kill:focus:before{border-color:var(--bad);background:rgba(255,61,90,.12);box-shadow:0 0 0 3px rgba(255,61,90,.35),0 0 1.4rem rgba(255,61,90,.35)}
+button.run{min-width:6.2rem;min-height:2.3rem;padding:.15rem .9rem;font-size:.88rem}
+button.run.download{color:var(--pri)}button.run.download:before{background:rgba(124,140,255,.1);border-color:rgba(124,140,255,.55)}
+button.run.load{color:#0b0d14}button.run.load:before{background:linear-gradient(135deg,var(--pri),var(--pri2));border-color:transparent}
+button.run.load.loaded{color:#0b0d14}button.run.load.loaded:before{background:var(--mint)}
+button.run.sent{color:var(--mint)}button.run.sent:before{background:rgba(52,211,153,.12);border-color:var(--mint)}
+button.run.update{color:#0b0d14}button.run.update:before{background:var(--amber);border-color:var(--amber)}
+button.run.del,button.run.kill{min-width:0;color:var(--bad)}button.run.del:before,button.run.kill:before{background:rgba(251,90,122,.08);border-color:rgba(251,90,122,.55)}
 button.run.busy{color:var(--ink)}
-button.run.busy:before{background-color:var(--card);background-image:linear-gradient(rgba(200,255,61,.55),rgba(200,255,61,.55));background-repeat:no-repeat;background-position:left center;background-size:inherit;border-color:var(--lime)}
+button.run.busy:before{background-color:var(--card2);background-image:linear-gradient(rgba(124,140,255,.6),rgba(124,140,255,.6));background-repeat:no-repeat;background-position:left center;background-size:inherit;border-color:var(--pri)}
 button.run[disabled]{opacity:.5}button.run.busy[disabled]{opacity:1}
-.pick{display:flex;align-items:center;font-size:.85rem;font-weight:800;color:var(--ink2);cursor:pointer}
-.pick span{margin-inline-start:.4rem}
-input.mark,input.auto{width:1.35rem;height:1.35rem;margin:0;accent-color:var(--lime);cursor:pointer}
-/* home: overview + AutoPayload */
-#home{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-gap:var(--gap);align-items:stretch}
-.homeHero{--acc:var(--lime)}
-.homeAuto{--acc:var(--violet)}
-.hhead{display:flex;align-items:center;margin-bottom:var(--s3)}
-.hhead img{flex:0 0 auto;width:4.4rem;height:4.4rem;margin-inline-end:var(--s4);border:2px solid var(--edge2);box-shadow:0 0 1.4rem rgba(200,255,61,.18)}
-.hhead h2{margin:0;font-size:1.9rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;line-height:1.05;direction:ltr;unicode-bidi:isolate}
-.hhead h2 b{color:var(--lime)}
-.hhead .meta{margin-top:.35rem}
-.hdesc{margin:0 0 var(--s4);font-size:1rem;line-height:1.45;color:var(--ink2)}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:var(--s3);margin-top:auto}
-.stat{padding:var(--s2) var(--s3) var(--s3);background:rgba(0,0,0,.22);border:1px solid var(--edge);border-top:3px solid var(--c)}
-.stat .k{display:block;font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-[dir=rtl] .stat .k{letter-spacing:0}
-.stat b{display:block;margin-top:.15rem;font-size:2.4rem;font-weight:900;line-height:1;color:var(--c);direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
-[dir=rtl] .stat b{text-align:right}
-.homeOpt .sub:first-child{margin-top:0}
+button.ghost:before{background:transparent}
+button.pri{color:#0b0d14}button.pri:before{background:linear-gradient(135deg,var(--pri),var(--pri2));border-color:transparent}
+.pick{display:flex;align-items:center;font-size:.85rem;font-weight:700;color:var(--ink2);cursor:pointer}
+.pick span{margin-inline-start:.45rem}
+input.mark,input.auto{width:1.35rem;height:1.35rem;margin:0;accent-color:var(--pri);cursor:pointer}
+/* home */
+#home{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-areas:"mine run" "quick run" "cats set";grid-gap:var(--gap);align-items:start}
+.hMine{grid-area:mine;--acc:var(--rose);background:linear-gradient(135deg,rgba(244,114,182,.12),rgba(124,140,255,.08) 60%,transparent),var(--deck)}
+.hQuick{grid-area:quick;--acc:var(--pri)}.hRun{grid-area:run;--acc:var(--mint)}.hCats{grid-area:cats;--acc:var(--sky)}.hSet{grid-area:set;--acc:var(--pri2)}
+.mineHead{display:flex;align-items:center;margin-bottom:var(--s3)}
+.mineHead img{flex:0 0 auto;width:3.4rem;height:3.4rem;margin-inline-end:var(--s3);border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.mineHead b{display:block;font-size:1.35rem;font-weight:800;direction:ltr;unicode-bidi:isolate}
+[dir=rtl] .mineHead b{text-align:right}
+.mineHead span{display:block;margin-top:.15rem;font-size:.88rem;color:var(--ink2)}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-gap:.55rem}
+.cards .elf{min-height:3.3rem}
+.cards button.run.del{display:none}
+.cards button.run{min-width:5.4rem;padding:.15rem .75rem}
+.hRun .proc{display:flex;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--edge);font-size:.92rem}
+.hRun .proc:last-of-type{border:0}
+.proc .pn{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+[dir=rtl] .proc .pn{text-align:right}
+.proc .pp{margin:0 var(--s3);font-size:.76rem;color:var(--mute);font-variant-numeric:tabular-nums;direction:ltr}
+.hRun .more{margin-top:var(--s3);width:100%}
+.catchips{margin:0}
 .homeChoices{display:grid;grid-template-columns:1fr 1fr;grid-gap:var(--s2)}
-.homeChoices button{min-height:2.9rem;font-size:1rem;overflow:hidden;text-overflow:ellipsis}
-.homeChoices button.selected{color:var(--void)}.homeChoices button.selected:before{background:var(--violet);border-color:var(--violet)}
-.homeHint{margin:var(--s4) 0 0;padding-top:var(--s3);border-top:1px solid var(--edge);font-size:.85rem;line-height:1.4;color:var(--mute)}
-.steps{margin:0;padding:0;list-style:none;font-size:.9rem;color:var(--ink2)}
-#home{grid-template-areas:"hero auto" "tiles tiles";grid-template-rows:auto 1fr}
-.homeHero{grid-area:hero}.homeAuto{grid-area:auto}.homeTiles{grid-area:tiles;--acc:var(--cyan)}
-.tiles{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(5.2rem,1fr);grid-gap:var(--s3)}
-.tiles button{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;min-width:0;height:100%;padding:var(--s3) var(--s5) var(--s3) var(--s5);text-align:start;white-space:normal}
-.tiles button:before{left:0;right:0;transform:none;clip-path:polygon(0 0,calc(100% - .9rem) 0,100% .9rem,100% 100%,0 100%);background:linear-gradient(135deg,rgba(255,255,255,.04),transparent 60%),var(--void);border-color:var(--edge);border-top:3px solid var(--c)}
-.tiles button:focus:before{border-color:var(--c);background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 70%),var(--card);box-shadow:none}
-.tiles button:focus{transform:scale(1.02)}
-.tiles button>span:first-child{font-size:1.05rem;font-weight:800;letter-spacing:.04em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tiles button>span:first-child:before{content:"";display:inline-block;width:.55rem;height:.55rem;margin-inline-end:.6rem;vertical-align:.12em;transform:rotate(45deg);background:var(--c)}
-.tiles .ncount{min-width:0;padding:0;font-size:2.3rem;line-height:1;color:var(--c);background:none;border:0}
-[dir=rtl] .tiles .ncount{align-self:flex-end}
-/* banners and the AutoPayload dialog */
-#selfupd,#wkupd{display:none;position:fixed;left:50%;top:4.4rem;transform:translateX(-50%);z-index:90;max-width:min(46rem,92vw);padding:.5rem .8rem .5rem 1.1rem;align-items:center;flex-wrap:wrap;justify-content:center;
-background:var(--deck);border:2px solid var(--warn);box-shadow:0 .8rem 2rem rgba(0,0,0,.7)}
-#selfupd.show,#wkupd.show{display:flex}
-#selfupd.show~#wkupd.show,#wkupd.show~#selfupd.show{top:8rem}
-#selfupd p,#wkupd p{margin:0;margin-inline-end:var(--s4);font-size:.95rem;font-weight:800;color:var(--warn)}
-#selfupd .acts,#wkupd .acts{display:flex}
-#selfupd button,#wkupd button{min-height:2.3rem;font-size:.88rem}
-#selfupddl,#wkupddl{color:var(--void)}#selfupddl:before,#wkupddl:before{background:var(--warn);border-color:var(--warn)}
-#selfupddl:disabled,#wkupddl:disabled{opacity:.6}
-#autobanner{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:100;width:min(36rem,88vw);padding:var(--s5) var(--s5) var(--s4);flex-direction:column;align-items:center;text-align:center;
-background:var(--deck);border:2px solid var(--violet);border-inline-start-width:6px;box-shadow:0 0 0 9999px rgba(6,5,9,.72),0 1.2rem 3rem rgba(0,0,0,.8)}
-#autobanner.show{display:flex}
-#autobanner p{margin:0;font-size:1.5rem;font-weight:900;line-height:1.25;color:var(--ink)}
-#autobanner small{display:block;margin-top:var(--s2);font-size:.9rem;font-weight:700;color:var(--mute)}
-#autobannercancel{margin-top:var(--s5);min-width:12rem;min-height:3rem;font-size:1.15rem;color:var(--bad)}
-#autobannercancel:before{border-color:rgba(255,61,90,.8)}
-#autobannercancel:focus:before{border-color:var(--bad);background:rgba(255,61,90,.14);box-shadow:0 0 0 3px rgba(255,61,90,.4),0 0 1.4rem rgba(255,61,90,.4)}
-#catupdate{display:none!important}
-/* hover only on devices that really hover (no sticky hover on phones) */
-@media (hover:hover){
-button:hover:before{border-color:var(--lime);box-shadow:0 0 0 3px rgba(200,255,61,.35),0 0 1rem rgba(200,255,61,.35)}
-button.run.del:hover:before,button.run.kill:hover:before{border-color:var(--bad);background:rgba(255,61,90,.12);box-shadow:0 0 0 3px rgba(255,61,90,.35),0 0 1.4rem rgba(255,61,90,.35)}
-.tiles button:hover:before{border-color:var(--c);background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 70%),var(--card);box-shadow:none}
-}
+.homeChoices button{min-height:2.7rem;font-size:.92rem;overflow:hidden;text-overflow:ellipsis}
+.homeChoices button.selected{color:#0b0d14}.homeChoices button.selected:before{background:var(--pri2);border-color:var(--pri2)}
+.homeOpt .sub:first-child{margin-top:0}
+.homeHint{margin:var(--s3) 0 0;font-size:.82rem;line-height:1.45;color:var(--mute)}
+.tag{display:inline-block;padding:0 .5em;margin-inline-start:.4rem;font-size:.68rem;font-weight:800;line-height:1.6;border-radius:999px;vertical-align:.1em}
+.tag.self{color:#0b0d14;background:var(--pri)}.tag.prot{color:var(--ink2);background:rgba(255,255,255,.08)}
+/* running view */
+.runbar{display:flex;align-items:center;flex-wrap:wrap;margin-bottom:var(--s3)}
+.runbar>*{margin-inline-end:var(--s2)}
+.runbar .pick{margin-inline-start:auto}
+.proclist{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-gap:.55rem var(--s3)}
+.proclist .elf.nom:before{content:"PID";color:var(--mint);background:rgba(52,211,153,.12)}
+/* file browser: places | contents */
+#fb{display:grid;grid-template-columns:14rem minmax(0,1fr);grid-gap:var(--gap);align-items:start}
+.places{display:grid;grid-gap:.35rem}
+.places button{display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:2.75rem;text-align:start;font-weight:600}
+.places button svg{width:1.15rem;height:1.15rem;margin-inline-end:.6rem;color:var(--teal);flex:0 0 auto}
+.places button.selected{color:#0b0d14}.places button.selected:before{background:var(--teal);border-color:var(--teal)}
+.places button.selected svg{color:#0b0d14}
+.places button.off{opacity:.45}
+.places small{display:block;margin:.6rem .4rem 0;font-size:.76rem;line-height:1.4;color:var(--mute)}
+.crumbs{display:flex;align-items:center;flex-wrap:wrap;margin-bottom:var(--s3);direction:ltr}
+.crumbs button{min-height:2.3rem;padding:.1rem .7rem;font-size:.88rem;margin:0 .15rem .3rem 0}
+.crumbs button:before{background:transparent;border-color:transparent}
+.crumbs button:last-child{color:var(--teal)}
+.crumbs i{color:var(--mute);font-style:normal;margin:0 .1rem .3rem}
+.fbtop{display:flex;align-items:center;margin-bottom:var(--s2)}
+.fbtop>button{margin-inline-end:var(--s2)}
+.fbtop .mlin{flex:1;margin:0}
+.plist{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-gap:.5rem var(--s3)}
+.plist .empty{grid-column:1/-1;margin:0}
+.plist .elf.dir:before{content:"DIR";color:var(--teal);background:rgba(45,212,191,.12)}
+.plist .elf.bad:before{content:"?";color:var(--bad);background:rgba(251,90,122,.12)}
 /* load file */
-.navbtn[data-folder=load]{--c:var(--ember)}
-#main[data-view=load] #viewpanel{--acc:var(--ember)}
 #ml{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-gap:var(--gap);align-items:start}
-#ml .panel{--acc:var(--lime);padding-bottom:var(--s4)}#ml .mlPath{--acc:var(--cyan)}#ml .mlLog{--acc:var(--violet);grid-column:1/-1}
+#ml .panel{--acc:var(--amber)}#ml .mlLog{--acc:var(--pri2)}
 .mlhide{display:none!important}
-.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--s4);min-height:8rem;border:2px dashed var(--edge2);background:rgba(0,0,0,.22);text-align:center}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--s5);min-height:9rem;border:2px dashed var(--edge2);border-radius:var(--r);background:rgba(255,255,255,.02);text-align:center}
 .drop b{font-size:1.05rem}.drop span{margin-top:.35rem;font-size:.82rem;color:var(--mute);direction:ltr;unicode-bidi:isolate}
-.drop button{margin-top:var(--s3);padding:.2rem 1.6rem;color:var(--void)}.drop button:before{background:var(--lime);border-color:var(--lime)}
-.fcard{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-gap:.15rem var(--s3);align-items:center;padding:var(--s2) var(--s3);background:var(--card);border:1px solid var(--edge2);border-inline-start:3px solid var(--lime)}
-.fcard i{grid-row:1/3;display:flex;align-items:center;justify-content:center;width:2.6rem;height:2.6rem;font-style:normal;font-size:.66rem;font-weight:900;color:var(--void);background:var(--lime)}
+.drop button{margin-top:var(--s3);padding:.2rem 1.6rem;color:#0b0d14}.drop button:before{background:linear-gradient(135deg,var(--pri),var(--pri2));border-color:transparent}
+.fcard{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-gap:.15rem var(--s3);align-items:center;padding:var(--s2) var(--s3);background:var(--card);border:1px solid var(--edge2);border-radius:var(--r2)}
+.fcard i{grid-row:1/3;display:flex;align-items:center;justify-content:center;width:2.6rem;height:2.6rem;font-style:normal;font-size:.66rem;font-weight:800;color:#0b0d14;background:var(--pri);border-radius:9px}
 .fcard b{grid-column:2;grid-row:1;min-width:0;font-size:1.02rem;direction:ltr;unicode-bidi:isolate;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 [dir=rtl] .fcard b,[dir=rtl] .fcard small{text-align:right}
 .fcard small{grid-column:2;grid-row:2;min-width:0;color:var(--mute);font-size:.78rem;direction:ltr;unicode-bidi:isolate;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fcard em{grid-column:3;grid-row:1/3;white-space:nowrap;font-style:normal;font-size:.72rem;font-weight:800;letter-spacing:.1em;color:var(--lime);border:1px solid var(--lime);padding:.1rem .45rem;direction:ltr}
-.fcard.bad{border-inline-start-color:var(--bad)}.fcard.bad i{background:var(--bad);color:#fff}.fcard.bad em{color:var(--bad);border-color:var(--bad)}
+.fcard em{grid-column:3;grid-row:1/3;white-space:nowrap;font-style:normal;font-size:.72rem;font-weight:800;color:var(--mint);background:rgba(52,211,153,.12);border-radius:999px;padding:.1rem .55rem;direction:ltr}
+.fcard.bad i{background:var(--bad);color:#fff}.fcard.bad em{color:var(--bad);background:rgba(251,90,122,.12)}
 .mlopts{display:flex;flex-wrap:wrap;margin:var(--s3) 0 0}.mlopts .pick{margin-inline-end:var(--s4);margin-bottom:var(--s2);min-height:2.2rem}
 .pick input[disabled]+span{opacity:.45}
-.mlf{display:block;margin-top:var(--s3);font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.mlf{display:block;margin-top:var(--s3);font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
 [dir=rtl] .mlf{letter-spacing:0}
-.mlin{width:100%;min-height:2.6rem;margin-top:.35rem;padding:.5rem .7rem;font:inherit;font-size:1rem;color:var(--ink);background:var(--void);border:1px solid var(--edge2);direction:ltr;outline:none;border-radius:0;-webkit-appearance:none}
+.mlin{width:100%;min-height:2.6rem;margin-top:.35rem;padding:.5rem .8rem;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--edge2);border-radius:var(--r2);direction:ltr;outline:none;-webkit-appearance:none}
 [dir=rtl] .mlin{text-align:right}
-.mlin:focus{border-color:var(--lime);box-shadow:0 0 0 2px rgba(200,255,61,.25)}
-.mlrow{display:flex;align-items:center}.mlrow .mlin{flex:1;min-width:0;margin-top:0}.mlrow button{flex:0 0 auto;margin-inline-start:var(--s1)}
-.mlf+.mlrow{margin-top:.35rem}
+.mlin:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(124,140,255,.3)}
 .mlgo{display:flex;align-items:center;margin-top:var(--s2)}.mlgo button.run{min-height:2.8rem;font-size:1rem}.mlgo #mlsend{flex:1}
-.chips{display:flex;flex-wrap:wrap}.chips button{min-height:2.2rem;padding:0 .9rem;margin:0 0 var(--s1);margin-inline-end:var(--s1);font-size:.85rem;direction:ltr}
-.chips button.selected{color:var(--void)}.chips button.selected:before{background:var(--cyan);border-color:var(--cyan)}
-.chips button.off{opacity:.45}
-.plist{display:grid;grid-gap:.35rem;margin-top:var(--s3)}.plist .elf{min-height:2.9rem}.plist .elf.dir .n b{color:var(--cyan)}
-.plist .empty{margin:0}
-.plist .elf.dir:before{content:"DIR";color:var(--cyan)}
-.mlnote{margin:var(--s3) 0 0;font-size:.82rem;line-height:1.4;color:var(--mute)}
-.mlnote:empty{display:none}.mlnote.good{color:var(--lime)}.mlnote.bad{color:var(--bad)}
-.lg{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-gap:var(--s3);align-items:center;padding:.45rem 0;border-bottom:1px solid var(--edge);font-size:.88rem}
-.lg:last-child{border:0}.lg s{text-decoration:none;font-weight:900;font-size:.72rem;letter-spacing:.1em;padding:.05rem .45rem}
-.lg s.ok{color:var(--void);background:var(--lime)}.lg s.bad{color:#fff;background:var(--bad)}
+.mlgo>*+*{margin-inline-start:var(--s2)}
+.mlnote{margin:var(--s3) 0 0;font-size:.84rem;line-height:1.45;color:var(--mute)}
+.mlnote:empty{display:none}.mlnote.good{color:var(--mint)}.mlnote.bad{color:var(--bad)}
+.lg{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-gap:var(--s3);align-items:center;padding:.5rem 0;border-bottom:1px solid var(--edge);font-size:.88rem}
+.lg:last-child{border:0}.lg s{text-decoration:none;font-weight:800;font-size:.7rem;padding:.1rem .5rem;border-radius:999px}
+.lg s.ok{color:#0b0d14;background:var(--mint)}.lg s.bad{color:#fff;background:var(--bad)}
 .lg span{min-width:0;color:var(--ink2);direction:ltr;unicode-bidi:isolate;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 [dir=rtl] .lg span{text-align:right}
 .lg span b{color:var(--ink)}.lg time{color:var(--mute);font-size:.78rem;font-variant-numeric:tabular-nums}
 #mlrecent .empty{margin:0}
-.ps5hint{padding:var(--s4);border:1px solid var(--edge2);background:rgba(0,0,0,.22);font-size:1rem;line-height:1.45}
-.ps5hint b{display:block;margin-top:.45rem;font-size:1.6rem;color:var(--lime);direction:ltr;unicode-bidi:isolate}
+.ps5hint{padding:var(--s4);border:1px solid var(--edge2);border-radius:var(--r2);background:rgba(255,255,255,.02);font-size:1rem;line-height:1.5}
+.ps5hint b{display:block;margin-top:.45rem;font-size:1.55rem;color:var(--pri);direction:ltr;unicode-bidi:isolate}
 [dir=rtl] .ps5hint b{text-align:right}
-/* fingers: bigger targets */
+.mlgoto{margin-top:var(--s3);width:100%}
+/* banners and dialogs */
+#selfupd,#wkupd{display:none;position:fixed;left:50%;top:5.2rem;transform:translateX(-50%);z-index:90;max-width:min(46rem,92vw);padding:.55rem .7rem .55rem 1.1rem;align-items:center;flex-wrap:wrap;justify-content:center;background:var(--deck);border:1px solid var(--amber);border-radius:var(--r);box-shadow:0 .8rem 2rem rgba(0,0,0,.7)}
+#selfupd.show,#wkupd.show{display:flex}
+#selfupd.show~#wkupd.show,#wkupd.show~#selfupd.show{top:9rem}
+#selfupd p,#wkupd p{margin:0;margin-inline-end:var(--s4);font-size:.95rem;font-weight:700;color:var(--amber)}
+#selfupd .acts,#wkupd .acts{display:flex}#selfupd .acts>*+*,#wkupd .acts>*+*{margin-inline-start:var(--s2)}
+#selfupd button,#wkupd button{min-height:2.3rem;font-size:.88rem}
+#selfupddl,#wkupddl{color:#0b0d14}#selfupddl:before,#wkupddl:before{background:var(--amber);border-color:var(--amber)}
+#selfupddl:disabled,#wkupddl:disabled{opacity:.6}
+#autobanner,#modal{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:100;width:min(34rem,90vw);padding:var(--s5);flex-direction:column;align-items:center;text-align:center;background:var(--deck);border:1px solid var(--edge2);border-radius:calc(var(--r) + 4px);box-shadow:0 0 0 9999px rgba(5,6,10,.72),0 1.2rem 3rem rgba(0,0,0,.8)}
+#autobanner.show,#modal.show{display:flex}
+#autobanner p,#modal p{margin:0;font-size:1.35rem;font-weight:800;line-height:1.3;color:var(--ink)}
+#autobanner small,#modal small{display:block;margin-top:var(--s2);font-size:.9rem;color:var(--mute)}
+#autobannercancel{margin-top:var(--s5);min-width:12rem;min-height:3rem;font-size:1.1rem;color:var(--bad)}
+#autobannercancel:before{background:rgba(251,90,122,.08);border-color:rgba(251,90,122,.7)}
+#modal .acts{display:flex;margin-top:var(--s5)}#modal .acts button{min-width:9rem;min-height:2.9rem;margin:0 var(--s2)}
+#modalok{color:#fff}#modalok:before{background:var(--bad);border-color:var(--bad)}
+#catupdate{display:none!important}
+@media (hover:hover){
+button:hover:before{border-color:var(--pri)}
+.navbtn:hover:before{background:rgba(255,255,255,.04)}
+.elf:hover{border-color:var(--edge2)}
+}
 @media (pointer:coarse){
-button{min-height:2.9rem}
-button.run{min-height:2.75rem}
-.chips button{min-height:2.75rem}
+button{min-height:2.9rem}button.run{min-height:2.75rem}
 .langopt{min-height:3rem}
 input.mark,input.auto{width:1.6rem;height:1.6rem}
 .mlopts .pick{min-height:2.75rem}
-.mlin{min-height:2.9rem;font-size:16px}
+.mlin,#q{min-height:2.9rem;font-size:16px}
 }
-/* TV: rem follows the viewport */
+/* TV: rem follows the viewport, the page scrolls as a whole (no inner scroll boxes) */
 @media(min-width:1180px) and (min-height:600px){
-html{font-size:13px;font-size:clamp(12px,min(1.04vw,1.9vh),26px)}
-.wrap{height:100vh}
-#shell{min-height:0;align-items:stretch}
-#sidebar{position:static;min-height:0}
-#sideupd{margin-top:auto}
-#main{min-height:0}
-#home.show{flex:1;min-height:0}
-#viewpanel{flex:1;min-height:0}
-#view.show{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;margin-inline-end:calc(var(--s3)*-1);padding-inline-end:var(--s3);scrollbar-width:thin;scrollbar-color:#5a5466 rgba(255,255,255,.04)}
-#view::-webkit-scrollbar{width:6px}#view::-webkit-scrollbar-track{background:rgba(255,255,255,.04)}#view::-webkit-scrollbar-thumb{background:#5a5466}
+html{font-size:13px;font-size:clamp(12px,min(1.02vw,1.85vh),26px)}
 }
-/* narrower: one list column */
 @media(max-width:1179px){
-#ml{grid-template-columns:minmax(0,1fr)}
-.listgrid{grid-template-columns:minmax(0,1fr)}
-.listgrid .elfhead+.elfhead{display:none}
-#home{grid-template-columns:minmax(0,1fr);grid-template-areas:"hero" "auto" "tiles";grid-template-rows:auto}
-#shell{grid-template-columns:15.5rem minmax(0,1fr)}
+#home{grid-template-columns:minmax(0,1fr);grid-template-areas:"mine" "quick" "run" "cats" "set"}
+#ml,#fb{grid-template-columns:minmax(0,1fr)}
+.listgrid,.proclist,.plist{grid-template-columns:minmax(0,1fr)}
+.places{grid-template-columns:repeat(auto-fill,minmax(9rem,1fr))}
 }
-/* phone */
-@media(max-width:759px){
-.wrap{padding:var(--s3)}
-.bar{flex-wrap:wrap}
-.brand{width:100%;margin-bottom:var(--s3)}
-.live{order:3;flex:1 1 100%;max-width:none;margin:var(--s3) 0 0}
-.sys{flex:1;justify-content:space-between}
-.sys>*{margin-inline-start:0}
+@media(max-width:860px){
+.wrap{padding:var(--s2) var(--s2) var(--s4)}
+.bar{flex-wrap:wrap;padding:var(--s2)}
+.search{order:5;flex:1 1 100%;max-width:none;margin:var(--s2) 0 0}
+.live{order:6;flex:1 1 auto;max-width:none;margin-top:var(--s2)}
+#runchip{order:7;margin-top:var(--s2)}
+.sys{margin-inline-start:auto}
 #clock{display:none}
-#corner{align-items:flex-start}
-[dir=rtl] #corner{align-items:flex-end}
 #shell{grid-template-columns:minmax(0,1fr)}
 #sidebar{position:static}
 #nav{grid-template-columns:repeat(2,minmax(0,1fr))}
-.navbtn{padding:.2rem .7rem;font-size:.9rem}.navbtn>span:first-child:before{display:none}
-#selfupd,#wkupd{top:.6rem}#selfupd.show~#wkupd.show,#wkupd.show~#selfupd.show{top:5.4rem}
-.menufoot{display:none}
-.foldgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-.stat{padding:var(--s2)}.stat .k{white-space:normal;letter-spacing:0;font-size:.64rem;line-height:1.2;min-height:2.4em;overflow-wrap:anywhere}
-.elf,.elf.nom{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"i n v" "i d d" "a a a"}
-.elf:not(.nom){grid-template-areas:"m n v" "m d d" "a a a"}
-.elf,.elf.nom{grid-template-rows:1fr auto auto}
-.elf .a{margin-top:var(--s2);justify-content:flex-end}
-.elfhead{display:none}
-.stat b{font-size:1.9rem}
-.tiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:4.6rem}
-.tiles .ncount{font-size:1.8rem}
-.hhead h2{font-size:1.5rem}
-.homeChoices button{white-space:normal;font-size:.9rem;line-height:1.15;padding:.3rem .9rem}
-#ml{grid-template-columns:minmax(0,1fr)}
-.plist .elf.dir .a{margin-top:0}
-.mlrow{flex-wrap:wrap}.mlrow .mlin{flex:1 1 100%;margin-bottom:var(--s2)}.mlrow button{flex:1;margin:0}.mlrow button+button{margin-inline-start:var(--s2)}
+.navgrp{grid-column:1/-1}
+.cards{grid-template-columns:minmax(0,1fr)}
+.elf{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"i n v" "i d d" "a a a"}
+.elf .a{margin-top:var(--s2);justify-content:flex-end;flex-wrap:wrap}
+.plist .elf.dir{grid-template-areas:"i n a" "i d a"}.plist .elf.dir .a{margin-top:0}
+.brand h1{font-size:1.25rem}
+#langlist{width:min(22rem,calc(100vw - 1rem))}
 .lg{grid-template-columns:auto minmax(0,1fr)}.lg time{grid-column:2}
+.fbtop{flex-wrap:wrap}.fbtop .mlin{flex:1 1 100%;margin-top:var(--s2);order:3}
 }
+:focus-visible{outline:none}
+
+/* multi-select: the ELF badge is the checkbox */
+.elf.nom.pk:before{display:none}
+.pick{grid-area:i;position:relative;display:flex;align-items:center;justify-content:center;width:2.4rem;height:2.4rem;min-height:0;padding:0;font-size:.62rem;font-weight:800;letter-spacing:.06em;color:var(--pri);background:rgba(124,140,255,.12);border:1px solid transparent;border-radius:9px;box-shadow:none}
+.pick:after{content:"";position:absolute;top:-4px;right:-4px;width:.85rem;height:.85rem;border-radius:50%;background:var(--deck);border:2px solid var(--edge2)}
+.pick:hover,.pick:focus{border-color:var(--pri)}
+.pick.on{color:transparent;background:var(--pri);border-color:var(--pri)}
+.pick.on:before{content:"";position:absolute;left:50%;top:46%;width:.5rem;height:.95rem;border:solid #0b0d14;border-width:0 .2rem .2rem 0;transform:translate(-50%,-50%) rotate(45deg)}
+.pick.on:after{display:none}
+body[data-sel] main{padding-bottom:6.5rem}
+#selbar{display:none;position:fixed;left:50%;bottom:1rem;z-index:40;width:calc(100% - 2rem);max-width:58rem;transform:translateX(-50%);padding:.6rem .75rem;background:rgba(18,22,36,.97);border:1px solid var(--pri);border-radius:var(--r);box-shadow:0 18px 48px rgba(0,0,0,.55)}
+#selbar.show{display:block}
+.selrow{display:flex;flex-wrap:wrap;align-items:center;margin:-.25rem}
+.selrow>*{margin:.25rem}
+.selrow .seln{flex:1 1 auto;font-size:1rem}
+.selrow button{min-width:7rem}
+.selhint{flex:1 0 100%;color:var(--mute);font-size:.75rem}
+.selq{list-style:none;margin:0 0 .55rem;padding:0;max-height:12.5rem;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));grid-gap:.35rem}
+.selq li{display:flex;justify-content:space-between;align-items:center;padding:.35rem .6rem;background:var(--card);border-radius:9px;border-inline-start:3px solid var(--edge2);font-size:.85rem}
+.selq li b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.selq li span{flex:0 0 auto;margin-inline-start:.5rem;color:var(--ink2);font-size:.78rem}
+.selq li[data-st=busy]{border-color:var(--amber)}.selq li[data-st=busy] span{color:var(--amber)}
+.selq li[data-st=ok],.selq li[data-st=added]{border-color:var(--mint)}.selq li[data-st=ok] span,.selq li[data-st=added] span{color:var(--mint)}
+.selq li[data-st=fail]{border-color:var(--bad)}.selq li[data-st=fail] span{color:var(--bad)}
+/* AutoPayload settings rows */
+.optrow{display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;border-top:1px solid var(--edge)}
+.optrow:first-child{border-top:0;padding-top:0}
+.optrow>div:first-child{min-width:0;flex:1 1 auto;margin-inline-end:var(--s3)}
+.optrow b{display:block;font-size:.95rem}
+.optrow small{display:block;margin-top:.15rem;color:var(--mute);font-size:.76rem;line-height:1.35}
+.homeChoices.seg{display:flex;flex:0 0 auto;padding:3px;background:var(--deck);border:1px solid var(--edge);border-radius:999px}
+.homeChoices.seg button{min-width:3.6rem;min-height:2.1rem;padding:.2rem .9rem;border:0;border-radius:999px;background:transparent;box-shadow:none}
+.homeChoices.seg button.selected{background:var(--pri);color:#0b0d14}
+@media (max-width:860px){#selbar{bottom:.5rem;width:calc(100% - 1rem)}.selrow .seln{flex:1 0 100%}.selrow button{flex:1 1 0;min-width:0;padding-left:.4rem;padding-right:.4rem;white-space:normal;font-size:.84rem;line-height:1.15}.optrow{flex-wrap:wrap}}
+[dir=rtl] .pick:after{right:auto;left:-4px}
+[dir=rtl] .search svg{left:auto;right:.9rem}
+a:focus{outline:none;border-radius:6px;box-shadow:var(--ring)}
+.pick:focus{box-shadow:var(--ring)}
+#updov{display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:120;align-items:center;justify-content:center;background:rgba(6,8,14,.82)}
+#updov.show{display:flex}
+#updov>div{max-width:34rem;margin:1rem;padding:1.6rem 1.8rem;text-align:center;background:var(--deck);border:1px solid var(--pri);border-radius:var(--r);box-shadow:0 24px 60px rgba(0,0,0,.6)}
+#updov p{margin:.9rem 0 0;font-size:1.1rem;font-weight:700;line-height:1.4}
+#updov.bad>div{border-color:var(--bad)}#updov.bad .spin{display:none}#updov.bad p{color:var(--bad);margin:0 0 1rem}
+.spin{display:inline-block;width:2.6rem;height:2.6rem;border-radius:50%;border:4px solid rgba(124,140,255,.25);border-top-color:var(--pri);animation:spin 0.9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style></head><body><div class="wrap">
 <header class="bar">
-<div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c3.4 2.3 5.2 5.9 5.2 10v2.6l2.3 3.1V21h-3.8l-1.2-2.3H9.5L8.3 21H4.5v-3.5l2.3-3.1v-2.6c0-4.1 1.8-7.7 5.2-10z" fill="currentColor"/><circle cx="12" cy="9.6" r="2.1" fill="#c8ff3d"/><path d="M10.3 19.6h3.4L12 23z" fill="currentColor"/></svg></span>
-<div><h1><b>ELF</b> Launcher</h1><div class="meta"><span class="ver" id="appVer"></span><a class="by" id="credit" href="https://github.com/X-F1REBALL-X" target="_blank" rel="noopener">Developed by X-F1REBALL-X</a></div></div></div>
+<div class="brand"><span class="logo"><img src="icons/launcher-home.jpg?v=8" alt="" width="46" height="46"></span>
+<div><h1>ELF <b>Launcher</b></h1><div class="meta"><span class="ver" id="appVer"></span><a class="by" id="credit" href="https://github.com/X-F1REBALL-X" target="_blank" rel="noopener">Developed by X-F1REBALL-X</a></div></div></div>
+<div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Search payloads" aria-label="Search"></div>
 <div class="live"><i></i><p id="status" data-i18n="ready">Ready</p></div>
+<button type="button" id="runchip" style="display:none"><i></i><span data-i18n="running">Running</span><span class="ncount" id="runn">0</span></button>
 <div class="sys">
 <div id="corner"><span id="deviceinfo" class="ps5mark">PS5</span><span id="deviceip" data-state="looking">looking...</span></div>
 <div id="clock"><b id="clk-time">00:00:00</b><span id="clk-date"></span></div>
@@ -350,6 +390,9 @@ html{font-size:13px;font-size:clamp(12px,min(1.04vw,1.9vh),26px)}
 </div>
 </header>
 <div id="autobanner" role="alertdialog"><div><p id="autobannertext">AutoPayload</p><small id="autobannerhint" data-i18n="cancelHint">Press Cancel or Square to stop.</small></div><button type="button" id="autobannercancel" data-i18n="cancel">Cancel</button></div>
+<div id="selbar" role="region" aria-live="polite"></div>
+<div id="updov" role="alertdialog" aria-live="assertive"></div>
+<div id="modal" role="alertdialog" aria-modal="true"><p id="modalt"></p><small id="modals"></small><div class="acts"><button type="button" id="modalno">Cancel</button><button type="button" id="modalok">OK</button></div></div>
 <div id="wkupd" role="status"><p id="wkupdtxt"></p><div class="acts"><button type="button" id="wkupddl">Update</button><button type="button" id="wkupdx">Later</button></div></div>
 <div id="selfupd" role="status"><p id="selfupdtxt"></p><div class="acts"><button type="button" id="selfupddl" data-i18n="update">Update</button><button type="button" id="selfupdx" data-i18n="selfUpdateLater">Later</button></div></div>
 <div id="shell">
@@ -362,7 +405,7 @@ html{font-size:13px;font-size:clamp(12px,min(1.04vw,1.9vh),26px)}
 <main id="main">
 <div id="home" class="show"></div>
 <section class="panel" id="viewpanel">
-<div id="hdr"><h2 id="ftitle" class="label"></h2></div>
+<div id="hdr"><h2 id="ftitle" class="label"></h2><div id="hdrx"></div></div>
 <div id="progwrap" aria-hidden="true"><div id="progbar"></div></div>
 <div id="view"></div>
 </section>
@@ -375,9 +418,27 @@ html{font-size:13px;font-size:clamp(12px,min(1.04vw,1.9vh),26px)}
    changes without it, so other sites cannot trigger them) and time out. */
 var nativeFetch=window.fetch ? window.fetch.bind(window) : null;
 function apiTimeoutMs(u){ return /^\/(update|catalog_fetch)\b/.test(u) ? 180000 : 15000; }
-if(nativeFetch) window.fetch=function(url, opts){
+function xhrFetch(u, o){
+  return new Promise(function(res, rej){
+    var x=new XMLHttpRequest(), k;
+    try{ x.open(String(o.method||'GET').toUpperCase(), u, true); }catch(e){ rej(e); return; }
+    for(k in o.headers){ if(o.headers.hasOwnProperty(k)) try{ x.setRequestHeader(k, o.headers[k]); }catch(e1){} }
+    if(o.signal && o.signal.addEventListener) o.signal.addEventListener('abort', function(){ try{ x.abort(); }catch(e2){} });
+    x.onload=function(){
+      var txt=x.responseText||'';
+      res({ok:x.status>=200 && x.status<300, status:x.status, statusText:x.statusText, url:u,
+        headers:{get:function(n){ return x.getResponseHeader(n); }},
+        text:function(){ return Promise.resolve(txt); },
+        json:function(){ return new Promise(function(ok, bad){ try{ ok(JSON.parse(txt)); }catch(e3){ bad(e3); } }); }});
+    };
+    x.onerror=function(){ rej(new TypeError('Network error')); };
+    x.onabort=function(){ rej(new TypeError('Aborted')); };
+    x.send(o.body==null ? null : o.body);
+  });
+}
+window.fetch=function(url, opts){
   var u=(typeof url==='string') ? url : '';
-  if(!(u.charAt(0)==='/' && u.charAt(1)!=='/')) return nativeFetch(url, opts);
+  if(!(u.charAt(0)==='/' && u.charAt(1)!=='/')){ if(nativeFetch) return nativeFetch(url, opts); return xhrFetch(u, opts||{}); }
   var o={}, k, h={}, ctrl=null, ms=apiTimeoutMs(u);
   opts=opts||{};
   for(k in opts){ if(opts.hasOwnProperty(k)) o[k]=opts[k]; }
@@ -391,7 +452,7 @@ if(nativeFetch) window.fetch=function(url, opts){
       try{ if(ctrl) ctrl.abort(); }catch(e1){}
       var er=new Error(t('errTimeout')); er.name='TimeoutError'; rej(er);
     }, ms);
-    nativeFetch(u, o).then(function(r){ if(over) return; over=true; clearTimeout(tm); res(r); },
+    xhrFetch(u, o).then(function(r){ if(over) return; over=true; clearTimeout(tm); res(r); },
       function(e){ if(over) return; over=true; clearTimeout(tm); rej(e); });
   });
 };
@@ -781,6 +842,8 @@ it:{
 };
 var LANG='en';
 function langInfo(code){ var i; for(i=0;i<LANGS.length;i++){ if(LANGS[i].code===code) return LANGS[i]; } return LANGS[0]; }
+var I18N_UI3={"en": {"library": "Library", "allPayloads": "All payloads", "consoleGrp": "Console", "running": "Running", "ps5Files": "PS5 files", "mineDesc": "Projects by X-F1REBALL-X: one press to download or load.", "quick": "Quick launch", "quickEmpty": "Payloads you load or download show up here.", "manage": "Manage", "categories": "Categories", "searchPh": "Search payloads", "searchResults": "Results for \u201c{q}\u201d", "noResults": "Nothing matches your search.", "killBtn": "Kill", "killConfirm": "Kill {name} (pid {pid})?", "killHint": "It stops right away. Anything it was doing is lost.", "killed": "{name} stopped", "killFail": "Could not stop {name}: {msg}", "thisLauncher": "This launcher", "protectedProc": "Protected", "noRunning": "No payloads running", "refresh": "Refresh", "showAll": "Show all processes", "runHint": "Payloads running on the console right now. The launcher and the loader cannot be killed here.", "memMb": "{n} MB", "downloadsDir": "Downloads", "emptyDir": "This folder is empty.", "browsePs5": "Browse PS5 files", "selectOne": "Select", "selectAll": "Select all", "selN": "{n} selected", "selProgress": "{a} of {b} done", "loadAll": "Load all", "clearSel": "Clear", "selDone": "Done", "qWait": "Waiting", "qSend": "Sending\u2026", "qOk": "Loaded", "qOkPid": "Loaded \u00b7 pid {n}", "qAdded": "Added", "qFail": "Failed: {msg}", "selFinished": "{a} of {b} done", "pickHintPad": "Tap the ELF badge to pick a payload. \u25b3 picks the focused one.", "filesAdded": "{n} files added to the selection", "openAfterJb": "Open this page after jailbreak", "openAfterJbHint": "The launcher keeps running on :1000 either way. Open it from its home tile any time.", "yes": "Yes", "no": "No", "startDelay": "Start delay", "startDelayHint": "Wait before AutoPayload starts. Square cancels.", "autoCountN": "{n} payloads load automatically", "autoListHint": "Marked payloads run once after each jailbreak.", "editList": "Edit list", "selfSwitching": "Updating\u2026 the new launcher is starting", "selfReloading": "Updated. Reloading\u2026", "selfTimeout": "The new launcher did not answer in time. Try Update again, or re-run the jailbreak.", "closeBtn": "Close"}, "he": {"library": "\u05e1\u05e4\u05e8\u05d9\u05d9\u05d4", "allPayloads": "\u05db\u05dc \u05d4\u05e4\u05d9\u05d9\u05dc\u05d5\u05d3\u05d9\u05dd", "consoleGrp": "\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4", "running": "\u05e8\u05e6\u05d9\u05dd \u05e2\u05db\u05e9\u05d9\u05d5", "ps5Files": "\u05e7\u05d1\u05e6\u05d9 PS5", "mineDesc": "\u05d4\u05e4\u05e8\u05d5\u05d9\u05e7\u05d8\u05d9\u05dd \u05e9\u05dc X-F1REBALL-X: \u05dc\u05d7\u05d9\u05e6\u05d4 \u05d0\u05d7\u05ea \u05dc\u05d4\u05d5\u05e8\u05d3\u05d4 \u05d0\u05d5 \u05dc\u05d8\u05e2\u05d9\u05e0\u05d4.", "quick": "\u05d4\u05e4\u05e2\u05dc\u05d4 \u05de\u05d4\u05d9\u05e8\u05d4", "quickEmpty": "\u05e4\u05d9\u05d9\u05dc\u05d5\u05d3\u05d9\u05dd \u05e9\u05d8\u05e2\u05e0\u05ea \u05d0\u05d5 \u05d4\u05d5\u05e8\u05d3\u05ea \u05d9\u05d5\u05e4\u05d9\u05e2\u05d5 \u05db\u05d0\u05df.", "manage": "\u05e0\u05d9\u05d4\u05d5\u05dc", "categories": "\u05e7\u05d8\u05d2\u05d5\u05e8\u05d9\u05d5\u05ea", "searchPh": "\u05d7\u05d9\u05e4\u05d5\u05e9 \u05e4\u05d9\u05d9\u05dc\u05d5\u05d3\u05d9\u05dd", "searchResults": "\u05ea\u05d5\u05e6\u05d0\u05d5\u05ea \u05e2\u05d1\u05d5\u05e8 \u201e{q}\u201d", "noResults": "\u05d0\u05d9\u05df \u05ea\u05d5\u05e6\u05d0\u05d5\u05ea \u05dc\u05d7\u05d9\u05e4\u05d5\u05e9.", "killBtn": "\u05e1\u05d2\u05d5\u05e8", "killConfirm": "\u05dc\u05e1\u05d2\u05d5\u05e8 \u05d0\u05ea {name} (pid {pid})?", "killHint": "\u05d4\u05d5\u05d0 \u05d9\u05d9\u05e2\u05e6\u05e8 \u05de\u05d9\u05d3, \u05d5\u05db\u05dc \u05de\u05d4 \u05e9\u05e2\u05e9\u05d4 \u05d9\u05d0\u05d1\u05d3.", "killed": "{name} \u05e0\u05e1\u05d2\u05e8", "killFail": "\u05dc\u05d0 \u05d4\u05e6\u05dc\u05d7\u05ea\u05d9 \u05dc\u05e1\u05d2\u05d5\u05e8 \u05d0\u05ea {name}: {msg}", "thisLauncher": "\u05d4\u05dc\u05d0\u05e0\u05e6\u05f3\u05e8 \u05d4\u05d6\u05d4", "protectedProc": "\u05de\u05d5\u05d2\u05df", "noRunning": "\u05d0\u05d9\u05df \u05e4\u05d9\u05d9\u05dc\u05d5\u05d3\u05d9\u05dd \u05e9\u05e8\u05e6\u05d9\u05dd", "refresh": "\u05e8\u05e2\u05e0\u05d5\u05df", "showAll": "\u05d4\u05e6\u05d2 \u05d0\u05ea \u05db\u05dc \u05d4\u05ea\u05d4\u05dc\u05d9\u05db\u05d9\u05dd", "runHint": "\u05e4\u05d9\u05d9\u05dc\u05d5\u05d3\u05d9\u05dd \u05e9\u05e8\u05e6\u05d9\u05dd \u05e2\u05db\u05e9\u05d9\u05d5 \u05d1\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4. \u05d0\u05ea \u05d4\u05dc\u05d0\u05e0\u05e6\u05f3\u05e8 \u05d5\u05d0\u05ea \u05d4\u05dc\u05d5\u05d0\u05d3\u05e8 \u05d0\u05d9 \u05d0\u05e4\u05e9\u05e8 \u05dc\u05e1\u05d2\u05d5\u05e8 \u05de\u05db\u05d0\u05df.", "memMb": "{n} MB", "downloadsDir": "\u05d4\u05d5\u05e8\u05d3\u05d5\u05ea", "emptyDir": "\u05d4\u05ea\u05d9\u05e7\u05d9\u05d9\u05d4 \u05e8\u05d9\u05e7\u05d4.", "browsePs5": "\u05e2\u05d9\u05d5\u05df \u05d1\u05e7\u05d1\u05e6\u05d9 PS5", "selectOne": "\u05d1\u05d7\u05d9\u05e8\u05d4", "selectAll": "\u05d1\u05d7\u05e8 \u05d4\u05db\u05dc", "selN": "{n} \u05e0\u05d1\u05d7\u05e8\u05d5", "selProgress": "{a} \u05de\u05ea\u05d5\u05da {b} \u05d4\u05d5\u05e9\u05dc\u05de\u05d5", "loadAll": "\u05d8\u05e2\u05df \u05d4\u05db\u05dc", "clearSel": "\u05e0\u05e7\u05d4", "selDone": "\u05e1\u05d9\u05d5\u05dd", "qWait": "\u05de\u05de\u05ea\u05d9\u05df", "qSend": "\u05e9\u05d5\u05dc\u05d7\u2026", "qOk": "\u05e0\u05d8\u05e2\u05df", "qOkPid": "\u05e0\u05d8\u05e2\u05df \u00b7 pid {n}", "qAdded": "\u05e0\u05d5\u05e1\u05e3", "qFail": "\u05e0\u05db\u05e9\u05dc: {msg}", "selFinished": "{a} \u05de\u05ea\u05d5\u05da {b} \u05d4\u05d5\u05e9\u05dc\u05de\u05d5", "pickHintPad": "\u05d4\u05e7\u05e9 \u05e2\u05dc \u05ea\u05d2 \u05d4-ELF \u05db\u05d3\u05d9 \u05dc\u05d1\u05d7\u05d5\u05e8 \u05e4\u05d9\u05d9\u05dc\u05d5\u05d3. \u25b3 \u05d1\u05d5\u05d7\u05e8 \u05d0\u05ea \u05d4\u05de\u05de\u05d5\u05e7\u05d3.", "filesAdded": "{n} \u05e7\u05d1\u05e6\u05d9\u05dd \u05e0\u05d5\u05e1\u05e4\u05d5 \u05dc\u05d1\u05d7\u05d9\u05e8\u05d4", "openAfterJb": "\u05dc\u05e4\u05ea\u05d5\u05d7 \u05d0\u05ea \u05d4\u05d3\u05e3 \u05d0\u05d7\u05e8\u05d9 \u05e4\u05e8\u05d9\u05e6\u05d4", "openAfterJbHint": "\u05d4\u05de\u05e9\u05d2\u05e8 \u05de\u05de\u05e9\u05d9\u05da \u05dc\u05e8\u05d5\u05e5 \u05e2\u05dc :1000 \u05d1\u05db\u05dc \u05de\u05e7\u05e8\u05d4. \u05d0\u05e4\u05e9\u05e8 \u05dc\u05e4\u05ea\u05d5\u05d7 \u05d0\u05d5\u05ea\u05d5 \u05de\u05d4\u05d0\u05e8\u05d9\u05d7 \u05d1\u05de\u05e1\u05da \u05d4\u05d1\u05d9\u05ea \u05d1\u05db\u05dc \u05d6\u05de\u05df.", "yes": "\u05db\u05df", "no": "\u05dc\u05d0", "startDelay": "\u05d4\u05e9\u05d4\u05d9\u05d9\u05ea \u05d4\u05ea\u05d7\u05dc\u05d4", "startDelayHint": "\u05d6\u05de\u05df \u05d4\u05de\u05ea\u05e0\u05d4 \u05dc\u05e4\u05e0\u05d9 \u05e9-AutoPayload \u05de\u05ea\u05d7\u05d9\u05dc. \u05e8\u05d9\u05d1\u05d5\u05e2 \u05de\u05d1\u05d8\u05dc.", "autoCountN": "{n} \u05e4\u05d9\u05d9\u05dc\u05d5\u05d3\u05d9\u05dd \u05e0\u05d8\u05e2\u05e0\u05d9\u05dd \u05d0\u05d5\u05d8\u05d5\u05de\u05d8\u05d9\u05ea", "autoListHint": "\u05e4\u05d9\u05d9\u05dc\u05d5\u05d3\u05d9\u05dd \u05de\u05e1\u05d5\u05de\u05e0\u05d9\u05dd \u05e8\u05e6\u05d9\u05dd \u05e4\u05e2\u05dd \u05d0\u05d7\u05ea \u05d0\u05d7\u05e8\u05d9 \u05db\u05dc \u05e4\u05e8\u05d9\u05e6\u05d4.", "editList": "\u05e2\u05e8\u05d9\u05db\u05ea \u05e8\u05e9\u05d9\u05de\u05d4", "selfSwitching": "\u05de\u05e2\u05d3\u05db\u05df\u2026 \u05d4\u05de\u05e9\u05d2\u05e8 \u05d4\u05d7\u05d3\u05e9 \u05e2\u05d5\u05dc\u05d4", "selfReloading": "\u05e2\u05d5\u05d3\u05db\u05df. \u05d8\u05d5\u05e2\u05df \u05de\u05d7\u05d3\u05e9\u2026", "selfTimeout": "\u05d4\u05de\u05e9\u05d2\u05e8 \u05d4\u05d7\u05d3\u05e9 \u05dc\u05d0 \u05e2\u05e0\u05d4 \u05d1\u05d6\u05de\u05df. \u05e0\u05e1\u05d4 \u05dc\u05e2\u05d3\u05db\u05df \u05e9\u05d5\u05d1, \u05d0\u05d5 \u05d4\u05e8\u05e5 \u05e9\u05d5\u05d1 \u05d0\u05ea \u05d4\u05e4\u05e8\u05d9\u05e6\u05d4.", "closeBtn": "\u05e1\u05d2\u05d5\u05e8"}, "ar": {"library": "\u0627\u0644\u0645\u0643\u062a\u0628\u0629", "allPayloads": "\u0643\u0644 \u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a", "consoleGrp": "\u0627\u0644\u062c\u0647\u0627\u0632", "running": "\u0642\u064a\u062f \u0627\u0644\u062a\u0634\u063a\u064a\u0644", "ps5Files": "\u0645\u0644\u0641\u0627\u062a PS5", "mineDesc": "\u0645\u0634\u0627\u0631\u064a\u0639 X-F1REBALL-X: \u0636\u063a\u0637\u0629 \u0648\u0627\u062d\u062f\u0629 \u0644\u0644\u062a\u0646\u0632\u064a\u0644 \u0623\u0648 \u0627\u0644\u062a\u0634\u063a\u064a\u0644.", "quick": "\u062a\u0634\u063a\u064a\u0644 \u0633\u0631\u064a\u0639", "quickEmpty": "\u0633\u062a\u0638\u0647\u0631 \u0647\u0646\u0627 \u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a \u0627\u0644\u062a\u064a \u062a\u0634\u063a\u0651\u0644\u0647\u0627 \u0623\u0648 \u062a\u0646\u0632\u0651\u0644\u0647\u0627.", "manage": "\u0625\u062f\u0627\u0631\u0629", "categories": "\u0627\u0644\u0641\u0626\u0627\u062a", "searchPh": "\u0627\u0628\u062d\u062b \u0641\u064a \u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a", "searchResults": "\u0646\u062a\u0627\u0626\u062c \u00ab{q}\u00bb", "noResults": "\u0644\u0627 \u062a\u0648\u062c\u062f \u0646\u062a\u0627\u0626\u062c.", "killBtn": "\u0625\u064a\u0642\u0627\u0641", "killConfirm": "\u0625\u064a\u0642\u0627\u0641 {name} (pid {pid})\u061f", "killHint": "\u0633\u064a\u062a\u0648\u0642\u0641 \u0641\u0648\u0631\u064b\u0627 \u0648\u064a\u0636\u064a\u0639 \u0643\u0644 \u0645\u0627 \u0643\u0627\u0646 \u064a\u0641\u0639\u0644\u0647.", "killed": "\u062a\u0645 \u0625\u064a\u0642\u0627\u0641 {name}", "killFail": "\u062a\u0639\u0630\u0651\u0631 \u0625\u064a\u0642\u0627\u0641 {name}: {msg}", "thisLauncher": "\u0647\u0630\u0627 \u0627\u0644\u0645\u0634\u063a\u0651\u0644", "protectedProc": "\u0645\u062d\u0645\u064a", "noRunning": "\u0644\u0627 \u062a\u0648\u062c\u062f \u062d\u0645\u0648\u0644\u0627\u062a \u0642\u064a\u062f \u0627\u0644\u062a\u0634\u063a\u064a\u0644", "refresh": "\u062a\u062d\u062f\u064a\u062b", "showAll": "\u0639\u0631\u0636 \u0643\u0644 \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a", "runHint": "\u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a \u0627\u0644\u062a\u064a \u062a\u0639\u0645\u0644 \u0627\u0644\u0622\u0646 \u0639\u0644\u0649 \u0627\u0644\u062c\u0647\u0627\u0632. \u0644\u0627 \u064a\u0645\u0643\u0646 \u0625\u064a\u0642\u0627\u0641 \u0627\u0644\u0645\u0634\u063a\u0651\u0644 \u0648\u0627\u0644\u0645\u062d\u0645\u0651\u0644 \u0645\u0646 \u0647\u0646\u0627.", "memMb": "{n} MB", "downloadsDir": "\u0627\u0644\u062a\u0646\u0632\u064a\u0644\u0627\u062a", "emptyDir": "\u0647\u0630\u0627 \u0627\u0644\u0645\u062c\u0644\u062f \u0641\u0627\u0631\u063a.", "browsePs5": "\u062a\u0635\u0641\u062d \u0645\u0644\u0641\u0627\u062a PS5", "selectOne": "\u062a\u062d\u062f\u064a\u062f", "selectAll": "\u062a\u062d\u062f\u064a\u062f \u0627\u0644\u0643\u0644", "selN": "\u062a\u0645 \u062a\u062d\u062f\u064a\u062f {n}", "selProgress": "\u0627\u0643\u062a\u0645\u0644 {a} \u0645\u0646 {b}", "loadAll": "\u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0643\u0644", "clearSel": "\u0645\u0633\u062d", "selDone": "\u062a\u0645", "qWait": "\u0628\u0627\u0646\u062a\u0638\u0627\u0631", "qSend": "\u062c\u0627\u0631\u064d \u0627\u0644\u0625\u0631\u0633\u0627\u0644\u2026", "qOk": "\u062a\u0645 \u0627\u0644\u062a\u062d\u0645\u064a\u0644", "qOkPid": "\u062a\u0645 \u0627\u0644\u062a\u062d\u0645\u064a\u0644 \u00b7 pid {n}", "qAdded": "\u0623\u064f\u0636\u064a\u0641", "qFail": "\u0641\u0634\u0644: {msg}", "selFinished": "\u0627\u0643\u062a\u0645\u0644 {a} \u0645\u0646 {b}", "pickHintPad": "\u0627\u0636\u063a\u0637 \u0634\u0627\u0631\u0629 ELF \u0644\u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u062d\u0645\u0648\u0644\u0629. \u25b3 \u064a\u062e\u062a\u0627\u0631 \u0627\u0644\u0639\u0646\u0635\u0631 \u0627\u0644\u0645\u062d\u062f\u062f.", "filesAdded": "\u0623\u064f\u0636\u064a\u0641 {n} \u0645\u0644\u0641\u0627\u062a \u0625\u0644\u0649 \u0627\u0644\u062a\u062d\u062f\u064a\u062f", "openAfterJb": "\u0641\u062a\u062d \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629 \u0628\u0639\u062f \u0643\u0633\u0631 \u0627\u0644\u062d\u0645\u0627\u064a\u0629", "openAfterJbHint": "\u064a\u0628\u0642\u0649 \u0627\u0644\u0645\u0634\u063a\u0651\u0644 \u064a\u0639\u0645\u0644 \u0639\u0644\u0649 :1000 \u0641\u064a \u0643\u0644 \u0627\u0644\u0623\u062d\u0648\u0627\u0644. \u0627\u0641\u062a\u062d\u0647 \u0645\u0646 \u0623\u064a\u0642\u0648\u0646\u062a\u0647 \u0641\u064a \u0627\u0644\u0634\u0627\u0634\u0629 \u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629 \u0645\u062a\u0649 \u0634\u0626\u062a.", "yes": "\u0646\u0639\u0645", "no": "\u0644\u0627", "startDelay": "\u0645\u0647\u0644\u0629 \u0627\u0644\u0628\u062f\u0621", "startDelayHint": "\u0627\u0644\u0627\u0646\u062a\u0638\u0627\u0631 \u0642\u0628\u0644 \u0628\u062f\u0621 AutoPayload. \u0627\u0644\u0645\u0631\u0628\u0639 \u064a\u0644\u063a\u064a.", "autoCountN": "{n} \u062d\u0645\u0648\u0644\u0627\u062a \u062a\u064f\u062d\u0645\u064e\u0651\u0644 \u062a\u0644\u0642\u0627\u0626\u064a\u064b\u0627", "autoListHint": "\u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a \u0627\u0644\u0645\u062d\u062f\u062f\u0629 \u062a\u0639\u0645\u0644 \u0645\u0631\u0629 \u0628\u0639\u062f \u0643\u0644 \u0643\u0633\u0631 \u062d\u0645\u0627\u064a\u0629.", "editList": "\u062a\u0639\u062f\u064a\u0644 \u0627\u0644\u0642\u0627\u0626\u0645\u0629", "selfSwitching": "\u062c\u0627\u0631\u064d \u0627\u0644\u062a\u062d\u062f\u064a\u062b\u2026 \u0627\u0644\u0645\u0634\u063a\u0651\u0644 \u0627\u0644\u062c\u062f\u064a\u062f \u064a\u0628\u062f\u0623", "selfReloading": "\u062a\u0645 \u0627\u0644\u062a\u062d\u062f\u064a\u062b. \u0625\u0639\u0627\u062f\u0629 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026", "selfTimeout": "\u0644\u0645 \u064a\u0633\u062a\u062c\u0628 \u0627\u0644\u0645\u0634\u063a\u0651\u0644 \u0627\u0644\u062c\u062f\u064a\u062f \u0641\u064a \u0627\u0644\u0648\u0642\u062a \u0627\u0644\u0645\u062d\u062f\u062f. \u062d\u0627\u0648\u0644 \u0627\u0644\u062a\u062d\u062f\u064a\u062b \u0645\u062c\u062f\u062f\u064b\u0627 \u0623\u0648 \u0623\u0639\u062f \u0643\u0633\u0631 \u0627\u0644\u062d\u0645\u0627\u064a\u0629.", "closeBtn": "\u0625\u063a\u0644\u0627\u0642"}, "es": {"library": "Biblioteca", "allPayloads": "Todos los payloads", "consoleGrp": "Consola", "running": "En ejecuci\u00f3n", "ps5Files": "Archivos de la PS5", "mineDesc": "Proyectos de X-F1REBALL-X: un toque para descargar o cargar.", "quick": "Inicio r\u00e1pido", "quickEmpty": "Aqu\u00ed aparecen los payloads que cargas o descargas.", "manage": "Gestionar", "categories": "Categor\u00edas", "searchPh": "Buscar payloads", "searchResults": "Resultados de \u201c{q}\u201d", "noResults": "No hay resultados.", "killBtn": "Cerrar", "killConfirm": "\u00bfCerrar {name} (pid {pid})?", "killHint": "Se detiene al instante y se pierde lo que estaba haciendo.", "killed": "{name} cerrado", "killFail": "No se pudo cerrar {name}: {msg}", "thisLauncher": "Este launcher", "protectedProc": "Protegido", "noRunning": "No hay payloads en ejecuci\u00f3n", "refresh": "Actualizar", "showAll": "Mostrar todos los procesos", "runHint": "Payloads que se ejecutan ahora en la consola. El launcher y el loader no se pueden cerrar desde aqu\u00ed.", "memMb": "{n} MB", "downloadsDir": "Descargas", "emptyDir": "Esta carpeta est\u00e1 vac\u00eda.", "browsePs5": "Explorar archivos de la PS5", "selectOne": "Seleccionar", "selectAll": "Seleccionar todo", "selN": "{n} seleccionados", "selProgress": "{a} de {b} listos", "loadAll": "Cargar todo", "clearSel": "Limpiar", "selDone": "Listo", "qWait": "En espera", "qSend": "Enviando\u2026", "qOk": "Cargado", "qOkPid": "Cargado \u00b7 pid {n}", "qAdded": "A\u00f1adido", "qFail": "Error: {msg}", "selFinished": "{a} de {b} listos", "pickHintPad": "Toca la insignia ELF para elegir un payload. \u25b3 elige el enfocado.", "filesAdded": "{n} archivos a\u00f1adidos a la selecci\u00f3n", "openAfterJb": "Abrir esta p\u00e1gina tras el jailbreak", "openAfterJbHint": "El launcher sigue activo en :1000 de todos modos. \u00c1brelo desde su icono cuando quieras.", "yes": "S\u00ed", "no": "No", "startDelay": "Retraso de inicio", "startDelayHint": "Espera antes de que empiece AutoPayload. Cuadrado cancela.", "autoCountN": "{n} payloads se cargan solos", "autoListHint": "Los payloads marcados se ejecutan una vez tras cada jailbreak.", "editList": "Editar lista", "selfSwitching": "Actualizando\u2026 el nuevo launcher est\u00e1 arrancando", "selfReloading": "Actualizado. Recargando\u2026", "selfTimeout": "El nuevo launcher no respondi\u00f3 a tiempo. Prueba a actualizar otra vez o repite el jailbreak.", "closeBtn": "Cerrar"}, "fr": {"library": "Biblioth\u00e8que", "allPayloads": "Tous les payloads", "consoleGrp": "Console", "running": "En cours", "ps5Files": "Fichiers PS5", "mineDesc": "Projets de X-F1REBALL-X : un appui pour t\u00e9l\u00e9charger ou charger.", "quick": "Lancement rapide", "quickEmpty": "Les payloads charg\u00e9s ou t\u00e9l\u00e9charg\u00e9s apparaissent ici.", "manage": "G\u00e9rer", "categories": "Cat\u00e9gories", "searchPh": "Rechercher des payloads", "searchResults": "R\u00e9sultats pour \u00ab {q} \u00bb", "noResults": "Aucun r\u00e9sultat.", "killBtn": "Arr\u00eater", "killConfirm": "Arr\u00eater {name} (pid {pid}) ?", "killHint": "Il s\u2019arr\u00eate tout de suite et son travail en cours est perdu.", "killed": "{name} arr\u00eat\u00e9", "killFail": "Impossible d\u2019arr\u00eater {name} : {msg}", "thisLauncher": "Ce launcher", "protectedProc": "Prot\u00e9g\u00e9", "noRunning": "Aucun payload en cours", "refresh": "Actualiser", "showAll": "Afficher tous les processus", "runHint": "Payloads qui tournent maintenant sur la console. Le launcher et le loader ne peuvent pas \u00eatre arr\u00eat\u00e9s ici.", "memMb": "{n} Mo", "downloadsDir": "T\u00e9l\u00e9chargements", "emptyDir": "Ce dossier est vide.", "browsePs5": "Parcourir les fichiers PS5", "selectOne": "S\u00e9lectionner", "selectAll": "Tout s\u00e9lectionner", "selN": "{n} s\u00e9lectionn\u00e9s", "selProgress": "{a} sur {b} termin\u00e9s", "loadAll": "Tout charger", "clearSel": "Effacer", "selDone": "Termin\u00e9", "qWait": "En attente", "qSend": "Envoi\u2026", "qOk": "Charg\u00e9", "qOkPid": "Charg\u00e9 \u00b7 pid {n}", "qAdded": "Ajout\u00e9", "qFail": "\u00c9chec : {msg}", "selFinished": "{a} sur {b} termin\u00e9s", "pickHintPad": "Touchez le badge ELF pour choisir un payload. \u25b3 choisit celui en focus.", "filesAdded": "{n} fichiers ajout\u00e9s \u00e0 la s\u00e9lection", "openAfterJb": "Ouvrir cette page apr\u00e8s le jailbreak", "openAfterJbHint": "Le launcher reste actif sur :1000 dans tous les cas. Ouvrez-le depuis sa tuile \u00e0 tout moment.", "yes": "Oui", "no": "Non", "startDelay": "D\u00e9lai de d\u00e9part", "startDelayHint": "Attente avant le d\u00e9but d\u2019AutoPayload. Carr\u00e9 annule.", "autoCountN": "{n} payloads se chargent seuls", "autoListHint": "Les payloads coch\u00e9s se lancent une fois apr\u00e8s chaque jailbreak.", "editList": "Modifier la liste", "selfSwitching": "Mise \u00e0 jour\u2026 le nouveau launcher d\u00e9marre", "selfReloading": "Mis \u00e0 jour. Rechargement\u2026", "selfTimeout": "Le nouveau launcher n\u2019a pas r\u00e9pondu \u00e0 temps. R\u00e9essayez la mise \u00e0 jour ou relancez le jailbreak.", "closeBtn": "Fermer"}, "de": {"library": "Bibliothek", "allPayloads": "Alle Payloads", "consoleGrp": "Konsole", "running": "L\u00e4uft", "ps5Files": "PS5-Dateien", "mineDesc": "Projekte von X-F1REBALL-X: ein Druck zum Laden oder Herunterladen.", "quick": "Schnellstart", "quickEmpty": "Geladene oder heruntergeladene Payloads erscheinen hier.", "manage": "Verwalten", "categories": "Kategorien", "searchPh": "Payloads suchen", "searchResults": "Ergebnisse f\u00fcr \u201e{q}\u201c", "noResults": "Keine Treffer.", "killBtn": "Beenden", "killConfirm": "{name} (pid {pid}) beenden?", "killHint": "Er stoppt sofort, laufende Arbeit geht verloren.", "killed": "{name} beendet", "killFail": "{name} konnte nicht beendet werden: {msg}", "thisLauncher": "Dieser Launcher", "protectedProc": "Gesch\u00fctzt", "noRunning": "Keine Payloads aktiv", "refresh": "Aktualisieren", "showAll": "Alle Prozesse zeigen", "runHint": "Payloads, die gerade auf der Konsole laufen. Launcher und Loader lassen sich hier nicht beenden.", "memMb": "{n} MB", "downloadsDir": "Downloads", "emptyDir": "Dieser Ordner ist leer.", "browsePs5": "PS5-Dateien durchsuchen", "selectOne": "Ausw\u00e4hlen", "selectAll": "Alle ausw\u00e4hlen", "selN": "{n} ausgew\u00e4hlt", "selProgress": "{a} von {b} fertig", "loadAll": "Alle laden", "clearSel": "Leeren", "selDone": "Fertig", "qWait": "Wartet", "qSend": "Sende\u2026", "qOk": "Geladen", "qOkPid": "Geladen \u00b7 pid {n}", "qAdded": "Hinzugef\u00fcgt", "qFail": "Fehler: {msg}", "selFinished": "{a} von {b} fertig", "pickHintPad": "Tippe auf das ELF-Abzeichen, um einen Payload zu w\u00e4hlen. \u25b3 w\u00e4hlt den fokussierten.", "filesAdded": "{n} Dateien zur Auswahl hinzugef\u00fcgt", "openAfterJb": "Seite nach dem Jailbreak \u00f6ffnen", "openAfterJbHint": "Der Launcher l\u00e4uft auf :1000 so oder so weiter. \u00d6ffne ihn jederzeit \u00fcber seine Kachel.", "yes": "Ja", "no": "Nein", "startDelay": "Startverz\u00f6gerung", "startDelayHint": "Wartezeit, bevor AutoPayload startet. Quadrat bricht ab.", "autoCountN": "{n} Payloads laden automatisch", "autoListHint": "Markierte Payloads laufen einmal nach jedem Jailbreak.", "editList": "Liste bearbeiten", "selfSwitching": "Update\u2026 der neue Launcher startet", "selfReloading": "Aktualisiert. Lade neu\u2026", "selfTimeout": "Der neue Launcher hat nicht rechtzeitig geantwortet. Update erneut versuchen oder Jailbreak neu starten.", "closeBtn": "Schlie\u00dfen"}, "pt": {"library": "Biblioteca", "allPayloads": "Todos os payloads", "consoleGrp": "Console", "running": "Em execu\u00e7\u00e3o", "ps5Files": "Arquivos do PS5", "mineDesc": "Projetos de X-F1REBALL-X: um toque para baixar ou carregar.", "quick": "In\u00edcio r\u00e1pido", "quickEmpty": "Os payloads que voc\u00ea carrega ou baixa aparecem aqui.", "manage": "Gerenciar", "categories": "Categorias", "searchPh": "Buscar payloads", "searchResults": "Resultados para \u201c{q}\u201d", "noResults": "Nenhum resultado.", "killBtn": "Encerrar", "killConfirm": "Encerrar {name} (pid {pid})?", "killHint": "Ele para na hora e o que estava fazendo se perde.", "killed": "{name} encerrado", "killFail": "N\u00e3o foi poss\u00edvel encerrar {name}: {msg}", "thisLauncher": "Este launcher", "protectedProc": "Protegido", "noRunning": "Nenhum payload em execu\u00e7\u00e3o", "refresh": "Atualizar", "showAll": "Mostrar todos os processos", "runHint": "Payloads rodando agora no console. O launcher e o loader n\u00e3o podem ser encerrados aqui.", "memMb": "{n} MB", "downloadsDir": "Downloads", "emptyDir": "Esta pasta est\u00e1 vazia.", "browsePs5": "Ver arquivos do PS5", "selectOne": "Selecionar", "selectAll": "Selecionar tudo", "selN": "{n} selecionados", "selProgress": "{a} de {b} prontos", "loadAll": "Carregar tudo", "clearSel": "Limpar", "selDone": "Pronto", "qWait": "Aguardando", "qSend": "Enviando\u2026", "qOk": "Carregado", "qOkPid": "Carregado \u00b7 pid {n}", "qAdded": "Adicionado", "qFail": "Falhou: {msg}", "selFinished": "{a} de {b} prontos", "pickHintPad": "Toque no selo ELF para escolher um payload. \u25b3 escolhe o focado.", "filesAdded": "{n} arquivos adicionados \u00e0 sele\u00e7\u00e3o", "openAfterJb": "Abrir esta p\u00e1gina ap\u00f3s o jailbreak", "openAfterJbHint": "O launcher continua rodando em :1000 de qualquer jeito. Abra pelo \u00edcone quando quiser.", "yes": "Sim", "no": "N\u00e3o", "startDelay": "Atraso inicial", "startDelayHint": "Espera antes do AutoPayload come\u00e7ar. Quadrado cancela.", "autoCountN": "{n} payloads carregam sozinhos", "autoListHint": "Payloads marcados rodam uma vez ap\u00f3s cada jailbreak.", "editList": "Editar lista", "selfSwitching": "Atualizando\u2026 o novo launcher est\u00e1 iniciando", "selfReloading": "Atualizado. Recarregando\u2026", "selfTimeout": "O novo launcher n\u00e3o respondeu a tempo. Tente atualizar de novo ou refa\u00e7a o jailbreak.", "closeBtn": "Fechar"}, "ru": {"library": "\u0411\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0430", "allPayloads": "\u0412\u0441\u0435 \u043f\u0435\u0439\u043b\u043e\u0430\u0434\u044b", "consoleGrp": "\u041a\u043e\u043d\u0441\u043e\u043b\u044c", "running": "\u0417\u0430\u043f\u0443\u0449\u0435\u043d\u043e", "ps5Files": "\u0424\u0430\u0439\u043b\u044b PS5", "mineDesc": "\u041f\u0440\u043e\u0435\u043a\u0442\u044b X-F1REBALL-X: \u043e\u0434\u043d\u043e \u043d\u0430\u0436\u0430\u0442\u0438\u0435 \u2014 \u0441\u043a\u0430\u0447\u0430\u0442\u044c \u0438\u043b\u0438 \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u044c.", "quick": "\u0411\u044b\u0441\u0442\u0440\u044b\u0439 \u0437\u0430\u043f\u0443\u0441\u043a", "quickEmpty": "\u0417\u0434\u0435\u0441\u044c \u043f\u043e\u044f\u0432\u044f\u0442\u0441\u044f \u043f\u0435\u0439\u043b\u043e\u0430\u0434\u044b, \u043a\u043e\u0442\u043e\u0440\u044b\u0435 \u0432\u044b \u0437\u0430\u043f\u0443\u0441\u043a\u0430\u043b\u0438 \u0438\u043b\u0438 \u0441\u043a\u0430\u0447\u0438\u0432\u0430\u043b\u0438.", "manage": "\u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435", "categories": "\u041a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438", "searchPh": "\u041f\u043e\u0438\u0441\u043a \u043f\u0435\u0439\u043b\u043e\u0430\u0434\u043e\u0432", "searchResults": "\u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u044b \u043f\u043e \u00ab{q}\u00bb", "noResults": "\u041d\u0438\u0447\u0435\u0433\u043e \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e.", "killBtn": "\u0417\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044c", "killConfirm": "\u0417\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044c {name} (pid {pid})?", "killHint": "\u041e\u043d \u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0441\u044f \u0441\u0440\u0430\u0437\u0443, \u0442\u0435\u043a\u0443\u0449\u0430\u044f \u0440\u0430\u0431\u043e\u0442\u0430 \u043f\u0440\u043e\u043f\u0430\u0434\u0451\u0442.", "killed": "{name} \u0437\u0430\u0432\u0435\u0440\u0448\u0451\u043d", "killFail": "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044c {name}: {msg}", "thisLauncher": "\u042d\u0442\u043e\u0442 \u043b\u0430\u0443\u043d\u0447\u0435\u0440", "protectedProc": "\u0417\u0430\u0449\u0438\u0449\u0451\u043d", "noRunning": "\u041d\u0435\u0442 \u0437\u0430\u043f\u0443\u0449\u0435\u043d\u043d\u044b\u0445 \u043f\u0435\u0439\u043b\u043e\u0430\u0434\u043e\u0432", "refresh": "\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c", "showAll": "\u041f\u043e\u043a\u0430\u0437\u0430\u0442\u044c \u0432\u0441\u0435 \u043f\u0440\u043e\u0446\u0435\u0441\u0441\u044b", "runHint": "\u041f\u0435\u0439\u043b\u043e\u0430\u0434\u044b, \u043a\u043e\u0442\u043e\u0440\u044b\u0435 \u0441\u0435\u0439\u0447\u0430\u0441 \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0442 \u043d\u0430 \u043a\u043e\u043d\u0441\u043e\u043b\u0438. \u041b\u0430\u0443\u043d\u0447\u0435\u0440 \u0438 \u0437\u0430\u0433\u0440\u0443\u0437\u0447\u0438\u043a \u043e\u0442\u0441\u044e\u0434\u0430 \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044c \u043d\u0435\u043b\u044c\u0437\u044f.", "memMb": "{n} \u041c\u0411", "downloadsDir": "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0438", "emptyDir": "\u041f\u0430\u043f\u043a\u0430 \u043f\u0443\u0441\u0442\u0430.", "browsePs5": "\u0424\u0430\u0439\u043b\u044b PS5", "selectOne": "\u0412\u044b\u0431\u0440\u0430\u0442\u044c", "selectAll": "\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u0432\u0441\u0435", "selN": "\u0412\u044b\u0431\u0440\u0430\u043d\u043e: {n}", "selProgress": "\u0413\u043e\u0442\u043e\u0432\u043e {a} \u0438\u0437 {b}", "loadAll": "\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0432\u0441\u0435", "clearSel": "\u041e\u0447\u0438\u0441\u0442\u0438\u0442\u044c", "selDone": "\u0413\u043e\u0442\u043e\u0432\u043e", "qWait": "\u041e\u0436\u0438\u0434\u0430\u043d\u0438\u0435", "qSend": "\u041e\u0442\u043f\u0440\u0430\u0432\u043a\u0430\u2026", "qOk": "\u0417\u0430\u0433\u0440\u0443\u0436\u0435\u043d\u043e", "qOkPid": "\u0417\u0430\u0433\u0440\u0443\u0436\u0435\u043d\u043e \u00b7 pid {n}", "qAdded": "\u0414\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u043e", "qFail": "\u041e\u0448\u0438\u0431\u043a\u0430: {msg}", "selFinished": "\u0413\u043e\u0442\u043e\u0432\u043e {a} \u0438\u0437 {b}", "pickHintPad": "\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u0437\u043d\u0430\u0447\u043e\u043a ELF, \u0447\u0442\u043e\u0431\u044b \u0432\u044b\u0431\u0440\u0430\u0442\u044c payload. \u25b3 \u0432\u044b\u0431\u0438\u0440\u0430\u0435\u0442 \u044d\u043b\u0435\u043c\u0435\u043d\u0442 \u0432 \u0444\u043e\u043a\u0443\u0441\u0435.", "filesAdded": "\u0414\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u043e \u0444\u0430\u0439\u043b\u043e\u0432: {n}", "openAfterJb": "\u041e\u0442\u043a\u0440\u044b\u0432\u0430\u0442\u044c \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 \u043f\u043e\u0441\u043b\u0435 \u0434\u0436\u0435\u0439\u043b\u0431\u0440\u0435\u0439\u043a\u0430", "openAfterJbHint": "\u041b\u0430\u0443\u043d\u0447\u0435\u0440 \u0432 \u043b\u044e\u0431\u043e\u043c \u0441\u043b\u0443\u0447\u0430\u0435 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u043d\u0430 :1000. \u041e\u0442\u043a\u0440\u044b\u0432\u0430\u0439\u0442\u0435 \u0435\u0433\u043e \u0441 \u043f\u043b\u0438\u0442\u043a\u0438 \u0432 \u043b\u044e\u0431\u043e\u0435 \u0432\u0440\u0435\u043c\u044f.", "yes": "\u0414\u0430", "no": "\u041d\u0435\u0442", "startDelay": "\u0417\u0430\u0434\u0435\u0440\u0436\u043a\u0430 \u0437\u0430\u043f\u0443\u0441\u043a\u0430", "startDelayHint": "\u041f\u0430\u0443\u0437\u0430 \u043f\u0435\u0440\u0435\u0434 \u0441\u0442\u0430\u0440\u0442\u043e\u043c AutoPayload. \u041a\u0432\u0430\u0434\u0440\u0430\u0442 \u043e\u0442\u043c\u0435\u043d\u044f\u0435\u0442.", "autoCountN": "\u0410\u0432\u0442\u043e\u0437\u0430\u0433\u0440\u0443\u0437\u043a\u0430: {n}", "autoListHint": "\u041e\u0442\u043c\u0435\u0447\u0435\u043d\u043d\u044b\u0435 payload \u0437\u0430\u043f\u0443\u0441\u043a\u0430\u044e\u0442\u0441\u044f \u043e\u0434\u0438\u043d \u0440\u0430\u0437 \u043f\u043e\u0441\u043b\u0435 \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u0434\u0436\u0435\u0439\u043b\u0431\u0440\u0435\u0439\u043a\u0430.", "editList": "\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0441\u043f\u0438\u0441\u043e\u043a", "selfSwitching": "\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435\u2026 \u0437\u0430\u043f\u0443\u0441\u043a\u0430\u0435\u0442\u0441\u044f \u043d\u043e\u0432\u044b\u0439 \u043b\u0430\u0443\u043d\u0447\u0435\u0440", "selfReloading": "\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u043e. \u041f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u2026", "selfTimeout": "\u041d\u043e\u0432\u044b\u0439 \u043b\u0430\u0443\u043d\u0447\u0435\u0440 \u043d\u0435 \u043e\u0442\u0432\u0435\u0442\u0438\u043b \u0432\u043e\u0432\u0440\u0435\u043c\u044f. \u041f\u043e\u0432\u0442\u043e\u0440\u0438\u0442\u0435 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 \u0438\u043b\u0438 \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u0435 \u0434\u0436\u0435\u0439\u043b\u0431\u0440\u0435\u0439\u043a \u0437\u0430\u043d\u043e\u0432\u043e.", "closeBtn": "\u0417\u0430\u043a\u0440\u044b\u0442\u044c"}, "ja": {"library": "\u30e9\u30a4\u30d6\u30e9\u30ea", "allPayloads": "\u3059\u3079\u3066\u306e\u30da\u30a4\u30ed\u30fc\u30c9", "consoleGrp": "\u672c\u4f53", "running": "\u5b9f\u884c\u4e2d", "ps5Files": "PS5 \u306e\u30d5\u30a1\u30a4\u30eb", "mineDesc": "X-F1REBALL-X \u306e\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u3002\u30ef\u30f3\u30bf\u30c3\u30c1\u3067\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u30fb\u8aad\u307f\u8fbc\u307f\u3002", "quick": "\u30af\u30a4\u30c3\u30af\u8d77\u52d5", "quickEmpty": "\u8aad\u307f\u8fbc\u3093\u3060\u308a\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3057\u305f\u30da\u30a4\u30ed\u30fc\u30c9\u304c\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002", "manage": "\u7ba1\u7406", "categories": "\u30ab\u30c6\u30b4\u30ea", "searchPh": "\u30da\u30a4\u30ed\u30fc\u30c9\u3092\u691c\u7d22", "searchResults": "\u300c{q}\u300d\u306e\u691c\u7d22\u7d50\u679c", "noResults": "\u4e00\u81f4\u3059\u308b\u3082\u306e\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "killBtn": "\u7d42\u4e86", "killConfirm": "{name}\uff08pid {pid}\uff09\u3092\u7d42\u4e86\u3057\u307e\u3059\u304b\uff1f", "killHint": "\u3059\u3050\u306b\u505c\u6b62\u3057\u3001\u4f5c\u696d\u4e2d\u306e\u5185\u5bb9\u306f\u5931\u308f\u308c\u307e\u3059\u3002", "killed": "{name} \u3092\u7d42\u4e86\u3057\u307e\u3057\u305f", "killFail": "{name} \u3092\u7d42\u4e86\u3067\u304d\u307e\u305b\u3093: {msg}", "thisLauncher": "\u3053\u306e\u30e9\u30f3\u30c1\u30e3\u30fc", "protectedProc": "\u4fdd\u8b77", "noRunning": "\u5b9f\u884c\u4e2d\u306e\u30da\u30a4\u30ed\u30fc\u30c9\u306f\u3042\u308a\u307e\u305b\u3093", "refresh": "\u66f4\u65b0", "showAll": "\u3059\u3079\u3066\u306e\u30d7\u30ed\u30bb\u30b9\u3092\u8868\u793a", "runHint": "\u672c\u4f53\u3067\u5b9f\u884c\u4e2d\u306e\u30da\u30a4\u30ed\u30fc\u30c9\u3002\u30e9\u30f3\u30c1\u30e3\u30fc\u3068\u30ed\u30fc\u30c0\u30fc\u306f\u3053\u3053\u304b\u3089\u7d42\u4e86\u3067\u304d\u307e\u305b\u3093\u3002", "memMb": "{n} MB", "downloadsDir": "\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9", "emptyDir": "\u3053\u306e\u30d5\u30a9\u30eb\u30c0\u30fc\u306f\u7a7a\u3067\u3059\u3002", "browsePs5": "PS5 \u306e\u30d5\u30a1\u30a4\u30eb\u3092\u898b\u308b", "selectOne": "\u9078\u629e", "selectAll": "\u3059\u3079\u3066\u9078\u629e", "selN": "{n} \u4ef6\u9078\u629e\u4e2d", "selProgress": "{a} / {b} \u5b8c\u4e86", "loadAll": "\u3059\u3079\u3066\u8aad\u307f\u8fbc\u3080", "clearSel": "\u30af\u30ea\u30a2", "selDone": "\u5b8c\u4e86", "qWait": "\u5f85\u6a5f\u4e2d", "qSend": "\u9001\u4fe1\u4e2d\u2026", "qOk": "\u8aad\u307f\u8fbc\u307f\u6e08\u307f", "qOkPid": "\u8aad\u307f\u8fbc\u307f\u6e08\u307f \u00b7 pid {n}", "qAdded": "\u8ffd\u52a0\u6e08\u307f", "qFail": "\u5931\u6557: {msg}", "selFinished": "{a} / {b} \u5b8c\u4e86", "pickHintPad": "ELF \u30d0\u30c3\u30b8\u3092\u30bf\u30c3\u30d7\u3057\u3066\u9078\u629e\u3002\u25b3 \u3067\u30d5\u30a9\u30fc\u30ab\u30b9\u4e2d\u306e\u9805\u76ee\u3092\u9078\u629e\u3002", "filesAdded": "{n} \u500b\u306e\u30d5\u30a1\u30a4\u30eb\u3092\u9078\u629e\u306b\u8ffd\u52a0", "openAfterJb": "\u8131\u7344\u5f8c\u306b\u3053\u306e\u30da\u30fc\u30b8\u3092\u958b\u304f", "openAfterJbHint": "\u3069\u3061\u3089\u306e\u8a2d\u5b9a\u3067\u3082\u30e9\u30f3\u30c1\u30e3\u30fc\u306f :1000 \u3067\u52d5\u304d\u7d9a\u3051\u307e\u3059\u3002\u30db\u30fc\u30e0\u306e\u30bf\u30a4\u30eb\u304b\u3089\u3044\u3064\u3067\u3082\u958b\u3051\u307e\u3059\u3002", "yes": "\u306f\u3044", "no": "\u3044\u3044\u3048", "startDelay": "\u958b\u59cb\u306e\u9045\u5ef6", "startDelayHint": "AutoPayload \u958b\u59cb\u307e\u3067\u306e\u5f85\u3061\u6642\u9593\u3002\u25a1 \u3067\u4e2d\u6b62\u3002", "autoCountN": "{n} \u500b\u306e\u30da\u30a4\u30ed\u30fc\u30c9\u3092\u81ea\u52d5\u8aad\u307f\u8fbc\u307f", "autoListHint": "\u30c1\u30a7\u30c3\u30af\u3057\u305f\u30da\u30a4\u30ed\u30fc\u30c9\u306f\u8131\u7344\u306e\u305f\u3073\u306b\u4e00\u5ea6\u5b9f\u884c\u3055\u308c\u307e\u3059\u3002", "editList": "\u30ea\u30b9\u30c8\u3092\u7de8\u96c6", "selfSwitching": "\u66f4\u65b0\u4e2d\u2026 \u65b0\u3057\u3044\u30e9\u30f3\u30c1\u30e3\u30fc\u3092\u8d77\u52d5\u3057\u3066\u3044\u307e\u3059", "selfReloading": "\u66f4\u65b0\u3057\u307e\u3057\u305f\u3002\u518d\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "selfTimeout": "\u65b0\u3057\u3044\u30e9\u30f3\u30c1\u30e3\u30fc\u304c\u6642\u9593\u5185\u306b\u5fdc\u7b54\u3057\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u66f4\u65b0\u3059\u308b\u304b\u3001\u8131\u7344\u3092\u3084\u308a\u76f4\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "closeBtn": "\u9589\u3058\u308b"}, "zh": {"library": "\u8d44\u6599\u5e93", "allPayloads": "\u5168\u90e8 Payload", "consoleGrp": "\u4e3b\u673a", "running": "\u6b63\u5728\u8fd0\u884c", "ps5Files": "PS5 \u6587\u4ef6", "mineDesc": "X-F1REBALL-X \u7684\u9879\u76ee\uff1a\u4e00\u952e\u4e0b\u8f7d\u6216\u52a0\u8f7d\u3002", "quick": "\u5feb\u901f\u542f\u52a8", "quickEmpty": "\u4f60\u52a0\u8f7d\u6216\u4e0b\u8f7d\u8fc7\u7684 Payload \u4f1a\u663e\u793a\u5728\u8fd9\u91cc\u3002", "manage": "\u7ba1\u7406", "categories": "\u5206\u7c7b", "searchPh": "\u641c\u7d22 Payload", "searchResults": "\u201c{q}\u201d\u7684\u7ed3\u679c", "noResults": "\u6ca1\u6709\u5339\u914d\u7684\u7ed3\u679c\u3002", "killBtn": "\u7ed3\u675f", "killConfirm": "\u7ed3\u675f {name}\uff08pid {pid}\uff09\uff1f", "killHint": "\u5b83\u4f1a\u7acb\u5373\u505c\u6b62\uff0c\u6b63\u5728\u8fdb\u884c\u7684\u5de5\u4f5c\u4f1a\u4e22\u5931\u3002", "killed": "{name} \u5df2\u7ed3\u675f", "killFail": "\u65e0\u6cd5\u7ed3\u675f {name}\uff1a{msg}", "thisLauncher": "\u672c\u542f\u52a8\u5668", "protectedProc": "\u53d7\u4fdd\u62a4", "noRunning": "\u6ca1\u6709\u6b63\u5728\u8fd0\u884c\u7684 Payload", "refresh": "\u5237\u65b0", "showAll": "\u663e\u793a\u6240\u6709\u8fdb\u7a0b", "runHint": "\u4e3b\u673a\u4e0a\u6b63\u5728\u8fd0\u884c\u7684 Payload\u3002\u542f\u52a8\u5668\u548c\u52a0\u8f7d\u5668\u4e0d\u80fd\u5728\u8fd9\u91cc\u7ed3\u675f\u3002", "memMb": "{n} MB", "downloadsDir": "\u4e0b\u8f7d", "emptyDir": "\u6b64\u6587\u4ef6\u5939\u4e3a\u7a7a\u3002", "browsePs5": "\u6d4f\u89c8 PS5 \u6587\u4ef6", "selectOne": "\u9009\u62e9", "selectAll": "\u5168\u9009", "selN": "\u5df2\u9009 {n} \u4e2a", "selProgress": "\u5df2\u5b8c\u6210 {a}/{b}", "loadAll": "\u5168\u90e8\u52a0\u8f7d", "clearSel": "\u6e05\u9664", "selDone": "\u5b8c\u6210", "qWait": "\u7b49\u5f85\u4e2d", "qSend": "\u53d1\u9001\u4e2d\u2026", "qOk": "\u5df2\u52a0\u8f7d", "qOkPid": "\u5df2\u52a0\u8f7d \u00b7 pid {n}", "qAdded": "\u5df2\u6dfb\u52a0", "qFail": "\u5931\u8d25\uff1a{msg}", "selFinished": "\u5df2\u5b8c\u6210 {a}/{b}", "pickHintPad": "\u70b9\u6309 ELF \u6807\u8bb0\u6765\u9009\u62e9\u8f7d\u8377\u3002\u25b3 \u9009\u62e9\u5f53\u524d\u7126\u70b9\u9879\u3002", "filesAdded": "\u5df2\u5c06 {n} \u4e2a\u6587\u4ef6\u52a0\u5165\u9009\u62e9", "openAfterJb": "\u8d8a\u72f1\u540e\u6253\u5f00\u6b64\u9875\u9762", "openAfterJbHint": "\u65e0\u8bba\u5982\u4f55\u542f\u52a8\u5668\u90fd\u4f1a\u5728 :1000 \u4fdd\u6301\u8fd0\u884c\u3002\u968f\u65f6\u53ef\u4ece\u4e3b\u5c4f\u5e55\u56fe\u5757\u6253\u5f00\u3002", "yes": "\u662f", "no": "\u5426", "startDelay": "\u542f\u52a8\u5ef6\u8fdf", "startDelayHint": "AutoPayload \u5f00\u59cb\u524d\u7684\u7b49\u5f85\u65f6\u95f4\u3002\u65b9\u5757\u952e\u53d6\u6d88\u3002", "autoCountN": "{n} \u4e2a\u8f7d\u8377\u81ea\u52a8\u52a0\u8f7d", "autoListHint": "\u52fe\u9009\u7684\u8f7d\u8377\u5728\u6bcf\u6b21\u8d8a\u72f1\u540e\u8fd0\u884c\u4e00\u6b21\u3002", "editList": "\u7f16\u8f91\u5217\u8868", "selfSwitching": "\u6b63\u5728\u66f4\u65b0\u2026 \u65b0\u542f\u52a8\u5668\u6b63\u5728\u542f\u52a8", "selfReloading": "\u5df2\u66f4\u65b0\u3002\u6b63\u5728\u91cd\u65b0\u52a0\u8f7d\u2026", "selfTimeout": "\u65b0\u542f\u52a8\u5668\u672a\u53ca\u65f6\u54cd\u5e94\u3002\u8bf7\u91cd\u8bd5\u66f4\u65b0\uff0c\u6216\u91cd\u65b0\u8d8a\u72f1\u3002", "closeBtn": "\u5173\u95ed"}, "it": {"library": "Libreria", "allPayloads": "Tutti i payload", "consoleGrp": "Console", "running": "In esecuzione", "ps5Files": "File della PS5", "mineDesc": "Progetti di X-F1REBALL-X: un tocco per scaricare o caricare.", "quick": "Avvio rapido", "quickEmpty": "Qui compaiono i payload che carichi o scarichi.", "manage": "Gestisci", "categories": "Categorie", "searchPh": "Cerca payload", "searchResults": "Risultati per \u201c{q}\u201d", "noResults": "Nessun risultato.", "killBtn": "Chiudi", "killConfirm": "Chiudere {name} (pid {pid})?", "killHint": "Si ferma subito e il lavoro in corso va perso.", "killed": "{name} chiuso", "killFail": "Impossibile chiudere {name}: {msg}", "thisLauncher": "Questo launcher", "protectedProc": "Protetto", "noRunning": "Nessun payload in esecuzione", "refresh": "Aggiorna", "showAll": "Mostra tutti i processi", "runHint": "Payload in esecuzione ora sulla console. Launcher e loader non si possono chiudere da qui.", "memMb": "{n} MB", "downloadsDir": "Download", "emptyDir": "Questa cartella \u00e8 vuota.", "browsePs5": "Sfoglia i file della PS5", "selectOne": "Seleziona", "selectAll": "Seleziona tutto", "selN": "{n} selezionati", "selProgress": "{a} di {b} completati", "loadAll": "Carica tutto", "clearSel": "Pulisci", "selDone": "Fatto", "qWait": "In attesa", "qSend": "Invio\u2026", "qOk": "Caricato", "qOkPid": "Caricato \u00b7 pid {n}", "qAdded": "Aggiunto", "qFail": "Errore: {msg}", "selFinished": "{a} di {b} completati", "pickHintPad": "Tocca il badge ELF per scegliere un payload. \u25b3 sceglie quello in focus.", "filesAdded": "{n} file aggiunti alla selezione", "openAfterJb": "Apri questa pagina dopo il jailbreak", "openAfterJbHint": "Il launcher resta attivo su :1000 in ogni caso. Aprilo dalla sua icona quando vuoi.", "yes": "S\u00ec", "no": "No", "startDelay": "Ritardo di avvio", "startDelayHint": "Attesa prima che parta AutoPayload. Quadrato annulla.", "autoCountN": "{n} payload si caricano da soli", "autoListHint": "I payload segnati partono una volta dopo ogni jailbreak.", "editList": "Modifica elenco", "selfSwitching": "Aggiornamento\u2026 il nuovo launcher si avvia", "selfReloading": "Aggiornato. Ricarico\u2026", "selfTimeout": "Il nuovo launcher non ha risposto in tempo. Riprova l\u2019aggiornamento o ripeti il jailbreak.", "closeBtn": "Chiudi"}};
+(function(){ var k, l; for(l in I18N_UI3){ if(!I18N_UI3.hasOwnProperty(l) || !I18N[l]) continue; for(k in I18N_UI3[l]){ if(I18N_UI3[l].hasOwnProperty(k)) I18N[l][k]=I18N_UI3[l][k]; } } })();
 function t(key, vars){
   var d=I18N[LANG]||I18N.en, s=d[key];
   if(s==null) s=I18N.en[key];
@@ -1052,7 +1115,8 @@ function mapRemotePayload(item, srcName){
     checksum:String(sum).toLowerCase(),
     size:(item.size|0),
     sourceName:srcName||'',
-    authorUrl:(item.source_direct && !isItsplkMirrorUrl(item.source_direct))?item.source_direct:''
+    authorUrl:(item.source_direct && !isItsplkMirrorUrl(item.source_direct))?item.source_direct:'',
+    latest:(item.github_latest && item.github_latest.repo && item.github_latest.asset)?item.github_latest:null
   };
 }
 function parseCatalogBody(text){
@@ -1992,113 +2056,6 @@ function noteDownloadedCount(n){
   downloadedCountKnown=true;
   renderNav(currentFolder);
 }
-function renderNav(selected){
-  var nav=document.getElementById('nav');
-  if(!nav) return;
-  var html='', i, active;
-  html+='<button type="button" class="navbtn folder'+(!selected?' active':'')+'" data-folder="">';
-  html+='<span>'+esc(t('home'))+'</span></button>';
-  active=(selected==='elf' || isCatalogId(selected)) ? ' active' : '';
-  html+='<button type="button" class="navbtn folder'+active+'" data-folder="elf">';
-  html+='<span>'+esc(t('elfFiles'))+'</span><span class="ncount">'+PAYLOADS.length+'</span></button>';
-  active=selected==='downloaded' ? ' active' : '';
-  html+='<button type="button" class="navbtn folder'+active+'" data-folder="downloaded">';
-  html+='<span>'+esc(t('downloaded'))+'</span><span class="ncount">'+downloadedCount+'</span></button>';
-  active=selected==='auto' ? ' active' : '';
-  html+='<button type="button" class="navbtn folder'+active+'" data-folder="auto">';
-  html+='<span>'+esc(t('autoPayload'))+'</span><span class="ncount">'+autoCount()+'</span></button>';
-  if(isConsoleHost()){
-    active=selected==='load' ? ' active' : '';
-    html+='<button type="button" class="navbtn folder'+active+'" data-folder="load">';
-    html+='<span>'+esc(t('loadFile'))+'</span></button>';
-  }
-  nav.innerHTML=html;
-  var mv=document.getElementById('main');
-  if(mv) mv.setAttribute('data-view', !selected ? 'home' : (isCatalogId(selected)||selected==='elf' ? 'elf' : selected));
-  var sc=document.getElementById('stCat'), sd=document.getElementById('stDl'), sa=document.getElementById('stAuto');
-  if(sc) sc.textContent=PAYLOADS.length; if(sd) sd.textContent=downloadedCount; if(sa) sa.textContent=autoCount();
-  var btns=nav.querySelectorAll('.navbtn');
-  for(i=0;i<btns.length;i++){
-    btns[i].addEventListener('click',function(ev){
-      var id=ev.currentTarget.getAttribute('data-folder')||'';
-      if(!id){ setHashFolder(null); showHome(); return; }
-      if(id==='elf'){
-        var sub=lastElfFolder||'loader';
-        setHashFolder(sub);
-        showFolder(sub);
-        return;
-      }
-      setHashFolder(id);
-      showFolder(id);
-    });
-  }
-}
-function showHome(){
-  currentFolder=null;
-  titleEl.className='';
-  hdrEl.className='';
-  viewEl.className='';
-  viewEl.innerHTML='';
-  syncSideActions('');
-  homeEl.className='show';
-  var stay=browserStayOpen();
-  var adelay=autoDelaySec();
-  homeEl.innerHTML='<section class="panel homeHero"><p class="label">'+esc(t('home'))+'</p>'+
-    '<div class="hhead"><img src="icons/launcher-home.jpg?v=7" width="72" height="72" alt="ELF Launcher">'+
-    '<p class="hdesc">'+esc(t('homeDesc'))+'</p></div>'+
-    '<div class="stats">'+
-    '<div class="stat" style="--c:var(--cyan)"><span class="k">'+esc(t('elfFiles'))+'</span><b id="stCat">'+PAYLOADS.length+'</b></div>'+
-    '<div class="stat" style="--c:var(--blue)"><span class="k">'+esc(t('downloaded'))+'</span><b id="stDl">'+downloadedCount+'</b></div>'+
-    '<div class="stat" style="--c:var(--violet)"><span class="k">'+esc(t('autoPayload'))+'</span><b id="stAuto">'+autoCount()+'</b></div>'+
-    '</div></section>'+
-    '<section class="panel homeAuto"><p class="label">'+esc(t('autoPayload'))+'</p>'+
-    '<div class="homeOpt">'+
-    '<p class="sub homeQ">'+esc(t('afterJb'))+'</p>'+
-    '<div class="homeChoices">'+
-    '<button type="button" data-brows="open" data-state="'+(stay?'on':'off')+'"'+(stay?' class="selected"':'')+'>'+esc(t('openBrowser'))+'</button>'+
-    '<button type="button" data-brows="closed" data-state="'+(!stay?'on':'off')+'"'+(!stay?' class="selected"':'')+'>'+esc(t('leaveClosed'))+'</button>'+
-    '</div>'+
-    '<p class="sub homeQ">'+esc(t('autoDelay'))+'</p>'+
-    '<div class="homeChoices">'+
-    '<button type="button" data-adelay="3" data-state="'+(adelay===3?'on':'off')+'"'+(adelay===3?' class="selected"':'')+'>'+esc(t('delay3s'))+'</button>'+
-    '<button type="button" data-adelay="0" data-state="'+(adelay===0?'on':'off')+'"'+(adelay===0?' class="selected"':'')+'>'+esc(t('delay0'))+'</button>'+
-    '</div>'+
-    '<p class="homeHint">'+esc(t('homeHint'))+'</p>'+
-    '</div></section>'+
-    '<section class="panel homeTiles"><p class="label">'+esc(t('elfFiles'))+'</p><div class="tiles">'+homeTilesHtml()+'</div></section>';
-  var choices=homeEl.querySelectorAll('button[data-brows]');
-  var ci;
-  for(ci=0;ci<choices.length;ci++){
-    choices[ci].onclick=function(){
-      var on=this.getAttribute('data-brows')==='open';
-      paintBrowserChoice(on);
-      setBrowserStayOpen(on);
-    };
-  }
-  var dchoices=homeEl.querySelectorAll('button[data-adelay]');
-  for(ci=0;ci<dchoices.length;ci++){
-    dchoices[ci].onclick=function(){
-      var sec=this.getAttribute('data-adelay')==='0'?0:3;
-      paintAutoDelayChoice(sec);
-      setAutoDelay(sec);
-    };
-  }
-  var tiles=homeEl.querySelectorAll('.subfold');
-  for(ci=0;ci<tiles.length;ci++){
-    tiles[ci].onclick=function(){ var sid=this.getAttribute('data-sub'); if(!sid) return; setHashFolder(sid); showFolder(sid); };
-  }
-  renderNav(null);
-  syncBrowserPrefFromDisk();
-}
-function homeTilesHtml(){
-  var i, f, html='';
-  for(i=0;i<FOLDERS.length;i++){
-    f=FOLDERS[i];
-    html+='<button type="button" class="subfold" data-sub="'+esc(f.id)+'"><span>'+esc(folderLabel(f.id))+'</span><span class="ncount">'+countIn(f.id)+'</span></button>';
-  }
-  return html;
-}
-
 function findPayload(path){
   var i;
   for(i=0;i<PAYLOADS.length;i++){if(PAYLOADS[i].path===path)return PAYLOADS[i];}
@@ -2256,6 +2213,10 @@ function killByPid(name, pid, sendBtn, path){
   });
 }
 function killPayload(name, sendBtn, path){
+  var pr=lastProcs ? findRunningProc(normBase(path||''), lastProcs) : null;
+  showModal(t('killConfirm',{name:name,pid:pr?pr.pid:'?'}), t('killHint'), t('killBtn'), function(){ killPayloadNow(name, sendBtn, path); });
+}
+function killPayloadNow(name, sendBtn, path){
   var base=normBase(path||'');
   dbgKill('Kill pressed '+name+' path='+(path||''));
   if(!path || !base){
@@ -2443,21 +2404,20 @@ function paintPayloadButton(tr){
 var procWatch=0;
 function watchRunning(){
   if(procWatch) return;
-  procWatch=setInterval(function(){
-    if(!document.querySelector('[data-name]')) return;
-    refreshKillButtons();
-  }, 2000);
+  /* One shared poll feeds row buttons, the Running chip, home and the Running view. */
+  procWatch=setInterval(function(){ pollProcs(false); }, 3000);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) pollProcs(true); });
 }
-function refreshKillButtons(){
+function refreshKillButtons(procsIn){
   var rows=document.querySelectorAll ? document.querySelectorAll('[data-name]') : [];
   var i;
   if(!rows.length) return;
   /* No process list (HTTPS Pages, or not the console) => no Kill at all. */
-  if(location.protocol==='https:' || !/PlayStation/i.test(navigator.userAgent)){
+  if(location.protocol==='https:' || !isConsoleHost()){
     for(i=0;i<rows.length;i++) hideKillBtn(rows[i]);
     return;
   }
-  pldmgrFetch('/processes_list').then(function(data){
+  (procsIn ? Promise.resolve({processes:procsIn}) : pldmgrFetch('/processes_list')).then(function(data){
     var procs=(data && data.processes) ? data.processes : [];
     var i, tr, name;
     lastProcs=procs;
@@ -2574,14 +2534,14 @@ function paintDownloaded(found){
     var bn=String((b.p&&b.p.name)||'').toLowerCase();
     return an<bn?-1:(an>bn?1:0);
   });
-  syncSideActions('<button type="button" id="loadsel">'+esc(t('multi'))+'</button>');
+  syncSideActions('');
+  setHdrActions(selAllBtn());
   html+=headHtml(true);
   for(i=0;i<found.length;i++){
     item=found[i];
     p=item.p;
     pend=pendingFor(p.path);
-    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf">';
-    html+='<div class="m"><label class="pick"><input class="mark" type="checkbox" aria-label="'+esc(t('select'))+'"></label></div>';
+    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom pk">'+pickBtn('cat:'+p.path);
     html+='<div class="n"><b>'+esc(p.name)+'</b></div>';
     html+='<div class="v">'+esc(p.version||'')+'</div>';
     html+='<div class="a">';
@@ -2643,13 +2603,13 @@ function showDownloadedFolderCount(){
   n=0; inflight=0; idx=0;
   function pump(){
     var item;
-    if(idx>=queue.length && inflight===0){ noteDownloadedCount(n); return; }
+    if(idx>=queue.length && inflight===0){ noteDownloadedCount(n); paintQuick(); return; }
     while(inflight<4 && idx<queue.length){
       item=queue[idx++];
       inflight++;
       (function(it){
         localMeta(it.path).then(function(meta){
-          if(meta && meta.ok && meta.exists) n++;
+          if(meta && meta.ok && meta.exists){ n++; DL_SET[it.name]=1; }
         }).catch(function(){}).then(function(){ inflight--; pump(); });
       })(item);
     }
@@ -2702,63 +2662,7 @@ function showDownloadedFolder(){
   }
   pump();
 }
-function showKillFolder(){
-  currentFolder='kill';
-  homeEl.className='';
-  homeEl.innerHTML='';
-  hdrEl.className='show';
-  titleEl.textContent=t('close');
-  titleEl.className='beam';
-  viewEl.className='show';
-  syncSideActions('');
-  renderNav('kill');
-  if(location.protocol==='https:' || !isConsoleHost()){
-    loadedKillCount=0;
-    renderNav('kill');
-    viewEl.innerHTML='<p class="empty">'+esc(t('noLoaded'))+'</p>';
-    return;
-  }
-  viewEl.innerHTML='<p class="empty">'+esc(t('checkingLoaded'))+'</p>';
-  pldmgrFetch('/processes_list').then(function(data){
-    var procs, list, html, i, item, p, rows;
-    if(currentFolder!=='kill') return;
-    procs=(data && data.processes) ? data.processes : [];
-    list=listLoadedPayloads(procs);
-    loadedKillCount=list.length;
-    renderNav('kill');
-    if(!list.length){
-      viewEl.innerHTML='<p class="empty">'+esc(t('noLoaded'))+'</p>';
-      return;
-    }
-    html=headHtml(false);
-    for(i=0;i<list.length;i++){
-      item=list[i];
-      p=item.p;
-      html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom">';
-      html+='<div class="n"><b>'+esc(p.name)+'</b></div>';
-      html+='<div class="v">'+esc(p.version||'')+'</div>';
-      html+='<div class="a"><button type="button" class="run kill">'+esc(t('close'))+'</button></div>';
-      html+='</div></div>';
-    }
-    viewEl.innerHTML=html;
-    wrapListGrid();
-    rows=viewEl.querySelectorAll('[data-path]');
-    for(i=0;i<rows.length;i++){
-      (function(tr){
-        var b=tr.querySelector('button.run.kill');
-        if(!b) return;
-        b.addEventListener('click',function(){
-          killPayload(tr.getAttribute('data-name'), null, tr.getAttribute('data-path'));
-        });
-      })(rows[i]);
-    }
-  }).catch(function(){
-    if(currentFolder!=='kill') return;
-    loadedKillCount=0;
-    renderNav('kill');
-    viewEl.innerHTML='<p class="empty">'+esc(t('noLoaded'))+'</p>';
-  });
-}
+function showKillFolder(){ showRunFolder(); }
 function stripAutoChecks(){
   var boxes, i, box, lab;
   /* Auto marks live only on AutoPayload. Keep Select marks on Downloaded. */
@@ -2808,7 +2712,7 @@ function paintAutoPayload(found){
   for(i=0;i<found.length;i++){
     item=found[i];
     p=item.p;
-    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom">';
+    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom pk">'+pickBtn('cat:'+p.path);
     html+='<div class="n"><b>'+esc(p.name)+'</b></div>';
     html+='<div class="v">'+esc(p.version||'')+'</div>';
     html+='<div class="a">';
@@ -2864,55 +2768,11 @@ function showAutoPayloadFolder(){
   }
   pump();
 }
-function showFolder(id){
-  var label,i,list=[],p,html,markOnly,catalogView;
-  if(id==='elf') id=lastElfFolder||'loader';
-  if(id==='kill'){ showKillFolder(); return; }
-  if(id==='downloaded'){ showDownloadedFolder(); return; }
-  if(id==='auto'){ showAutoPayloadFolder(); return; }
-  if(id==='load' && isConsoleHost()){ showLoadFolder(); return; }
-  label=(isCatalogId(id) ? folderLabel(id) : id);
-  if(isCatalogId(id)) lastElfFolder=id;
-  markOnly=false;
-  catalogView=isCatalogId(id);
-  currentFolder=id;
-  homeEl.className='';
-  homeEl.innerHTML='';
-  hdrEl.className='show';
-  titleEl.textContent=label;
-  titleEl.className='beam';
-  viewEl.className='show';
-  /* Multi/Select live only in Downloaded. */
-  syncSideActions('');
-  renderNav(id);
-  for(i=0;i<PAYLOADS.length;i++){
-    if(PAYLOADS[i].folder===id) list.push(PAYLOADS[i]);
-  }
-  if(!list.length){
-    viewEl.innerHTML=(catalogView?folderChipsHtml(id):'')+'<p class="empty">'+esc(t('emptyFolder'))+'</p>';
-    bindSubfolds();
-    return;
-  }
-  var onPs5=/PlayStation/i.test(navigator.userAgent);
-  html=(catalogView?folderChipsHtml(id):'')+headHtml(false);
-  for(i=0;i<list.length;i++){
-    p=list[i];
-    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom">';
-    html+='<div class="n"><b>'+esc(p.name)+'</b></div>';
-    html+='<div class="v">'+esc(p.version)+'</div>';
-    if(p.info && p.info!==p.name) html+='<div class="d">'+esc(p.info)+'</div>';
-    var on=isActiveName(p.name);
-    var state;
-    if(isConsoleHost()) state='unknown'; /* Disk check fills Download or Load. */
-    else state=on?'loaded':(onPs5?'send':'download');
-    html+='<div class="a"><button type="button" class="run" data-state="'+state+'">\u2026</button></div>';
-    html+='</div></div>';
-  }
-  viewEl.innerHTML=html;
-  wrapListGrid();
-  bindSubfolds();
-  stripAutoChecks();
-  var rows=viewEl.querySelectorAll('[data-path]');
+/* Wire the primary button of every payload row inside box (lists, home cards, search). */
+function bindRows(box, markOnly){
+  var i, onPs5=/PlayStation/i.test(navigator.userAgent);
+  if(!box) return;
+  var rows=box.querySelectorAll('[data-path]');
   for(i=0;i<rows.length;i++){
     (function(tr){
       var btn=primaryRun(tr);
@@ -3028,6 +2888,58 @@ function showFolder(id){
       }
     })(rows[i]);
   }
+}
+function showFolder(id){
+  var label,i,list=[],p,html,markOnly,catalogView;
+  if(id==='elf') id=lastElfFolder||'loader';
+  if(id==='kill' || id==='run'){ showRunFolder(); return; }
+  if(id==='ps5' && isConsoleHost()){ showFilesFolder(); return; }
+  if(id==='search' && !searchQ){ showHome(); return; }
+  if(id==='downloaded'){ showDownloadedFolder(); return; }
+  if(id==='auto'){ showAutoPayloadFolder(); return; }
+  if(id==='load' && isConsoleHost()){ showLoadFolder(); return; }
+  label=folderTitle(id);
+  if(isCatalogId(id)) lastElfFolder=id;
+  markOnly=false;
+  catalogView=isCatalogId(id);
+  currentFolder=id;
+  homeEl.className='';
+  homeEl.innerHTML='';
+  hdrEl.className='show';
+  titleEl.textContent=label;
+  titleEl.className='beam';
+  viewEl.className='show';
+  /* Multi/Select live only in Downloaded. */
+  syncSideActions('');
+  setHdrActions('');
+  renderNav(id);
+  list=folderList(id);
+  setHdrActions(list.length ? selAllBtn() : '');
+  if(!list.length){
+    viewEl.innerHTML=(catalogView?folderChipsHtml(id):'')+'<p class="empty">'+esc(t(id==='search'?'noResults':'emptyFolder'))+'</p>';
+    bindSubfolds();
+    return;
+  }
+  var onPs5=/PlayStation/i.test(navigator.userAgent);
+  html=(catalogView?folderChipsHtml(id):'')+headHtml(false);
+  for(i=0;i<list.length;i++){
+    p=list[i];
+    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom pk">'+pickBtn('cat:'+p.path);
+    html+='<div class="n"><b>'+esc(p.name)+'</b></div>';
+    html+='<div class="v">'+esc(p.version)+'</div>';
+    if(p.info && p.info!==p.name) html+='<div class="d">'+esc(p.info)+'</div>';
+    var on=isActiveName(p.name);
+    var state;
+    if(isConsoleHost()) state='unknown'; /* Disk check fills Download or Load. */
+    else state=on?'loaded':(onPs5?'send':'download');
+    html+='<div class="a"><button type="button" class="run" data-state="'+state+'">\u2026</button></div>';
+    html+='</div></div>';
+  }
+  viewEl.innerHTML=html;
+  wrapListGrid();
+  bindSubfolds();
+  stripAutoChecks();
+  bindRows(viewEl, markOnly);
   refreshKillButtons();
   watchRunning();
   if(id==='auto' && isConsoleHost()) filterAutoToDownloaded();
@@ -3056,15 +2968,13 @@ function filterAutoToDownloaded(){
 
 window.addEventListener('hashchange',function(){
   var id=getHashFolder();
+  /* Our own setHashFolder already rendered this view. */
+  if((id||null)===(currentFolder||null) || (id && id===lastElfFolder && currentFolder===id)) return;
+  if(modalOpen()) closeModal(false);
   if(id)showFolder(id); else showHome();
 });
 
-function padBack(){
-  var ll=document.getElementById('langlist');
-  if(ll && ll.getAttribute('data-state')==='open'){ toggleLangList(false); return; }
-  if(currentFolder){ setHashFolder(null); showHome(); return; }
-  history.back();
-}
+function padBack(){ goBack(); }
 function padClose(){
   try{ window.close(); }catch(err){}
 }
@@ -3089,6 +2999,7 @@ function padTick(){
     p=list[i];
     if(!p||!p.buttons) continue;
     b=p.buttons;
+    if(!autoArmed()) padNav(p);
     down={1:!!(b[1]&&b[1].pressed),2:!!(b[2]&&b[2].pressed)};
     if(down[2]&&!padHeld[2]) padCancelAuto();
     if(!autoArmed()){
@@ -3271,6 +3182,7 @@ function tickClock(){
     dt.textContent=txt || (days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear());
   }
 }
+(function(){ var rc=document.getElementById('runchip'); if(rc) rc.onclick=function(){ goFolder('run'); }; var mo=document.getElementById('modalok'), mn=document.getElementById('modalno'); if(mo) mo.onclick=function(){ closeModal(true); }; if(mn) mn.onclick=function(){ closeModal(false); }; })();
 tickClock();
 setInterval(tickClock, 1000);
 showDeviceInfo();
@@ -3461,7 +3373,7 @@ function downloadSelfUpdate(){
       setStatus(t('selfUpdated',{ver:info.version}));
       hideSelfUpdateBanner();
       try{ localStorage.setItem(SELFUPD_DISMISS_KEY, String(info.version)); }catch(e){}
-      sendPayload(info.name, info.path, info.url, function(){ if(btn) btn.disabled=false; });
+      selfHandoff(btn);
     }).catch(fail);
     return;
   }
@@ -3690,7 +3602,7 @@ function refreshLocalFiles(cb){
     for(i=0;i<PAYLOADS.length;i++) known[String(PAYLOADS[i].path||'').split('/').pop()]=1;
     for(i=0;j && j.files && i<j.files.length;i++){
       f=j.files[i];
-      if(known[f.name] || isProtectedKillName(f.name)) continue;
+      if(known[f.name] || f.ok===false || isProtectedKillName(f.name)) continue;
       list.push({name:f.name,path:'mirror/'+f.name,version:'',folder:'local',info:'',local:true,size:f.size});
     }
     LOCAL_PAYLOADS=list;
@@ -3705,7 +3617,7 @@ function loadDeviceHtml(){
     return '<div class="ps5hint">'+esc(t('ps5NoPicker'))+'<b id="mlurl">'+esc(url)+'</b></div><p class="mlnote">'+esc(t('ps5NoPicker2'))+'</p>';
   }
   var ios=/iPhone|iPad|iPod/.test(navigator.userAgent||'');
-  return '<input type="file" id="mlfile"'+(ios?'':' accept=".elf,.bin,.self"')+' class="mlhide">'+
+  return '<input type="file" id="mlfile" multiple'+(ios?'':' accept=".elf,.bin,.self"')+' class="mlhide">'+
     '<div class="drop" id="mldrop"><b>'+esc(t('chooseFile'))+'</b><span>'+esc(t('chooseHint'))+'</span><button type="button" id="mlpick">'+esc(t('chooseBtn'))+'</button></div>'+
     '<div id="mlsel" class="mlhide">'+
     '<div class="fcard" id="mlcard"><i id="mlkind">ELF</i><b id="mlname"></b><em id="mlok"></em><small id="mlmeta"></small></div>'+
@@ -3729,19 +3641,12 @@ function showLoadFolder(){
   for(i=0;i<LOAD_ROOTS.length;i++) chips+='<button type="button" data-root="'+esc(LOAD_ROOTS[i].p)+'">'+esc(LOAD_ROOTS[i].l)+'</button>';
   viewEl.innerHTML='<div id="ml">'+
     '<section class="panel mlUp"><p class="label">'+esc(t('fromDevice'))+'</p><div id="mldev">'+loadDeviceHtml()+'</div></section>'+
-    '<section class="panel mlPath"><p class="label">'+esc(t('fromPs5'))+'</p>'+
-    '<div class="chips" id="mlchips">'+chips+'</div>'+
-    '<label class="mlf" for="mlpath">'+esc(t('pathLabel'))+'</label>'+
-    '<div class="mlrow"><input class="mlin" id="mlpath" value="'+esc(loadSt.dir)+'" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">'+
-    '<button type="button" class="run" id="mlopen">'+esc(t('openDir'))+'</button><button type="button" class="run load" id="mlrun">'+esc(t('loadBtn'))+'</button></div>'+
-    '<div class="plist" id="mllist"></div>'+
-    '<p class="mlnote">'+esc(t('onlyPayloads'))+'</p></section>'+
+    '<section class="panel mlPath"><p class="label">'+esc(t('fromPs5'))+'</p><p class="mlnote" style="margin-top:0">'+esc(t('onlyPayloads'))+'</p><button type="button" class="run load mlgoto" id="mlgoto">'+esc(t('browsePs5'))+'</button></section>'+
     '<section class="panel mlLog"><p class="label">'+esc(t('recent'))+'</p><div id="mlrecent"></div></section></div>';
   bindLoadView();
   paintRecent();
   paintPicked();
-  browseRoots();
-  browseDir(loadSt.dir);
+  document.getElementById('mlgoto').onclick=function(){ goFolder('ps5'); };
   if(onPs5Browser()) fetchConsoleIp(function(ip){ var u=document.getElementById('mlurl'); if(u && ip) u.textContent='http://'+ip+':1000'; });
 }
 function fetchConsoleIp(cb){
@@ -3754,7 +3659,10 @@ function bindLoadView(){
   var pick=el('mlpick'), file=el('mlfile'), other=el('mlother'), send=el('mlsend'), keep=el('mlkeep'), auto=el('mlauto');
   if(pick && file) pick.onclick=function(){ try{ file.value=''; }catch(e){} file.click(); };
   if(other && file) other.onclick=function(){ if(loadSt.busy) return; try{ file.value=''; }catch(e){} file.click(); };
-  if(file) file.onchange=function(){ if(file.files && file.files[0]) pickFile(file.files[0]); };
+  if(file) file.onchange=function(){
+    if(file.files && file.files.length>1){ var n=addUploadFiles(file.files); setStatus(t('filesAdded',{n:n})); return; }
+    if(file.files && file.files[0]) pickFile(file.files[0]);
+  };
   if(send) send.onclick=uploadSend;
   if(auto) auto.onchange=function(){ if(auto.checked && keep) keep.checked=true; };
   if(keep) keep.onchange=function(){ if(!keep.checked && auto) auto.checked=false; };
@@ -3930,7 +3838,873 @@ function endLoadBtn(btn, ok){
   btn.setAttribute('data-state',ok?'sent':'load');
   btn.textContent=ok?t('loaded'):t('loadBtn');
 }
+/* ===== ui3: nav, home, search, running, PS5 files, dialogs, controller ===== */
+var ICONS={
+  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  mine:'<path d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.3 6L12 16.3 6.6 19.3l1.3-6-4.6-4.1 6.1-.6z"/>',
+  elf:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+  downloaded:'<path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 17v3h16v-3"/>',
+  auto:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+  run:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+  load:'<path d="M12 20V8m0 0l-4.5 4.5M12 8l4.5 4.5M4 4h16"/>',
+  ps5:'<path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H10l2 2.5h7.5A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/>',
+  usb:'<path d="M9 2h6v6H9zM7 8h10v8a5 5 0 0 1-10 0z"/>',
+  data:'<ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>'
+};
+function icon(n){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>'; }
+var OWNER='X-F1REBALL-X';
+function isMine(p){ return !!p && String(p.by||p.author||'')===OWNER; }
+function mineList(){ var a=allPayloads(), out=[], i; for(i=0;i<a.length;i++) if(isMine(a[i])) out.push(a[i]); return out; }
+var searchQ='';
+function searchList(q){
+  var a=allPayloads(), out=[], i, s, words=String(q||'').toLowerCase().split(/\s+/).filter(function(w){ return !!w; }), k, ok;
+  if(!words.length) return out;
+  for(i=0;i<a.length;i++){
+    s=(String(a[i].name||'')+' '+String(a[i].info||'')+' '+String(a[i].by||'')+' '+String(a[i].version||'')+' '+folderLabelSafe(a[i].folder)).toLowerCase();
+    ok=true;
+    for(k=0;k<words.length;k++) if(s.indexOf(words[k])<0){ ok=false; break; }
+    if(ok) out.push(a[i]);
+  }
+  out.sort(function(x,y){ var xn=String(x.name).toLowerCase().indexOf(words[0])===0, yn=String(y.name).toLowerCase().indexOf(words[0])===0; return xn===yn ? (String(x.name).toLowerCase()<String(y.name).toLowerCase()?-1:1) : (xn?-1:1); });
+  return out;
+}
+function folderLabelSafe(id){ return isCatalogId(id) ? folderLabel(id) : ''; }
+function folderList(id){
+  var out=[], i;
+  if(id==='mine') return mineList();
+  if(id==='search') return searchList(searchQ);
+  for(i=0;i<PAYLOADS.length;i++) if(PAYLOADS[i].folder===id) out.push(PAYLOADS[i]);
+  return out;
+}
+function folderTitle(id){
+  if(id==='mine') return OWNER;
+  if(id==='search') return t('searchResults',{q:searchQ});
+  return isCatalogId(id) ? folderLabel(id) : id;
+}
+/* One row of the payload list (same markup everywhere, so the same button logic works). */
+function rowHtml(p){
+  var onPs5=/PlayStation/i.test(navigator.userAgent), on=isActiveName(p.name), state, h;
+  if(isConsoleHost()) state='unknown'; else state=on?'loaded':(onPs5?'send':'download');
+  h='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom pk">'+pickBtn('cat:'+p.path);
+  h+='<div class="n"><b>'+esc(p.name)+'</b></div><div class="v">'+esc(p.version||'')+'</div>';
+  if(p.info && p.info!==p.name) h+='<div class="d">'+esc(p.info)+'</div>';
+  h+='<div class="a"><button type="button" class="run" data-state="'+state+'">\u2026</button></div></div></div>';
+  return h;
+}
+/* ---- header actions slot ---- */
+function setHdrActions(html){ var x=document.getElementById('hdrx'); if(x) x.innerHTML=html||''; }
+/* ---- menu ---- */
+var navBound=false, navHtmlLast='', runCount=0;
+function navItem(id, label, count, sel){
+  return '<button type="button" class="navbtn'+(sel?' active':'')+'" data-folder="'+id+'">'+icon(id||'home')+'<span>'+esc(label)+'</span>'+(count!=null?'<span class="ncount">'+count+'</span>':'')+'</button>';
+}
+function renderNav(selected){
+  var nav=document.getElementById('nav'), html='', cat, mv;
+  if(!nav) return;
+  cat=(selected==='elf' || isCatalogId(selected));
+  html+='<p class="navgrp">'+esc(t('library'))+'</p>';
+  html+=navItem('', t('home'), null, !selected);
+  html+=navItem('mine', OWNER, mineList().length, selected==='mine');
+  html+=navItem('elf', t('allPayloads'), PAYLOADS.length, cat);
+  html+=navItem('downloaded', t('downloaded'), downloadedCount, selected==='downloaded');
+  html+=navItem('auto', t('autoPayload'), autoCount(), selected==='auto');
+  if(isConsoleHost()){
+    html+='<p class="navgrp">'+esc(t('consoleGrp'))+'</p>';
+    html+=navItem('run', t('running'), runCount, selected==='run' || selected==='kill');
+    html+=navItem('ps5', t('ps5Files'), null, selected==='ps5');
+    html+=navItem('load', t('loadFile'), null, selected==='load');
+  }
+  /* Only touch the DOM when something changed: keeps focus and avoids flicker. */
+  if(html!==navHtmlLast){
+    var foc=document.activeElement, fid=(foc && foc.parentNode===nav) ? foc.getAttribute('data-folder') : null, nb;
+    nav.innerHTML=html; navHtmlLast=html;
+    if(fid!=null){ nb=nav.querySelector('[data-folder="'+fid+'"]'); if(nb) nb.focus(); }
+  }
+  if(!navBound){
+    navBound=true;
+    nav.addEventListener('click', function(ev){
+      var b=ev.target;
+      while(b && b!==nav && !(b.getAttribute && b.getAttribute('data-folder')!=null)) b=b.parentNode;
+      if(!b || b===nav) return;
+      goFolder(b.getAttribute('data-folder')||'');
+    });
+  }
+  mv=document.getElementById('main');
+  if(mv) mv.setAttribute('data-view', !selected ? 'home' : (cat ? 'elf' : selected));
+  paintRunChip();
+}
+function goFolder(id){
+  if(searchQ && id!=='search'){ var q=document.getElementById('q'); if(q) q.value=''; searchQ=''; }
+  if(!id){ setHashFolder(null); showHome(); return; }
+  if(id==='elf') id=lastElfFolder||'loader';
+  setHashFolder(id);
+  showFolder(id);
+}
+/* ---- home ---- */
+var DL_SET={};
+function catChipsHtml(){
+  var i, f, html='<div class="catchips">';
+  for(i=0;i<FOLDERS.length;i++){
+    f=FOLDERS[i];
+    html+='<button type="button" class="subfold" data-sub="'+esc(f.id)+'"><span>'+esc(folderLabel(f.id))+'</span><span class="ncount">'+countIn(f.id)+'</span></button>';
+  }
+  return html+'</div>';
+}
+function quickList(){
+  var seen={}, out=[], all=allPayloads(), byName={}, i, r, rec=readRecent(), n;
+  for(i=0;i<all.length;i++) byName[all[i].name]=all[i];
+  for(i=0;i<rec.length && out.length<6;i++){
+    r=rec[i];
+    if(!r.ok || !r.name || seen[r.name] || !byName[r.name]) continue;
+    seen[r.name]=1; out.push(byName[r.name]);
+  }
+  for(n in DL_SET){
+    if(out.length>=6) break;
+    if(!DL_SET.hasOwnProperty(n) || seen[n] || !byName[n] || isProtectedKillName(n)) continue;
+    seen[n]=1; out.push(byName[n]);
+  }
+  return out;
+}
+function paintQuick(){
+  var box=document.getElementById('homeQuick'), list, html='', i;
+  if(!box || currentFolder) return;
+  list=quickList();
+  if(!list.length){ box.innerHTML='<p class="empty">'+esc(t('quickEmpty'))+'</p>'; return; }
+  for(i=0;i<list.length;i++) html+=rowHtml(list[i]);
+  box.innerHTML=html;
+  bindRows(box, false);
+}
+function showHome(){
+  var stay, adelay, mine, html='', i, ci, el;
+  currentFolder=null;
+  titleEl.className='';
+  hdrEl.className='';
+  viewEl.className='';
+  viewEl.innerHTML='';
+  setHdrActions('');
+  syncSideActions('');
+  homeEl.className='show';
+  stay=browserStayOpen();
+  adelay=autoDelaySec();
+  mine=mineList();
+  html+='<section class="panel hMine"><div class="mineHead"><img src="icons/launcher-home.jpg?v=8" width="54" height="54" alt=""><div><b>'+esc(OWNER)+'</b><span>'+esc(t('mineDesc'))+'</span></div></div>';
+  html+='<div class="cards" id="homeMine">';
+  for(i=0;i<mine.length && i<6;i++) html+=rowHtml(mine[i]);
+  if(!mine.length) html+='<p class="empty">'+esc(t('emptyFolder'))+'</p>';
+  html+='</div></section>';
+  html+='<section class="panel hQuick"><p class="label">'+esc(t('quick'))+'</p><div class="cards" id="homeQuick"></div></section>';
+  html+='<section class="panel hRun"><p class="label">'+esc(t('running'))+'</p><div id="homeRun"><p class="empty">'+esc(isConsoleHost()?t('checkingLoaded'):t('noLoaded'))+'</p></div>'+
+    (isConsoleHost()?'<button type="button" class="more" id="homeRunMore">'+esc(t('manage'))+'</button>':'')+'</section>';
+  html+='<section class="panel hCats"><p class="label">'+esc(t('categories'))+'</p>'+catChipsHtml()+'</section>';
+  html+='<section class="panel hSet"><p class="label">'+esc(t('autoPayload'))+'</p><div class="homeOpt">'+
+    '<div class="optrow"><div><b>'+esc(t('openAfterJb'))+'</b><small>'+esc(t('openAfterJbHint'))+'</small></div><div class="homeChoices seg">'+
+    '<button type="button" data-brows="open" data-state="'+(stay?'on':'off')+'"'+(stay?' class="selected"':'')+'>'+esc(t('yes'))+'</button>'+
+    '<button type="button" data-brows="closed" data-state="'+(!stay?'on':'off')+'"'+(!stay?' class="selected"':'')+'>'+esc(t('no'))+'</button></div></div>'+
+    '<div class="optrow"><div><b>'+esc(t('startDelay'))+'</b><small>'+esc(t('startDelayHint'))+'</small></div><div class="homeChoices seg">'+
+    '<button type="button" data-adelay="0" data-state="'+(adelay===0?'on':'off')+'"'+(adelay===0?' class="selected"':'')+'>0 s</button>'+
+    '<button type="button" data-adelay="3" data-state="'+(adelay===3?'on':'off')+'"'+(adelay===3?' class="selected"':'')+'>3 s</button></div></div>'+
+    '<div class="optrow"><div><b>'+esc(t('autoCountN',{n:autoCount()}))+'</b><small>'+esc(t('autoListHint'))+'</small></div><button type="button" id="homeAutoEdit">'+esc(t('editList'))+'</button></div>'+
+    '</div></section>';
+  homeEl.innerHTML=html;
+  el=homeEl.querySelectorAll('button[data-brows]');
+  for(ci=0;ci<el.length;ci++) el[ci].onclick=function(){ var on=this.getAttribute('data-brows')==='open'; paintBrowserChoice(on); setBrowserStayOpen(on); };
+  el=homeEl.querySelectorAll('button[data-adelay]');
+  for(ci=0;ci<el.length;ci++) el[ci].onclick=function(){ var sec=this.getAttribute('data-adelay')==='0'?0:3; paintAutoDelayChoice(sec); setAutoDelay(sec); };
+  el=homeEl.querySelectorAll('.subfold');
+  for(ci=0;ci<el.length;ci++) el[ci].onclick=function(){ var sid=this.getAttribute('data-sub'); if(sid) goFolder(sid); };
+  el=document.getElementById('homeAutoEdit');
+  if(el) el.onclick=function(){ goFolder('auto'); };
+  el=document.getElementById('homeRunMore');
+  if(el) el.onclick=function(){ goFolder('run'); };
+  bindRows(document.getElementById('homeMine'), false);
+  paintQuick();
+  renderNav(null);
+  if(lastProcs) paintHomeRun(lastProcs);
+  pollProcs();
+  syncBrowserPrefFromDisk();
+}
+/* ---- running payloads ---- */
+var runShowAll=false, runSig='';
+function procBase(n){ return String(n||'').split('/').pop(); }
+function userProcs(procs){
+  var out=[], i, p, names={}, all=allPayloads(), b;
+  for(i=0;i<all.length;i++){ b=normBase(elfFileBase(all[i])); if(b) names[b]=1; }
+  for(i=0;i<(procs||[]).length;i++){
+    p=procs[i];
+    if(!p || !p.name) continue;
+    if(runShowAll || p.self || p.is_daemon || names[normBase(p.name)] || /\.(elf|bin|self)$/i.test(p.name)) out.push(p);
+  }
+  out.sort(function(a,b){ if(!!a.self!==!!b.self) return a.self?1:-1; return (a.pid|0)-(b.pid|0); });
+  return out;
+}
+function killable(p){ return !p.self && !p.protected && !isProtectedKillName(p.name); }
+function setRunCount(n){
+  if(n===runCount) return;
+  runCount=n;
+  renderNav(currentFolder);
+}
+function paintRunChip(){
+  var c=document.getElementById('runchip'), n=document.getElementById('runn');
+  if(!c) return;
+  c.style.display=isConsoleHost()?'':'none';
+  c.setAttribute('data-n', String(runCount));
+  if(n) n.textContent=String(runCount);
+}
+function paintHomeRun(procs){
+  var box=document.getElementById('homeRun'), list, html='', i, p, shown=0;
+  if(!box || currentFolder) return;
+  list=userProcs(procs);
+  for(i=0;i<list.length && shown<5;i++){
+    p=list[i];
+    if(p.self) continue;
+    shown++;
+    html+='<div class="proc"><span class="pn">'+esc(procBase(p.name))+'</span><span class="pp">pid '+(p.pid|0)+'</span>'+
+      (killable(p)?'<button type="button" class="run kill" data-pid="'+(p.pid|0)+'" data-pname="'+esc(p.name)+'">'+esc(t('killBtn'))+'</button>':'<span class="tag prot">'+esc(t('protectedProc'))+'</span>')+'</div>';
+  }
+  if(!shown) html='<p class="empty">'+esc(t('noRunning'))+'</p>';
+  box.innerHTML=html;
+  bindKillButtons(box);
+}
+function bindKillButtons(box){
+  var b=box.querySelectorAll('button[data-pid]'), i;
+  for(i=0;i<b.length;i++) b[i].onclick=function(){ confirmKill({pid:this.getAttribute('data-pid')|0,name:this.getAttribute('data-pname')}, this); };
+}
+var procBusy=false;
+function pollProcs(force){
+  if(!isConsoleHost() || procBusy) return;
+  if(document.hidden && !force) return;
+  procBusy=true;
+  pldmgrFetch('/processes_list').then(function(data){
+    var procs=(data && data.processes) ? data.processes : [], list, n=0, i;
+    procBusy=false;
+    lastProcs=procs;
+    list=userProcs(procs);
+    for(i=0;i<list.length;i++) if(killable(list[i])) n++;
+    setRunCount(n);
+    if(!currentFolder) paintHomeRun(procs);
+    if(currentFolder==='run') paintRunList(procs, force);
+    if(document.querySelector('[data-name]')) refreshKillButtons(procs);
+  }).catch(function(){ procBusy=false; if(currentFolder==='run' && force) paintRunList([], true); });
+}
+function showRunFolder(){
+  currentFolder='run';
+  homeEl.className=''; homeEl.innerHTML='';
+  hdrEl.className='show';
+  titleEl.textContent=t('running');
+  titleEl.className='beam';
+  viewEl.className='show';
+  syncSideActions('');
+  renderNav('run');
+  setHdrActions('<button type="button" id="runref">'+esc(t('refresh'))+'</button>');
+  runSig='';
+  viewEl.innerHTML='<div class="runbar"><p class="mlnote" style="margin:0">'+esc(t('runHint'))+'</p><label class="pick"><input type="checkbox" class="mark" id="runall"'+(runShowAll?' checked':'')+'><span>'+esc(t('showAll'))+'</span></label></div>'+
+    '<div class="proclist" id="runlist"><p class="empty">'+esc(t('checkingLoaded'))+'</p></div>';
+  document.getElementById('runref').onclick=function(){ pollProcs(true); };
+  document.getElementById('runall').onchange=function(){ runShowAll=!!this.checked; runSig=''; if(lastProcs) paintRunList(lastProcs, true); };
+  if(lastProcs) paintRunList(lastProcs, true);
+  pollProcs(true);
+}
+function paintRunList(procs, force){
+  var box=document.getElementById('runlist'), list, sig, html='', i, p;
+  if(!box) return;
+  list=userProcs(procs);
+  sig=list.map(function(x){ return x.pid+':'+x.name; }).join('|');
+  if(sig===runSig && !force) return;
+  runSig=sig;
+  if(!list.length){ box.innerHTML='<p class="empty" style="grid-column:1/-1">'+esc(t('noRunning'))+'</p>'; return; }
+  for(i=0;i<list.length;i++){
+    p=list[i];
+    html+='<div class="elfwrap"><div class="elf nom"><div class="n"><b>'+esc(procBase(p.name))+'</b>'+
+      (p.self?'<span class="tag self">'+esc(t('thisLauncher'))+'</span>':(p.protected||isProtectedKillName(p.name)?'<span class="tag prot">'+esc(t('protectedProc'))+'</span>':''))+'</div>'+
+      '<div class="v">pid '+(p.pid|0)+'</div><div class="d">'+esc(t('memMb',{n:(p.memory!=null?p.memory:'?')}))+'</div><div class="a">'+
+      (killable(p)?'<button type="button" class="run kill" data-pid="'+(p.pid|0)+'" data-pname="'+esc(p.name)+'">'+esc(t('killBtn'))+'</button>':'')+'</div></div></div>';
+  }
+  box.innerHTML=html;
+  bindKillButtons(box);
+}
+function confirmKill(pr, btn){
+  var name=procBase(pr.name);
+  showModal(t('killConfirm',{name:name,pid:pr.pid}), t('killHint'), t('killBtn'), function(){
+    if(btn){ btn.disabled=true; btn.textContent='\u2026'; }
+    fetch('/process_kill?pid='+encodeURIComponent(pr.pid),{method:'POST'}).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(j){ return {code:r.status,j:j}; });
+    }).then(function(res){
+      if(res.j && res.j.ok){
+        setStatus(t('killed',{name:name}));
+        try{ clearPayloadPid(name); forgetActive(name); hideKillForName(name); }catch(e){}
+      } else {
+        setStatus(t('killFail',{name:name,msg:(res.j && res.j.message) || ('HTTP '+res.code)}));
+        if(btn){ btn.disabled=false; btn.textContent=t('killBtn'); }
+      }
+      pollProcs(true);
+    }).catch(function(){
+      setStatus(t('killFail',{name:name,msg:t('errNetwork')}));
+      if(btn){ btn.disabled=false; btn.textContent=t('killBtn'); }
+    });
+  });
+}
+/* ---- confirm dialog ---- */
+var modalCb=null, modalPrevFocus=null;
+function modalOpen(){ var m=document.getElementById('modal'); return !!(m && m.className==='show'); }
+function showModal(title, hint, okLabel, cb){
+  var m=document.getElementById('modal');
+  if(!m){ if(window.confirm(title)) cb(); return; }
+  document.getElementById('modalt').textContent=title;
+  document.getElementById('modals').textContent=hint||'';
+  document.getElementById('modalok').textContent=okLabel||'OK';
+  document.getElementById('modalno').textContent=t('cancel');
+  modalCb=cb; modalPrevFocus=document.activeElement;
+  m.className='show';
+  document.getElementById('modalno').focus();
+}
+function closeModal(run){
+  var m=document.getElementById('modal'), cb=modalCb;
+  if(m) m.className='';
+  modalCb=null;
+  try{ if(modalPrevFocus && modalPrevFocus.focus) modalPrevFocus.focus(); }catch(e){}
+  if(run && cb) cb();
+}
+/* ---- PS5 files: places | folder contents ---- */
+var DOWNLOADS_DIR='/data/elf-launcher/mirror';
+function fbPlaces(){
+  return [{p:DOWNLOADS_DIR,l:t('downloadsDir'),i:'downloaded'},{p:'/data',l:'/data',i:'data'},
+    {p:'/mnt/usb0',l:'USB 0',i:'usb'},{p:'/mnt/usb1',l:'USB 1',i:'usb'},{p:'/mnt/ext0',l:'Ext 0',i:'data'},{p:'/mnt/ext1',l:'Ext 1',i:'data'}];
+}
+var fbSt={dir:DOWNLOADS_DIR, roots:null, seq:0};
+function fbRootOf(d){
+  var pl=fbPlaces(), i, best='';
+  for(i=0;i<pl.length;i++) if((d===pl[i].p || d.indexOf(pl[i].p+'/')===0) && pl[i].p.length>best.length) best=pl[i].p;
+  return best;
+}
+function showFilesFolder(){
+  currentFolder='ps5';
+  homeEl.className=''; homeEl.innerHTML='';
+  hdrEl.className='show';
+  titleEl.textContent=t('ps5Files');
+  titleEl.className='beam';
+  viewEl.className='show';
+  syncSideActions('');
+  renderNav('ps5');
+  setHdrActions(selAllBtn()+'<button type="button" id="fbref">'+esc(t('refresh'))+'</button>');
+  viewEl.innerHTML='<div id="fb"><div><nav class="places" id="fbplaces"></nav></div>'+
+    '<div><div class="fbtop"><button type="button" id="fbback">'+esc(t('upDir'))+'</button>'+
+    '<input class="mlin" id="fbpath" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">'+
+    '<button type="button" id="fbgo">'+esc(t('openDir'))+'</button></div>'+
+    '<div class="crumbs" id="fbcrumbs"></div><div class="plist" id="fblist"></div></div></div>';
+  document.getElementById('fbref').onclick=function(){ fbBrowse(fbSt.dir); };
+  document.getElementById('fbback').onclick=function(){ fbUp(); };
+  document.getElementById('fbgo').onclick=function(){ fbOpenTyped(); };
+  document.getElementById('fbpath').onkeydown=function(ev){ if((ev.key||'')==='Enter'){ ev.preventDefault(); fbOpenTyped(); } };
+  fbPaintPlaces();
+  if(!fbSt.roots) fetch('/browse').then(function(r){ return r.json(); }).then(function(j){ var i; fbSt.roots={}; for(i=0;j && j.roots && i<j.roots.length;i++) fbSt.roots[j.roots[i].path]=!!j.roots[i].ok; fbPaintPlaces(); }).catch(function(){});
+  fbBrowse(fbSt.dir);
+}
+function fbOpenTyped(){
+  var v=(document.getElementById('fbpath').value||'').trim();
+  if(/\.(elf|bin|self)$/i.test(v)) runPath(v, document.getElementById('fbgo')); else fbBrowse(v);
+}
+function fbPaintPlaces(){
+  var box=document.getElementById('fbplaces'), pl=fbPlaces(), html='', i, on, off, root=fbRootOf(fbSt.dir);
+  if(!box) return;
+  for(i=0;i<pl.length;i++){
+    on=root===pl[i].p;
+    off=!!(fbSt.roots && pl[i].p!==DOWNLOADS_DIR && fbSt.roots[pl[i].p]===false);
+    html+='<button type="button" data-place="'+esc(pl[i].p)+'" class="'+(on?'selected':'')+(off?' off':'')+'"'+(off?' title="'+esc(t('notConnected'))+'"':'')+'>'+icon(pl[i].i)+'<span>'+esc(pl[i].l)+'</span></button>';
+  }
+  box.innerHTML=html;
+  var b=box.querySelectorAll('button'), k;
+  for(k=0;k<b.length;k++) b[k].onclick=function(){ fbBrowse(this.getAttribute('data-place')); };
+}
+function placeLabel(p){ var pl=fbPlaces(), i; for(i=0;i<pl.length;i++) if(pl[i].p===p) return pl[i].l; return p; }
+function fbCanUp(){ var r=fbRootOf(fbSt.dir); return !!(r && fbSt.dir!==r && fbSt.dir!=='/data'); }
+function fbUp(){ if(!fbCanUp()) return false; fbBrowse(fbSt.dir.slice(0, fbSt.dir.lastIndexOf('/'))||'/data'); return true; }
+function fbPaintCrumbs(dir){
+  var box=document.getElementById('fbcrumbs'), parts=dir.split('/').filter(function(x){ return !!x; }), html='', acc='', i, root=fbRootOf(dir);
+  if(!box) return;
+  for(i=0;i<parts.length;i++){
+    acc+='/'+parts[i];
+    if(root && acc.length<root.length) continue;
+    if(html) html+='<i>/</i>';
+    html+='<button type="button" data-dir="'+esc(acc)+'">'+esc(acc===root?placeLabel(root):parts[i])+'</button>';
+  }
+  box.innerHTML=html;
+  var b=box.querySelectorAll('button'), k;
+  for(k=0;k<b.length;k++) b[k].onclick=function(){ fbBrowse(this.getAttribute('data-dir')); };
+}
+function fbBrowse(dir){
+  var list=document.getElementById('fblist'), seq, back=document.getElementById('fbback');
+  dir=String(dir||'').trim().replace(/\/+/g,'/').replace(/\/$/,'')||DOWNLOADS_DIR;
+  if(dir.charAt(0)!=='/') dir='/'+dir;
+  fbSt.dir=dir;
+  seq=++fbSt.seq;
+  if(document.getElementById('fbpath')) document.getElementById('fbpath').value=dir;
+  if(back) back.disabled=!fbCanUp();
+  fbPaintPlaces();
+  fbPaintCrumbs(dir);
+  if(!list) return;
+  list.innerHTML='<p class="empty">'+esc(t('checkingFile'))+'</p>';
+  fetch('/browse?dir='+encodeURIComponent(dir)).then(function(r){ return r.json().catch(function(){ return null; }).then(function(j){ return {code:r.status,j:j}; }); }).then(function(res){
+    var j=res.j, html='', i, f, dirs, files, rows, k;
+    if(seq!==fbSt.seq || currentFolder!=='ps5') return;
+    if(res.code!==200 || !j || !j.ok){
+      list.innerHTML='<p class="empty">'+esc(res.code===404 ? t('folderMissing') : (res.code===403 ? t('errBlocked') : ((j && j.message) || ('HTTP '+res.code))+(j && j.errno ? ' (errno '+j.errno+')' : '')))+'</p>';
+      return;
+    }
+    dirs=(j.dirs||[]).slice().sort(function(a,b){ return a.toLowerCase()<b.toLowerCase()?-1:1; });
+    files=(j.files||[]).slice().sort(function(a,b){ return a.name.toLowerCase()<b.name.toLowerCase()?-1:1; });
+    for(i=0;i<dirs.length;i++) html+='<div class="elfwrap"><div class="elf nom dir" data-dir="'+esc(dir+'/'+dirs[i])+'"><div class="n"><b>'+esc(dirs[i])+'</b></div><div class="v"></div><div class="a"><button type="button" class="run">'+esc(t('openDir'))+'</button></div></div></div>';
+    for(i=0;i<files.length;i++){
+      f=files[i];
+      html+='<div class="elfwrap"><div class="elf nom'+(f.ok===false?' bad':' pk')+'" data-file="'+esc(dir+'/'+f.name)+'">'+(f.ok===false?'':pickBtn('ps5:'+dir+'/'+f.name))+'<div class="n"><b>'+esc(f.name)+'</b></div><div class="v">'+esc(fmtSize(f.size))+'</div>'+
+        (f.ok===false?'<div class="d">'+esc(t('badMagic'))+'</div>':'')+
+        '<div class="a">'+(f.ok===false?'':'<button type="button" class="run load" data-state="load">'+esc(t('loadBtn'))+'</button>')+'</div></div></div>';
+    }
+    if(!files.length) html+='<p class="empty">'+esc(t('noPayloadsHere'))+'</p>';
+    list.innerHTML=html;
+    rows=list.querySelectorAll('[data-dir]');
+    for(k=0;k<rows.length;k++) rows[k].querySelector('button').onclick=(function(d){ return function(){ fbBrowse(d); }; })(rows[k].getAttribute('data-dir'));
+    rows=list.querySelectorAll('[data-file]');
+    for(k=0;k<rows.length;k++) (function(row){ var b=row.querySelector('button.run'); if(b) b.onclick=function(){ runPath(row.getAttribute('data-file'), b); }; })(rows[k]);
+  }).catch(function(e){ if(seq===fbSt.seq && list) list.innerHTML='<p class="empty">'+esc(t('errNetwork'))+(e && e.message ? ' ('+esc(e.message)+')' : '')+'</p>'; });
+}
+/* ---- search box in the header ---- */
+var searchTimer=0, searchBack=null;
+function bindSearch(){
+  var q=document.getElementById('q');
+  if(!q) return;
+  q.setAttribute('placeholder', t('searchPh'));
+  q.oninput=function(){
+    clearTimeout(searchTimer);
+    searchTimer=setTimeout(function(){
+      var v=(q.value||'').trim();
+      if(v){
+        if(currentFolder!=='search') searchBack=currentFolder;
+        searchQ=v;
+        showFolder('search');
+      } else if(currentFolder==='search'){
+        searchQ='';
+        if(searchBack) showFolder(searchBack); else showHome();
+      }
+    }, 160);
+  };
+  q.onkeydown=function(ev){
+    var k=ev.key||'', b;
+    if(k==='Enter'){ ev.preventDefault(); b=viewEl.querySelector('.elfwrap button.run'); if(b) b.focus(); }
+    else if(k==='Escape'){ ev.preventDefault(); ev.stopPropagation(); q.value=''; q.oninput(); q.blur(); }
+  };
+}
+/* ---- catalog: follow the latest GitHub release for entries that ask for it ---- */
+var ghDone={};
+function trackLatest(){
+  var all=PAYLOADS, i, repos={}, r;
+  for(i=0;i<all.length;i++) if(all[i] && all[i].latest && all[i].latest.repo) (repos[all[i].latest.repo]=repos[all[i].latest.repo]||[]).push(all[i]);
+  for(r in repos){
+    if(!repos.hasOwnProperty(r) || ghDone[r]) continue;
+    ghDone[r]=1;
+    (function(repo, items){
+      ghLatest(repo, function(rel){
+        var i, k, a, re, sha, changed=false;
+        if(!rel || !rel.assets) return;
+        for(i=0;i<items.length;i++){
+          try{ re=new RegExp(items[i].latest.asset); }catch(e){ continue; }
+          for(k=0;k<rel.assets.length;k++){
+            a=rel.assets[k];
+            if(!re.test(a.name||'')) continue;
+            sha=String(a.digest||'').replace(/^sha256:/,'').toLowerCase();
+            if(sha.length!==64 || !a.browser_download_url) break;
+            if(sha!==items[i].checksum){
+              items[i].checksum=sha; items[i].url=a.browser_download_url;
+              items[i].size=a.size|0; items[i].version=String(rel.tag_name||items[i].version).replace(/^v(?=\d)/,'');
+              changed=true;
+            }
+            break;
+          }
+        }
+        if(changed){ if(!currentFolder) showHome(); else if(currentFolder==='mine' || currentFolder==='search' || isCatalogId(currentFolder)) showFolder(currentFolder); }
+      });
+    })(r, repos[r]);
+  }
+}
+function ghLatest(repo, cb){
+  var key='ps5elfs-gh-'+repo, c=null;
+  try{ c=JSON.parse(localStorage.getItem(key)||'null'); }catch(e){}
+  if(c && c.at && Date.now()-c.at<6*3600*1000 && c.rel){ cb(c.rel); return; }
+  fetchCatalogText('https://api.github.com/repos/'+repo+'/releases/latest').then(function(txt){
+    var j=JSON.parse(txt), slim={tag_name:j.tag_name,assets:[]}, i;
+    for(i=0;j.assets && i<j.assets.length;i++) slim.assets.push({name:j.assets[i].name,size:j.assets[i].size,digest:j.assets[i].digest,browser_download_url:j.assets[i].browser_download_url});
+    try{ localStorage.setItem(key, JSON.stringify({at:Date.now(),rel:slim})); }catch(e){}
+    cb(slim);
+  }).catch(function(){ cb(c && c.rel); });
+}
+/* ---- controller and keyboard ---- */
+function goBack(){
+  var ll=document.getElementById('langlist');
+  if(modalOpen()){ closeModal(false); return; }
+  if(ll && ll.getAttribute('data-state')==='open'){ toggleLangList(false); return; }
+  if(currentFolder==='ps5' && fbUp()) return;
+  if(currentFolder==='search'){ var q=document.getElementById('q'); if(q) q.value=''; searchQ=''; if(searchBack){ showFolder(searchBack); return; } }
+  if(currentFolder){ setHashFolder(null); showHome(); return; }
+}
+var focusMode=false, padCrossAt=0;
+function focusables(){
+  var all=document.querySelectorAll('button,input,a[href],[tabindex]'), out=[], i, el, r, box=modalOpen()?document.getElementById('modal'):null;
+  for(i=0;i<all.length;i++){
+    el=all[i];
+    if(el.disabled || el.tabIndex<0) continue;
+    if(box && !box.contains(el)) continue;
+    r=el.getBoundingClientRect();
+    if(r.width<2 || r.height<2) continue;
+    if(el.offsetParent===null && getComputedStyle(el).position!=='fixed') continue;
+    out.push({el:el, r:r});
+  }
+  return out;
+}
+function moveFocus(dir){
+  var cur=document.activeElement, list=focusables(), cr, cx, cy, best=null, bs=1e9, i, r, x, y, dx, dy, main, side, s;
+  if(!list.length) return false;
+  if(!cur || cur===document.body){ list[0].el.focus(); return true; }
+  cr=cur.getBoundingClientRect(); cx=cr.left+cr.width/2; cy=cr.top+cr.height/2;
+  for(i=0;i<list.length;i++){
+    if(list[i].el===cur) continue;
+    r=list[i].r; x=r.left+r.width/2; y=r.top+r.height/2; dx=x-cx; dy=y-cy;
+    if(dir==='ArrowRight'){ main=dx; side=Math.abs(dy); if(r.left<cr.right-4) continue; }
+    else if(dir==='ArrowLeft'){ main=-dx; side=Math.abs(dy); if(r.right>cr.left+4) continue; }
+    else if(dir==='ArrowDown'){ main=dy; side=Math.abs(dx); if(r.top<cr.bottom-4) continue; }
+    else { main=-dy; side=Math.abs(dx); if(r.bottom>cr.top+4) continue; }
+    s=main+side*2.2;
+    if(s<bs){ bs=s; best=list[i].el; }
+  }
+  if(!best) return false;
+  best.focus();
+  try{ best.scrollIntoView({block:'nearest',inline:'nearest'}); }catch(e){ best.scrollIntoView(false); }
+  return true;
+}
+document.addEventListener('keydown', function(ev){
+  var k=ev.key||'', tg=ev.target||{}, typing=(tg.tagName==='INPUT' && tg.type!=='checkbox') || tg.tagName==='TEXTAREA';
+  if(autoArmed && autoArmed()) return;
+  if(modalOpen()){
+    if(k==='Escape' || k==='Backspace'){ ev.preventDefault(); closeModal(false); return; }
+  }
+  if(!typing && (k==='Escape' || k==='Backspace' || k==='BrowserBack' || k==='GoBack')){ ev.preventDefault(); goBack(); return; }
+  if(!typing && (k==='t' || k==='T') && pickFocused()){ ev.preventDefault(); return; }
+  if(!typing && k==='/'){ ev.preventDefault(); var q=document.getElementById('q'); if(q) q.focus(); return; }
+  if(/^Arrow/.test(k) && (!typing || k==='ArrowDown' || k==='ArrowUp')){
+    focusMode=true;
+    if(moveFocus(k)) ev.preventDefault();
+  }
+});
+document.addEventListener('mousemove', function(){ focusMode=false; }, true);
+/* Cross after a D-pad move clicks the focused control, not whatever is under the cursor. */
+document.addEventListener('click', function(ev){
+  var a=document.activeElement;
+  if(focusMode && Date.now()-padCrossAt<400 && ev.isTrusted && a && a!==document.body){ ev.preventDefault(); ev.stopPropagation(); }
+}, true);
+var padRep={};
+function padNav(p){
+  var map={12:'ArrowUp',13:'ArrowDown',14:'ArrowLeft',15:'ArrowRight'}, k, b=p.buttons, now=Date.now(), d;
+  for(k in map){
+    d=!!(b[k] && b[k].pressed);
+    if(d){
+      if(!padRep[k] || now>=padRep[k]){ focusMode=true; moveFocus(map[k]); padRep[k]=now+(padRep[k]?110:380); }
+    } else padRep[k]=0;
+  }
+  d=!!(b[3] && b[3].pressed);
+  if(d && !padRep.tri){ focusMode=true; pickFocused(); }
+  padRep.tri=d;
+  d=!!(b[0] && b[0].pressed);
+  if(d && !padRep.x && focusMode){
+    var a=document.activeElement;
+    padCrossAt=now;
+    if(a && a!==document.body && a.click) a.click();
+  }
+  padRep.x=d;
+}
+
+/* ---- multi-select: pick rows anywhere, load them one by one or add them to AutoPayload ---- */
+var SEL={keys:[], map:{}}, selRun=null, selLog=[];
+function selHas(k){ return !!SEL.map[k]; }
+function pickBtn(k){
+  var on=selHas(k);
+  return '<button type="button" class="pick'+(on?' on':'')+'" data-k="'+esc(k)+'" aria-pressed="'+(on?'true':'false')+'" aria-label="'+esc(t('selectOne'))+'"><span>ELF</span></button>';
+}
+function selAdd(it){
+  if(SEL.map[it.k]) return;
+  SEL.map[it.k]=it; SEL.keys.push(it.k);
+}
+function selDel(k){
+  var i;
+  if(!SEL.map[k]) return;
+  delete SEL.map[k];
+  for(i=0;i<SEL.keys.length;i++) if(SEL.keys[i]===k){ SEL.keys.splice(i,1); break; }
+}
+function selItemFromPick(b){
+  var k=b.getAttribute('data-k')||'', kind=k.slice(0,k.indexOf(':')), id=k.slice(k.indexOf(':')+1), meta;
+  if(kind==='cat'){ meta=findPayload(id); return {k:k, kind:'cat', path:id, name:(meta&&meta.name)||id.split('/').pop()}; }
+  if(kind==='ps5') return {k:k, kind:'ps5', path:id, name:id.split('/').pop()};
+  return null;
+}
+function paintPicks(){
+  var all=document.querySelectorAll('button.pick'), i, k, on;
+  for(i=0;i<all.length;i++){
+    k=all[i].getAttribute('data-k'); on=selHas(k);
+    all[i].className='pick'+(on?' on':'');
+    all[i].setAttribute('aria-pressed', on?'true':'false');
+  }
+}
+function selToggleBtn(b){
+  var k=b.getAttribute('data-k'), it;
+  if(selRun) return;
+  if(selLog.length) selLog=[]; /* a new pick starts a new batch; failures stay picked */
+  if(selHas(k)) selDel(k);
+  else { it=selItemFromPick(b); if(it) selAdd(it); }
+  paintPicks(); paintSelBar();
+}
+function selClear(){
+  if(selRun) return;
+  SEL={keys:[], map:{}}; selLog=[];
+  paintPicks(); paintSelBar();
+}
+function selAllIn(box){
+  var b=(box||document).querySelectorAll('button.pick'), i, it;
+  if(selRun) return;
+  for(i=0;i<b.length;i++){ it=selItemFromPick(b[i]); if(it) selAdd(it); }
+  paintPicks(); paintSelBar();
+}
+function selAllBtn(){ return '<button type="button" data-selall="1">'+esc(t('selectAll'))+'</button>'; }
+function qState(st, msg){
+  if(st==='wait') return t('qWait');
+  if(st==='busy') return t('qSend');
+  if(st==='ok') return msg ? t('qOkPid',{n:msg}) : t('qOk');
+  if(st==='added') return t('qAdded');
+  return t('qFail',{msg:msg||'?'});
+}
+function paintSelBar(){
+  var bar=document.getElementById('selbar'), n=SEL.keys.length, html='', i, e, done=0;
+  if(!bar) return;
+  if(!n && !selRun && !selLog.length){ bar.className=''; bar.innerHTML=''; document.body.removeAttribute('data-sel'); return; }
+  document.body.setAttribute('data-sel','1');
+  if(selLog.length){
+    html+='<ol class="selq">';
+    for(i=0;i<selLog.length;i++){
+      e=selLog[i];
+      if(e.st!=='wait' && e.st!=='busy') done++;
+      html+='<li data-st="'+e.st+'"><b>'+esc(e.name)+'</b><span>'+esc(qState(e.st, e.msg))+'</span></li>';
+    }
+    html+='</ol>';
+  }
+  html+='<div class="selrow"><b class="seln">'+esc(selRun ? t('selProgress',{a:done,b:selLog.length}) : t('selN',{n:n}))+'</b>';
+  html+='<button type="button" class="run load" id="selgo"'+(selRun||!n?' disabled':'')+'>'+esc(t('loadAll'))+'</button>';
+  html+='<button type="button" id="selauto"'+(selRun||!n?' disabled':'')+'>'+esc(t('addAuto'))+'</button>';
+  html+='<button type="button" id="selclr"'+(selRun?' disabled':'')+'>'+esc(n?t('clearSel'):t('selDone'))+'</button>';
+  if(onPs5Browser()) html+='<small class="selhint">'+esc(t('pickHintPad'))+'</small>';
+  html+='</div>';
+  bar.innerHTML=html; bar.className='show';
+  var g=document.getElementById('selgo'), a=document.getElementById('selauto'), c=document.getElementById('selclr');
+  if(g) g.onclick=function(){ selStart('load'); };
+  if(a) a.onclick=function(){ selStart('auto'); };
+  if(c) c.onclick=function(){ selClear(); };
+}
+/* POST with JSON result; a 409 means another send holds the lock: wait and retry. */
+function postJson(url, tries, cb){
+  fetch(url,{method:'POST'}).then(function(r){
+    return r.text().then(function(tx){ var j=null; try{ j=JSON.parse(tx); }catch(e){} return {code:r.status,j:j,t:tx}; });
+  }).then(function(res){
+    if(res.code===409 && tries>0){ setTimeout(function(){ postJson(url, tries-1, cb); }, 1500); return; }
+    cb(res);
+  }).catch(function(e){ cb({code:(e && e.name==='TimeoutError')?-1:0, j:null, t:''}); });
+}
+function xhrUpload(file, q, tries, cb){
+  var x=new XMLHttpRequest();
+  x.open('POST', q, true);
+  x.setRequestHeader('X-ELFL','1');
+  x.setRequestHeader('Content-Type','application/octet-stream');
+  x.timeout=600000;
+  x.onload=function(){
+    var j=null; try{ j=JSON.parse(x.responseText); }catch(e){}
+    if(x.status===409 && tries>0){ setTimeout(function(){ xhrUpload(file, q, tries-1, cb); }, 1500); return; }
+    cb({code:x.status, j:j, t:x.responseText});
+  };
+  x.onerror=function(){ cb({code:0,j:null,t:''}); };
+  x.ontimeout=function(){ cb({code:-1,j:null,t:''}); };
+  x.send(file);
+}
+function ensureDownloaded(it, cb){
+  var meta=findPayload(it.path);
+  localMeta(it.path).then(function(m){
+    if(m && m.ok && m.exists){ cb(true); return; }
+    if(!meta){ cb(false, t('errMissing')); return; }
+    downloadToFolder(it.path, meta).then(function(){ DL_SET[it.name]=1; if(downloadedCountKnown) downloadedCount++; cb(true); },
+      function(e){ cb(false, (e && e.message) || 'download failed'); });
+  }, function(){ cb(false, t('errNetwork')); });
+}
+function selDoOne(it, mode, cb){
+  var fin=function(res, label){
+    var ok=res.code===200 && res.j && res.j.ok;
+    cb(ok, ok ? (label||((res.j && res.j.pid) ? String(res.j.pid) : '')) : sendErrText(res.code, res.j, res.t));
+  };
+  if(mode==='auto' && !/\.elf$/i.test(it.name)){ cb(false, t('autoElfOnly')); return; }
+  if(it.kind==='cat'){
+    if(!isConsoleHost()){
+      if(mode==='auto'){ cb(false, t('errBlocked')); return; }
+      var meta=findPayload(it.path);
+      sendPayload(it.name, it.path, (meta && meta.url) || it.path, function(ok){ cb(ok!==false, ok===false ? t('errRejected') : ''); });
+      return;
+    }
+    ensureDownloaded(it, function(ok, why){
+      if(!ok){ cb(false, why); return; }
+      if(mode==='auto'){ setAuto(it.name, true); cb(true, ''); return; }
+      postJson('/run?path='+encodeURIComponent(it.path), 8, function(res){
+        var good=res.code===200;
+        if(good){ rememberActive(it.name); addRecent({ok:true,name:it.name,src:'cat'}); }
+        cb(good, good ? '' : sendErrText(res.code, null, res.t));
+      });
+    });
+    return;
+  }
+  if(it.kind==='ps5'){
+    if(mode==='auto'){
+      postJson('/save_path?auto=1&path='+encodeURIComponent(it.path), 8, function(res){
+        if(res.code===200 && res.j && res.j.ok && res.j.name) setAuto(res.j.name, true);
+        fin(res, ' ');
+      });
+      return;
+    }
+    postJson('/run_path?path='+encodeURIComponent(it.path), 8, function(res){
+      var ok=res.code===200 && res.j && res.j.ok;
+      addRecent({ok:!!ok,name:it.name,src:'ps5',where:it.path.slice(0, it.path.length-it.name.length-1),pid:(res.j&&res.j.pid)||0,why:ok?'':sendErrText(res.code,res.j,res.t)});
+      if(ok) rememberActive(it.name);
+      fin(res);
+    });
+    return;
+  }
+  if(it.kind==='up'){
+    var q='/upload?name='+encodeURIComponent(it.name)+(mode==='auto' ? '&save=1&auto=1&run=0' : '&save=0&auto=0');
+    xhrUpload(it.file, q, 8, function(res){
+      var ok=res.code===200 && res.j && res.j.ok;
+      if(ok && mode==='auto') setAuto((res.j && res.j.name) || it.name, true);
+      if(ok && mode!=='auto') rememberActive((res.j && res.j.name) || it.name);
+      addRecent({ok:!!ok,name:it.name,src:'up',pid:(res.j&&res.j.pid)||0,why:ok?'':sendErrText(res.code,res.j,'')});
+      fin(res, mode==='auto' ? ' ' : '');
+    });
+    return;
+  }
+  cb(false, '?');
+}
+function selStart(mode){
+  var i, it;
+  if(selRun || !SEL.keys.length) return;
+  selLog=[];
+  for(i=0;i<SEL.keys.length;i++){ it=SEL.map[SEL.keys[i]]; selLog.push({k:it.k, name:it.name, st:'wait', msg:'', it:it}); }
+  selRun={mode:mode, i:0};
+  paintSelBar();
+  showProgress(true); setProgressPct(0);
+  (function next(){
+    var e;
+    if(selRun.i>=selLog.length){
+      var okN=0, j;
+      for(j=0;j<selLog.length;j++) if(selLog[j].st==='ok' || selLog[j].st==='added') okN++;
+      setStatus(t('selFinished',{a:okN,b:selLog.length}));
+      showProgress(false);
+      selRun=null;
+      SEL={keys:[], map:{}};
+      for(j=0;j<selLog.length;j++) if(selLog[j].st==='fail') selAdd(selLog[j].it); /* keep failures picked for a retry */
+      paintPicks(); paintSelBar();
+      if(mode==='auto') syncAutoDisk();
+      refreshLocalFiles(function(){ renderNav(currentFolder); if(!currentFolder) showHome(); else if(currentFolder==='auto' || currentFolder==='downloaded' || currentFolder==='mine' || currentFolder==='search' || isCatalogId(currentFolder)) showFolder(currentFolder); });
+      if(isConsoleHost()) setTimeout(function(){ pollProcs(true); }, 600);
+      return;
+    }
+    e=selLog[selRun.i];
+    e.st='busy'; paintSelBar();
+    setStatus((mode==='auto' ? t('addAuto') : t('loadingName',{name:e.name}))+' \u00b7 '+(selRun.i+1)+'/'+selLog.length);
+    selDoOne(e.it, mode, function(ok, msg){
+      e.st=ok ? (mode==='auto' ? 'added' : 'ok') : 'fail';
+      e.msg=ok ? String(msg||'').trim() : msg;
+      selRun.i++;
+      setProgressPct(Math.round(selRun.i*100/selLog.length));
+      paintSelBar();
+      /* elfldr needs a moment between payloads; finish right after the last one. */
+      if(selRun.i>=selLog.length) next(); else setTimeout(next, mode==='auto' ? 50 : 700);
+    });
+  })();
+}
+function addUploadFiles(files){
+  var i, f, n=0;
+  for(i=0;i<files.length;i++){
+    f=files[i];
+    if(f.size>LOAD_MAX) continue;
+    selAdd({k:'up:'+f.name+':'+f.size, kind:'up', name:f.name, file:f}); n++;
+  }
+  paintSelBar();
+  return n;
+}
+document.addEventListener('click', function(ev){
+  var b=ev.target, i;
+  for(i=0;b && i<4;i++){ if(b.className && typeof b.className==='string' && /\bpick\b/.test(b.className)) break; if(b.getAttribute && b.getAttribute('data-selall')) break; b=b.parentNode; }
+  if(!b || i>=4 || !b.getAttribute) return;
+  if(b.getAttribute('data-selall')){ selAllIn(viewEl); return; }
+  ev.preventDefault();
+  selToggleBtn(b);
+});
+/* Triangle (or the T key) picks the focused row. */
+function pickFocused(){
+  var a=document.activeElement, w=a, p;
+  while(w && w!==document.body && !(w.className && typeof w.className==='string' && /\belf\b/.test(w.className))) w=w.parentNode;
+  if(!w || w===document.body) return false;
+  p=w.querySelector('button.pick');
+  if(!p) return false;
+  selToggleBtn(p);
+  return true;
+}
+/* ---- live self-update: new launcher takes over :1000, page reloads when it answers ---- */
+function updOverlay(msg, bad){
+  var o=document.getElementById('updov');
+  if(!o) return;
+  if(msg==null){ o.className=''; return; }
+  o.className=bad?'show bad':'show';
+  o.innerHTML='<div><i class="spin"></i><p>'+esc(msg)+'</p>'+(bad?'<button type="button" id="updovx">'+esc(t('closeBtn'))+'</button>':'')+'</div>';
+  var x=document.getElementById('updovx');
+  if(x){ x.onclick=function(){ updOverlay(null); }; x.focus(); }
+}
+function selfHandoff(btn){
+  var start=Date.now(), oldPid=0, done=false;
+  function fail(msg){
+    if(done) return; done=true;
+    if(btn) btn.disabled=false;
+    setStatus(t('selfUpdateFail',{msg:msg}));
+    updOverlay(t('selfUpdateFail',{msg:msg}), true);
+  }
+  function poll(){
+    if(done) return;
+    if(Date.now()-start>60000){ fail(t('selfTimeout')); return; }
+    setTimeout(function(){
+      fetch('/version').then(function(r){ return r.json(); }).then(function(j){
+        if(j && j.pid && oldPid && j.pid!==oldPid){
+          done=true; updOverlay(t('selfReloading'));
+          setTimeout(function(){ location.reload(); }, 700);
+        } else poll();
+      }, poll);
+    }, 1000);
+  }
+  updOverlay(t('selfSwitching'));
+  setStatus(t('selfSwitching'));
+  fetch('/version').then(function(r){ return r.json(); }).then(function(j){ oldPid=(j && j.pid)||0; }, function(){}).then(function(){
+    fetch('/self_update',{method:'POST'}).then(function(r){
+      return r.json().catch(function(){ return null; }).then(function(j){ return {code:r.status, j:j}; });
+    }).then(function(res){
+      if(res.code!==200 || !res.j || !res.j.ok){ fail((res.j && res.j.message) || ('HTTP '+res.code)); return; }
+      if(res.j.old_pid) oldPid=res.j.old_pid;
+      poll();
+    }, function(){ poll(); }); /* the old server may be gone before it answers */
+  });
+}
 function bootAfterCatalog(){
+  bindSearch();
+  setTimeout(trackLatest, 2500);
+  if(isConsoleHost()){ watchRunning(); pollProcs(true); }
   var start=getHashFolder();
   if(start)showFolder(start); else showHome();
   applyRemembered();
