@@ -33,7 +33,7 @@ int sceSystemServiceLaunchWebBrowser(const char *uri, void *);
 #ifndef PORT
 #define PORT 1000
 #endif
-#define HOME_ICON_VERSION "1.0.22"
+#define HOME_ICON_VERSION "1.0.23"
 #define HOME_ICON_VER_PATH "/data/elf-launcher/home-icon.ver"
 
 #define INCASSET(name, file)                                                   \
