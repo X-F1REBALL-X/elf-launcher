@@ -127,7 +127,47 @@
       "category": "HEN",
       "author": "X-F1REBALL-X",
       "size": 6325504,
-      "checksum": "3d820c0d5db3639c11f07c0c0aa9881cd71b61bff33db8cd189573caa8f58a1c"
+      "checksum": "3d820c0d5db3639c11f07c0c0aa9881cd71b61bff33db8cd189573caa8f58a1c",
+      "github_latest": {
+        "repo": "X-F1REBALL-X/wk-autoloader",
+        "asset": "^installer\\.elf$"
+      }
+    },
+    {
+      "name": "HearBridge-PS5.elf",
+      "filename": "HearBridge-PS5.elf",
+      "path": "apps/HearBridge-PS5.elf",
+      "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0.elf",
+      "description": "Bluetooth headphones for a jailbroken PS5: game and system audio, no dongle. Page on port 8090.",
+      "version": "1.1.0",
+      "category": "Apps",
+      "author": "X-F1REBALL-X",
+      "size": 493768,
+      "checksum": "9dd8f616ae6ac26b91a91bfb3f95f96ac3a716324256f3fdc30646636d0790d5",
+      "sha256": "9dd8f616ae6ac26b91a91bfb3f95f96ac3a716324256f3fdc30646636d0790d5",
+      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0.elf",
+      "github_latest": {
+        "repo": "X-F1REBALL-X/HearBridge-PS5",
+        "asset": "^HearBridge-PS5-[0-9.]+\\.elf$"
+      }
+    },
+    {
+      "name": "HearBridge-PS5-mtk-test.elf",
+      "filename": "HearBridge-PS5-mtk-test.elf",
+      "path": "apps/HearBridge-PS5-mtk-test.elf",
+      "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0-mtk-test.elf",
+      "description": "HearBridge test build for MediaTek Bluetooth chips (every Pro, some fat and Slim).",
+      "version": "1.1.0",
+      "category": "Apps",
+      "author": "X-F1REBALL-X",
+      "size": 494776,
+      "checksum": "79eafb31723c80e9e6079f454605c6e1d777290f6694cfacf21cf8205023bd06",
+      "sha256": "79eafb31723c80e9e6079f454605c6e1d777290f6694cfacf21cf8205023bd06",
+      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0-mtk-test.elf",
+      "github_latest": {
+        "repo": "X-F1REBALL-X/HearBridge-PS5",
+        "asset": "^HearBridge-PS5-[0-9.]+-mtk-test\\.elf$"
+      }
     },
     {
       "name": "fetchpkg.elf",
