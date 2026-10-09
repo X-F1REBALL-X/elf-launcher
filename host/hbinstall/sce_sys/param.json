@@ -1,11 +1,45 @@
 {
     "titleId": "ELFL00001",
-    "applicationCategoryType": 65536,
+    "applicationCategoryType": 0,
+    "contentBadgeType": 1,
     "deeplinkUri": "http://127.0.0.1:1000/",
     "localizedParameters": {
-	"defaultLanguage": "en-US",
-	"en-US": {
-	    "titleName": "Elf launcher"
-	}
+        "defaultLanguage": "en-US",
+        "en-US": {
+            "titleName": "Elf Launcher"
+        },
+        "en-GB": {
+            "titleName": "Elf Launcher"
+        },
+        "es-ES": {
+            "titleName": "Elf Launcher"
+        },
+        "fr-FR": {
+            "titleName": "Elf Launcher"
+        },
+        "de-DE": {
+            "titleName": "Elf Launcher"
+        },
+        "pt-BR": {
+            "titleName": "Elf Launcher"
+        },
+        "ru-RU": {
+            "titleName": "Elf Launcher"
+        },
+        "ja-JP": {
+            "titleName": "Elf Launcher"
+        },
+        "zh-Hans": {
+            "titleName": "Elf Launcher"
+        },
+        "it-IT": {
+            "titleName": "Elf Launcher"
+        },
+        "ar-AE": {
+            "titleName": "Elf Launcher"
+        },
+        "he-IL": {
+            "titleName": "Elf Launcher"
+        }
     }
 }
