@@ -55,7 +55,7 @@
     },
     {
       "name": "wk-autoloader.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/wk-autoloader/HEAD/assets/icon0.png",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/wk-autoloader/2548957950d227cb478f94f88d3389b25b957ff9/assets/icon0.png",
       "filename": "wk-autoloader.elf",
       "path": "hen/wk-autoloader.elf",
       "url": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.0.16/installer.elf",
@@ -72,6 +72,7 @@
     },
     {
       "name": "launchpad-install.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/launchpad/033d2a33df5beadbf3b7f9b80a4cae4369f1dca3/sce_sys/icon0.png",
       "filename": "launchpad-install.elf",
       "path": "apps/launchpad-install.elf",
       "url": "https://github.com/ps5-payload-dev/launchpad/releases/download/v0.2/launchpad-install.elf",
@@ -84,6 +85,7 @@
     },
     {
       "name": "payload-manager.elf",
+      "icon": "https://raw.githubusercontent.com/itsPLK/ps5-payload-manager/e4e72dc9d831dd09ee8fabc222ad1e7f5139050e/assets/icon0.png",
       "filename": "payload-manager.elf",
       "path": "apps/payload-manager.elf",
       "url": "https://github.com/itsPLK/ps5-payload-manager/releases/download/v0.5.2/pldmgr_v0.5.2.elf",
@@ -109,6 +111,7 @@
     },
     {
       "name": "etaHEN-2.5B.bin",
+      "icon": "https://raw.githubusercontent.com/etaHEN/etaHEN/dafa13b562ddb137a4b4a97b9aaa287c0c57cc9c/etaHEN-Icon.jpg",
       "filename": "etaHEN-2.5B.bin",
       "path": "hen/etaHEN-2.5B.bin",
       "url": "https://github.com/etaHEN/etaHEN/releases/download/2.5B/etaHEN-2.5B.bin",
@@ -135,6 +138,7 @@
     },
     {
       "name": "onionHEN.elf",
+      "icon": "https://raw.githubusercontent.com/aydencharles/onionHEN/b23ffe674b2de9f62fe634944c9230ff149d593a/assets/logo.png",
       "filename": "onionHEN.elf",
       "path": "hen/onionHEN.elf",
       "url": "https://github.com/aydencharles/onionHEN/releases/download/v0.0.13/OnionHEN.elf",
@@ -186,6 +190,7 @@
     },
     {
       "name": "pkg-manager.elf",
+      "icon": "https://raw.githubusercontent.com/itsPLK/ps5-pkg-manager/cbc8cc00e2199d6c1495c832e3ca918b3d2a8a04/assets/icon0.png",
       "filename": "pkg-manager.elf",
       "path": "apps/pkg-manager.elf",
       "url": "https://github.com/itsPLK/ps5-pkg-manager/releases/download/v1.5.0/pkg-manager_v1.5.0.elf",
@@ -199,6 +204,7 @@
     },
     {
       "name": "pkg_install.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/websrv/1afd476c5044d68df4e45dc773769e5de3b2cdd6/homebrew/PKGInstall/sce_sys/icon0.png",
       "filename": "pkg_install.elf",
       "path": "apps/pkg_install.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/pkg_install.elf",
@@ -238,6 +244,7 @@
     },
     {
       "name": "game-compressor.elf",
+      "icon": "https://raw.githubusercontent.com/juma-sayeh/PS5-Game-Compressor/5a040799eed7a8355ae9194608f353717b6634d5/assets-app/icon0.png",
       "filename": "game-compressor.elf",
       "path": "storage/game-compressor.elf",
       "url": "https://github.com/juma-sayeh/PS5-Game-Compressor/releases/download/v1.0.4/game-compressor.elf",
@@ -250,6 +257,7 @@
     },
     {
       "name": "ps5-app-dumper.elf",
+      "icon": "https://raw.githubusercontent.com/EchoStretch/ps5-app-dumper/a86754c41dabc5526383b9d0dd67f03f99e6c654/assets/tile/icon0.png",
       "filename": "ps5-app-dumper.elf",
       "path": "storage/ps5-app-dumper.elf",
       "url": "https://github.com/EchoStretch/ps5-app-dumper/releases/download/v2.10/ps5-app-dumper_v2.10.elf",
@@ -263,6 +271,7 @@
     },
     {
       "name": "shadowmountplus.elf",
+      "icon": "https://raw.githubusercontent.com/drakmor/ShadowMountPlus/4cde42a2293756132735d8e4280eb71f089865ee/smp_icon.png",
       "filename": "shadowmountplus.elf",
       "path": "storage/shadowmountplus.elf",
       "url": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta3/shadowmountplus.elf",
@@ -276,6 +285,7 @@
     },
     {
       "name": "SMPlusGui.elf",
+      "icon": "https://raw.githubusercontent.com/KarnerF/SMPlusGui/52c5cb8591cdb1693f73da61f1d8679b7a2db5d6/assets-app/icon1.png",
       "filename": "SMPlusGui.elf",
       "path": "storage/SMPlusGui.elf",
       "url": "https://github.com/KarnerF/SMPlusGui/releases/download/v1.0.1/SMPlusGui_v1.0.1.elf",
@@ -327,6 +337,7 @@
     },
     {
       "name": "CheatRunner.elf",
+      "icon": "https://raw.githubusercontent.com/notmaj0r/CheatRunner/ad582ab34f575be66e39a6d4dbc47cc7d284d135/CheatRunner.png",
       "filename": "CheatRunner.elf",
       "path": "tools/CheatRunner.elf",
       "url": "https://github.com/notmaj0r/CheatRunner/releases/download/v0.17.2/CheatRunner.elf",
@@ -376,6 +387,7 @@
     },
     {
       "name": "ps5upload.elf",
+      "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
       "url": "https://github.com/phantomptr/ps5upload/releases/download/v6.6.1/ps5upload-6.6.1.elf",
@@ -389,6 +401,7 @@
     },
     {
       "name": "BFpilot.elf",
+      "icon": "https://raw.githubusercontent.com/ItsBlurf/BFpilot/93acd4b9486ba7d11208a26ff2db7dbb7386666f/assets-app/icon0.png",
       "filename": "BFpilot.elf",
       "path": "files/BFpilot.elf",
       "url": "https://github.com/ItsBlurf/BFpilot/releases/download/v0.4.4/bfpilot.elf",
@@ -402,6 +415,7 @@
     },
     {
       "name": "ftpsrv-ps5-install.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/ftpsrv/23737c4738d15b9b9b036665bbf008d8fd6d82d2/assets/icon0.png",
       "filename": "ftpsrv-ps5-install.elf",
       "path": "files/ftpsrv-ps5-install.elf",
       "url": "https://github.com/ps5-payload-dev/ftpsrv/releases/download/v0.21.1/ftpsrv-ps5-install.elf",
@@ -414,6 +428,7 @@
     },
     {
       "name": "ftpsrv-ps5.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/ftpsrv/23737c4738d15b9b9b036665bbf008d8fd6d82d2/assets/icon0.png",
       "filename": "ftpsrv-ps5.elf",
       "path": "files/ftpsrv-ps5.elf",
       "url": "https://github.com/ps5-payload-dev/ftpsrv/releases/download/v0.21.1/ftpsrv-ps5.elf",
@@ -427,6 +442,7 @@
     },
     {
       "name": "web-file-mgr.elf",
+      "icon": "https://raw.githubusercontent.com/owendswang/ps5-web-file-manager/3659cbbc40022e32229f9919f045018a988f2ef5/assets/icon0.png",
       "filename": "web-file-mgr.elf",
       "path": "files/web-file-mgr.elf",
       "url": "https://github.com/owendswang/ps5-web-file-manager/releases/download/v1.10/web-file-mgr-v1.10.elf",
@@ -440,6 +456,7 @@
     },
     {
       "name": "wfm-7zip-helper.elf",
+      "icon": "https://raw.githubusercontent.com/owendswang/ps5-web-file-manager/3659cbbc40022e32229f9919f045018a988f2ef5/assets/icon0.png",
       "filename": "wfm-7zip-helper.elf",
       "path": "files/wfm-7zip-helper.elf",
       "url": "https://github.com/owendswang/ps5-web-file-manager/releases/download/v1.10/wfm-7zip-helper.elf",
@@ -465,6 +482,7 @@
     },
     {
       "name": "websrv-ps5.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/websrv/1afd476c5044d68df4e45dc773769e5de3b2cdd6/icon0.png",
       "filename": "websrv-ps5.elf",
       "path": "files/websrv-ps5.elf",
       "url": "https://github.com/ps5-payload-dev/websrv/releases/download/v0.34/websrv-ps5.elf",
@@ -504,6 +522,7 @@
     },
     {
       "name": "LinkDev.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/linkdev/8b1d47ed3acb5ead61602708ac1e58ad43f066f6/sce_sys/icon0.png",
       "filename": "LinkDev.elf",
       "path": "tools/LinkDev.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/LinkDev.elf",
@@ -517,6 +536,7 @@
     },
     {
       "name": "OffAct.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/offact/8c870eb809cc46f96835e977cae3354b4cf70247/sce_sys/icon0.png",
       "filename": "OffAct.elf",
       "path": "tools/OffAct.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/OffAct.elf",
@@ -542,7 +562,7 @@
     },
     {
       "name": "HearBridge-PS5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/HEAD/assets/icon0.png",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/6fff4b33cd92e82d65bfcabf6cde456fb0cc6138/assets/icon0.png",
       "filename": "HearBridge-PS5.elf",
       "path": "apps/HearBridge-PS5.elf",
       "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0.elf",
@@ -561,7 +581,7 @@
     },
     {
       "name": "HearBridge-PS5-mtk-test.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/HEAD/assets/icon0.png",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/6fff4b33cd92e82d65bfcabf6cde456fb0cc6138/assets/icon0.png",
       "filename": "HearBridge-PS5-mtk-test.elf",
       "path": "apps/HearBridge-PS5-mtk-test.elf",
       "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0-mtk-test.elf",
@@ -592,6 +612,7 @@
     },
     {
       "name": "plutotv-install.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/plutotv/b6d8f3eb84be525c6d06f46168d80f1c746c86b3/sce_sys/icon0.png",
       "filename": "plutotv-install.elf",
       "path": "media/plutotv-install.elf",
       "url": "https://github.com/ps5-payload-dev/plutotv/releases/download/v0.3/plutotv-install.elf",
@@ -604,6 +625,7 @@
     },
     {
       "name": "ProsperoPlayer_MediaLauncher.elf",
+      "icon": "https://raw.githubusercontent.com/KINGDKAK/ProsperoPlayer/282b449aab0e3634965577453a2748e7628f4c9f/prospero_media_standalone/assets/icon0.png",
       "filename": "ProsperoPlayer_MediaLauncher.elf",
       "path": "media/ProsperoPlayer_MediaLauncher.elf",
       "url": "https://github.com/KINGDKAK/ProsperoPlayer/releases/download/v1.0/ProsperoPlayer_MediaLauncher.elf",
@@ -616,6 +638,7 @@
     },
     {
       "name": "svtplay-install.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/svtplay/a402f12ac7eef919fb3769a42a4e4905424b7944/sce_sys/icon0.png",
       "filename": "svtplay-install.elf",
       "path": "media/svtplay-install.elf",
       "url": "https://github.com/ps5-payload-dev/svtplay/releases/download/v0.4/svtplay-install.elf",
@@ -628,6 +651,7 @@
     },
     {
       "name": "tv4play-install.elf",
+      "icon": "https://raw.githubusercontent.com/ps5-payload-dev/tv4play/69fb2dff3de3d709e090b4742c7833a4aa521aba/sce_sys/icon0.png",
       "filename": "tv4play-install.elf",
       "path": "media/tv4play-install.elf",
       "url": "https://github.com/ps5-payload-dev/tv4play/releases/download/v0.3/tv4play-install.elf",
