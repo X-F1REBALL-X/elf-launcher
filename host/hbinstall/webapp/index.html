@@ -3254,6 +3254,18 @@ function padCancelAuto(){
 }
 /* No on-screen pad. Standard mapping: 1=Circle, 2=Square. Folder nav: sidebar only. */
 var padHeld={};
+/* While a text field is focused the PS5 keyboard is up and gets the same D-pad and Cross presses:
+   do not move focus or click page buttons behind it (that could hit "Open in PS5 browser").
+   Circle only leaves the field; the field is also left when the keyboard commits. */
+function padTyping(){ var a=document.activeElement; return !!(a && ((a.tagName==='INPUT' && !/^(checkbox|radio|button|submit|file|range)$/i.test(a.type||'')) || a.tagName==='TEXTAREA')); }
+function padTypingTick(b){
+  var c=!!(b[1]&&b[1].pressed), k;
+  if(c && !padHeld[1]){ try{ document.activeElement.blur(); }catch(e){} }
+  padHeld[1]=c; padHeld[2]=!!(b[2]&&b[2].pressed);
+  for(k in padRep) if(padRep.hasOwnProperty(k)) padRep[k]=(k==='x'||k==='tri') ? true : 1e15;
+  padTypingUntil=Date.now()+250;
+}
+var padTypingUntil=0;
 function padTick(){
   var list=navigator.getGamepads?navigator.getGamepads():[];
   var i,p,b,k,down;
@@ -3261,6 +3273,7 @@ function padTick(){
     p=list[i];
     if(!p||!p.buttons) continue;
     b=p.buttons;
+    if(padTyping()){ padTypingTick(b); break; }
     if(!autoArmed()){ qkPad(p); padNav(p); }
     down={1:!!(b[1]&&b[1].pressed),2:!!(b[2]&&b[2].pressed)};
     if(down[2]&&!padHeld[2]) padCancelAuto();
@@ -4709,6 +4722,7 @@ document.addEventListener('click', function(ev){
 }, true);
 var padRep={};
 function padNav(p){
+  if(Date.now()<padTypingUntil) return;
   var map={12:'ArrowUp',13:'ArrowDown',14:'ArrowLeft',15:'ArrowRight'}, k, b=p.buttons, now=Date.now(), d;
   for(k in map){
     d=!!(b[k] && b[k].pressed);
@@ -6030,13 +6044,15 @@ function showWebFolder(){
     '<button type="button" id="webstar" aria-pressed="false" title="'+esc(t('webBmAdd'))+'">\u2606</button>'+
     '<button type="button" id="webext" class="run load">'+esc(isConsoleHost()?t('webOpenPs5'):t('webOpenTab'))+'</button></div>'+
     '<div id="webnote" class="webnote"></div><div id="webbody" class="webbody"></div>';
-  document.getElementById('webform').onsubmit=function(ev){ ev.preventDefault(); var u=webNormalize(document.getElementById('weburl').value); if(u) webGo(u, true); };
+  document.getElementById('webform').onsubmit=function(ev){ var f=document.getElementById('weburl'), u; if(ev && ev.preventDefault) ev.preventDefault(); u=webNormalize(f.value); try{ f.blur(); }catch(e){} if(u) webGo(u, true, false, true); return false; };
+  document.getElementById('webform').setAttribute('action', 'javascript:void(0)');
+  document.getElementById('weburl').onchange=function(){ var me=this; setTimeout(function(){ if(document.activeElement===me && onPs5Browser()) try{ me.blur(); }catch(e){} }, 0); };
   document.getElementById('webback').onclick=function(){ webStep(-1); };
   document.getElementById('webfwd').onclick=function(){ webStep(1); };
   document.getElementById('webrel').onclick=function(){ if(WEB.cur) webGo(WEB.cur, false, true); else webStart(); };
   document.getElementById('webhome').onclick=function(){ webStart(); };
   document.getElementById('webstar').onclick=webToggleBm;
-  document.getElementById('webext').onclick=function(){ webOpenOutside(WEB.cur); };
+  document.getElementById('webext').onclick=function(ev){ webOpenOutside(WEB.cur, ev); };
   if(WEB.cur && WEB.state!=='start') webGo(WEB.cur, false); else webStart();
 }
 function webPaintBar(){
@@ -6122,7 +6138,7 @@ function webFileCard(u){
     '<div class="mlgo">'+(isConsoleHost()?'<button type="button" class="run load" id="websave">'+esc(t('webSaveDl'))+'</button>':'')+
     '<button type="button" class="run" id="webbext">'+esc(isConsoleHost()?t('webOpenPs5'):t('webOpenTab'))+'</button></div><p class="mlnote" id="websavest"></p></div>';
   if(document.getElementById('websave')) document.getElementById('websave').onclick=function(){ webSaveFile(u); };
-  document.getElementById('webbext').onclick=function(){ webOpenOutside(u); };
+  document.getElementById('webbext').onclick=function(ev){ webOpenOutside(u, ev); };
   webPaintBar();
   if(focusMode) (document.getElementById('websave')||document.getElementById('webbext')).focus();
 }
@@ -6146,29 +6162,37 @@ function webStep(d){
   WEB.pos+=d;
   webGo(WEB.stack[WEB.pos], false);
 }
-function webGo(u, push, reload){
+function webGo(u, push, reload, typed){
   var body=document.getElementById('webbody'), seq=++WEB.seq, host=webHost(u);
   if(!body || !u) return;
+  WEB.goAt=Date.now();
   if(push){ WEB.stack=WEB.stack.slice(0, WEB.pos+1); if(WEB.stack[WEB.stack.length-1]!==u) WEB.stack.push(u); WEB.pos=WEB.stack.length-1; }
   WEB.cur=u; WEB.state='check';
   webAddHist(u);
   webPaintBar();
-  body.innerHTML='<div class="webframe"><p class="empty">'+esc(t('webChecking',{host:host}))+'</p></div>';
   webNote('');
-  function decide(v){
-    if(seq!==WEB.seq) return;
-    if(v && !reload) WEB.checks[u]=v;
-    if(v==='blocked') webBlocked(u);
-    else webLoad(u);
-  }
   if(WEB_FILE_RE.test(u)){ webFileCard(u); return; }
-  if(WEB.checks[u] && !reload){ decide(WEB.checks[u]); return; }
-  if(!isConsoleHost()){ decide(WEB_NOFRAME.test(host) ? 'blocked' : 'unknown'); return; }
+  /* What you type always opens here. The header check only adds a hint, and the
+     PS5 browser opens only when you press its button. */
+  if(typed){ webLoad(u); webCheck(u, seq, function(v){ if(v==='blocked' && WEB.state!=='file') webBlockedNote(u); }); return; }
+  body.innerHTML='<div class="webframe"><p class="empty">'+esc(t('webChecking',{host:host}))+'</p></div>';
+  webCheck(u, seq, function(v){ if(v==='blocked') webBlocked(u); else webLoad(u); });
+}
+/* v: 'ok' | 'blocked' | 'unknown'. Only a real answer from the console's header check counts as blocked
+   there; any failure means "just try the frame". Away from the console a short list of known sites is used. */
+function webCheck(u, seq, done){
+  var host=webHost(u), fin=function(v){ if(seq!==WEB.seq) return; if(v!=='unknown') WEB.checks[u]=v; done(v); };
+  if(WEB.checks[u]){ fin(WEB.checks[u]); return; }
+  if(!isConsoleHost()){ fin(WEB_NOFRAME.test(host) ? 'blocked' : 'unknown'); return; }
   jget('/frame-check?url='+encodeURIComponent(u)).then(function(res){
-    var v=res.j && res.j.frame;
-    if(v==='unknown' && WEB_NOFRAME.test(host)) v='blocked';
-    decide(v||'unknown');
-  }).catch(function(){ decide(WEB_NOFRAME.test(host) ? 'blocked' : 'unknown'); });
+    var v=res.ok && res.j && res.j.frame;
+    fin(v==='blocked' || v==='ok' ? v : 'unknown');
+  }).catch(function(){ fin('unknown'); });
+}
+function webBlockedNote(u){
+  var b;
+  webNote('<span>'+esc(t('webBlockedT',{host:webHost(u)}))+'</span><button type="button" id="webnoteext" class="run load">'+esc(isConsoleHost()?t('webOpenPs5'):t('webOpenTab'))+'</button>', 'warn');
+  if((b=document.getElementById('webnoteext'))) b.onclick=function(ev){ webOpenOutside(u, ev); };
 }
 function webBlocked(u){
   var body=document.getElementById('webbody');
@@ -6178,17 +6202,17 @@ function webBlocked(u){
     '<div class="mlgo"><button type="button" class="run load" id="webbext">'+esc(isConsoleHost()?t('webOpenPs5'):t('webOpenTab'))+'</button>'+
     (isConsoleHost() && !onPs5Browser() ? '<button type="button" class="run" id="webbtab">'+esc(t('webOpenTab'))+'</button>' : '')+
     '<button type="button" class="run" id="webbtry">'+esc(t('webTryAnyway'))+'</button></div></div>';
-  document.getElementById('webbext').onclick=function(){ webOpenOutside(u); };
+  document.getElementById('webbext').onclick=function(ev){ webOpenOutside(u, ev); };
   if(document.getElementById('webbtab')) document.getElementById('webbtab').onclick=function(){ webOpenTab(u); };
   document.getElementById('webbtry').onclick=function(){ webLoad(u); };
   webPaintBar();
-  if(focusMode) document.getElementById('webbext').focus();
+  if(focusMode) document.getElementById('webbtry').focus();
 }
 function webLoad(u){
   var body=document.getElementById('webbody'), fr, seq=WEB.seq;
   if(!body) return;
   WEB.state='loading';
-  body.innerHTML='<div class="webframe"><iframe id="webfr" title="'+esc(webHost(u))+'" referrerpolicy="no-referrer" allow="fullscreen" src="'+esc(u)+'"></iframe></div>';
+  body.innerHTML='<div class="webframe"><iframe id="webfr" title="'+esc(webHost(u))+'" referrerpolicy="no-referrer" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock allow-downloads" src="'+esc(u)+'"></iframe></div>';
   webNote('<span>'+esc(t('webLoading',{host:webHost(u)}))+'</span>', 'busy');
   fr=document.getElementById('webfr');
   webFit();
@@ -6196,7 +6220,9 @@ function webLoad(u){
     if(seq!==WEB.seq) return;
     clearTimeout(WEB.timer);
     WEB.state='shown';
-    webNote('<span>'+esc(t('webBlankHint'))+'</span>', 'soft');
+    webTameFrame(fr);
+    if(WEB.checks[u]==='blocked') webBlockedNote(u);
+    else webNote('<span>'+esc(t('webBlankHint'))+'</span>', 'soft');
     webPaintBar();
   };
   clearTimeout(WEB.timer);
@@ -6204,7 +6230,7 @@ function webLoad(u){
     if(seq!==WEB.seq || WEB.state!=='loading') return;
     WEB.state='slow';
     webNote('<span>'+esc(t('webSlow',{host:webHost(u)}))+'</span><button type="button" id="webnoteext" class="run load">'+esc(isConsoleHost()?t('webOpenPs5'):t('webOpenTab'))+'</button>', 'warn');
-    document.getElementById('webnoteext').onclick=function(){ webOpenOutside(u); };
+    document.getElementById('webnoteext').onclick=function(ev){ webOpenOutside(u, ev); };
   }, 12000);
   webPaintBar();
 }
@@ -6216,10 +6242,20 @@ function webFit(){
   f.style.height=Math.max(260, Math.floor(window.innerHeight - (r.top + (window.pageYOffset||0)) - 14))+'px';
 }
 window.addEventListener('resize', function(){ if(currentFolder==='web') webFit(); });
+/* Pages we can reach (same origin): links and window.open load in this frame, never a new window. */
+function webTameFrame(fr){
+  var w, d, i, a;
+  try{ w=fr.contentWindow; d=w.document; if(!d || !d.body) return; }catch(e){ return; }
+  try{ w.open=function(x){ if(x){ try{ fr.src=String(new URL(x, w.location.href)); }catch(e2){ fr.src=x; } } return null; }; }catch(e3){}
+  a=d.querySelectorAll('a[target], form[target]');
+  for(i=0;i<a.length;i++) a[i].setAttribute('target','_self');
+  try{ d.addEventListener('click', function(ev){ var n=ev.target; while(n && n.tagName!=='A') n=n.parentNode; if(n && n.getAttribute && n.getAttribute('target')) n.setAttribute('target','_self'); }, true); }catch(e4){}
+}
 function webOpenTab(u){ try{ window.open(u, '_blank', 'noopener'); }catch(e){} }
 /* On the console: the PS5's own browser via the launcher (same call it uses after a jailbreak). */
-function webOpenOutside(u){
+function webOpenOutside(u, ev){
   if(!u) return;
+  if(!ev || (Date.now()-(WEB.goAt||0) < 700)) return;
   if(!isConsoleHost()){ webOpenTab(u); return; }
   jget('/open-browser?url='+encodeURIComponent(u)).then(function(res){
     setStatus(res.ok ? t('webOpened',{host:webHost(u)}) : t('webOpenFail',{msg:resErr(res)}));
