@@ -30,6 +30,7 @@
     },
     {
       "name": "Goldengames-PS5-Jailbreak.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/Goldengames-PS5-Jailbreak.png",
       "filename": "Goldengames-PS5-Jailbreak.elf",
       "path": "hen/Goldengames-PS5-Jailbreak.elf",
       "url": "https://github.com/robin2kk/Goldengames-PS5-Autoloader/releases/download/v1.1.1/Goldengames-PS5-Jailbreak-v1.1.1.elf",
@@ -42,6 +43,7 @@
     },
     {
       "name": "webkit-autoloader-installer.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/webkit-autoloader-installer.png",
       "filename": "webkit-autoloader-installer.elf",
       "path": "hen/webkit-autoloader-installer.elf",
       "url": "https://github.com/itsPLK/ps5-webkit-autoloader/releases/download/v0.6.1/webkit-autoloader-installer_v0.6.1.elf",
@@ -99,6 +101,7 @@
     },
     {
       "name": "PS5HostPayloads.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/PS5HostPayloads.png",
       "filename": "PS5HostPayloads.elf",
       "path": "apps/PS5HostPayloads.elf",
       "url": "https://github.com/MasterPS0/PS5HostPayloads/releases/download/1.0/PS5HostPayloads.elf",
@@ -218,6 +221,7 @@
     },
     {
       "name": "dump_installer.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/dump_installer.png",
       "filename": "dump_installer.elf",
       "path": "storage/dump_installer.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/dump_installer.elf",
@@ -375,6 +379,7 @@
     },
     {
       "name": "kura-loader-ps5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/kura-loader-ps5.png",
       "filename": "kura-loader-ps5.elf",
       "path": "apps/kura-loader-ps5.elf",
       "url": "https://github.com/NookieAI/kura/releases/download/v1.6.50/kura-loader-ps5.elf",
@@ -600,6 +605,7 @@
     },
     {
       "name": "bfplayer-standalone.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/bfplayer-standalone.png",
       "filename": "bfplayer-standalone.elf",
       "path": "media/bfplayer-standalone.elf",
       "url": "https://github.com/ItsBlurf/BFplayer/releases/download/v0.1.0-alpha.44/bfplayer-standalone.elf",
