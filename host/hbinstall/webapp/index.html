@@ -48,7 +48,7 @@ button{position:relative;z-index:0;min-height:2.6rem;padding:.3rem 1.1rem;font:i
 color:var(--ink);background:none;border:0;cursor:pointer;white-space:nowrap;outline:none}
 button:before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:.35em;right:.35em;background:var(--card);border:2px solid var(--edge2);
 transform:skewX(var(--sk));transition:box-shadow .12s,border-color .12s,background .12s}
-button:hover:before,button:focus:before{border-color:var(--lime);box-shadow:0 0 0 3px rgba(200,255,61,.35),0 0 1rem rgba(200,255,61,.35)}
+button:focus:before{border-color:var(--lime);box-shadow:0 0 0 3px rgba(200,255,61,.35),0 0 1rem rgba(200,255,61,.35)}
 button:focus{transform:scale(1.04);z-index:2}
 button[disabled]{cursor:default}
 .ncount{flex:0 0 auto;display:inline-block;min-width:1.7rem;padding:0 .4em;font-size:.78rem;font-weight:900;line-height:1.5;text-align:center;color:var(--ink);background:var(--void);border:1px solid var(--edge2);direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
@@ -164,7 +164,7 @@ button.run.load.loaded{color:var(--void)}button.run.load.loaded:before{backgroun
 button.run.sent{color:var(--lime)}button.run.sent:before{background:rgba(200,255,61,.14);border-color:var(--lime)}
 button.run.update{color:var(--void)}button.run.update:before{background:var(--warn);border-color:var(--warn);box-shadow:0 0 .8rem rgba(255,178,61,.4)}
 button.run.del,button.run.kill{min-width:0;color:var(--bad)}button.run.del:before,button.run.kill:before{border-color:rgba(255,61,90,.7)}
-button.run.del:hover:before,button.run.del:focus:before,button.run.kill:hover:before,button.run.kill:focus:before{border-color:var(--bad);background:rgba(255,61,90,.12);box-shadow:0 0 0 3px rgba(255,61,90,.35),0 0 1.4rem rgba(255,61,90,.35)}
+button.run.del:focus:before,button.run.kill:focus:before{border-color:var(--bad);background:rgba(255,61,90,.12);box-shadow:0 0 0 3px rgba(255,61,90,.35),0 0 1.4rem rgba(255,61,90,.35)}
 button.run.busy{color:var(--ink)}
 button.run.busy:before{background-color:var(--card);background-image:linear-gradient(rgba(200,255,61,.55),rgba(200,255,61,.55));background-repeat:no-repeat;background-position:left center;background-size:inherit;border-color:var(--lime)}
 button.run[disabled]{opacity:.5}button.run.busy[disabled]{opacity:1}
@@ -198,7 +198,7 @@ input.mark,input.auto{width:1.35rem;height:1.35rem;margin:0;accent-color:var(--l
 .tiles{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(5.2rem,1fr);grid-gap:var(--s3)}
 .tiles button{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;min-width:0;height:100%;padding:var(--s3) var(--s5) var(--s3) var(--s5);text-align:start;white-space:normal}
 .tiles button:before{left:0;right:0;transform:none;clip-path:polygon(0 0,calc(100% - .9rem) 0,100% .9rem,100% 100%,0 100%);background:linear-gradient(135deg,rgba(255,255,255,.04),transparent 60%),var(--void);border-color:var(--edge);border-top:3px solid var(--c)}
-.tiles button:hover:before,.tiles button:focus:before{border-color:var(--c);background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 70%),var(--card);box-shadow:none}
+.tiles button:focus:before{border-color:var(--c);background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 70%),var(--card);box-shadow:none}
 .tiles button:focus{transform:scale(1.02)}
 .tiles button>span:first-child{font-size:1.05rem;font-weight:800;letter-spacing:.04em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tiles button>span:first-child:before{content:"";display:inline-block;width:.55rem;height:.55rem;margin-inline-end:.6rem;vertical-align:.12em;transform:rotate(45deg);background:var(--c)}
@@ -223,6 +223,66 @@ background:var(--deck);border:2px solid var(--violet);border-inline-start-width:
 #autobannercancel:before{border-color:rgba(255,61,90,.8)}
 #autobannercancel:focus:before{border-color:var(--bad);background:rgba(255,61,90,.14);box-shadow:0 0 0 3px rgba(255,61,90,.4),0 0 1.4rem rgba(255,61,90,.4)}
 #catupdate{display:none!important}
+/* hover only on devices that really hover (no sticky hover on phones) */
+@media (hover:hover){
+button:hover:before{border-color:var(--lime);box-shadow:0 0 0 3px rgba(200,255,61,.35),0 0 1rem rgba(200,255,61,.35)}
+button.run.del:hover:before,button.run.kill:hover:before{border-color:var(--bad);background:rgba(255,61,90,.12);box-shadow:0 0 0 3px rgba(255,61,90,.35),0 0 1.4rem rgba(255,61,90,.35)}
+.tiles button:hover:before{border-color:var(--c);background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 70%),var(--card);box-shadow:none}
+}
+/* load file */
+.navbtn[data-folder=load]{--c:var(--ember)}
+#main[data-view=load] #viewpanel{--acc:var(--ember)}
+#ml{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-gap:var(--gap);align-items:start}
+#ml .panel{--acc:var(--lime);padding-bottom:var(--s4)}#ml .mlPath{--acc:var(--cyan)}#ml .mlLog{--acc:var(--violet);grid-column:1/-1}
+.mlhide{display:none!important}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--s4);min-height:8rem;border:2px dashed var(--edge2);background:rgba(0,0,0,.22);text-align:center}
+.drop b{font-size:1.05rem}.drop span{margin-top:.35rem;font-size:.82rem;color:var(--mute);direction:ltr;unicode-bidi:isolate}
+.drop button{margin-top:var(--s3);padding:.2rem 1.6rem;color:var(--void)}.drop button:before{background:var(--lime);border-color:var(--lime)}
+.fcard{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-gap:.15rem var(--s3);align-items:center;padding:var(--s2) var(--s3);background:var(--card);border:1px solid var(--edge2);border-inline-start:3px solid var(--lime)}
+.fcard i{grid-row:1/3;display:flex;align-items:center;justify-content:center;width:2.6rem;height:2.6rem;font-style:normal;font-size:.66rem;font-weight:900;color:var(--void);background:var(--lime)}
+.fcard b{grid-column:2;grid-row:1;min-width:0;font-size:1.02rem;direction:ltr;unicode-bidi:isolate;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+[dir=rtl] .fcard b,[dir=rtl] .fcard small{text-align:right}
+.fcard small{grid-column:2;grid-row:2;min-width:0;color:var(--mute);font-size:.78rem;direction:ltr;unicode-bidi:isolate;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fcard em{grid-column:3;grid-row:1/3;white-space:nowrap;font-style:normal;font-size:.72rem;font-weight:800;letter-spacing:.1em;color:var(--lime);border:1px solid var(--lime);padding:.1rem .45rem;direction:ltr}
+.fcard.bad{border-inline-start-color:var(--bad)}.fcard.bad i{background:var(--bad);color:#fff}.fcard.bad em{color:var(--bad);border-color:var(--bad)}
+.mlopts{display:flex;flex-wrap:wrap;margin:var(--s3) 0 0}.mlopts .pick{margin-inline-end:var(--s4);margin-bottom:var(--s2);min-height:2.2rem}
+.pick input[disabled]+span{opacity:.45}
+.mlf{display:block;margin-top:var(--s3);font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+[dir=rtl] .mlf{letter-spacing:0}
+.mlin{width:100%;min-height:2.6rem;margin-top:.35rem;padding:.5rem .7rem;font:inherit;font-size:1rem;color:var(--ink);background:var(--void);border:1px solid var(--edge2);direction:ltr;outline:none;border-radius:0;-webkit-appearance:none}
+[dir=rtl] .mlin{text-align:right}
+.mlin:focus{border-color:var(--lime);box-shadow:0 0 0 2px rgba(200,255,61,.25)}
+.mlrow{display:flex;align-items:center}.mlrow .mlin{flex:1;min-width:0;margin-top:0}.mlrow button{flex:0 0 auto;margin-inline-start:var(--s1)}
+.mlf+.mlrow{margin-top:.35rem}
+.mlgo{display:flex;align-items:center;margin-top:var(--s2)}.mlgo button.run{min-height:2.8rem;font-size:1rem}.mlgo #mlsend{flex:1}
+.chips{display:flex;flex-wrap:wrap}.chips button{min-height:2.2rem;padding:0 .9rem;margin:0 0 var(--s1);margin-inline-end:var(--s1);font-size:.85rem;direction:ltr}
+.chips button.selected{color:var(--void)}.chips button.selected:before{background:var(--cyan);border-color:var(--cyan)}
+.chips button.off{opacity:.45}
+.plist{display:grid;grid-gap:.35rem;margin-top:var(--s3)}.plist .elf{min-height:2.9rem}.plist .elf.dir .n b{color:var(--cyan)}
+.plist .empty{margin:0}
+.plist .elf.dir:before{content:"DIR";color:var(--cyan)}
+.mlnote{margin:var(--s3) 0 0;font-size:.82rem;line-height:1.4;color:var(--mute)}
+.mlnote:empty{display:none}.mlnote.good{color:var(--lime)}.mlnote.bad{color:var(--bad)}
+.lg{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-gap:var(--s3);align-items:center;padding:.45rem 0;border-bottom:1px solid var(--edge);font-size:.88rem}
+.lg:last-child{border:0}.lg s{text-decoration:none;font-weight:900;font-size:.72rem;letter-spacing:.1em;padding:.05rem .45rem}
+.lg s.ok{color:var(--void);background:var(--lime)}.lg s.bad{color:#fff;background:var(--bad)}
+.lg span{min-width:0;color:var(--ink2);direction:ltr;unicode-bidi:isolate;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+[dir=rtl] .lg span{text-align:right}
+.lg span b{color:var(--ink)}.lg time{color:var(--mute);font-size:.78rem;font-variant-numeric:tabular-nums}
+#mlrecent .empty{margin:0}
+.ps5hint{padding:var(--s4);border:1px solid var(--edge2);background:rgba(0,0,0,.22);font-size:1rem;line-height:1.45}
+.ps5hint b{display:block;margin-top:.45rem;font-size:1.6rem;color:var(--lime);direction:ltr;unicode-bidi:isolate}
+[dir=rtl] .ps5hint b{text-align:right}
+/* fingers: bigger targets */
+@media (pointer:coarse){
+button{min-height:2.9rem}
+button.run{min-height:2.75rem}
+.chips button{min-height:2.75rem}
+.langopt{min-height:3rem}
+input.mark,input.auto{width:1.6rem;height:1.6rem}
+.mlopts .pick{min-height:2.75rem}
+.mlin{min-height:2.9rem;font-size:16px}
+}
 /* TV: rem follows the viewport */
 @media(min-width:1180px) and (min-height:600px){
 html{font-size:13px;font-size:clamp(12px,min(1.04vw,1.9vh),26px)}
@@ -238,6 +298,7 @@ html{font-size:13px;font-size:clamp(12px,min(1.04vw,1.9vh),26px)}
 }
 /* narrower: one list column */
 @media(max-width:1179px){
+#ml{grid-template-columns:minmax(0,1fr)}
 .listgrid{grid-template-columns:minmax(0,1fr)}
 .listgrid .elfhead+.elfhead{display:none}
 #home{grid-template-columns:minmax(0,1fr);grid-template-areas:"hero" "auto" "tiles";grid-template-rows:auto}
@@ -272,6 +333,10 @@ html{font-size:13px;font-size:clamp(12px,min(1.04vw,1.9vh),26px)}
 .tiles .ncount{font-size:1.8rem}
 .hhead h2{font-size:1.5rem}
 .homeChoices button{white-space:normal;font-size:.9rem;line-height:1.15;padding:.3rem .9rem}
+#ml{grid-template-columns:minmax(0,1fr)}
+.plist .elf.dir .a{margin-top:0}
+.mlrow{flex-wrap:wrap}.mlrow .mlin{flex:1 1 100%;margin-bottom:var(--s2)}.mlrow button{flex:1;margin:0}.mlrow button+button{margin-inline-start:var(--s2)}
+.lg{grid-template-columns:auto minmax(0,1fr)}.lg time{grid-column:2}
 }
 </style></head><body><div class="wrap">
 <header class="bar">
@@ -306,6 +371,45 @@ html{font-size:13px;font-size:clamp(12px,min(1.04vw,1.9vh),26px)}
 </div>
 <script>
 (function(){
+/* Calls to this console's :1000 carry X-ELFL (the server refuses state
+   changes without it, so other sites cannot trigger them) and time out. */
+var nativeFetch=window.fetch ? window.fetch.bind(window) : null;
+function apiTimeoutMs(u){ return /^\/(update|catalog_fetch)\b/.test(u) ? 180000 : 15000; }
+if(nativeFetch) window.fetch=function(url, opts){
+  var u=(typeof url==='string') ? url : '';
+  if(!(u.charAt(0)==='/' && u.charAt(1)!=='/')) return nativeFetch(url, opts);
+  var o={}, k, h={}, ctrl=null, ms=apiTimeoutMs(u);
+  opts=opts||{};
+  for(k in opts){ if(opts.hasOwnProperty(k)) o[k]=opts[k]; }
+  if(opts.headers){ for(k in opts.headers){ if(opts.headers.hasOwnProperty(k)) h[k]=opts.headers[k]; } }
+  h['X-ELFL']='1';
+  o.headers=h;
+  try{ if(window.AbortController && !o.signal){ ctrl=new AbortController(); o.signal=ctrl.signal; } }catch(e0){ ctrl=null; }
+  return new Promise(function(res, rej){
+    var over=false, tm=setTimeout(function(){
+      if(over) return; over=true;
+      try{ if(ctrl) ctrl.abort(); }catch(e1){}
+      var er=new Error(t('errTimeout')); er.name='TimeoutError'; rej(er);
+    }, ms);
+    nativeFetch(u, o).then(function(r){ if(over) return; over=true; clearTimeout(tm); res(r); },
+      function(e){ if(over) return; over=true; clearTimeout(tm); rej(e); });
+  });
+};
+/* Settings live in localStorage now. Old cookies made every request bigger:
+   move anything missing into localStorage once, then expire them. */
+(function(){
+  var parts, i, c, eq, name, val;
+  try{ parts=document.cookie ? document.cookie.split(';') : []; }catch(e){ parts=[]; }
+  for(i=0;i<parts.length;i++){
+    c=parts[i].replace(/^\s+/,''); eq=c.indexOf('=');
+    if(eq<1) continue;
+    name=c.slice(0,eq);
+    if(name.indexOf('ps5elfs-')!==0) continue;
+    try{ val=decodeURIComponent(c.slice(eq+1)); }catch(e2){ val=''; }
+    try{ if(val && name!=='ps5elfs-active' && localStorage.getItem(name)==null) localStorage.setItem(name, val); }catch(e3){}
+    try{ document.cookie=name+'=; path=/; max-age=0'; }catch(e4){}
+  }
+})();
 var FOLDERS=[
 {id:"loader",label:"Loader"},
 {id:"hen",label:"HEN"},
@@ -334,7 +438,6 @@ var titleEl=document.getElementById('ftitle');
 var progWrap=document.getElementById('progwrap');
 var progBar=document.getElementById('progbar');
 var currentFolder=null;
-var pollTimer=null;
 
 function setStatus(msg){statusEl.textContent=msg; statusEl.removeAttribute('data-i18n');}
 function dbg(t){
@@ -348,7 +451,7 @@ function dbgInstall(t){ dbg(t); }
 function toastNotify(msg){
   try{
     var img=new Image();
-    img.src='http://127.0.0.1:1000/notify?msg='+encodeURIComponent(msg)+'&t='+Date.now();
+    img.src=(isConsoleHost() ? '' : 'http://127.0.0.1:1000')+'/notify?msg='+encodeURIComponent(msg)+'&t='+Date.now();
   }catch(e){}
 }
 
@@ -374,25 +477,6 @@ function setProgressPct(pct){
     if(pct<0)pct=0;
     progBar.style.width=pct+'%';
   }
-}
-
-function stopPoll(){
-  if(pollTimer){clearInterval(pollTimer);pollTimer=null;}
-}
-
-var apiBase='';
-function startPoll(){
-  stopPoll();
-  pollTimer=setInterval(function(){
-    fetch(apiBase+'/progress').then(function(r){return r.json();}).then(function(j){
-      if(!j)return;
-      if(j.phase==='idle'){
-        if(typeof j.pct==='number' && j.pct>=100)setProgressPct(100);
-        return;
-      }
-      if(typeof j.pct==='number')setProgressPct(j.pct);
-    }).catch(function(){});
-  },250);
 }
 
 function folderLabel(id){ return t('f_'+id); }
@@ -713,7 +797,6 @@ function readLang(){
 function saveLang(code){
   try{ localStorage.setItem('ps5elfs-lang', code); }catch(e){}
   try{ sessionStorage.setItem('ps5elfs-lang', code); }catch(e2){}
-  document.cookie='ps5elfs-lang='+code+'; path=/; max-age=31536000';
 }
 function applyStaticI18n(){
   var info=langInfo(LANG), nodes, i, k, mainEl=document.getElementById('main'), fl=document.getElementById('langflag');
@@ -799,7 +882,6 @@ function rememberActive(name){
   s=JSON.stringify(m);
   try{ localStorage.setItem('ps5elfs-active', s); }catch(e){}
   try{ sessionStorage.setItem('ps5elfs-active', s); }catch(e2){}
-  document.cookie='ps5elfs-active='+encodeURIComponent(s)+'; path=/; max-age=31536000';
 }
 function forgetActive(name){
   var m=loadActive();
@@ -810,12 +892,10 @@ function forgetActive(name){
   s=JSON.stringify(m);
   try{ localStorage.setItem('ps5elfs-active', s); }catch(e){}
   try{ sessionStorage.setItem('ps5elfs-active', s); }catch(e2){}
-  document.cookie='ps5elfs-active='+encodeURIComponent(s)+'; path=/; max-age=31536000';
 }
 function clearActive(){
   try{ localStorage.removeItem('ps5elfs-active'); }catch(e){}
   try{ sessionStorage.removeItem('ps5elfs-active'); }catch(e2){}
-  document.cookie='ps5elfs-active=; path=/; max-age=0';
 }
 function freshBoot(){
   try{
@@ -1421,21 +1501,25 @@ function sendPayload(name, path, fileUrl, done){
     snapshotPidSet(function(before){
       setStatus(t('loadingName',{name:name}));
       fetch('/run?path='+encodeURIComponent(path),{method:'POST'})
-        .then(function(r){return r.text().then(function(t){return {ok:r.ok,t:t};});})
+        .then(function(r){return r.text().then(function(tx){return {ok:r.ok,code:r.status,t:tx};});})
         .then(function(res){
         if(res.ok){
           rememberActive(name);
           if(before) trackNewPid(name, before, 12);
           setStatus(t('loadedName',{name:name}));
+          addRecent({ok:true,name:name,src:'cat'});
           if(done) done(true);
         }else{
-          setStatus(t('loadFailed',{name:name,msg:(res.t||'elfldr rejected')}));
+          var why=sendErrText(res.code, null, res.t);
+          setStatus(t('loadFailed',{name:name,msg:why}));
+          addRecent({ok:false,name:name,src:'cat',why:why});
           if(done) done(false);
         }
       }).catch(function(e){
         showProgress(false);
-        var msg=(e&&e.message)?String(e.message):String(e||'');
-        setStatus(t('loadFailed',{name:name,msg:msg}));
+        var why=sendErrText((e && e.name==='TimeoutError')?-1:0, null, '');
+        setStatus(t('loadFailed',{name:name,msg:why}));
+        addRecent({ok:false,name:name,src:'cat',why:why});
         if(done) done(false);
       });
     });
@@ -1470,7 +1554,6 @@ function writeStore(key, obj){
   var s=JSON.stringify(obj);
   try{ localStorage.setItem(key, s); }catch(e){}
   try{ sessionStorage.setItem(key, s); }catch(e2){}
-  document.cookie=key+'='+encodeURIComponent(s)+'; path=/; max-age=31536000';
 }
 function loadAuto(){ return readStore('ps5elfs-auto'); }
 function isAutoName(name){ return !!loadAuto()[name]; }
@@ -1550,8 +1633,8 @@ function deleteDownloaded(name, path, tr){
   }).catch(function(){ setStatus(t('deleteFailed')); });
 }
 function autoCount(){
-  var n=0, i;
-  for(i=0;i<PAYLOADS.length;i++){ if(isAutoName(PAYLOADS[i].name)) n++; }
+  var n=0, i, all=allPayloads();
+  for(i=0;i<all.length;i++){ if(isAutoName(all[i].name)) n++; }
   return n;
 }
 function browserStayOpen(){
@@ -1577,7 +1660,6 @@ function storeBrowserPref(on){
   var v=on?'open':'closed';
   try{ localStorage.setItem('ps5elfs-browser', v); }catch(e){}
   try{ sessionStorage.setItem('ps5elfs-browser', v); }catch(e2){}
-  document.cookie='ps5elfs-browser='+v+'; path=/; max-age=31536000';
 }
 /* AutoPayload delay: 3 (default) or 0 seconds. Same persistence as Leave closed. */
 function autoDelaySec(){
@@ -1597,7 +1679,6 @@ function storeAutoDelay(sec){
   var v=(sec===0)?'0':'3';
   try{ localStorage.setItem('ps5elfs-auto-delay', v); }catch(e){}
   try{ sessionStorage.setItem('ps5elfs-auto-delay', v); }catch(e2){}
-  document.cookie='ps5elfs-auto-delay='+v+'; path=/; max-age=31536000';
 }
 function setAutoDelay(sec){
   storeAutoDelay(sec);
@@ -1660,7 +1741,6 @@ function markBootAutoDone(){
   bootAutoDoneCached=true;
   try{ sessionStorage.setItem(BOOT_AUTO_KEY,'1'); }catch(e){}
   try{ localStorage.setItem(BOOT_AUTO_KEY,'1'); }catch(e2){}
-  document.cookie=BOOT_AUTO_KEY+'=1; path=/; max-age=31536000';
   if(isConsoleHost()){
     try{ fetch('/boot-auto?done=1',{method:'GET',cache:'no-store'}).catch(function(){}); }catch(e3){}
   }
@@ -1672,12 +1752,10 @@ function refreshBootAutoFlag(cb){
     if(done){
       try{ sessionStorage.setItem(BOOT_AUTO_KEY,'1'); }catch(e){}
       try{ localStorage.setItem(BOOT_AUTO_KEY,'1'); }catch(e2){}
-      document.cookie=BOOT_AUTO_KEY+'=1; path=/; max-age=31536000';
     }else{
       /* Server says this boot has not run Auto yet — drop stale browser flags. */
       try{ sessionStorage.removeItem(BOOT_AUTO_KEY); }catch(e3){}
       try{ localStorage.removeItem(BOOT_AUTO_KEY); }catch(e4){}
-      document.cookie=BOOT_AUTO_KEY+'=; path=/; max-age=0';
     }
     if(cb) try{ cb(!!done); }catch(e5){}
   }
@@ -1726,8 +1804,8 @@ function hideAutoBanner(){
 }
 /* One shot: arm only the first time elfldr is already listening. Delay 3s or 0. */
 function autoQueueCount(){
-  var n=0, i;
-  for(i=0;i<PAYLOADS.length;i++){ if(PAYLOADS[i] && isAutoName(PAYLOADS[i].name)) n++; }
+  var n=0, i, all=allPayloads();
+  for(i=0;i<all.length;i++){ if(all[i] && isAutoName(all[i].name)) n++; }
   return n;
 }
 /* Nothing to do (already ran / empty queue): stay silent like headless C. Only clear our own banner/status. */
@@ -1828,9 +1906,9 @@ function watchElfldrThenAuto(){
   });
 }
 function runAuto(done){
-  var queue=[], i, p;
-  for(i=0;i<PAYLOADS.length;i++){
-    p=PAYLOADS[i];
+  var queue=[], i, p, all=allPayloads();
+  for(i=0;i<all.length;i++){
+    p=all[i];
     if(!p || !isAutoName(p.name)) continue;
     if(isProtectedKillName(p.name) || isProtectedKillName(p.path)) continue;
     queue.push(p);
@@ -1929,6 +2007,11 @@ function renderNav(selected){
   active=selected==='auto' ? ' active' : '';
   html+='<button type="button" class="navbtn folder'+active+'" data-folder="auto">';
   html+='<span>'+esc(t('autoPayload'))+'</span><span class="ncount">'+autoCount()+'</span></button>';
+  if(isConsoleHost()){
+    active=selected==='load' ? ' active' : '';
+    html+='<button type="button" class="navbtn folder'+active+'" data-folder="load">';
+    html+='<span>'+esc(t('loadFile'))+'</span></button>';
+  }
   nav.innerHTML=html;
   var mv=document.getElementById('main');
   if(mv) mv.setAttribute('data-view', !selected ? 'home' : (isCatalogId(selected)||selected==='elf' ? 'elf' : selected));
@@ -2556,7 +2639,7 @@ function paintDownloaded(found){
 function showDownloadedFolderCount(){
   var queue, n, inflight, idx;
   if(!isConsoleHost() || !PAYLOADS || !PAYLOADS.length) return;
-  queue=PAYLOADS.slice();
+  queue=allPayloads();
   n=0; inflight=0; idx=0;
   function pump(){
     var item;
@@ -2591,10 +2674,12 @@ function showDownloadedFolder(){
   }
   viewEl.innerHTML=folderChipsHtml('downloaded')+'<p class="empty">'+esc(t('checkingSaved'))+'</p>';
   bindSubfolds();
-  queue=PAYLOADS.slice();
+  queue=[];
   found=[];
   inflight=0;
   idx=0;
+  refreshLocalFiles(function(){ queue=allPayloads(); pump(); });
+  return;
   function pump(){
     var p;
     if(currentFolder!=='downloaded') return;
@@ -2751,10 +2836,12 @@ function showAutoPayloadFolder(){
     return;
   }
   viewEl.innerHTML='<p class="empty">'+esc(t('checkingSaved'))+'</p>';
-  queue=PAYLOADS.slice();
+  queue=[];
   found=[];
   inflight=0;
   idx=0;
+  refreshLocalFiles(function(){ queue=allPayloads(); pump(); });
+  return;
   function pump(){
     var p;
     if(currentFolder!=='auto') return;
@@ -2783,6 +2870,7 @@ function showFolder(id){
   if(id==='kill'){ showKillFolder(); return; }
   if(id==='downloaded'){ showDownloadedFolder(); return; }
   if(id==='auto'){ showAutoPayloadFolder(); return; }
+  if(id==='load' && isConsoleHost()){ showLoadFolder(); return; }
   label=(isCatalogId(id) ? folderLabel(id) : id);
   if(isCatalogId(id)) lastElfFolder=id;
   markOnly=false;
@@ -3099,6 +3187,8 @@ function showDeviceInfo(){
   else if(/Windows NT/.test(ua)){ model='PC'; ver='Windows'; }
   else if((m=ua.match(/Mac OS X ([0-9_]+)/))){ model='Mac'; ver=m[1].replace(/_/g,'.'); }
   else if(/Linux/.test(ua)){ model='Linux'; }
+  /* Opened from a phone/PC on the LAN: this page belongs to the PS5. */
+  if(isConsoleHost() && !/PlayStation/i.test(ua)){ model='PS5'; ver=''; }
   var el=document.getElementById('deviceinfo');
   if(!el) return;
   if(model==='PS5' || model==='PS4') el.className='ps5mark';
@@ -3183,8 +3273,15 @@ function tickClock(){
 }
 tickClock();
 setInterval(tickClock, 1000);
-findLocalIp();
 showDeviceInfo();
+/* On :1000 the console knows its own address (WebRTC on a phone finds the phone). */
+if(isConsoleHost()){
+  (function(){
+    var h=location.hostname||'';
+    if(h && h!=='127.0.0.1' && h!=='localhost'){ showDeviceIp(h); var el=document.getElementById('deviceip'); if(el && el.getAttribute('data-state')!=='ip'){ el.textContent=h; el.setAttribute('data-state','ip'); } return; }
+    fetch('/ip').then(function(r){ return r.json(); }).then(function(j){ if(j && j.ip) showDeviceIp(j.ip); else findLocalIp(); }).catch(function(){ findLocalIp(); });
+  })();
+} else findLocalIp();
 /* On :1000 never probe :9021 for IP; that GET burns raw elfldr. */
 if(/PlayStation/i.test(navigator.userAgent) && !isConsoleHost()) watchIp();
 var firstEntry=freshBoot();
@@ -3478,6 +3575,361 @@ function installWkUpdate(){
   };
   wkInstalledVer();
 })();
+var I18N_LOAD={"en":{"loadFile":"Load file","fromDevice":"From this device","fromPs5":"From the PS5","recent":"Recent","chooseFile":"Choose a payload on this device","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 up to 64 MB","chooseBtn":"Choose file","chooseOther":"Other file","args":"Arguments (optional)","argsPh":"e.g. --port 2121","keepCopy":"Keep a copy in {dl}","addAuto":"Add to AutoPayload","autoElfOnly":"AutoPayload takes .elf files only","sendElfldr":"Send to elfldr","uploading":"Uploading {p}%","starting":"Starting...","checkingFile":"Checking file...","badMagic":"Not an ELF or SELF file","tooBig":"Too big (64 MB max)","ps5NoPicker":"The PS5 browser cannot pick files. Open this page on your phone or PC on the same network:","ps5NoPicker2":"Choose a file there and it is sent to elfldr on this console.","pathLabel":"Path on the console","openDir":"Open","loadBtn":"Load","upDir":"Up","onlyPayloads":"Only .elf and SELF files are listed. elfldr reads the file where it is, nothing is copied.","noPayloadsHere":"No ELF or SELF files in this folder.","notConnected":"not connected","folderMissing":"Folder not found","noRecent":"Nothing sent yet.","sentOk":"Sent {name}","sentFail":"{name} failed: {msg}","shaMatch":"sha256 matches","shaDiff":"sha256 differs","srcUpload":"uploaded","srcCatalog":"catalog","errBusy":"Another payload is being sent. Try again in a moment.","errLoader":"elfldr is not running on :9021","errRejected":"elfldr rejected it","errMissing":"File missing","errBlocked":"Blocked by the console","errTimeout":"No answer from the console","errNetwork":"Connection lost","pidN":"pid {n}"},"ar":{"loadFile":"\u062a\u062d\u0645\u064a\u0644 \u0645\u0644\u0641","fromDevice":"\u0645\u0646 \u0647\u0630\u0627 \u0627\u0644\u062c\u0647\u0627\u0632","fromPs5":"\u0645\u0646 PS5","recent":"\u0627\u0644\u0623\u062e\u064a\u0631\u0629","chooseFile":"\u0627\u062e\u062a\u0631 \u062d\u0645\u0648\u0644\u0629 \u0645\u0646 \u0647\u0630\u0627 \u0627\u0644\u062c\u0647\u0627\u0632","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 \u062d\u062a\u0649 64 MB","chooseBtn":"\u0627\u062e\u062a\u0631 \u0645\u0644\u0641\u064b\u0627","chooseOther":"\u0645\u0644\u0641 \u0622\u062e\u0631","args":"\u0627\u0644\u0648\u0633\u0627\u0626\u0637 (\u0627\u062e\u062a\u064a\u0627\u0631\u064a)","argsPh":"\u0645\u062b\u0627\u0644: --port 2121","keepCopy":"\u0627\u062d\u062a\u0641\u0638 \u0628\u0646\u0633\u062e\u0629 \u0641\u064a \u00ab{dl}\u00bb","addAuto":"\u0623\u0636\u0641 \u0625\u0644\u0649 AutoPayload","autoElfOnly":"\u064a\u0642\u0628\u0644 AutoPayload \u0645\u0644\u0641\u0627\u062a .elf \u0641\u0642\u0637","sendElfldr":"\u0623\u0631\u0633\u0644 \u0625\u0644\u0649 elfldr","uploading":"\u062c\u0627\u0631\u064d \u0627\u0644\u0631\u0641\u0639 {p}%","starting":"\u062c\u0627\u0631\u064d \u0627\u0644\u062a\u0634\u063a\u064a\u0644...","checkingFile":"\u062c\u0627\u0631\u064d \u0641\u062d\u0635 \u0627\u0644\u0645\u0644\u0641...","badMagic":"\u0644\u064a\u0633 \u0645\u0644\u0641 ELF \u0623\u0648 SELF","tooBig":"\u0643\u0628\u064a\u0631 \u062c\u062f\u064b\u0627 (\u0627\u0644\u062d\u062f 64 MB)","ps5NoPicker":"\u0645\u062a\u0635\u0641\u062d PS5 \u0644\u0627 \u064a\u0633\u062a\u0637\u064a\u0639 \u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u0645\u0644\u0641\u0627\u062a. \u0627\u0641\u062a\u062d \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629 \u0639\u0644\u0649 \u0647\u0627\u062a\u0641\u0643 \u0623\u0648 \u062d\u0627\u0633\u0648\u0628\u0643 \u0641\u064a \u0627\u0644\u0634\u0628\u0643\u0629 \u0646\u0641\u0633\u0647\u0627:","ps5NoPicker2":"\u0627\u062e\u062a\u0631 \u0645\u0644\u0641\u064b\u0627 \u0647\u0646\u0627\u0643 \u0648\u0633\u064a\u064f\u0631\u0633\u0644 \u0625\u0644\u0649 elfldr \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u062c\u0647\u0627\u0632.","pathLabel":"\u0627\u0644\u0645\u0633\u0627\u0631 \u0639\u0644\u0649 \u0627\u0644\u062c\u0647\u0627\u0632","openDir":"\u0641\u062a\u062d","loadBtn":"\u062a\u062d\u0645\u064a\u0644","upDir":"\u0644\u0644\u0623\u0639\u0644\u0649","onlyPayloads":"\u062a\u064f\u0639\u0631\u0636 \u0645\u0644\u0641\u0627\u062a .elf \u0648 SELF \u0641\u0642\u0637. \u064a\u0642\u0631\u0623 elfldr \u0627\u0644\u0645\u0644\u0641 \u0645\u0646 \u0645\u0643\u0627\u0646\u0647 \u0648\u0644\u0627 \u064a\u064f\u0646\u0633\u062e \u0634\u064a\u0621.","noPayloadsHere":"\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0644\u0641\u0627\u062a ELF \u0623\u0648 SELF \u0641\u064a \u0647\u0630\u0627 \u0627\u0644\u0645\u062c\u0644\u062f.","notConnected":"\u063a\u064a\u0631 \u0645\u062a\u0635\u0644","folderMissing":"\u0627\u0644\u0645\u062c\u0644\u062f \u063a\u064a\u0631 \u0645\u0648\u062c\u0648\u062f","noRecent":"\u0644\u0645 \u064a\u064f\u0631\u0633\u0644 \u0634\u064a\u0621 \u0628\u0639\u062f.","sentOk":"\u062a\u0645 \u0625\u0631\u0633\u0627\u0644 {name}","sentFail":"\u0641\u0634\u0644 {name}: {msg}","shaMatch":"sha256 \u0645\u0637\u0627\u0628\u0642","shaDiff":"sha256 \u0645\u062e\u062a\u0644\u0641","srcUpload":"\u0645\u0631\u0641\u0648\u0639","srcCatalog":"\u0627\u0644\u0643\u062a\u0627\u0644\u0648\u062c","errBusy":"\u064a\u062a\u0645 \u0625\u0631\u0633\u0627\u0644 \u062d\u0645\u0648\u0644\u0629 \u0623\u062e\u0631\u0649 \u0627\u0644\u0622\u0646. \u062d\u0627\u0648\u0644 \u0628\u0639\u062f \u0644\u062d\u0638\u0629.","errLoader":"elfldr \u0644\u0627 \u064a\u0639\u0645\u0644 \u0639\u0644\u0649 :9021","errRejected":"\u0631\u0641\u0636 elfldr \u0627\u0644\u0645\u0644\u0641","errMissing":"\u0627\u0644\u0645\u0644\u0641 \u063a\u064a\u0631 \u0645\u0648\u062c\u0648\u062f","errBlocked":"\u062d\u0638\u0631\u0647 \u0627\u0644\u062c\u0647\u0627\u0632","errTimeout":"\u0644\u0627 \u0631\u062f \u0645\u0646 \u0627\u0644\u062c\u0647\u0627\u0632","errNetwork":"\u0627\u0646\u0642\u0637\u0639 \u0627\u0644\u0627\u062a\u0635\u0627\u0644","pidN":"pid {n}"},"es":{"loadFile":"Cargar archivo","fromDevice":"Desde este dispositivo","fromPs5":"Desde la PS5","recent":"Recientes","chooseFile":"Elige un payload en este dispositivo","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 hasta 64 MB","chooseBtn":"Elegir archivo","chooseOther":"Otro archivo","args":"Argumentos (opcional)","argsPh":"p. ej. --port 2121","keepCopy":"Guardar copia en {dl}","addAuto":"A\u00f1adir a AutoPayload","autoElfOnly":"AutoPayload solo acepta archivos .elf","sendElfldr":"Enviar a elfldr","uploading":"Subiendo {p}%","starting":"Iniciando...","checkingFile":"Comprobando archivo...","badMagic":"No es un archivo ELF ni SELF","tooBig":"Demasiado grande (m\u00e1x. 64 MB)","ps5NoPicker":"El navegador de la PS5 no puede elegir archivos. Abre esta p\u00e1gina en tu m\u00f3vil o PC en la misma red:","ps5NoPicker2":"Elige ah\u00ed un archivo y se enviar\u00e1 a elfldr en esta consola.","pathLabel":"Ruta en la consola","openDir":"Abrir","loadBtn":"Cargar","upDir":"Subir","onlyPayloads":"Solo se muestran archivos .elf y SELF. elfldr lee el archivo donde est\u00e1, no se copia nada.","noPayloadsHere":"No hay archivos ELF ni SELF en esta carpeta.","notConnected":"no conectado","folderMissing":"Carpeta no encontrada","noRecent":"A\u00fan no se ha enviado nada.","sentOk":"{name} enviado","sentFail":"{name} fall\u00f3: {msg}","shaMatch":"sha256 coincide","shaDiff":"sha256 distinto","srcUpload":"subido","srcCatalog":"cat\u00e1logo","errBusy":"Se est\u00e1 enviando otro payload. Int\u00e9ntalo en un momento.","errLoader":"elfldr no est\u00e1 activo en :9021","errRejected":"elfldr lo rechaz\u00f3","errMissing":"Falta el archivo","errBlocked":"Bloqueado por la consola","errTimeout":"La consola no responde","errNetwork":"Conexi\u00f3n perdida","pidN":"pid {n}"},"fr":{"loadFile":"Charger un fichier","fromDevice":"Depuis cet appareil","fromPs5":"Depuis la PS5","recent":"R\u00e9cents","chooseFile":"Choisis un payload sur cet appareil","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 jusqu\u2019\u00e0 64 Mo","chooseBtn":"Choisir un fichier","chooseOther":"Autre fichier","args":"Arguments (facultatif)","argsPh":"ex. --port 2121","keepCopy":"Garder une copie dans {dl}","addAuto":"Ajouter \u00e0 AutoPayload","autoElfOnly":"AutoPayload accepte seulement les fichiers .elf","sendElfldr":"Envoyer \u00e0 elfldr","uploading":"Envoi {p}%","starting":"D\u00e9marrage...","checkingFile":"V\u00e9rification du fichier...","badMagic":"Ce n\u2019est pas un fichier ELF ou SELF","tooBig":"Trop gros (64 Mo max)","ps5NoPicker":"Le navigateur de la PS5 ne peut pas choisir de fichiers. Ouvre cette page sur ton t\u00e9l\u00e9phone ou ton PC sur le m\u00eame r\u00e9seau :","ps5NoPicker2":"Choisis un fichier l\u00e0-bas, il sera envoy\u00e9 \u00e0 elfldr sur cette console.","pathLabel":"Chemin sur la console","openDir":"Ouvrir","loadBtn":"Charger","upDir":"Haut","onlyPayloads":"Seuls les fichiers .elf et SELF sont list\u00e9s. elfldr lit le fichier sur place, rien n\u2019est copi\u00e9.","noPayloadsHere":"Aucun fichier ELF ou SELF dans ce dossier.","notConnected":"non connect\u00e9","folderMissing":"Dossier introuvable","noRecent":"Rien envoy\u00e9 pour l\u2019instant.","sentOk":"{name} envoy\u00e9","sentFail":"\u00c9chec de {name} : {msg}","shaMatch":"sha256 identique","shaDiff":"sha256 diff\u00e9rent","srcUpload":"envoy\u00e9","srcCatalog":"catalogue","errBusy":"Un autre payload est en cours d\u2019envoi. R\u00e9essaie dans un instant.","errLoader":"elfldr ne tourne pas sur :9021","errRejected":"elfldr l\u2019a refus\u00e9","errMissing":"Fichier manquant","errBlocked":"Bloqu\u00e9 par la console","errTimeout":"Pas de r\u00e9ponse de la console","errNetwork":"Connexion perdue","pidN":"pid {n}"},"de":{"loadFile":"Datei laden","fromDevice":"Von diesem Ger\u00e4t","fromPs5":"Von der PS5","recent":"Zuletzt","chooseFile":"Payload auf diesem Ger\u00e4t w\u00e4hlen","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 bis 64 MB","chooseBtn":"Datei w\u00e4hlen","chooseOther":"Andere Datei","args":"Argumente (optional)","argsPh":"z. B. --port 2121","keepCopy":"Kopie in {dl} behalten","addAuto":"Zu AutoPayload hinzuf\u00fcgen","autoElfOnly":"AutoPayload nimmt nur .elf-Dateien","sendElfldr":"An elfldr senden","uploading":"Hochladen {p}%","starting":"Startet...","checkingFile":"Datei wird gepr\u00fcft...","badMagic":"Keine ELF- oder SELF-Datei","tooBig":"Zu gro\u00df (max. 64 MB)","ps5NoPicker":"Der PS5-Browser kann keine Dateien ausw\u00e4hlen. \u00d6ffne diese Seite auf Handy oder PC im selben Netzwerk:","ps5NoPicker2":"W\u00e4hle dort eine Datei, sie wird an elfldr auf dieser Konsole gesendet.","pathLabel":"Pfad auf der Konsole","openDir":"\u00d6ffnen","loadBtn":"Laden","upDir":"Hoch","onlyPayloads":"Nur .elf- und SELF-Dateien werden gezeigt. elfldr liest die Datei an Ort und Stelle, nichts wird kopiert.","noPayloadsHere":"Keine ELF- oder SELF-Dateien in diesem Ordner.","notConnected":"nicht verbunden","folderMissing":"Ordner nicht gefunden","noRecent":"Noch nichts gesendet.","sentOk":"{name} gesendet","sentFail":"{name} fehlgeschlagen: {msg}","shaMatch":"sha256 stimmt","shaDiff":"sha256 weicht ab","srcUpload":"hochgeladen","srcCatalog":"Katalog","errBusy":"Gerade wird ein anderes Payload gesendet. Gleich noch mal versuchen.","errLoader":"elfldr l\u00e4uft nicht auf :9021","errRejected":"elfldr hat es abgelehnt","errMissing":"Datei fehlt","errBlocked":"Von der Konsole blockiert","errTimeout":"Keine Antwort von der Konsole","errNetwork":"Verbindung verloren","pidN":"pid {n}"},"pt":{"loadFile":"Carregar arquivo","fromDevice":"Deste dispositivo","fromPs5":"Do PS5","recent":"Recentes","chooseFile":"Escolha um payload neste dispositivo","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 at\u00e9 64 MB","chooseBtn":"Escolher arquivo","chooseOther":"Outro arquivo","args":"Argumentos (opcional)","argsPh":"ex.: --port 2121","keepCopy":"Guardar c\u00f3pia em {dl}","addAuto":"Adicionar ao AutoPayload","autoElfOnly":"O AutoPayload aceita s\u00f3 arquivos .elf","sendElfldr":"Enviar ao elfldr","uploading":"Enviando {p}%","starting":"Iniciando...","checkingFile":"Verificando arquivo...","badMagic":"N\u00e3o \u00e9 um arquivo ELF ou SELF","tooBig":"Grande demais (m\u00e1x. 64 MB)","ps5NoPicker":"O navegador do PS5 n\u00e3o consegue escolher arquivos. Abra esta p\u00e1gina no celular ou PC na mesma rede:","ps5NoPicker2":"Escolha um arquivo l\u00e1 e ele ser\u00e1 enviado ao elfldr neste console.","pathLabel":"Caminho no console","openDir":"Abrir","loadBtn":"Carregar","upDir":"Acima","onlyPayloads":"S\u00f3 arquivos .elf e SELF aparecem. O elfldr l\u00ea o arquivo onde ele est\u00e1, nada \u00e9 copiado.","noPayloadsHere":"Nenhum arquivo ELF ou SELF nesta pasta.","notConnected":"n\u00e3o conectado","folderMissing":"Pasta n\u00e3o encontrada","noRecent":"Nada enviado ainda.","sentOk":"{name} enviado","sentFail":"{name} falhou: {msg}","shaMatch":"sha256 confere","shaDiff":"sha256 diferente","srcUpload":"enviado","srcCatalog":"cat\u00e1logo","errBusy":"Outro payload est\u00e1 sendo enviado. Tente de novo em instantes.","errLoader":"O elfldr n\u00e3o est\u00e1 rodando em :9021","errRejected":"O elfldr recusou","errMissing":"Arquivo ausente","errBlocked":"Bloqueado pelo console","errTimeout":"O console n\u00e3o respondeu","errNetwork":"Conex\u00e3o perdida","pidN":"pid {n}"},"ru":{"loadFile":"\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0444\u0430\u0439\u043b","fromDevice":"\u0421 \u044d\u0442\u043e\u0433\u043e \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430","fromPs5":"\u0421 PS5","recent":"\u041d\u0435\u0434\u0430\u0432\u043d\u0438\u0435","chooseFile":"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 payload \u043d\u0430 \u044d\u0442\u043e\u043c \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0435","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 \u0434\u043e 64 \u041c\u0411","chooseBtn":"\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u0444\u0430\u0439\u043b","chooseOther":"\u0414\u0440\u0443\u0433\u043e\u0439 \u0444\u0430\u0439\u043b","args":"\u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u044b (\u043d\u0435\u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e)","argsPh":"\u043d\u0430\u043f\u0440. --port 2121","keepCopy":"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043a\u043e\u043f\u0438\u044e \u0432 \u00ab{dl}\u00bb","addAuto":"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0432 AutoPayload","autoElfOnly":"AutoPayload \u043f\u0440\u0438\u043d\u0438\u043c\u0430\u0435\u0442 \u0442\u043e\u043b\u044c\u043a\u043e \u0444\u0430\u0439\u043b\u044b .elf","sendElfldr":"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0432 elfldr","uploading":"\u041e\u0442\u043f\u0440\u0430\u0432\u043a\u0430 {p}%","starting":"\u0417\u0430\u043f\u0443\u0441\u043a...","checkingFile":"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0444\u0430\u0439\u043b\u0430...","badMagic":"\u042d\u0442\u043e \u043d\u0435 \u0444\u0430\u0439\u043b ELF \u0438\u043b\u0438 SELF","tooBig":"\u0421\u043b\u0438\u0448\u043a\u043e\u043c \u0431\u043e\u043b\u044c\u0448\u043e\u0439 (\u0434\u043e 64 \u041c\u0411)","ps5NoPicker":"\u0411\u0440\u0430\u0443\u0437\u0435\u0440 PS5 \u043d\u0435 \u0443\u043c\u0435\u0435\u0442 \u0432\u044b\u0431\u0438\u0440\u0430\u0442\u044c \u0444\u0430\u0439\u043b\u044b. \u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u044d\u0442\u0443 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 \u043d\u0430 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0435 \u0438\u043b\u0438 \u041f\u041a \u0432 \u0442\u043e\u0439 \u0436\u0435 \u0441\u0435\u0442\u0438:","ps5NoPicker2":"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0442\u0430\u043c \u0444\u0430\u0439\u043b, \u0438 \u043e\u043d \u0431\u0443\u0434\u0435\u0442 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d \u0432 elfldr \u043d\u0430 \u044d\u0442\u043e\u0439 \u043a\u043e\u043d\u0441\u043e\u043b\u0438.","pathLabel":"\u041f\u0443\u0442\u044c \u043d\u0430 \u043a\u043e\u043d\u0441\u043e\u043b\u0438","openDir":"\u041e\u0442\u043a\u0440\u044b\u0442\u044c","loadBtn":"\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c","upDir":"\u0412\u0432\u0435\u0440\u0445","onlyPayloads":"\u041f\u043e\u043a\u0430\u0437\u0430\u043d\u044b \u0442\u043e\u043b\u044c\u043a\u043e \u0444\u0430\u0439\u043b\u044b .elf \u0438 SELF. elfldr \u0447\u0438\u0442\u0430\u0435\u0442 \u0444\u0430\u0439\u043b \u043d\u0430 \u043c\u0435\u0441\u0442\u0435, \u043d\u0438\u0447\u0435\u0433\u043e \u043d\u0435 \u043a\u043e\u043f\u0438\u0440\u0443\u0435\u0442\u0441\u044f.","noPayloadsHere":"\u0412 \u044d\u0442\u043e\u0439 \u043f\u0430\u043f\u043a\u0435 \u043d\u0435\u0442 \u0444\u0430\u0439\u043b\u043e\u0432 ELF \u0438\u043b\u0438 SELF.","notConnected":"\u043d\u0435 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u043e","folderMissing":"\u041f\u0430\u043f\u043a\u0430 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u0430","noRecent":"\u041f\u043e\u043a\u0430 \u043d\u0438\u0447\u0435\u0433\u043e \u043d\u0435 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e.","sentOk":"{name} \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d","sentFail":"{name}: \u043e\u0448\u0438\u0431\u043a\u0430: {msg}","shaMatch":"sha256 \u0441\u043e\u0432\u043f\u0430\u0434\u0430\u0435\u0442","shaDiff":"sha256 \u043d\u0435 \u0441\u043e\u0432\u043f\u0430\u0434\u0430\u0435\u0442","srcUpload":"\u0437\u0430\u0433\u0440\u0443\u0436\u0435\u043d","srcCatalog":"\u043a\u0430\u0442\u0430\u043b\u043e\u0433","errBusy":"\u0421\u0435\u0439\u0447\u0430\u0441 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u0442\u0441\u044f \u0434\u0440\u0443\u0433\u043e\u0439 payload. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0447\u0443\u0442\u044c \u043f\u043e\u0437\u0436\u0435.","errLoader":"elfldr \u043d\u0435 \u0437\u0430\u043f\u0443\u0449\u0435\u043d \u043d\u0430 :9021","errRejected":"elfldr \u043e\u0442\u043a\u043b\u043e\u043d\u0438\u043b \u0444\u0430\u0439\u043b","errMissing":"\u0424\u0430\u0439\u043b \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d","errBlocked":"\u0417\u0430\u0431\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u043a\u043e\u043d\u0441\u043e\u043b\u044c\u044e","errTimeout":"\u041a\u043e\u043d\u0441\u043e\u043b\u044c \u043d\u0435 \u043e\u0442\u0432\u0435\u0447\u0430\u0435\u0442","errNetwork":"\u0421\u043e\u0435\u0434\u0438\u043d\u0435\u043d\u0438\u0435 \u043f\u043e\u0442\u0435\u0440\u044f\u043d\u043e","pidN":"pid {n}"},"ja":{"loadFile":"\u30d5\u30a1\u30a4\u30eb\u3092\u8aad\u307f\u8fbc\u3080","fromDevice":"\u3053\u306e\u30c7\u30d0\u30a4\u30b9\u304b\u3089","fromPs5":"PS5\u304b\u3089","recent":"\u6700\u8fd1","chooseFile":"\u3053\u306e\u30c7\u30d0\u30a4\u30b9\u306e\u30da\u30a4\u30ed\u30fc\u30c9\u3092\u9078\u629e","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 \u6700\u5927 64 MB","chooseBtn":"\u30d5\u30a1\u30a4\u30eb\u3092\u9078\u629e","chooseOther":"\u5225\u306e\u30d5\u30a1\u30a4\u30eb","args":"\u5f15\u6570\uff08\u4efb\u610f\uff09","argsPh":"\u4f8b: --port 2121","keepCopy":"\u300c{dl}\u300d\u306b\u30b3\u30d4\u30fc\u3092\u6b8b\u3059","addAuto":"AutoPayload \u306b\u8ffd\u52a0","autoElfOnly":"AutoPayload \u306f .elf \u30d5\u30a1\u30a4\u30eb\u306e\u307f\u5bfe\u5fdc","sendElfldr":"elfldr \u306b\u9001\u4fe1","uploading":"\u30a2\u30c3\u30d7\u30ed\u30fc\u30c9\u4e2d {p}%","starting":"\u8d77\u52d5\u4e2d...","checkingFile":"\u30d5\u30a1\u30a4\u30eb\u3092\u78ba\u8a8d\u4e2d...","badMagic":"ELF / SELF \u30d5\u30a1\u30a4\u30eb\u3067\u306f\u3042\u308a\u307e\u305b\u3093","tooBig":"\u5927\u304d\u3059\u304e\u307e\u3059\uff08\u6700\u5927 64 MB\uff09","ps5NoPicker":"PS5 \u306e\u30d6\u30e9\u30a6\u30b6\u3067\u306f\u30d5\u30a1\u30a4\u30eb\u3092\u9078\u3079\u307e\u305b\u3093\u3002\u540c\u3058\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u306e\u30b9\u30de\u30db\u304b PC \u3067\u3053\u306e\u30da\u30fc\u30b8\u3092\u958b\u3044\u3066\u304f\u3060\u3055\u3044:","ps5NoPicker2":"\u305d\u3053\u3067\u30d5\u30a1\u30a4\u30eb\u3092\u9078\u3076\u3068\u3001\u3053\u306e\u30b3\u30f3\u30bd\u30fc\u30eb\u306e elfldr \u306b\u9001\u4fe1\u3055\u308c\u307e\u3059\u3002","pathLabel":"\u30b3\u30f3\u30bd\u30fc\u30eb\u4e0a\u306e\u30d1\u30b9","openDir":"\u958b\u304f","loadBtn":"\u8aad\u307f\u8fbc\u3080","upDir":"\u4e0a\u3078","onlyPayloads":".elf \u3068 SELF \u30d5\u30a1\u30a4\u30eb\u306e\u307f\u8868\u793a\u3057\u307e\u3059\u3002elfldr \u306f\u305d\u306e\u5834\u6240\u306e\u30d5\u30a1\u30a4\u30eb\u3092\u76f4\u63a5\u8aad\u307f\u8fbc\u307f\u3001\u30b3\u30d4\u30fc\u306f\u3057\u307e\u305b\u3093\u3002","noPayloadsHere":"\u3053\u306e\u30d5\u30a9\u30eb\u30c0\u306b ELF / SELF \u30d5\u30a1\u30a4\u30eb\u306f\u3042\u308a\u307e\u305b\u3093\u3002","notConnected":"\u672a\u63a5\u7d9a","folderMissing":"\u30d5\u30a9\u30eb\u30c0\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093","noRecent":"\u307e\u3060\u4f55\u3082\u9001\u4fe1\u3057\u3066\u3044\u307e\u305b\u3093\u3002","sentOk":"{name} \u3092\u9001\u4fe1\u3057\u307e\u3057\u305f","sentFail":"{name} \u5931\u6557: {msg}","shaMatch":"sha256 \u4e00\u81f4","shaDiff":"sha256 \u4e0d\u4e00\u81f4","srcUpload":"\u30a2\u30c3\u30d7\u30ed\u30fc\u30c9","srcCatalog":"\u30ab\u30bf\u30ed\u30b0","errBusy":"\u5225\u306e\u30da\u30a4\u30ed\u30fc\u30c9\u3092\u9001\u4fe1\u4e2d\u3067\u3059\u3002\u5c11\u3057\u5f85\u3063\u3066\u304b\u3089\u518d\u8a66\u884c\u3057\u3066\u304f\u3060\u3055\u3044\u3002","errLoader":"elfldr \u304c :9021 \u3067\u52d5\u3044\u3066\u3044\u307e\u305b\u3093","errRejected":"elfldr \u304c\u62d2\u5426\u3057\u307e\u3057\u305f","errMissing":"\u30d5\u30a1\u30a4\u30eb\u304c\u3042\u308a\u307e\u305b\u3093","errBlocked":"\u30b3\u30f3\u30bd\u30fc\u30eb\u304c\u30d6\u30ed\u30c3\u30af\u3057\u307e\u3057\u305f","errTimeout":"\u30b3\u30f3\u30bd\u30fc\u30eb\u304b\u3089\u5fdc\u7b54\u304c\u3042\u308a\u307e\u305b\u3093","errNetwork":"\u63a5\u7d9a\u304c\u5207\u308c\u307e\u3057\u305f","pidN":"pid {n}"},"zh":{"loadFile":"\u52a0\u8f7d\u6587\u4ef6","fromDevice":"\u4ece\u6b64\u8bbe\u5907","fromPs5":"\u4ece PS5","recent":"\u6700\u8fd1","chooseFile":"\u5728\u6b64\u8bbe\u5907\u4e0a\u9009\u62e9\u8f7d\u8377","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 \u6700\u5927 64 MB","chooseBtn":"\u9009\u62e9\u6587\u4ef6","chooseOther":"\u6362\u4e00\u4e2a\u6587\u4ef6","args":"\u53c2\u6570\uff08\u53ef\u9009\uff09","argsPh":"\u4f8b\u5982 --port 2121","keepCopy":"\u5728\u201c{dl}\u201d\u4e2d\u4fdd\u7559\u526f\u672c","addAuto":"\u52a0\u5165 AutoPayload","autoElfOnly":"AutoPayload \u4ec5\u652f\u6301 .elf \u6587\u4ef6","sendElfldr":"\u53d1\u9001\u5230 elfldr","uploading":"\u4e0a\u4f20\u4e2d {p}%","starting":"\u6b63\u5728\u542f\u52a8...","checkingFile":"\u6b63\u5728\u68c0\u67e5\u6587\u4ef6...","badMagic":"\u4e0d\u662f ELF \u6216 SELF \u6587\u4ef6","tooBig":"\u6587\u4ef6\u592a\u5927\uff08\u6700\u5927 64 MB\uff09","ps5NoPicker":"PS5 \u6d4f\u89c8\u5668\u65e0\u6cd5\u9009\u62e9\u6587\u4ef6\u3002\u8bf7\u5728\u540c\u4e00\u7f51\u7edc\u7684\u624b\u673a\u6216\u7535\u8111\u4e0a\u6253\u5f00\u6b64\u9875\u9762\uff1a","ps5NoPicker2":"\u5728\u90a3\u91cc\u9009\u62e9\u6587\u4ef6\uff0c\u5b83\u4f1a\u88ab\u53d1\u9001\u5230\u8fd9\u53f0\u4e3b\u673a\u7684 elfldr\u3002","pathLabel":"\u4e3b\u673a\u4e0a\u7684\u8def\u5f84","openDir":"\u6253\u5f00","loadBtn":"\u52a0\u8f7d","upDir":"\u4e0a\u4e00\u7ea7","onlyPayloads":"\u53ea\u5217\u51fa .elf \u548c SELF \u6587\u4ef6\u3002elfldr \u76f4\u63a5\u8bfb\u53d6\u539f\u4f4d\u7f6e\u7684\u6587\u4ef6\uff0c\u4e0d\u4f1a\u590d\u5236\u3002","noPayloadsHere":"\u6b64\u6587\u4ef6\u5939\u4e2d\u6ca1\u6709 ELF \u6216 SELF \u6587\u4ef6\u3002","notConnected":"\u672a\u8fde\u63a5","folderMissing":"\u627e\u4e0d\u5230\u6587\u4ef6\u5939","noRecent":"\u8fd8\u6ca1\u6709\u53d1\u9001\u8bb0\u5f55\u3002","sentOk":"\u5df2\u53d1\u9001 {name}","sentFail":"{name} \u5931\u8d25\uff1a{msg}","shaMatch":"sha256 \u4e00\u81f4","shaDiff":"sha256 \u4e0d\u4e00\u81f4","srcUpload":"\u5df2\u4e0a\u4f20","srcCatalog":"\u76ee\u5f55","errBusy":"\u6b63\u5728\u53d1\u9001\u53e6\u4e00\u4e2a\u8f7d\u8377\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5\u3002","errLoader":"elfldr \u672a\u5728 :9021 \u8fd0\u884c","errRejected":"elfldr \u62d2\u7edd\u4e86\u8be5\u6587\u4ef6","errMissing":"\u6587\u4ef6\u4e0d\u5b58\u5728","errBlocked":"\u88ab\u4e3b\u673a\u62e6\u622a","errTimeout":"\u4e3b\u673a\u65e0\u54cd\u5e94","errNetwork":"\u8fde\u63a5\u5df2\u65ad\u5f00","pidN":"pid {n}"},"it":{"loadFile":"Carica file","fromDevice":"Da questo dispositivo","fromPs5":"Dalla PS5","recent":"Recenti","chooseFile":"Scegli un payload su questo dispositivo","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 fino a 64 MB","chooseBtn":"Scegli file","chooseOther":"Altro file","args":"Argomenti (facoltativi)","argsPh":"es. --port 2121","keepCopy":"Tieni una copia in {dl}","addAuto":"Aggiungi ad AutoPayload","autoElfOnly":"AutoPayload accetta solo file .elf","sendElfldr":"Invia a elfldr","uploading":"Caricamento {p}%","starting":"Avvio...","checkingFile":"Controllo del file...","badMagic":"Non \u00e8 un file ELF o SELF","tooBig":"Troppo grande (max 64 MB)","ps5NoPicker":"Il browser della PS5 non pu\u00f2 scegliere file. Apri questa pagina su telefono o PC nella stessa rete:","ps5NoPicker2":"Scegli l\u00ec un file e verr\u00e0 inviato a elfldr su questa console.","pathLabel":"Percorso sulla console","openDir":"Apri","loadBtn":"Carica","upDir":"Su","onlyPayloads":"Sono elencati solo file .elf e SELF. elfldr legge il file dov\u2019\u00e8, non viene copiato nulla.","noPayloadsHere":"Nessun file ELF o SELF in questa cartella.","notConnected":"non collegato","folderMissing":"Cartella non trovata","noRecent":"Ancora nulla inviato.","sentOk":"{name} inviato","sentFail":"{name} non riuscito: {msg}","shaMatch":"sha256 corrisponde","shaDiff":"sha256 diverso","srcUpload":"caricato","srcCatalog":"catalogo","errBusy":"Si sta inviando un altro payload. Riprova tra un attimo.","errLoader":"elfldr non \u00e8 attivo su :9021","errRejected":"elfldr lo ha rifiutato","errMissing":"File mancante","errBlocked":"Bloccato dalla console","errTimeout":"Nessuna risposta dalla console","errNetwork":"Connessione persa","pidN":"pid {n}"},"he":{"loadFile":"\u05d8\u05e2\u05d9\u05e0\u05ea \u05e7\u05d5\u05d1\u05e5","fromDevice":"\u05de\u05d4\u05de\u05db\u05e9\u05d9\u05e8 \u05d4\u05d6\u05d4","fromPs5":"\u05de\u05d4-PS5","recent":"\u05d0\u05d7\u05e8\u05d5\u05e0\u05d9\u05dd","chooseFile":"\u05d1\u05d7\u05e8 payload \u05de\u05d4\u05de\u05db\u05e9\u05d9\u05e8 \u05d4\u05d6\u05d4","chooseHint":".elf \u00b7 .bin \u00b7 .self \u00b7 \u05e2\u05d3 64 MB","chooseBtn":"\u05d1\u05d7\u05e8 \u05e7\u05d5\u05d1\u05e5","chooseOther":"\u05e7\u05d5\u05d1\u05e5 \u05d0\u05d7\u05e8","args":"\u05d0\u05e8\u05d2\u05d5\u05de\u05e0\u05d8\u05d9\u05dd (\u05dc\u05d0 \u05d7\u05d5\u05d1\u05d4)","argsPh":"\u05dc\u05de\u05e9\u05dc --port 2121","keepCopy":"\u05e9\u05de\u05d5\u05e8 \u05e2\u05d5\u05ea\u05e7 \u05d1\u00ab{dl}\u00bb","addAuto":"\u05d4\u05d5\u05e1\u05e3 \u05dc-AutoPayload","autoElfOnly":"AutoPayload \u05de\u05e7\u05d1\u05dc \u05e8\u05e7 \u05e7\u05d1\u05e6\u05d9 \u200e.elf","sendElfldr":"\u05e9\u05dc\u05d7 \u05dc-elfldr","uploading":"\u05de\u05e2\u05dc\u05d4 {p}%","starting":"\u05de\u05e4\u05e2\u05d9\u05dc...","checkingFile":"\u05d1\u05d5\u05d3\u05e7 \u05d0\u05ea \u05d4\u05e7\u05d5\u05d1\u05e5...","badMagic":"\u05d6\u05d4 \u05dc\u05d0 \u05e7\u05d5\u05d1\u05e5 ELF \u05d0\u05d5 SELF","tooBig":"\u05d2\u05d3\u05d5\u05dc \u05de\u05d3\u05d9 (\u05e2\u05d3 64 MB)","ps5NoPicker":"\u05d4\u05d3\u05e4\u05d3\u05e4\u05df \u05e9\u05dc \u05d4-PS5 \u05dc\u05d0 \u05d9\u05db\u05d5\u05dc \u05dc\u05d1\u05d7\u05d5\u05e8 \u05e7\u05d1\u05e6\u05d9\u05dd. \u05e4\u05ea\u05d7 \u05d0\u05ea \u05d4\u05d3\u05e3 \u05d4\u05d6\u05d4 \u05d1\u05d8\u05dc\u05e4\u05d5\u05df \u05d0\u05d5 \u05d1\u05de\u05d7\u05e9\u05d1 \u05d1\u05d0\u05d5\u05ea\u05d4 \u05e8\u05e9\u05ea:","ps5NoPicker2":"\u05d1\u05d7\u05e8 \u05e9\u05dd \u05e7\u05d5\u05d1\u05e5 \u05d5\u05d4\u05d5\u05d0 \u05d9\u05d9\u05e9\u05dc\u05d7 \u05dc-elfldr \u05d1\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4 \u05d4\u05d6\u05d5.","pathLabel":"\u05e0\u05ea\u05d9\u05d1 \u05d1\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4","openDir":"\u05e4\u05ea\u05d7","loadBtn":"\u05d8\u05e2\u05df","upDir":"\u05dc\u05de\u05e2\u05dc\u05d4","onlyPayloads":"\u05de\u05d5\u05e6\u05d2\u05d9\u05dd \u05e8\u05e7 \u05e7\u05d1\u05e6\u05d9 \u200e.elf \u05d5-SELF. \u05d4-elfldr \u05e7\u05d5\u05e8\u05d0 \u05d0\u05ea \u05d4\u05e7\u05d5\u05d1\u05e5 \u05d1\u05de\u05e7\u05d5\u05dd \u05e9\u05dc\u05d5, \u05e9\u05d5\u05dd \u05d3\u05d1\u05e8 \u05dc\u05d0 \u05de\u05d5\u05e2\u05ea\u05e7.","noPayloadsHere":"\u05d0\u05d9\u05df \u05e7\u05d1\u05e6\u05d9 ELF \u05d0\u05d5 SELF \u05d1\u05ea\u05d9\u05e7\u05d9\u05d9\u05d4 \u05d4\u05d6\u05d5.","notConnected":"\u05dc\u05d0 \u05de\u05d7\u05d5\u05d1\u05e8","folderMissing":"\u05d4\u05ea\u05d9\u05e7\u05d9\u05d9\u05d4 \u05dc\u05d0 \u05e0\u05de\u05e6\u05d0\u05d4","noRecent":"\u05e2\u05d5\u05d3 \u05dc\u05d0 \u05e0\u05e9\u05dc\u05d7 \u05db\u05dc\u05d5\u05dd.","sentOk":"{name} \u05e0\u05e9\u05dc\u05d7","sentFail":"{name} \u05e0\u05db\u05e9\u05dc: {msg}","shaMatch":"sha256 \u05ea\u05d5\u05d0\u05dd","shaDiff":"sha256 \u05dc\u05d0 \u05ea\u05d5\u05d0\u05dd","srcUpload":"\u05d4\u05d5\u05e2\u05dc\u05d4","srcCatalog":"\u05e7\u05d8\u05dc\u05d5\u05d2","errBusy":"payload \u05d0\u05d7\u05e8 \u05e0\u05e9\u05dc\u05d7 \u05e2\u05db\u05e9\u05d9\u05d5. \u05e0\u05e1\u05d4 \u05e9\u05d5\u05d1 \u05e2\u05d5\u05d3 \u05e8\u05d2\u05e2.","errLoader":"elfldr \u05dc\u05d0 \u05e8\u05e5 \u05d1\u05e4\u05d5\u05e8\u05d8 9021","errRejected":"elfldr \u05d3\u05d7\u05d4 \u05d0\u05ea \u05d4\u05e7\u05d5\u05d1\u05e5","errMissing":"\u05d4\u05e7\u05d5\u05d1\u05e5 \u05d7\u05e1\u05e8","errBlocked":"\u05e0\u05d7\u05e1\u05dd \u05e2\u05dc \u05d9\u05d3\u05d9 \u05d4\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4","errTimeout":"\u05d0\u05d9\u05df \u05ea\u05e9\u05d5\u05d1\u05d4 \u05de\u05d4\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4","errNetwork":"\u05d4\u05d7\u05d9\u05d1\u05d5\u05e8 \u05e0\u05d5\u05ea\u05e7","pidN":"pid {n}"}};
+/* ---- Load file: upload from a phone/PC, or run a file that is already on the PS5 ---- */
+(function(){ var k, l; for(l in I18N_LOAD){ if(!I18N_LOAD.hasOwnProperty(l) || !I18N[l]) continue; for(k in I18N_LOAD[l]){ if(I18N_LOAD[l].hasOwnProperty(k)) I18N[l][k]=I18N_LOAD[l][k]; } } })();
+var LOAD_MAX=64*1024*1024;
+var LOAD_ROOTS=[{p:'/data',l:'/data'},{p:'/mnt/usb0',l:'USB 0'},{p:'/mnt/usb1',l:'USB 1'},{p:'/mnt/ext0',l:'/mnt/ext0'}];
+var loadSt={file:null,kind:'',sha:'',busy:false,dir:'/data',roots:null,ip:''};
+var LOCAL_PAYLOADS=[];
+function allPayloads(){ return PAYLOADS.concat(LOCAL_PAYLOADS); }
+function onPs5Browser(){ return /PlayStation/i.test(navigator.userAgent||''); }
+function fmtSize(n){
+  n=+n||0;
+  if(n<1024) return n+' B';
+  if(n<1048576) return (n/1024).toFixed(n<10240?1:0)+' KB';
+  return (n/1048576).toFixed(1)+' MB';
+}
+function payloadKind(b){
+  if(!b || b.length<4) return '';
+  if(b[0]===0x7f&&b[1]===0x45&&b[2]===0x4c&&b[3]===0x46) return 'ELF';
+  if(b[0]===0x54&&b[1]===0x14&&b[2]===0xf5&&b[3]===0xee) return 'PS5 SELF';
+  if(b[0]===0x4f&&b[1]===0x15&&b[2]===0x3d&&b[3]===0x1d) return 'PS4 SELF';
+  return '';
+}
+/* sha256 in JS: crypto.subtle is missing on plain http:// (phone on the LAN). */
+var SHA_K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+function Sha256(){ this.h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]; this.b=new Uint8Array(64); this.bn=0; this.len=0; this.w=new Array(64); }
+Sha256.prototype.blk=function(d,o){
+  var w=this.w, h=this.h, i, a,b,c,e,f,g,hh,dd, s0,s1,t1,t2;
+  for(i=0;i<16;i++) w[i]=(d[o+i*4]<<24)|(d[o+i*4+1]<<16)|(d[o+i*4+2]<<8)|d[o+i*4+3];
+  for(i=16;i<64;i++){ s0=((w[i-15]>>>7)|(w[i-15]<<25))^((w[i-15]>>>18)|(w[i-15]<<14))^(w[i-15]>>>3); s1=((w[i-2]>>>17)|(w[i-2]<<15))^((w[i-2]>>>19)|(w[i-2]<<13))^(w[i-2]>>>10); w[i]=(w[i-16]+s0+w[i-7]+s1)|0; }
+  a=h[0];b=h[1];c=h[2];dd=h[3];e=h[4];f=h[5];g=h[6];hh=h[7];
+  for(i=0;i<64;i++){
+    t1=(hh+(((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)))+((e&f)^(~e&g))+SHA_K[i]+w[i])|0;
+    t2=((((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)))+((a&b)^(a&c)^(b&c)))|0;
+    hh=g;g=f;f=e;e=(dd+t1)|0;dd=c;c=b;b=a;a=(t1+t2)|0;
+  }
+  h[0]=(h[0]+a)|0;h[1]=(h[1]+b)|0;h[2]=(h[2]+c)|0;h[3]=(h[3]+dd)|0;h[4]=(h[4]+e)|0;h[5]=(h[5]+f)|0;h[6]=(h[6]+g)|0;h[7]=(h[7]+hh)|0;
+};
+Sha256.prototype.update=function(u){
+  var i=0, n=u.length;
+  this.len+=n;
+  if(this.bn){ while(i<n && this.bn<64) this.b[this.bn++]=u[i++]; if(this.bn===64){ this.blk(this.b,0); this.bn=0; } }
+  for(;i+64<=n;i+=64) this.blk(u,i);
+  while(i<n) this.b[this.bn++]=u[i++];
+};
+Sha256.prototype.hex=function(){
+  var bits=this.len*8, pad=new Uint8Array((this.bn<56?56:120)-this.bn+8), i, out='', hi=Math.floor(bits/4294967296), lo=bits>>>0;
+  pad[0]=0x80;
+  for(i=0;i<4;i++){ pad[pad.length-8+i]=(hi>>>(24-i*8))&255; pad[pad.length-4+i]=(lo>>>(24-i*8))&255; }
+  this.update(pad);
+  for(i=0;i<8;i++) out+=('00000000'+(this.h[i]>>>0).toString(16)).slice(-8);
+  return out;
+};
+function sha256File(file, cb){
+  var h=new Sha256(), off=0, CH=1048576;
+  function step(){
+    if(off>=file.size){ cb(h.hex()); return; }
+    var r=new FileReader();
+    r.onload=function(){ h.update(new Uint8Array(r.result)); off+=CH; setTimeout(step,0); };
+    r.onerror=function(){ cb(''); };
+    r.readAsArrayBuffer(file.slice(off, off+CH));
+  }
+  step();
+}
+/* Server answers -> text in the page language. */
+function sendErrText(code, j, txt){
+  var m=(j && j.elfldr_msg) || '';
+  if(!m && txt && /^elfldr rejected the file: /.test(txt)) m=txt.replace(/^elfldr rejected the file: /,'');
+  if(code===409) return t('errBusy');
+  if(code===503) return t('errLoader');
+  if(code===502) return t('errRejected')+(m?' ('+m+')':'');
+  if(code===415) return t('badMagic');
+  if(code===404) return t('errMissing');
+  if(code===403) return t('errBlocked');
+  if(code===413) return t('tooBig');
+  if(code===-1) return t('errTimeout');
+  if(code===0) return t('errNetwork');
+  return (j && j.message) || txt || ('HTTP '+code);
+}
+/* ---- Recent ---- */
+var RECENT_KEY='ps5elfs-recent';
+function readRecent(){ var a; try{ a=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]'); }catch(e){ a=[]; } return (a && a.length!=null) ? a : []; }
+function addRecent(e){
+  var a=readRecent();
+  e.at=Date.now();
+  a.unshift(e);
+  if(a.length>12) a.length=12;
+  try{ localStorage.setItem(RECENT_KEY, JSON.stringify(a)); }catch(x){}
+  paintRecent();
+}
+function paintRecent(){
+  var box=document.getElementById('mlrecent'), a, i, e, html='', d, p2, det;
+  if(!box) return;
+  a=readRecent();
+  if(!a.length){ box.innerHTML='<p class="empty">'+esc(t('noRecent'))+'</p>'; return; }
+  p2=function(n){ return (n<10?'0':'')+n; };
+  for(i=0;i<a.length;i++){
+    e=a[i]; d=new Date(e.at||0);
+    if(e.ok) det=(e.src==='up' ? t('srcUpload') : (e.src==='cat' ? t('srcCatalog') : (e.where||'')))+(e.pid ? ' \u00b7 '+t('pidN',{n:e.pid}) : '')+(e.sha ? ' \u00b7 '+e.sha : '');
+    else det=e.why||'';
+    html+='<div class="lg"><s class="'+(e.ok?'ok':'bad')+'">'+(e.ok?'OK':'FAIL')+'</s><span><b>'+esc(e.name||'')+'</b> \u00b7 '+esc(det)+'</span><time>'+p2(d.getHours())+':'+p2(d.getMinutes())+'</time></div>';
+  }
+  box.innerHTML=html;
+}
+/* Files kept from uploads live in mirror/ but are not in the catalog. */
+function refreshLocalFiles(cb){
+  var fin=function(){ if(cb){ var c=cb; cb=null; try{ c(); }catch(e){} } };
+  if(!isConsoleHost()){ fin(); return; }
+  fetch('/browse?dir='+encodeURIComponent('/data/elf-launcher/mirror')).then(function(r){ return r.json(); }).then(function(j){
+    var known={}, i, f, list=[];
+    for(i=0;i<PAYLOADS.length;i++) known[String(PAYLOADS[i].path||'').split('/').pop()]=1;
+    for(i=0;j && j.files && i<j.files.length;i++){
+      f=j.files[i];
+      if(known[f.name] || isProtectedKillName(f.name)) continue;
+      list.push({name:f.name,path:'mirror/'+f.name,version:'',folder:'local',info:'',local:true,size:f.size});
+    }
+    LOCAL_PAYLOADS=list;
+    fin();
+  }).catch(fin);
+  setTimeout(fin, 4000);
+}
+/* ---- view ---- */
+function loadDeviceHtml(){
+  if(onPs5Browser()){
+    var url='http://'+(loadSt.ip||'PS5-IP')+':1000';
+    return '<div class="ps5hint">'+esc(t('ps5NoPicker'))+'<b id="mlurl">'+esc(url)+'</b></div><p class="mlnote">'+esc(t('ps5NoPicker2'))+'</p>';
+  }
+  var ios=/iPhone|iPad|iPod/.test(navigator.userAgent||'');
+  return '<input type="file" id="mlfile"'+(ios?'':' accept=".elf,.bin,.self"')+' class="mlhide">'+
+    '<div class="drop" id="mldrop"><b>'+esc(t('chooseFile'))+'</b><span>'+esc(t('chooseHint'))+'</span><button type="button" id="mlpick">'+esc(t('chooseBtn'))+'</button></div>'+
+    '<div id="mlsel" class="mlhide">'+
+    '<div class="fcard" id="mlcard"><i id="mlkind">ELF</i><b id="mlname"></b><em id="mlok"></em><small id="mlmeta"></small></div>'+
+    '<label class="mlf" for="mlargs">'+esc(t('args'))+'</label><input class="mlin" id="mlargs" placeholder="'+esc(t('argsPh'))+'" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">'+
+    '<div class="mlopts"><label class="pick"><input type="checkbox" class="mark" id="mlkeep"><span>'+esc(t('keepCopy',{dl:t('downloaded')}))+'</span></label>'+
+    '<label class="pick" id="mlautolab"><input type="checkbox" class="mark" id="mlauto"><span>'+esc(t('addAuto'))+'</span></label></div>'+
+    '<div class="mlgo"><button type="button" class="run load" id="mlsend" data-state="load">'+esc(t('sendElfldr'))+'</button><button type="button" class="run" id="mlother">'+esc(t('chooseOther'))+'</button></div>'+
+    '<p class="mlnote" id="mlmsg"></p></div>';
+}
+function showLoadFolder(){
+  var i, chips='';
+  currentFolder='load';
+  homeEl.className='';
+  homeEl.innerHTML='';
+  hdrEl.className='show';
+  titleEl.textContent=t('loadFile');
+  titleEl.className='beam';
+  viewEl.className='show';
+  syncSideActions('');
+  renderNav('load');
+  for(i=0;i<LOAD_ROOTS.length;i++) chips+='<button type="button" data-root="'+esc(LOAD_ROOTS[i].p)+'">'+esc(LOAD_ROOTS[i].l)+'</button>';
+  viewEl.innerHTML='<div id="ml">'+
+    '<section class="panel mlUp"><p class="label">'+esc(t('fromDevice'))+'</p><div id="mldev">'+loadDeviceHtml()+'</div></section>'+
+    '<section class="panel mlPath"><p class="label">'+esc(t('fromPs5'))+'</p>'+
+    '<div class="chips" id="mlchips">'+chips+'</div>'+
+    '<label class="mlf" for="mlpath">'+esc(t('pathLabel'))+'</label>'+
+    '<div class="mlrow"><input class="mlin" id="mlpath" value="'+esc(loadSt.dir)+'" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">'+
+    '<button type="button" class="run" id="mlopen">'+esc(t('openDir'))+'</button><button type="button" class="run load" id="mlrun">'+esc(t('loadBtn'))+'</button></div>'+
+    '<div class="plist" id="mllist"></div>'+
+    '<p class="mlnote">'+esc(t('onlyPayloads'))+'</p></section>'+
+    '<section class="panel mlLog"><p class="label">'+esc(t('recent'))+'</p><div id="mlrecent"></div></section></div>';
+  bindLoadView();
+  paintRecent();
+  paintPicked();
+  browseRoots();
+  browseDir(loadSt.dir);
+  if(onPs5Browser()) fetchConsoleIp(function(ip){ var u=document.getElementById('mlurl'); if(u && ip) u.textContent='http://'+ip+':1000'; });
+}
+function fetchConsoleIp(cb){
+  if(loadSt.ip){ cb(loadSt.ip); return; }
+  if(!isConsoleHost()){ cb(''); return; }
+  fetch('/ip').then(function(r){ return r.json(); }).then(function(j){ if(j && j.ip){ loadSt.ip=j.ip; } cb(loadSt.ip); }).catch(function(){ cb(''); });
+}
+function bindLoadView(){
+  var el=function(id){ return document.getElementById(id); };
+  var pick=el('mlpick'), file=el('mlfile'), other=el('mlother'), send=el('mlsend'), keep=el('mlkeep'), auto=el('mlauto');
+  if(pick && file) pick.onclick=function(){ try{ file.value=''; }catch(e){} file.click(); };
+  if(other && file) other.onclick=function(){ if(loadSt.busy) return; try{ file.value=''; }catch(e){} file.click(); };
+  if(file) file.onchange=function(){ if(file.files && file.files[0]) pickFile(file.files[0]); };
+  if(send) send.onclick=uploadSend;
+  if(auto) auto.onchange=function(){ if(auto.checked && keep) keep.checked=true; };
+  if(keep) keep.onchange=function(){ if(!keep.checked && auto) auto.checked=false; };
+  var chips=viewEl.querySelectorAll('#mlchips button'), i;
+  for(i=0;i<chips.length;i++) chips[i].onclick=function(){ if(this.getAttribute('data-off')==='1') return; browseDir(this.getAttribute('data-root')); };
+  if(el('mlopen')) el('mlopen').onclick=function(){ browseDir(el('mlpath').value); };
+  if(el('mlrun')) el('mlrun').onclick=function(){ runPath(el('mlpath').value, this); };
+  if(el('mlpath')) el('mlpath').onkeydown=function(ev){ if((ev.key||'')==='Enter'){ var v=this.value; if(/\.(elf|bin|self)$/i.test(v)) runPath(v, el('mlrun')); else browseDir(v); } };
+}
+function pickFile(f){
+  loadSt.file=f; loadSt.kind=''; loadSt.sha=''; 
+  paintPicked(t('checkingFile'));
+  if(f.size>LOAD_MAX){ loadSt.kind='big'; paintPicked(); return; }
+  var r=new FileReader();
+  r.onload=function(){
+    if(loadSt.file!==f) return;
+    loadSt.kind=payloadKind(new Uint8Array(r.result))||'bad';
+    paintPicked();
+    if(loadSt.kind!=='bad') sha256File(f, function(hex){ if(loadSt.file!==f) return; loadSt.sha=hex; paintPicked(); });
+  };
+  r.onerror=function(){ loadSt.kind='bad'; paintPicked(); };
+  r.readAsArrayBuffer(f.slice(0,4));
+}
+function paintPicked(note){
+  var el=function(id){ return document.getElementById(id); };
+  var f=loadSt.file, drop=el('mldrop'), sel=el('mlsel');
+  if(!drop || !sel) return;
+  drop.className=f?'drop mlhide':'drop';
+  sel.className=f?'':'mlhide';
+  if(!f) return;
+  var good=loadSt.kind && loadSt.kind!=='bad' && loadSt.kind!=='big';
+  var elf=/\.elf$/i.test(f.name);
+  el('mlcard').className='fcard'+(loadSt.kind==='bad'||loadSt.kind==='big'?' bad':'');
+  el('mlkind').textContent=good ? (loadSt.kind==='ELF'?'ELF':'SELF') : '!';
+  el('mlname').textContent=f.name;
+  el('mlok').textContent=good ? loadSt.kind : (loadSt.kind ? '\u2715' : '\u2026');
+  el('mlmeta').textContent=fmtSize(f.size)+(loadSt.sha ? ' \u00b7 sha256 '+loadSt.sha.slice(0,12)+'\u2026' : '');
+  var send=el('mlsend'), auto=el('mlauto'), alab=el('mlautolab');
+  if(!loadSt.busy){ send.disabled=!good; send.className='run load'; send.style.backgroundSize=''; send.textContent=t('sendElfldr'); }
+  if(auto){ auto.disabled=!elf; if(!elf) auto.checked=false; }
+  if(alab) alab.title=elf?'':t('autoElfOnly');
+  var msg=el('mlmsg');
+  if(note!=null) msg.textContent=note;
+  else if(loadSt.kind==='bad') msg.textContent=t('badMagic');
+  else if(loadSt.kind==='big') msg.textContent=t('tooBig');
+  else if(!loadSt.busy && msg.getAttribute('data-keep')!=='1') msg.textContent='';
+  msg.className='mlnote'+((loadSt.kind==='bad'||loadSt.kind==='big')?' bad':'');
+}
+function setBtnPct(btn, pct, label){
+  btn.style.transition='background-size .2s linear';
+  btn.className='run busy';
+  btn.setAttribute('data-state','busy');
+  btn.style.backgroundSize=pct+'% 100%';
+  btn.textContent=label;
+}
+function uploadSend(){
+  var el=function(id){ return document.getElementById(id); };
+  var f=loadSt.file, btn=el('mlsend'), msg=el('mlmsg');
+  if(!f || loadSt.busy || !loadSt.kind || loadSt.kind==='bad' || loadSt.kind==='big') return;
+  var keep=!!(el('mlkeep')&&el('mlkeep').checked), auto=!!(el('mlauto')&&el('mlauto').checked&&!el('mlauto').disabled), args=(el('mlargs')&&el('mlargs').value||'').trim();
+  var q='/upload?name='+encodeURIComponent(f.name)+'&save='+((keep||auto)?1:0)+'&auto='+(auto?1:0)+(args?'&args='+encodeURIComponent(args):'');
+  var x=new XMLHttpRequest(), sent=false;
+  loadSt.busy=true;
+  btn.disabled=true;
+  msg.setAttribute('data-keep','0');
+  setBtnPct(btn, 0, t('uploading',{p:0}));
+  showProgress(true); setProgressPct(0);
+  setStatus(t('loadingName',{name:f.name}));
+  function done(code, j){
+    if(sent) return; sent=true;
+    loadSt.busy=false;
+    showProgress(false);
+    var ok=code===200 && j && j.ok, name=(j&&j.name)||f.name, line;
+    if(ok){
+      line=t('sentOk',{name:name})+(j.pid?' \u00b7 '+t('pidN',{n:j.pid}):'');
+      if(loadSt.sha && j.sha256) line+=' \u00b7 '+(j.sha256===loadSt.sha ? t('shaMatch') : t('shaDiff'));
+      if(j.elfldr_msg) line+=' \u00b7 '+j.elfldr_msg;
+      if(auto) setAuto(name, true);
+      if(keep||auto){ refreshLocalFiles(function(){ renderNav('load'); }); }
+      rememberActive(name);
+    } else line=t('sentFail',{name:name,msg:sendErrText(code, j, '')});
+    addRecent({ok:!!ok,name:name,src:'up',pid:(j&&j.pid)||0,why:ok?'':sendErrText(code, j, ''),sha:ok&&j.sha256?j.sha256.slice(0,8):''});
+    setStatus(line);
+    var m=document.getElementById('mlmsg'), b=document.getElementById('mlsend');
+    if(m){ m.textContent=line; m.className='mlnote '+(ok?'good':'bad'); m.setAttribute('data-keep','1'); }
+    if(b){ b.disabled=false; b.style.backgroundSize=''; b.className=ok?'run sent':'run load'; b.setAttribute('data-state',ok?'sent':'load'); b.textContent=ok?t('loaded'):t('sendElfldr'); }
+  }
+  x.open('POST', q, true);
+  x.setRequestHeader('X-ELFL','1');
+  x.setRequestHeader('Content-Type','application/octet-stream');
+  x.timeout=600000;
+  if(x.upload) x.upload.onprogress=function(e){
+    if(!e.lengthComputable) return;
+    var p=Math.min(100, Math.round(e.loaded*100/e.total)), b=document.getElementById('mlsend');
+    setProgressPct(p);
+    if(b) setBtnPct(b, p, p>=100 ? t('starting') : t('uploading',{p:p}));
+  };
+  x.onload=function(){ var j=null; try{ j=JSON.parse(x.responseText); }catch(e){} done(x.status, j); };
+  x.onerror=function(){ done(0, null); };
+  x.ontimeout=function(){ done(-1, null); };
+  x.send(f);
+}
+function browseRoots(){
+  if(loadSt.roots){ paintRoots(); return; }
+  fetch('/browse').then(function(r){ return r.json(); }).then(function(j){ loadSt.roots={}; var i; for(i=0;j&&j.roots&&i<j.roots.length;i++) loadSt.roots[j.roots[i].path]=!!j.roots[i].ok; paintRoots(); }).catch(function(){});
+}
+function paintRoots(){
+  var chips=viewEl.querySelectorAll('#mlchips button'), i, p, on, off;
+  for(i=0;i<chips.length;i++){
+    p=chips[i].getAttribute('data-root');
+    on=(loadSt.dir===p || loadSt.dir.indexOf(p+'/')===0);
+    off=loadSt.roots && loadSt.roots[p]===false;
+    chips[i].className=(on?'selected':'')+(off?' off':'');
+    chips[i].setAttribute('data-off', off?'1':'0');
+    chips[i].title=off?t('notConnected'):'';
+  }
+}
+function parentDir(d){
+  var i=d.lastIndexOf('/');
+  return i>0 ? d.slice(0,i) : d;
+}
+function isRootDir(d){ var i; for(i=0;i<LOAD_ROOTS.length;i++) if(LOAD_ROOTS[i].p===d) return true; return false; }
+function browseDir(dir){
+  var list=document.getElementById('mllist'), inp=document.getElementById('mlpath');
+  dir=String(dir||'').trim().replace(/\/+$/,'')||'/data';
+  if(dir.charAt(0)!=='/') dir='/'+dir;
+  loadSt.dir=dir;
+  if(inp) inp.value=dir;
+  paintRoots();
+  if(!list) return;
+  list.innerHTML='<p class="empty">'+esc(t('checkingSaved'))+'</p>';
+  fetch('/browse?dir='+encodeURIComponent(dir)).then(function(r){ return r.json().then(function(j){ return {code:r.status,j:j}; }); }).then(function(res){
+    if(loadSt.dir!==dir || currentFolder!=='load') return;
+    var j=res.j, html='', i, real=(j&&j.dir)||dir;
+    if(res.code!==200 || !j || !j.ok){ list.innerHTML='<p class="empty">'+esc(res.code===404?t('folderMissing'):sendErrText(res.code,j,''))+'</p>'; return; }
+    if(!isRootDir(dir)) html+='<div class="elf nom dir" data-dir="'+esc(parentDir(dir))+'"><div class="n"><b>..</b></div><div class="v"></div><div class="d">'+esc(parentDir(dir))+'</div><div class="a"><button type="button" class="run">'+esc(t('upDir'))+'</button></div></div>';
+    (j.dirs||[]).sort(function(a,b){ return a.toLowerCase()<b.toLowerCase()?-1:1; });
+    (j.files||[]).sort(function(a,b){ return a.name.toLowerCase()<b.name.toLowerCase()?-1:1; });
+    for(i=0;i<(j.dirs||[]).length;i++) html+='<div class="elf nom dir" data-dir="'+esc(dir+'/'+j.dirs[i])+'"><div class="n"><b>'+esc(j.dirs[i])+'/</b></div><div class="v"></div><div class="a"><button type="button" class="run">'+esc(t('openDir'))+'</button></div></div>';
+    for(i=0;i<(j.files||[]).length;i++) html+='<div class="elf nom" data-file="'+esc(dir+'/'+j.files[i].name)+'"><div class="n"><b>'+esc(j.files[i].name)+'</b></div><div class="v">'+esc(fmtSize(j.files[i].size))+'</div><div class="d">'+esc(real)+'</div><div class="a"><button type="button" class="run load" data-state="load">'+esc(t('loadBtn'))+'</button></div></div>';
+    if(!(j.files||[]).length) html+='<p class="empty">'+esc(t('noPayloadsHere'))+'</p>';
+    list.innerHTML=html;
+    var rows=list.querySelectorAll('[data-dir]'), k;
+    for(k=0;k<rows.length;k++) rows[k].querySelector('button').onclick=(function(d){ return function(){ browseDir(d); }; })(rows[k].getAttribute('data-dir'));
+    rows=list.querySelectorAll('[data-file]');
+    for(k=0;k<rows.length;k++) (function(row){ var b=row.querySelector('button'); b.onclick=function(){ runPath(row.getAttribute('data-file'), b); }; })(rows[k]);
+  }).catch(function(e){ if(list && loadSt.dir===dir) list.innerHTML='<p class="empty">'+esc(sendErrText(0,null,''))+'</p>'; });
+}
+function runPath(path, btn){
+  path=String(path||'').trim();
+  if(!path || (btn && btn.getAttribute('data-state')==='busy')) return;
+  var name=path.split('/').pop(), dir=path.slice(0, path.length-name.length-1);
+  if(btn){ btn.disabled=true; startBar(btn); }
+  setStatus(t('loadingName',{name:name}));
+  fetch('/run_path?path='+encodeURIComponent(path),{method:'POST'}).then(function(r){
+    return r.text().then(function(txt){ var j=null; try{ j=JSON.parse(txt); }catch(e){} return {code:r.status,j:j,txt:txt}; });
+  }).then(function(res){
+    var ok=res.code===200 && res.j && res.j.ok, why=ok?'':sendErrText(res.code,res.j,res.txt);
+    addRecent({ok:!!ok,name:name,src:'ps5',where:dir,pid:(res.j&&res.j.pid)||0,why:why});
+    setStatus(ok ? t('sentOk',{name:name})+(res.j.pid?' \u00b7 '+t('pidN',{n:res.j.pid}):'') : t('sentFail',{name:name,msg:why}));
+    if(btn){ btn.disabled=false; endLoadBtn(btn, ok); }
+  }).catch(function(e){
+    var why=sendErrText((e && e.name==='TimeoutError')?-1:0,null,'');
+    addRecent({ok:false,name:name,src:'ps5',where:dir,why:why});
+    setStatus(t('sentFail',{name:name,msg:why}));
+    if(btn){ btn.disabled=false; endLoadBtn(btn, false); }
+  });
+}
+function endLoadBtn(btn, ok){
+  btn.style.transition='';
+  btn.style.backgroundSize='';
+  btn.className=ok?'run sent':'run load';
+  btn.setAttribute('data-state',ok?'sent':'load');
+  btn.textContent=ok?t('loaded'):t('loadBtn');
+}
 function bootAfterCatalog(){
   var start=getHashFolder();
   if(start)showFolder(start); else showHome();
@@ -3485,9 +3937,14 @@ function bootAfterCatalog(){
   setStatus(t('ready'));
   if(isConsoleHost() && currentFolder!=='downloaded') showDownloadedFolderCount();
   /* Once after jailbreak/elfldr only — disk flag blocks later page/app opens. */
-  syncAutoDisk();
   syncBrowserPrefFromDisk();
-  watchElfldrThenAuto();
+  /* Uploaded files marked Auto are not in the catalog: load the list first,
+     otherwise syncAutoDisk would drop them from auto.list. */
+  refreshLocalFiles(function(){
+    syncAutoDisk();
+    renderNav(currentFolder);
+    watchElfldrThenAuto();
+  });
   setTimeout(checkSelfUpdate, 900);
   setTimeout(checkWkUpdate, 1400);
 }
