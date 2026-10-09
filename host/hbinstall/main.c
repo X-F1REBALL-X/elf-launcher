@@ -91,6 +91,44 @@ static int install_file(const char *path, const uint8_t *data, size_t size) {
 }
 
 
+/* mkdir -p: creates every missing parent (a fresh console has no /user/app). */
+static int mkdir_p(const char *path, mode_t mode) {
+  char tmp[512];
+  size_t i, n = strlen(path);
+  if (n == 0 || n >= sizeof(tmp))
+    return -1;
+  memcpy(tmp, path, n + 1);
+  for (i = 1; i < n; i++) {
+    if (tmp[i] != '/')
+      continue;
+    tmp[i] = 0;
+    if (mkdir(tmp, mode) && errno != EEXIST)
+      return -1;
+    tmp[i] = '/';
+  }
+  if (mkdir(tmp, mode) && errno != EEXIST)
+    return -1;
+  return 0;
+}
+
+/* What the last home tile install attempt failed on, for the event log. */
+static char tile_fail[160];
+#define TILE_FAIL(...) snprintf(tile_fail, sizeof(tile_fail), __VA_ARGS__)
+
+static int tile_dirs_and_files(void) {
+  if (mkdir_p("/user/app/" TITLE_ID "/sce_sys", 0755)) {
+    TILE_FAIL("cannot create /user/app/" TITLE_ID "/sce_sys (errno %d)", errno);
+    return -1;
+  }
+  if (install_file("/user/app/" TITLE_ID "/sce_sys/icon0.png", icon0_png, icon0_png_size) ||
+      install_file("/user/app/" TITLE_ID "/sce_sys/param.json", param_json, param_json_size) ||
+      install_file("/user/app/" TITLE_ID "/sce_sys/pic1.png", pic1_png, pic1_png_size)) {
+    TILE_FAIL("cannot write tile files in /user/app/" TITLE_ID "/sce_sys (errno %d)", errno);
+    return -1;
+  }
+  return 0;
+}
+
 /* Install home icon for ELFL00001. Skip when title + HOME_ICON_VERSION match.
  * Do NOT NEEDED-link libSceAppInstUtil (elfldr:9021 cannot load that).
  * Elevate, LoadStartModule, then InstallTitleDir via NID (like host/installer). */
@@ -196,50 +234,45 @@ static int install_home_icon(void) {
   int (*UnInstall)(const char *) = 0;
   struct stat st;
 
+  tile_fail[0] = 0;
   elevate_for_appinst();
 
-  if (mkdir("/user/app/" TITLE_ID, 0755) && errno != EEXIST)
-    return -1;
-  if (mkdir("/user/app/" TITLE_ID "/sce_sys", 0755) && errno != EEXIST)
-    return -1;
-  if (install_file("/user/app/" TITLE_ID "/sce_sys/icon0.png", icon0_png,
-                   icon0_png_size) ||
-      install_file("/user/app/" TITLE_ID "/sce_sys/param.json", param_json,
-                   param_json_size) ||
-      install_file("/user/app/" TITLE_ID "/sce_sys/pic1.png", pic1_png,
-                   pic1_png_size))
+  if (tile_dirs_and_files())
     return -1;
 
-  if (load_appinst_util(&ah))
+  if (load_appinst_util(&ah)) {
+    TILE_FAIL("cannot load libSceAppInstUtil");
     return -2;
+  }
   Init = (void *)kernel_dynlib_resolve(-1, ah, NID_AppInstInit);
   Term = (void *)kernel_dynlib_resolve(-1, ah, NID_AppInstTerm);
   InstallDir = (void *)kernel_dynlib_resolve(-1, ah, NID_InstallTitleDir);
   UnInstall = (void *)kernel_dynlib_resolve(-1, ah, NID_AppUnInstall);
-  if (!Init || !InstallDir)
+  if (!Init || !InstallDir) {
+    TILE_FAIL("AppInstUtil functions not found");
     return -3;
+  }
   err = Init();
-  if (err)
+  if (err) {
+    TILE_FAIL("sceAppInstUtilInitialize returned 0x%08X", (unsigned)err);
     return err;
+  }
   if (UnInstall) {
     UnInstall(TITLE_ID);
     sleep(2);
   }
   /* rewrite assets after uninstall wipe */
-  if (mkdir("/user/app/" TITLE_ID, 0755) && errno != EEXIST)
+  if (tile_dirs_and_files()) {
+    err = -1;
     goto out;
-  if (mkdir("/user/app/" TITLE_ID "/sce_sys", 0755) && errno != EEXIST)
-    goto out;
-  if (install_file("/user/app/" TITLE_ID "/sce_sys/icon0.png", icon0_png,
-                   icon0_png_size) ||
-      install_file("/user/app/" TITLE_ID "/sce_sys/param.json", param_json,
-                   param_json_size) ||
-      install_file("/user/app/" TITLE_ID "/sce_sys/pic1.png", pic1_png,
-                   pic1_png_size))
-    goto out;
+  }
   err = InstallDir(TITLE_ID, "/user/app/", 0);
-  if (!err && stat("/user/app/" TITLE_ID "/sce_sys/param.json", &st))
+  if (err)
+    TILE_FAIL("sceAppInstUtilAppInstallTitleDir returned 0x%08X", (unsigned)err);
+  else if (stat("/user/app/" TITLE_ID "/sce_sys/param.json", &st)) {
     err = -4;
+    TILE_FAIL("installed, but /user/app/" TITLE_ID "/sce_sys/param.json is missing");
+  }
   if (!err)
     write_home_icon_ver();
 out:
@@ -725,6 +758,16 @@ static int local_file(const char *rel, char *out, size_t outsz) {
   return -1;
 }
 
+static void tile_report(int err) {
+  if (err) {
+    notify("Home icon install failed: 0x%08X", (unsigned)err);
+    evlog("error", "home tile install failed (0x%08X): %s", (unsigned)err, tile_fail[0] ? tile_fail : "unknown step");
+  } else {
+    notify("Home icon installed");
+    evlog("info", "home tile installed (" TITLE_ID ")");
+  }
+}
+
 /* One install attempt per process; never block :1000 on AppInstUtil. */
 static volatile int home_icon_install_started;
 
@@ -737,10 +780,7 @@ static void *install_home_icon_thread(void *arg) {
   if (!force && home_icon_up_to_date())
     return NULL;
   err = install_home_icon();
-  if (err)
-    notify("Home icon install failed: 0x%08X", (unsigned)err);
-  else
-    notify("Home icon installed");
+  tile_report(err);
   return NULL;
 }
 
@@ -4765,22 +4805,14 @@ static void serve(void) {
     if (want_open)
       start_fresh_browser();
     if (!home_icon_up_to_date()) {
-      int err = install_home_icon();
-      if (err)
-        notify("Home icon install failed: 0x%08X", (unsigned)err);
-      else
-        notify("Home icon installed");
+      tile_report(install_home_icon());
     }
     return;
   }
   if (listen(s, 16) < 0) {
     close(s);
     if (!home_icon_up_to_date()) {
-      int err = install_home_icon();
-      if (err)
-        notify("Home icon install failed: 0x%08X", (unsigned)err);
-      else
-        notify("Home icon installed");
+      tile_report(install_home_icon());
     }
     return;
   }
