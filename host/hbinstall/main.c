@@ -1563,6 +1563,8 @@ static int is_mutating(const char *p, const char *qs) {
       return 1;
   if (!strncmp(p, "load/", 5))
     return 1;
+  if (!strncmp(p, "fs/", 3) && strcmp(p, "fs/status"))
+    return 1;
   if (!qs)
     return 0;
   if (!strcmp(p, "boot-auto") && strstr(qs, "done="))
@@ -2024,10 +2026,14 @@ static void handle_browse(int c, const char *qs) {
   char *dbuf, *fbuf, *out;
   DIR *d;
   struct dirent *de;
-  int i, nd = 0, nf = 0, seen = 0, budget = 2000;
-  dir[0] = 0;
-  if (qs)
+  int i, nd = 0, nf = 0, seen = 0, budget = 2000, all = 0;
+  char allf[4];
+  dir[0] = allf[0] = 0;
+  if (qs) {
     qget(qs, "dir", dir, sizeof(dir));
+    qget(qs, "all", allf, sizeof(allf));
+  }
+  all = allf[0] == '1';
   if (!dir[0]) {
     char r[512];
     size_t pos = 0;
@@ -2084,7 +2090,14 @@ static void handle_browse(int c, const char *qs) {
       isdir = 1;
     else if (de->d_type == DT_REG)
       isreg = 1;
-    if (!isdir && !isreg) {
+    if (all) {
+      if (de->d_type == DT_LNK || lstat(child, &st) || S_ISLNK(st.st_mode))
+        continue;
+      have_st = 1;
+      isdir = S_ISDIR(st.st_mode);
+      isreg = S_ISREG(st.st_mode);
+    }
+    if (!isdir && !isreg && !have_st) {
       if (stat(child, &st))
         continue;
       have_st = 1;
@@ -2096,7 +2109,26 @@ static void handle_browse(int c, const char *qs) {
         continue;
       if (nd++)
         dbuf[dpos++] = ',';
-      json_str(dbuf, cap, &dpos, de->d_name);
+      if (all) {
+        dpos += (size_t)snprintf(dbuf + dpos, cap - dpos, "{\"name\":");
+        json_str(dbuf, cap, &dpos, de->d_name);
+        dpos += (size_t)snprintf(dbuf + dpos, cap - dpos, ",\"mtime\":%lld}",
+                                 have_st ? (long long)st.st_mtime : 0LL);
+      } else
+        json_str(dbuf, cap, &dpos, de->d_name);
+    } else if (isreg && all) {
+      int pe = has_payload_ext(de->d_name);
+      if (fpos + 800 >= cap)
+        continue;
+      if (nf++)
+        fbuf[fpos++] = ',';
+      fpos += (size_t)snprintf(fbuf + fpos, cap - fpos, "{\"name\":");
+      json_str(fbuf, cap, &fpos, de->d_name);
+      fpos += (size_t)snprintf(fbuf + fpos, cap - fpos,
+                               ",\"size\":%lld,\"mtime\":%lld,\"elf\":%s,\"ok\":%s}",
+                               (long long)st.st_size, (long long)st.st_mtime,
+                               pe ? "true" : "false",
+                               pe && file_is_payload(child) ? "true" : "false");
     } else if (isreg && has_payload_ext(de->d_name)) {
       if (fpos + 800 >= cap)
         continue;
@@ -2127,6 +2159,549 @@ static void handle_browse(int c, const char *qs) {
   free(dbuf);
   free(fbuf);
   free(out);
+}
+
+/* ---- file manager: /fs/mkdir, /fs/rename (sync); /fs/copy, /fs/move,
+ * /fs/delete (one background job at a time, /fs/status shows progress).
+ * Every path goes through path_allowed (only /data, /mnt/usb*, /mnt/ext*,
+ * no "..", no symlinks). Roots themselves and the launcher's own state
+ * (everything under /data/elf-launcher except Downloads contents) are off
+ * limits. Symlinks met while walking are never followed. ---- */
+#define FS_MAX_SRC 48
+#define FS_MAX_DEPTH 24
+#define LAUNCHER_DIR "/data/elf-launcher"
+enum { FS_COPY = 1, FS_MOVE = 2, FS_DELETE = 3 };
+static volatile int fs_busy;
+static struct {
+  int op, n, ok, cancel;
+  unsigned seq;
+  char src[FS_MAX_SRC][PATH_MAX];
+  char dest[PATH_MAX];
+  long long total, done;
+  int items, items_done;
+  char cur[256];
+  char err[200];
+  char *buf;
+} fsj;
+
+static int fs_is_root(const char *real) {
+  int i;
+  for (i = 0; browse_roots[i]; i++)
+    if (!strcmp(real, browse_roots[i]))
+      return 1;
+  return !strcmp(real, "/data") || !strcmp(real, "/mnt");
+}
+
+/* Paths the user may change (create in, delete, move, rename). */
+static int fs_touchable(const char *real) {
+  if (fs_is_root(real))
+    return 0;
+  if (under_root(real, LAUNCHER_DIR))
+    return under_root(real, MIRROR_DIR) && strcmp(real, MIRROR_DIR);
+  return 1;
+}
+
+/* A folder the user may create things in. */
+static int fs_dest_ok(const char *real) {
+  if (under_root(real, LAUNCHER_DIR))
+    return under_root(real, MIRROR_DIR);
+  return 1;
+}
+
+static int fs_name_ok(const char *n) {
+  size_t i, l = strlen(n);
+  if (!l || l > 200 || !strcmp(n, ".") || !strcmp(n, ".."))
+    return 0;
+  for (i = 0; i < l; i++) {
+    unsigned char ch = (unsigned char)n[i];
+    if (ch < 0x20 || ch == '/' || ch == '\\' || ch == 0x7f)
+      return 0;
+  }
+  return 1;
+}
+
+/* qget that refuses a value that did not fit (a cut path is a different path). */
+static int fs_qget(const char *qs, const char *key, char *out, size_t outsz) {
+  if (qget(qs, key, out, outsz))
+    return -1;
+  return strlen(out) + 1 >= outsz ? -1 : 0;
+}
+
+static void fs_set_err(const char *what, const char *path, int e) {
+  const char *b = path ? strrchr(path, '/') : 0;
+  snprintf(fsj.err, sizeof(fsj.err), "%s%s%s%s%s", what, b ? " " : "",
+           b ? b + 1 : "", e ? ": " : "", e ? strerror(e) : "");
+}
+
+static void fs_walk_size(const char *path, int depth) {
+  struct stat st;
+  DIR *d;
+  struct dirent *de;
+  char child[PATH_MAX];
+  if (depth > FS_MAX_DEPTH || lstat(path, &st) || S_ISLNK(st.st_mode))
+    return;
+  fsj.items++;
+  if (S_ISREG(st.st_mode)) {
+    fsj.total += st.st_size;
+    return;
+  }
+  if (!S_ISDIR(st.st_mode) || !(d = opendir(path)))
+    return;
+  while ((de = readdir(d)) != NULL) {
+    if (!strcmp(de->d_name, ".") || !strcmp(de->d_name, ".."))
+      continue;
+    if (snprintf(child, sizeof(child), "%s/%s", path, de->d_name) >= (int)sizeof(child))
+      continue;
+    fs_walk_size(child, depth + 1);
+  }
+  closedir(d);
+}
+
+static int fs_copy_file(const char *src, const char *dst, mode_t mode) {
+  int in, out, rc = 0;
+  ssize_t r;
+  in = open(src, O_RDONLY);
+  if (in < 0) {
+    fs_set_err("cannot read", src, errno);
+    return -1;
+  }
+  out = open(dst, O_WRONLY | O_CREAT | O_EXCL, (mode & 0777) | 0600);
+  if (out < 0) {
+    fs_set_err("cannot create", dst, errno);
+    close(in);
+    return -1;
+  }
+  while ((r = read(in, fsj.buf, 256 * 1024)) > 0) {
+    ssize_t off = 0;
+    if (fsj.cancel) {
+      fs_set_err("cancelled", 0, 0);
+      rc = -1;
+      break;
+    }
+    while (off < r) {
+      ssize_t w = write(out, fsj.buf + off, (size_t)(r - off));
+      if (w <= 0) {
+        fs_set_err("write failed", dst, errno);
+        rc = -1;
+        break;
+      }
+      off += w;
+    }
+    if (rc)
+      break;
+    fsj.done += r;
+  }
+  if (r < 0 && !rc) {
+    fs_set_err("read failed", src, errno);
+    rc = -1;
+  }
+  close(in);
+  if (close(out) && !rc) {
+    fs_set_err("write failed", dst, errno);
+    rc = -1;
+  }
+  if (rc)
+    unlink(dst);
+  return rc;
+}
+
+static int fs_copy_tree(const char *src, const char *dst, int depth) {
+  struct stat st;
+  DIR *d;
+  struct dirent *de;
+  char a[PATH_MAX], b[PATH_MAX];
+  int rc = 0;
+  if (fsj.cancel) {
+    fs_set_err("cancelled", 0, 0);
+    return -1;
+  }
+  if (depth > FS_MAX_DEPTH) {
+    fs_set_err("folders nested too deep", src, 0);
+    return -1;
+  }
+  if (lstat(src, &st)) {
+    fs_set_err("cannot read", src, errno);
+    return -1;
+  }
+  if (S_ISLNK(st.st_mode))
+    return 0;
+  snprintf(fsj.cur, sizeof(fsj.cur), "%s", strrchr(src, '/') ? strrchr(src, '/') + 1 : src);
+  if (S_ISREG(st.st_mode)) {
+    rc = fs_copy_file(src, dst, st.st_mode);
+    if (!rc)
+      fsj.items_done++;
+    return rc;
+  }
+  if (!S_ISDIR(st.st_mode))
+    return 0;
+  if (mkdir(dst, 0777)) {
+    fs_set_err("cannot create", dst, errno);
+    return -1;
+  }
+  fsj.items_done++;
+  if (!(d = opendir(src))) {
+    fs_set_err("cannot open", src, errno);
+    return -1;
+  }
+  while (!rc && (de = readdir(d)) != NULL) {
+    if (!strcmp(de->d_name, ".") || !strcmp(de->d_name, ".."))
+      continue;
+    if (snprintf(a, sizeof(a), "%s/%s", src, de->d_name) >= (int)sizeof(a) ||
+        snprintf(b, sizeof(b), "%s/%s", dst, de->d_name) >= (int)sizeof(b)) {
+      fs_set_err("path too long", de->d_name, 0);
+      rc = -1;
+      break;
+    }
+    rc = fs_copy_tree(a, b, depth + 1);
+  }
+  closedir(d);
+  return rc;
+}
+
+static int fs_rm_tree(const char *path, int depth) {
+  struct stat st;
+  DIR *d;
+  struct dirent *de;
+  char child[PATH_MAX];
+  int rc = 0;
+  if (fsj.cancel) {
+    fs_set_err("cancelled", 0, 0);
+    return -1;
+  }
+  if (depth > FS_MAX_DEPTH) {
+    fs_set_err("folders nested too deep", path, 0);
+    return -1;
+  }
+  if (lstat(path, &st)) {
+    if (errno == ENOENT)
+      return 0;
+    fs_set_err("cannot read", path, errno);
+    return -1;
+  }
+  snprintf(fsj.cur, sizeof(fsj.cur), "%s", strrchr(path, '/') ? strrchr(path, '/') + 1 : path);
+  if (!S_ISDIR(st.st_mode)) {
+    if (unlink(path)) {
+      fs_set_err("cannot delete", path, errno);
+      return -1;
+    }
+    fsj.items_done++;
+    if (S_ISREG(st.st_mode))
+      fsj.done += st.st_size;
+    return 0;
+  }
+  if (!(d = opendir(path))) {
+    fs_set_err("cannot open", path, errno);
+    return -1;
+  }
+  while (!rc && (de = readdir(d)) != NULL) {
+    if (!strcmp(de->d_name, ".") || !strcmp(de->d_name, ".."))
+      continue;
+    if (snprintf(child, sizeof(child), "%s/%s", path, de->d_name) >= (int)sizeof(child)) {
+      fs_set_err("path too long", de->d_name, 0);
+      rc = -1;
+      break;
+    }
+    rc = fs_rm_tree(child, depth + 1);
+  }
+  closedir(d);
+  if (!rc && rmdir(path)) {
+    fs_set_err("cannot delete", path, errno);
+    rc = -1;
+  }
+  if (!rc)
+    fsj.items_done++;
+  return rc;
+}
+
+/* "a.elf" -> "a copy.elf", "a copy 2.elf", ... (folders: no extension). */
+static int fs_unique_target(const char *dir, const char *base, int isdir, char *out, size_t outsz) {
+  struct stat st;
+  char stem[256], ext[64];
+  const char *dot = isdir ? 0 : strrchr(base, '.');
+  int i;
+  if (snprintf(out, outsz, "%s/%s", dir, base) >= (int)outsz)
+    return -1;
+  if (lstat(out, &st))
+    return 0;
+  if (!dot || dot == base || strlen(dot) >= sizeof(ext))
+    dot = base + strlen(base);
+  snprintf(stem, sizeof(stem), "%.*s", (int)(dot - base), base);
+  snprintf(ext, sizeof(ext), "%s", dot);
+  for (i = 1; i < 100; i++) {
+    int n = i == 1 ? snprintf(out, outsz, "%s/%s copy%s", dir, stem, ext)
+                   : snprintf(out, outsz, "%s/%s copy %d%s", dir, stem, i, ext);
+    if (n >= (int)outsz)
+      return -1;
+    if (lstat(out, &st))
+      return 0;
+  }
+  return -1;
+}
+
+static void *fs_job_thread(void *arg) {
+  int i, rc = 0;
+  (void)arg;
+  for (i = 0; i < fsj.n; i++)
+    fs_walk_size(fsj.src[i], 0);
+  fsj.buf = malloc(256 * 1024);
+  if (!fsj.buf) {
+    snprintf(fsj.err, sizeof(fsj.err), "no memory");
+    rc = -1;
+  }
+  for (i = 0; !rc && i < fsj.n; i++) {
+    const char *src = fsj.src[i], *base = strrchr(src, '/') + 1;
+    char dst[PATH_MAX];
+    struct stat st;
+    if (lstat(src, &st)) {
+      fs_set_err("missing", src, errno);
+      rc = -1;
+      break;
+    }
+    if (fsj.op == FS_DELETE) {
+      rc = fs_rm_tree(src, 0);
+      continue;
+    }
+    if (fsj.op == FS_MOVE) {
+      if (snprintf(dst, sizeof(dst), "%s/%s", fsj.dest, base) >= (int)sizeof(dst)) {
+        fs_set_err("path too long", src, 0);
+        rc = -1;
+        break;
+      }
+      if (!strcmp(dst, src))
+        continue;
+      if (!lstat(dst, &st)) {
+        fs_set_err("already exists:", dst, 0);
+        rc = -1;
+        break;
+      }
+      snprintf(fsj.cur, sizeof(fsj.cur), "%s", base);
+      if (!rename(src, dst)) {
+        fsj.items_done++;
+        continue;
+      }
+      if (errno != EXDEV) {
+        fs_set_err("cannot move", src, errno);
+        rc = -1;
+        break;
+      }
+      /* other drive: copy, then delete the original only if the copy is whole */
+      rc = fs_copy_tree(src, dst, 0);
+      if (rc) {
+        int keep = fsj.cancel;
+        char e[200];
+        memcpy(e, fsj.err, sizeof(e));
+        fsj.cancel = 0;
+        fs_rm_tree(dst, 0);
+        fsj.cancel = keep;
+        memcpy(fsj.err, e, sizeof(e));
+        break;
+      }
+      rc = fs_rm_tree(src, 0);
+      continue;
+    }
+    if (fs_unique_target(fsj.dest, base, S_ISDIR(st.st_mode), dst, sizeof(dst))) {
+      fs_set_err("no free name for", src, 0);
+      rc = -1;
+      break;
+    }
+    rc = fs_copy_tree(src, dst, 0);
+    if (rc) {
+      int keep = fsj.cancel;
+      char e[200];
+      memcpy(e, fsj.err, sizeof(e));
+      fsj.cancel = 0;
+      fs_rm_tree(dst, 0);
+      fsj.cancel = keep;
+      memcpy(fsj.err, e, sizeof(e));
+    }
+  }
+  free(fsj.buf);
+  fsj.buf = 0;
+  fsj.ok = !rc;
+  fsj.cur[0] = 0;
+  __sync_synchronize();
+  __sync_lock_release(&fs_busy);
+  return 0;
+}
+
+static void fs_reply_bad(int c, int code, const char *msg) {
+  char m[200], e[240];
+  json_escape_name(msg, e, sizeof(e));
+  snprintf(m, sizeof(m), "{\"ok\":false,\"message\":\"%s\"}", e);
+  send_json_code(c, code, m);
+}
+
+/* rc from path_allowed -> reply; 0 = fine */
+static int fs_check(int c, const char *in, char *real, size_t realsz, int must_exist) {
+  int rc = path_allowed(in, real, realsz);
+  if (rc == -2 && !must_exist)
+    return 0;
+  if (rc) {
+    fs_reply_bad(c, rc == -2 ? 404 : 403, rc == -2 ? "not found" : "path not allowed");
+    return -1;
+  }
+  return 0;
+}
+
+static void handle_fs_status(int c) {
+  char out[900], cur[300], err[260];
+  json_escape_name(fsj.cur, cur, sizeof(cur));
+  json_escape_name(fsj.err, err, sizeof(err));
+  snprintf(out, sizeof(out),
+           "{\"ok\":true,\"busy\":%s,\"seq\":%u,\"op\":\"%s\",\"result\":%s,"
+           "\"total\":%lld,\"done\":%lld,\"items\":%d,\"items_done\":%d,"
+           "\"current\":\"%s\",\"error\":\"%s\"}",
+           fs_busy ? "true" : "false", fsj.seq,
+           fsj.op == FS_COPY ? "copy" : fsj.op == FS_MOVE ? "move" : fsj.op == FS_DELETE ? "delete" : "",
+           fs_busy ? "null" : (fsj.ok ? "true" : "false"), fsj.total, fsj.done,
+           fsj.items, fsj.items_done, cur, err);
+  send_json_code(c, 200, out);
+}
+
+static void handle_fs(int c, const char *op, const char *qs) {
+  static char list[REQ_MAX];
+  char in[1024], real[PATH_MAX], dreal[PATH_MAX], name[256], tgt[PATH_MAX];
+  struct stat st;
+  int kind;
+  if (!strcmp(op, "mkdir") || !strcmp(op, "rename")) {
+    int mk = op[0] == 'm';
+    if (fs_qget(qs, "path", in, sizeof(in)) || fs_qget(qs, "name", name, sizeof(name)) ||
+        !fs_name_ok(name)) {
+      fs_reply_bad(c, 400, "bad name");
+      return;
+    }
+    if (fs_check(c, in, real, sizeof(real), 1))
+      return;
+    if (mk ? !fs_dest_ok(real) : !fs_touchable(real)) {
+      fs_reply_bad(c, 403, "protected");
+      return;
+    }
+    if (mk) {
+      if (stat(real, &st) || !S_ISDIR(st.st_mode)) {
+        fs_reply_bad(c, 404, "folder missing");
+        return;
+      }
+      snprintf(tgt, sizeof(tgt), "%s/%s", real, name);
+    } else {
+      char *sl = strrchr(real, '/');
+      snprintf(tgt, sizeof(tgt), "%.*s/%s", (int)(sl - real), real, name);
+    }
+    if (!lstat(tgt, &st)) {
+      fs_reply_bad(c, 409, "already exists");
+      return;
+    }
+    if (fs_busy) {
+      fs_reply_bad(c, 409, "busy");
+      return;
+    }
+    if (mk ? mkdir(tgt, 0777) : rename(real, tgt)) {
+      char m[160];
+      snprintf(m, sizeof(m), "%s failed: %s", mk ? "mkdir" : "rename", strerror(errno));
+      fs_reply_bad(c, 500, m);
+      return;
+    }
+    {
+      char e[700], out[800];
+      json_escape_name(tgt, e, sizeof(e));
+      snprintf(out, sizeof(out), "{\"ok\":true,\"path\":\"%s\"}", e);
+      send_json_code(c, 200, out);
+    }
+    return;
+  }
+  kind = !strcmp(op, "copy") ? FS_COPY : !strcmp(op, "move") ? FS_MOVE : !strcmp(op, "delete") ? FS_DELETE : 0;
+  if (!kind) {
+    fs_reply_bad(c, 404, "unknown operation");
+    return;
+  }
+  if (fs_qget(qs, "paths", list, sizeof(list)) || !list[0]) {
+    fs_reply_bad(c, 400, "no paths");
+    return;
+  }
+  dreal[0] = 0;
+  if (kind != FS_DELETE) {
+    if (fs_qget(qs, "dest", in, sizeof(in))) {
+      fs_reply_bad(c, 400, "no destination");
+      return;
+    }
+    if (fs_check(c, in, dreal, sizeof(dreal), 1))
+      return;
+    if (stat(dreal, &st) || !S_ISDIR(st.st_mode)) {
+      fs_reply_bad(c, 404, "destination is not a folder");
+      return;
+    }
+    if (!fs_dest_ok(dreal)) {
+      fs_reply_bad(c, 403, "protected");
+      return;
+    }
+  }
+  if (!__sync_bool_compare_and_swap(&fs_busy, 0, 1)) {
+    fs_reply_bad(c, 409, "busy");
+    return;
+  }
+  {
+    int n = 0;
+    char *s = list, *e;
+    static char srcs[FS_MAX_SRC][PATH_MAX];
+    while (s && *s) {
+      e = strchr(s, '\n');
+      if (e)
+        *e = 0;
+      if (*s) {
+        if (n >= FS_MAX_SRC) {
+          __sync_lock_release(&fs_busy);
+          fs_reply_bad(c, 413, "too many items at once");
+          return;
+        }
+        if (fs_check(c, s, srcs[n], PATH_MAX, 1)) {
+          __sync_lock_release(&fs_busy);
+          return;
+        }
+        if (!fs_touchable(srcs[n]) && kind != FS_COPY) {
+          __sync_lock_release(&fs_busy);
+          fs_reply_bad(c, 403, "protected");
+          return;
+        }
+        if (kind != FS_DELETE &&
+            (!strcmp(dreal, srcs[n]) || under_root(dreal, srcs[n]))) {
+          __sync_lock_release(&fs_busy);
+          fs_reply_bad(c, 400, "cannot put a folder inside itself");
+          return;
+        }
+        n++;
+      }
+      s = e ? e + 1 : 0;
+    }
+    if (!n) {
+      __sync_lock_release(&fs_busy);
+      fs_reply_bad(c, 400, "no paths");
+      return;
+    }
+    memcpy(fsj.src, srcs, sizeof(srcs));
+    fsj.n = n;
+  }
+  snprintf(fsj.dest, sizeof(fsj.dest), "%s", dreal);
+  fsj.op = kind;
+  fsj.ok = 0;
+  fsj.cancel = 0;
+  fsj.total = fsj.done = 0;
+  fsj.items = fsj.items_done = 0;
+  fsj.err[0] = fsj.cur[0] = 0;
+  fsj.seq++;
+  {
+    pthread_t th;
+    if (pthread_create(&th, NULL, fs_job_thread, NULL)) {
+      __sync_lock_release(&fs_busy);
+      fs_reply_bad(c, 500, "cannot start");
+      return;
+    }
+    pthread_detach(th);
+  }
+  {
+    char out[200];
+    snprintf(out, sizeof(out), "{\"ok\":true,\"started\":true,\"seq\":%u,\"count\":%d}",
+             fsj.seq, fsj.n);
+    send_json_code(c, 200, out);
+  }
 }
 
 static void send_result_json(int c, int code, const char *cors, int ok,
@@ -2852,6 +3427,26 @@ static void serve(void) {
     }
     if (!strcmp(p, "browse")) {
       handle_browse(c, q ? q + 1 : 0);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "fs/status")) {
+      handle_fs_status(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "fs/cancel")) {
+      if (fs_busy)
+        fsj.cancel = 1;
+      send_json_code(c, 200, "{\"ok\":true}");
+      close(c);
+      continue;
+    }
+    if (!strncmp(p, "fs/", 3)) {
+      if (!is_post)
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+      else
+        handle_fs(c, p + 3, q ? q + 1 : "");
       close(c);
       continue;
     }
