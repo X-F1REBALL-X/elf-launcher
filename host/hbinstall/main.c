@@ -28,7 +28,9 @@ int sceSystemServiceLaunchWebBrowser(const char *uri, void *);
 #define IOVEC_SIZE(x) (sizeof(x) / sizeof(struct iovec))
 #define IOVEC_ENTRY(x) {x ? x : 0, x ? strlen(x) + 1 : 0}
 #define TITLE_ID "ELFL00001"
+#ifndef PORT
 #define PORT 1000
+#endif
 #define HOME_ICON_VERSION "1.0.21"
 #define HOME_ICON_VER_PATH "/data/elf-launcher/home-icon.ver"
 
@@ -247,6 +249,7 @@ out:
 /* The loader starts only when the page is opened, not during install. */
 int start_real_elfldr(void);
 void notify(const char *fmt, ...);
+static int start_elfldr_guarded(void);
 static int loader_started;
 
 static int connect_port(int port) {
@@ -276,7 +279,7 @@ static void on_page_open(void) {
     notify("loader ready");
     return;
   }
-  if (start_real_elfldr() == 0)
+  if (start_elfldr_guarded() == 0)
     notify("loader started");
   else
     notify("loader missing");
@@ -481,36 +484,55 @@ static int process_kill_pid(int pid) {
   return -1;
 }
 
-static int send_json(int c, int http_ok, const char *body, size_t n) {
-  char hdr[320];
+/* CORS lines for the response being built on the main loop. */
+static char g_cors[256];
+
+
+static const char *http_reason(int code) {
+  switch (code) {
+  case 200: return "200 OK";
+  case 204: return "204 No Content";
+  case 400: return "400 Bad Request";
+  case 403: return "403 Forbidden";
+  case 404: return "404 Not Found";
+  case 405: return "405 Method Not Allowed";
+  case 409: return "409 Conflict";
+  case 411: return "411 Length Required";
+  case 413: return "413 Payload Too Large";
+  case 415: return "415 Unsupported Media Type";
+  case 431: return "431 Request Header Fields Too Large";
+  case 502: return "502 Bad Gateway";
+  case 503: return "503 Service Unavailable";
+  default: return "500 Internal Server Error";
+  }
+}
+
+static int send_code(int c, int code, const char *ctype, const char *cors,
+                     const void *body, size_t n) {
+  char hdr[512];
   int h = snprintf(hdr, sizeof(hdr),
-                   "HTTP/1.1 %s\r\nContent-Type: application/json\r\n"
+                   "HTTP/1.1 %s\r\nContent-Type: %s\r\n"
                    "Content-Length: %zu\r\nCache-Control: no-store\r\n"
-                   "Access-Control-Allow-Origin: *\r\n"
-                   "Connection: close\r\n\r\n",
-                   http_ok ? "200 OK" : "500 Internal Server Error", n);
-  if (h <= 0 || send_all(c, hdr, (size_t)h))
+                   "%sConnection: close\r\n\r\n",
+                   http_reason(code), ctype, n, cors ? cors : "");
+  if (h <= 0 || h >= (int)sizeof(hdr) || send_all(c, hdr, (size_t)h))
     return -1;
-  return send_all(c, body, n);
+  return n ? send_all(c, body, n) : 0;
+}
+
+
+static int send_json(int c, int http_ok, const char *body, size_t n) {
+  return send_code(c, http_ok ? 200 : 500, "application/json", g_cors, body, n);
 }
 
 static int send_blob(int c, const char *ctype, const void *body, size_t n) {
-  char hdr[288];
-  int h = snprintf(hdr, sizeof(hdr),
-                   "HTTP/1.1 200 OK\r\nContent-Type: %s\r\n"
-                   "Content-Length: %zu\r\nCache-Control: no-store\r\n"
-                   "Access-Control-Allow-Origin: *\r\n"
-                   "Connection: close\r\n\r\n",
-                   ctype, n);
-  if (h <= 0 || send_all(c, hdr, (size_t)h))
-    return -1;
-  return send_all(c, body, n);
+  return send_code(c, 200, ctype, g_cors, body, n);
 }
 
 static int send_disk(int c, const char *path) {
   int fd = open(path, O_RDONLY);
   char buf[16384];
-  char hdr[288];
+  char hdr[512];
   struct stat st;
   const char *ctype = "application/octet-stream";
   ssize_t n;
@@ -529,9 +551,8 @@ static int send_disk(int c, const char *path) {
   n = snprintf(hdr, sizeof(hdr),
                "HTTP/1.1 200 OK\r\nContent-Type: %s\r\n"
                "Content-Length: %lld\r\n"
-               "Access-Control-Allow-Origin: *\r\n"
-               "Connection: close\r\n\r\n",
-               ctype, (long long)st.st_size);
+               "%sConnection: close\r\n\r\n",
+               ctype, (long long)st.st_size, g_cors);
   if (n <= 0 || send_all(c, hdr, (size_t)n)) {
     close(fd);
     return -1;
@@ -612,39 +633,6 @@ static int local_file(const char *rel, char *out, size_t outsz) {
   return -1;
 }
 
-/* Stream raw ELF bytes to elfldr :9021 (same approach as payload-manager). */
-static int push_elfldr(const char *disk) {
-  int in;
-  int fd;
-  char buf[16384];
-  ssize_t n;
-  /* Open first so a missing file never touches :9021. */
-  in = open(disk, O_RDONLY);
-  if (in < 0)
-    return -1;
-  fd = connect_port(9021);
-  if (fd < 0) {
-    start_real_elfldr();
-    sleep(1);
-    fd = connect_port(9021);
-  }
-  if (fd < 0) {
-    close(in);
-    return -1;
-  }
-  while ((n = read(in, buf, sizeof(buf))) > 0) {
-    if (send_all(fd, buf, (size_t)n)) {
-      close(in);
-      close(fd);
-      return -1;
-    }
-  }
-  close(in);
-  shutdown(fd, SHUT_WR);
-  close(fd);
-  return n < 0 ? -1 : 0;
-}
-
 /* One install attempt per process; never block :1000 on AppInstUtil. */
 static volatile int home_icon_install_started;
 
@@ -676,6 +664,37 @@ static void start_home_icon_install_async(int force) {
   pthread_detach(th);
 }
 
+/* A launcher sent as raw bytes is called payload.elf, but its main thread is
+ * named elf-launcher (thr_set_name in main). Other payload.elf are left alone. */
+static int proc_has_thread_named(int pid, const char *tname) {
+  int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PID | KERN_PROC_INC_THREAD, pid};
+  size_t buf_size = 0, tl = strlen(tname);
+  void *buf, *ptr;
+  int hit = 0;
+  if (sysctl(mib, 4, NULL, &buf_size, NULL, 0) || !buf_size)
+    return 0;
+  buf_size += 4096;
+  buf = malloc(buf_size);
+  if (!buf)
+    return 0;
+  if (sysctl(mib, 4, buf, &buf_size, NULL, 0)) {
+    free(buf);
+    return 0;
+  }
+  for (ptr = buf; ptr < (void *)((char *)buf + buf_size);) {
+    struct kinfo_proc *ki = (struct kinfo_proc *)ptr;
+    if (ki->ki_structsize <= 0)
+      break;
+    ptr = (char *)ptr + ki->ki_structsize;
+    if (!strncmp(ki->ki_tdname, tname, tl)) {
+      hit = 1;
+      break;
+    }
+  }
+  free(buf);
+  return hit;
+}
+
 /* Kill sibling elf-launcher processes so a re-send can take over :1000.
  * Bypasses is_protected_proc_name (Kill UI still protects the live server). */
 static void kill_other_elf_launchers(void) {
@@ -701,9 +720,9 @@ static void kill_other_elf_launchers(void) {
     ptr = (char *)ptr + ki->ki_structsize;
     if ((pid_t)ki->ki_pid == self || ki->ki_pid <= 0)
       continue;
-    /* elfldr often leaves ki_comm as payload.elf until thr_set_name. */
     if (!strncmp(ki->ki_comm, "elf-launcher", 12) ||
-        !strcmp(ki->ki_comm, "payload.elf"))
+        (!strcmp(ki->ki_comm, "payload.elf") &&
+         proc_has_thread_named(ki->ki_pid, "elf-launcher")))
       (void)kill((pid_t)ki->ki_pid, SIGKILL);
   }
   free(sysctl_buf);
@@ -1280,12 +1299,990 @@ static int existing_names(char in[][AUTO_NAME_MAX], int n,
   return e;
 }
 
+/* ---- request reading, CORS and the mutating-endpoint guard ---- */
+#define REQ_MAX 8192
+#define UPLOAD_MAX (64 * 1024 * 1024)
+#define UPLOAD_DIR "/data/elf-launcher/upload"
+#define MIRROR_DIR "/data/elf-launcher/mirror"
+
+static int64_t mono_ms(void) {
+  struct timespec ts;
+  if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
+    return 0;
+  return (int64_t)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
+}
+
+static void sock_timeouts(int fd, int rcv_ms, int snd_ms) {
+  struct timeval tv;
+  if (rcv_ms >= 0) {
+    tv.tv_sec = rcv_ms / 1000;
+    tv.tv_usec = (rcv_ms % 1000) * 1000;
+    setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+  }
+  if (snd_ms >= 0) {
+    tv.tv_sec = snd_ms / 1000;
+    tv.tv_usec = (snd_ms % 1000) * 1000;
+    setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+  }
+}
+
+/* Read until the blank line after the headers. Body bytes that came along
+ * stay in buf after *hdr_len. 0 ok, -1 closed/timeout, -2 headers too big. */
+static int read_request(int c, char *buf, size_t cap, size_t *hdr_len,
+                        size_t *got) {
+  size_t n = 0;
+  int64_t deadline = mono_ms() + 15000;
+  sock_timeouts(c, 5000, 10000);
+  while (n + 1 < cap) {
+    ssize_t r = recv(c, buf + n, cap - 1 - n, 0);
+    char *e;
+    if (r <= 0)
+      return -1;
+    n += (size_t)r;
+    buf[n] = 0;
+    e = strstr(buf, "\r\n\r\n");
+    if (e) {
+      *hdr_len = (size_t)(e - buf) + 4;
+      *got = n;
+      return 0;
+    }
+    if (mono_ms() > deadline)
+      return -1;
+  }
+  return -2;
+}
+
+/* Header lookup inside [hdrs, end). Case-insensitive name, trimmed value. */
+static int hdr_get(const char *hdrs, const char *end, const char *name,
+                   char *out, size_t outsz) {
+  size_t nl = strlen(name);
+  const char *p = hdrs;
+  if (!outsz)
+    return -1;
+  out[0] = 0;
+  while (p && p < end) {
+    const char *eol = strstr(p, "\r\n");
+    if (!eol || eol > end)
+      eol = end;
+    if (eol == p)
+      break;
+    if ((size_t)(eol - p) > nl && !strncasecmp(p, name, nl) && p[nl] == ':') {
+      const char *v = p + nl + 1;
+      size_t k = 0;
+      while (v < eol && (*v == ' ' || *v == '\t'))
+        v++;
+      while (v < eol && k + 1 < outsz)
+        out[k++] = *v++;
+      while (k && (out[k - 1] == ' ' || out[k - 1] == '\t'))
+        k--;
+      out[k] = 0;
+      return 0;
+    }
+    p = eol + 2;
+  }
+  return -1;
+}
+
+static void ip4_str(const struct in_addr *a, char *out, size_t outsz) {
+  const unsigned char *b = (const unsigned char *)&a->s_addr;
+  snprintf(out, outsz, "%u.%u.%u.%u", b[0], b[1], b[2], b[3]);
+}
+
+/* LAN address of the console (no packet is sent; UDP connect only picks a route). */
+static int lan_ip(char *out, size_t outsz) {
+  struct sockaddr_in a, me;
+  socklen_t len = sizeof(me);
+  int fd = socket(AF_INET, SOCK_DGRAM, 0);
+  out[0] = 0;
+  if (fd < 0)
+    return -1;
+  memset(&a, 0, sizeof(a));
+  a.sin_family = AF_INET;
+  a.sin_port = htons(53);
+  a.sin_addr.s_addr = htonl(0x08080808);
+  if (connect(fd, (struct sockaddr *)&a, sizeof(a)) ||
+      getsockname(fd, (struct sockaddr *)&me, &len)) {
+    close(fd);
+    out[0] = 0;
+    return -1;
+  }
+  close(fd);
+  ip4_str(&me.sin_addr, out, outsz);
+  if (!strcmp(out, "0.0.0.0")) {
+    out[0] = 0;
+    return -1;
+  }
+  return 0;
+}
+
+static int conn_local_ip(int c, char *out, size_t outsz) {
+  struct sockaddr_in me;
+  socklen_t len = sizeof(me);
+  out[0] = 0;
+  if (getsockname(c, (struct sockaddr *)&me, &len)) {
+    out[0] = 0;
+    return -1;
+  }
+  ip4_str(&me.sin_addr, out, outsz);
+  return 0;
+}
+
+/* Pages of this project, the console itself (:1000 UI, :1022 WK Autoloader). */
+static int origin_allowed(int c, const char *origin) {
+  char host[96], ip[48];
+  const char *h, *colon, *end;
+  size_t hl;
+  if (!origin || !origin[0])
+    return 0;
+  if (!strcasecmp(origin, "https://x-f1reball-x.github.io"))
+    return 1;
+  if (strncmp(origin, "http://", 7))
+    return 0;
+  h = origin + 7;
+  end = h + strlen(h);
+  colon = strchr(h, ':');
+  if (!colon)
+    return 0;
+  if (strcmp(colon + 1, "1000") && strcmp(colon + 1, "1022"))
+    return 0;
+  (void)end;
+  hl = (size_t)(colon - h);
+  if (!hl || hl >= sizeof(host))
+    return 0;
+  memcpy(host, h, hl);
+  host[hl] = 0;
+  if (!strcmp(host, "127.0.0.1") || !strcasecmp(host, "localhost"))
+    return 1;
+  if (!conn_local_ip(c, ip, sizeof(ip)) && !strcmp(host, ip))
+    return 1;
+  if (!lan_ip(ip, sizeof(ip)) && !strcmp(host, ip))
+    return 1;
+  return 0;
+}
+
+/* "https://host[:port]/path..." -> "https://host[:port]" */
+static void referer_origin(const char *ref, char *out, size_t outsz) {
+  const char *s = strstr(ref, "://");
+  const char *e;
+  size_t n;
+  out[0] = 0;
+  if (!s)
+    return;
+  e = strchr(s + 3, '/');
+  n = e ? (size_t)(e - ref) : strlen(ref);
+  if (n >= outsz)
+    return;
+  memcpy(out, ref, n);
+  out[n] = 0;
+}
+
+static void set_cors_for(int c, const char *origin) {
+  g_cors[0] = 0;
+  if (origin && origin[0] && origin_allowed(c, origin))
+    snprintf(g_cors, sizeof(g_cors),
+             "Access-Control-Allow-Origin: %s\r\nVary: Origin\r\n", origin);
+}
+
+/* Mutating calls need X-ELFL: 1 (custom header, so a cross-site page cannot
+ * send it without a preflight we refuse) or an allowlisted Origin/Referer. */
+static int req_trusted(int c, const char *hdrs, const char *end) {
+  char v[256], o[200];
+  if (!hdr_get(hdrs, end, "X-ELFL", v, sizeof(v)) && !strcmp(v, "1"))
+    return 1;
+  if (!hdr_get(hdrs, end, "Origin", v, sizeof(v)) && v[0])
+    return origin_allowed(c, v);
+  if (!hdr_get(hdrs, end, "Referer", v, sizeof(v)) && v[0]) {
+    referer_origin(v, o, sizeof(o));
+    return origin_allowed(c, o);
+  }
+  return 0;
+}
+
+static int has_origin_or_referer(const char *hdrs, const char *end) {
+  char v[16];
+  return !hdr_get(hdrs, end, "Origin", v, sizeof(v)) ||
+         !hdr_get(hdrs, end, "Referer", v, sizeof(v));
+}
+
+static int is_mutating(const char *p, const char *qs) {
+  static const char *always[] = {"trigger-auto", "install-home", "file_delete",
+                                 "update",       "process_kill", "relay",
+                                 "run",          "upload",       "run_path",
+                                 0};
+  int i;
+  for (i = 0; always[i]; i++)
+    if (!strcmp(p, always[i]))
+      return 1;
+  if (!strncmp(p, "load/", 5))
+    return 1;
+  if (!qs)
+    return 0;
+  if (!strcmp(p, "boot-auto") && strstr(qs, "done="))
+    return 1;
+  if (!strcmp(p, "browser-pref") && strstr(qs, "open="))
+    return 1;
+  if (!strcmp(p, "auto-list") && strstr(qs, "names="))
+    return 1;
+  return 0;
+}
+
+/* Answer before the client finished sending: let it read the reply
+ * instead of getting a reset. */
+static void drain_briefly(int c) {
+  char tmp[4096];
+  int64_t deadline = mono_ms() + 500;
+  size_t total = 0;
+  shutdown(c, SHUT_WR);
+  sock_timeouts(c, 100, -1);
+  while (mono_ms() < deadline && total < 512 * 1024) {
+    ssize_t r = recv(c, tmp, sizeof(tmp), 0);
+    if (r == 0)
+      break;
+    if (r < 0) {
+      if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
+        continue;
+      break;
+    }
+    total += (size_t)r;
+  }
+}
+
+static int send_json_code(int c, int code, const char *body) {
+  return send_code(c, code, "application/json", g_cors, body, strlen(body));
+}
+
+static int send_text_code(int c, int code, const char *msg) {
+  return send_code(c, code, "text/plain; charset=utf-8", g_cors, msg,
+                   strlen(msg));
+}
+
+/* ---- payload files ---- */
+/* ELF, PS4 SELF or PS5 SELF (same magics elfldr accepts). */
+static int magic_ok(const unsigned char *m) {
+  if (m[0] == 0x7f && m[1] == 'E' && m[2] == 'L' && m[3] == 'F')
+    return 1;
+  if (m[0] == 0x4f && m[1] == 0x15 && m[2] == 0x3d && m[3] == 0x1d)
+    return 1;
+  if (m[0] == 0x54 && m[1] == 0x14 && m[2] == 0xf5 && m[3] == 0xee)
+    return 1;
+  return 0;
+}
+
+static int file_is_payload(const char *disk) {
+  unsigned char mag[4];
+  int fd = open(disk, O_RDONLY);
+  ssize_t n;
+  if (fd < 0)
+    return 0;
+  n = read(fd, mag, 4);
+  close(fd);
+  return n == 4 && magic_ok(mag);
+}
+
+static int has_payload_ext(const char *name) {
+  const char *e = strrchr(name, '.');
+  return e && (!strcasecmp(e, ".elf") || !strcasecmp(e, ".bin") ||
+               !strcasecmp(e, ".self"));
+}
+
+/* Upload names: basename, [A-Za-z0-9._+-] only, no leading dot, payload ext. */
+static int sanitize_upload_name(const char *raw, char *out, size_t outsz) {
+  const char *s = raw;
+  const char *b;
+  size_t k = 0;
+  if (!raw || outsz < 16)
+    return -1;
+  b = strrchr(s, '/');
+  if (b)
+    s = b + 1;
+  b = strrchr(s, '\\');
+  if (b)
+    s = b + 1;
+  while (*s == '.' || *s == ' ')
+    s++;
+  for (; *s && k + 6 < outsz && k < 80; s++) {
+    unsigned char ch = (unsigned char)*s;
+    int ok = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') ||
+             (ch >= '0' && ch <= '9') || ch == '.' || ch == '_' ||
+             ch == '-' || ch == '+';
+    out[k++] = ok ? (char)ch : '_';
+  }
+  out[k] = 0;
+  if (strstr(out, ".."))
+    return -1;
+  if (!k)
+    snprintf(out, outsz, "upload.elf");
+  else if (!has_payload_ext(out))
+    strcat(out, ".elf");
+  return 0;
+}
+
+/* ---- elfldr :9021 ---- */
+static volatile int send_busy;
+static volatile int elfldr_starting;
+static int64_t elfldr_last_start;
+
+static int send_lock_try(void) { return !__sync_lock_test_and_set(&send_busy, 1); }
+static void send_lock_wait(void) {
+  while (__sync_lock_test_and_set(&send_busy, 1))
+    usleep(100000);
+}
+static void send_unlock(void) { __sync_lock_release(&send_busy); }
+
+/* Start the bundled loader once at a time, at most every few seconds. */
+static int start_elfldr_guarded(void) {
+  int rc = -1;
+  if (__sync_lock_test_and_set(&elfldr_starting, 1))
+    return -1;
+  if (!elfldr_last_start || mono_ms() - elfldr_last_start > 4000) {
+    elfldr_last_start = mono_ms();
+    rc = start_real_elfldr();
+  }
+  __sync_lock_release(&elfldr_starting);
+  return rc;
+}
+
+static int elfldr_connect(int wait_ms) {
+  int fd = connect_port(9021);
+  int64_t deadline;
+  if (fd >= 0)
+    return fd;
+  start_elfldr_guarded();
+  deadline = mono_ms() + wait_ms;
+  while (mono_ms() < deadline) {
+    usleep(250000);
+    fd = connect_port(9021);
+    if (fd >= 0)
+      return fd;
+  }
+  return -1;
+}
+
+/* Collect what elfldr (or the payload's stdout) writes back for ~ms. */
+static void elfldr_reply(int fd, char *out, size_t outsz, int ms) {
+  size_t n = 0, i;
+  int64_t deadline = mono_ms() + ms;
+  sock_timeouts(fd, 200, -1);
+  while (n + 1 < outsz && mono_ms() < deadline) {
+    ssize_t r = recv(fd, out + n, outsz - 1 - n, 0);
+    if (r == 0)
+      break;
+    if (r < 0) {
+      if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
+        continue;
+      break;
+    }
+    n += (size_t)r;
+  }
+  for (i = 0; i < n; i++)
+    if (out[i] == 0)
+      out[i] = ' ';
+  out[n] = 0;
+}
+
+static void pct_append(char *out, size_t outsz, size_t *k, const char *s) {
+  static const char hx[] = "0123456789ABCDEF";
+  for (; *s && *k + 4 < outsz; s++) {
+    unsigned char ch = (unsigned char)*s;
+    if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') ||
+        (ch >= '0' && ch <= '9') || ch == '/' || ch == '.' || ch == '_' ||
+        ch == '-' || ch == '+' || ch == '~') {
+      out[(*k)++] = (char)ch;
+    } else {
+      out[(*k)++] = '%';
+      out[(*k)++] = hx[ch >> 4];
+      out[(*k)++] = hx[ch & 15];
+    }
+  }
+  out[*k] = 0;
+}
+
+/* First "[elfldr.elf] ..." line, or the first line of payload output. */
+static void reply_line(const char *rep, char *out, size_t outsz) {
+  const char *s = strstr(rep, "[elfldr");
+  size_t k = 0;
+  if (!s)
+    s = rep;
+  while (*s == ' ' || *s == '\r' || *s == '\n')
+    s++;
+  while (*s && *s != '\n' && *s != '\r' && k + 1 < outsz) {
+    unsigned char ch = (unsigned char)*s++;
+    out[k++] = (ch < 0x20 || ch == '"' || ch == '\\') ? ' ' : (char)ch;
+  }
+  while (k && out[k - 1] == ' ')
+    k--;
+  out[k] = 0;
+}
+
+enum { SEND_OK = 0, SEND_NOFILE = -1, SEND_NOLOADER = -2, SEND_REJECTED = -3,
+       SEND_IO = -4 };
+
+static int push_raw(const char *disk, char *rep, size_t repsz, int reply_ms) {
+  char buf[16384];
+  ssize_t n;
+  int fd, in = open(disk, O_RDONLY);
+  if (in < 0)
+    return SEND_NOFILE;
+  fd = elfldr_connect(5000);
+  if (fd < 0) {
+    close(in);
+    return SEND_NOLOADER;
+  }
+  sock_timeouts(fd, -1, 5000);
+  while ((n = read(in, buf, sizeof(buf))) > 0) {
+    if (send_all(fd, buf, (size_t)n)) {
+      n = -1;
+      break;
+    }
+  }
+  close(in);
+  if (n < 0) {
+    close(fd);
+    return SEND_IO;
+  }
+  shutdown(fd, SHUT_WR);
+  elfldr_reply(fd, rep, repsz, reply_ms);
+  close(fd);
+  return SEND_OK;
+}
+
+/* Send file://<path>?args= so the payload keeps its real name. Falls back to
+ * raw bytes if the loader on :9021 does not take URIs. Caller holds the lock.
+ * msg gets the elfldr line (error or payload output). */
+static int elfldr_send_path(const char *disk, const char *args, char *msg,
+                            size_t msgsz, int reply_ms) {
+  char uri[1400], rep[1024];
+  size_t k = 0;
+  int fd, rc;
+  if (msg && msgsz)
+    msg[0] = 0;
+  if (access(disk, R_OK))
+    return SEND_NOFILE;
+  memcpy(uri, "file://", 8);
+  k = 7;
+  pct_append(uri, sizeof(uri), &k, disk);
+  if (args && args[0]) {
+    if (k + 7 < sizeof(uri)) {
+      memcpy(uri + k, "?args=", 7);
+      k += 6;
+    }
+    pct_append(uri, sizeof(uri), &k, args);
+  }
+  if (k + 2 >= sizeof(uri))
+    return SEND_IO;
+  uri[k++] = '\n';
+  uri[k] = 0;
+  fd = elfldr_connect(5000);
+  if (fd < 0)
+    return SEND_NOLOADER;
+  sock_timeouts(fd, -1, 5000);
+  if (send_all(fd, uri, k)) {
+    close(fd);
+    return SEND_IO;
+  }
+  shutdown(fd, SHUT_WR);
+  elfldr_reply(fd, rep, sizeof(rep), reply_ms);
+  close(fd);
+  if (strstr(rep, "Unknown payload format") ||
+      strstr(rep, "Error reading URI payload")) {
+    /* Older loader or path it cannot read: raw bytes (name becomes payload.elf). */
+    if (args && args[0]) {
+      if (msg)
+        reply_line(rep, msg, msgsz);
+      return SEND_REJECTED;
+    }
+    rc = push_raw(disk, rep, sizeof(rep), reply_ms);
+    if (rc != SEND_OK)
+      return rc;
+  }
+  if (msg)
+    reply_line(rep, msg, msgsz);
+  if (strstr(rep, "[elfldr.elf] Error") || strstr(rep, "Unknown payload format"))
+    return SEND_REJECTED;
+  return SEND_OK;
+}
+
+static int send_http_code(int rc) {
+  switch (rc) {
+  case SEND_OK: return 200;
+  case SEND_NOFILE: return 404;
+  case SEND_NOLOADER: return 503;
+  case SEND_REJECTED: return 502;
+  default: return 502;
+  }
+}
+
+static const char *send_err_text(int rc) {
+  switch (rc) {
+  case SEND_OK: return "ok";
+  case SEND_NOFILE: return "file missing";
+  case SEND_NOLOADER: return "elfldr is not running on :9021";
+  case SEND_REJECTED: return "elfldr rejected the file";
+  default: return "elfldr did not take the file";
+  }
+}
+
+/* Newest process whose name matches the file name elfldr gave it. */
+static int find_pid_by_name(const char *name) {
+  int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC, 0};
+  size_t buf_size = 0, nl;
+  void *buf, *ptr;
+  int best = 0;
+  if (!name || !name[0])
+    return 0;
+  nl = strlen(name);
+  if (nl > COMMLEN)
+    nl = COMMLEN;
+  if (sysctl(mib, 4, NULL, &buf_size, NULL, 0) || !buf_size)
+    return 0;
+  buf = malloc(buf_size);
+  if (!buf)
+    return 0;
+  if (sysctl(mib, 4, buf, &buf_size, NULL, 0)) {
+    free(buf);
+    return 0;
+  }
+  for (ptr = buf; ptr < (void *)((char *)buf + buf_size);) {
+    struct kinfo_proc *ki = (struct kinfo_proc *)ptr;
+    if (ki->ki_structsize <= 0)
+      break;
+    ptr = (char *)ptr + ki->ki_structsize;
+    if (ki->ki_pid > best && !strncmp(ki->ki_comm, name, nl))
+      best = ki->ki_pid;
+  }
+  free(buf);
+  return best;
+}
+
+static void add_to_auto_list(const char *base) {
+  char listed[AUTO_MAX][AUTO_NAME_MAX];
+  char joined[AUTO_MAX * AUTO_NAME_MAX];
+  size_t used = 0;
+  int n = read_auto_list(listed, AUTO_MAX), i;
+  joined[0] = 0;
+  for (i = 0; i < n; i++) {
+    size_t L = strlen(listed[i]);
+    if (!strcmp(listed[i], base))
+      return;
+    if (used + L + 2 >= sizeof(joined))
+      break;
+    if (used)
+      joined[used++] = ',';
+    memcpy(joined + used, listed[i], L + 1);
+    used += L;
+  }
+  if (used + strlen(base) + 2 < sizeof(joined)) {
+    if (used)
+      joined[used++] = ',';
+    snprintf(joined + used, sizeof(joined) - used, "%s", base);
+  }
+  write_auto_names(joined);
+}
+
+/* ---- /browse and /run_path: only under these roots ---- */
+static const char *browse_roots[] = {"/data", "/mnt/usb0", "/mnt/usb1",
+                                     "/mnt/ext0", "/mnt/ext1", 0};
+
+static int has_dotdot(const char *p) {
+  const char *s = p;
+  while ((s = strstr(s, "..")) != NULL) {
+    if ((s == p || s[-1] == '/') && (s[2] == 0 || s[2] == '/'))
+      return 1;
+    s += 2;
+  }
+  return 0;
+}
+
+static int under_root(const char *real, const char *root) {
+  size_t n = strlen(root);
+  return !strncmp(real, root, n) && (real[n] == 0 || real[n] == '/');
+}
+
+static int path_allowed(const char *in, char *real, size_t realsz) {
+  char tmp[PATH_MAX], rr[PATH_MAX];
+  int i;
+  if (!in || in[0] != '/' || has_dotdot(in) || strlen(in) >= 900)
+    return -1;
+  if (!realpath(in, tmp))
+    return -2;
+  for (i = 0; browse_roots[i]; i++) {
+    int ok = under_root(tmp, browse_roots[i]);
+    if (!ok && realpath(browse_roots[i], rr))
+      ok = under_root(tmp, rr);
+    if (ok) {
+      if (strlen(tmp) + 1 > realsz)
+        return -1;
+      memcpy(real, tmp, strlen(tmp) + 1);
+      return 0;
+    }
+  }
+  return -1;
+}
+
+static void json_str(char *out, size_t outsz, size_t *pos, const char *s) {
+  char e[600];
+  json_escape_name(s, e, sizeof(e));
+  if (*pos < outsz)
+    *pos += (size_t)snprintf(out + *pos, outsz - *pos, "\"%s\"", e);
+  if (*pos > outsz)
+    *pos = outsz;
+}
+
+/* GET /browse            -> {"ok":true,"roots":[{"path","ok"}]}
+ * GET /browse?dir=/data  -> {"ok":true,"dir","dirs":[...],"files":[{"name","size"}]} */
+static void handle_browse(int c, const char *qs) {
+  char dir[1024], real[PATH_MAX];
+  size_t cap = 96 * 1024, pos = 0;
+  char *out;
+  DIR *d;
+  struct dirent *de;
+  int i, nd = 0, nf = 0, budget = 600;
+  dir[0] = 0;
+  if (qs)
+    qget(qs, "dir", dir, sizeof(dir));
+  out = malloc(cap);
+  if (!out) {
+    send_json_code(c, 500, "{\"ok\":false,\"message\":\"no memory\"}");
+    return;
+  }
+  if (!dir[0]) {
+    pos += (size_t)snprintf(out + pos, cap - pos, "{\"ok\":true,\"roots\":[");
+    for (i = 0; browse_roots[i]; i++) {
+      struct stat st;
+      int ok = !stat(browse_roots[i], &st) && S_ISDIR(st.st_mode);
+      pos += (size_t)snprintf(out + pos, cap - pos,
+                              "%s{\"path\":\"%s\",\"ok\":%s}", i ? "," : "",
+                              browse_roots[i], ok ? "true" : "false");
+    }
+    snprintf(out + pos, cap - pos, "]}");
+    send_json_code(c, 200, out);
+    free(out);
+    return;
+  }
+  i = path_allowed(dir, real, sizeof(real));
+  if (i) {
+    send_json_code(c, i == -2 ? 404 : 403,
+                   i == -2 ? "{\"ok\":false,\"message\":\"not found\"}"
+                           : "{\"ok\":false,\"message\":\"path not allowed\"}");
+    free(out);
+    return;
+  }
+  d = opendir(real);
+  if (!d) {
+    send_json_code(c, 404, "{\"ok\":false,\"message\":\"cannot open folder\"}");
+    free(out);
+    return;
+  }
+  pos += (size_t)snprintf(out + pos, cap - pos, "{\"ok\":true,\"dir\":");
+  json_str(out, cap, &pos, real);
+  pos += (size_t)snprintf(out + pos, cap - pos, ",\"dirs\":[");
+  /* two passes keep dirs and files apart without extra buffers */
+  while ((de = readdir(d)) != NULL && budget-- > 0 && pos + 700 < cap) {
+    char child[PATH_MAX];
+    struct stat st;
+    if (de->d_name[0] == '.')
+      continue;
+    if (snprintf(child, sizeof(child), "%s/%s", real, de->d_name) >=
+        (int)sizeof(child))
+      continue;
+    if (stat(child, &st) || !S_ISDIR(st.st_mode))
+      continue;
+    if (nd++)
+      out[pos++] = ',';
+    json_str(out, cap, &pos, de->d_name);
+  }
+  closedir(d);
+  pos += (size_t)snprintf(out + pos, cap - pos, "],\"files\":[");
+  d = opendir(real);
+  budget = 600;
+  while (d && (de = readdir(d)) != NULL && budget-- > 0 && pos + 700 < cap) {
+    char child[PATH_MAX];
+    struct stat st;
+    if (de->d_name[0] == '.' || !has_payload_ext(de->d_name))
+      continue;
+    if (snprintf(child, sizeof(child), "%s/%s", real, de->d_name) >=
+        (int)sizeof(child))
+      continue;
+    if (stat(child, &st) || !S_ISREG(st.st_mode) || !file_is_payload(child))
+      continue;
+    if (nf++)
+      out[pos++] = ',';
+    pos += (size_t)snprintf(out + pos, cap - pos, "{\"name\":");
+    json_str(out, cap, &pos, de->d_name);
+    pos += (size_t)snprintf(out + pos, cap - pos, ",\"size\":%lld}",
+                            (long long)st.st_size);
+  }
+  if (d)
+    closedir(d);
+  snprintf(out + pos, cap - pos, "]}");
+  send_json_code(c, 200, out);
+  free(out);
+}
+
+static void send_result_json(int c, int code, const char *cors, int ok,
+                             const char *message, long long bytes,
+                             const char *sha, int pid, const char *emsg,
+                             const char *name) {
+  char json[1024], m[200], e[300], n[200];
+  json_escape_name(message ? message : "", m, sizeof(m));
+  json_escape_name(emsg ? emsg : "", e, sizeof(e));
+  json_escape_name(name ? name : "", n, sizeof(n));
+  snprintf(json, sizeof(json),
+           "{\"ok\":%s,\"message\":\"%s\",\"name\":\"%s\",\"bytes\":%lld,"
+           "\"sha256\":\"%s\",\"pid\":%d,\"elfldr_msg\":\"%s\"}",
+           ok ? "true" : "false", m, n, bytes, sha ? sha : "", pid, e);
+  send_code(c, code, "application/json", cors, json, strlen(json));
+}
+
+/* POST /run_path?path=/mnt/usb0/x.elf[&args=] runs the file where it is. */
+static void handle_run_path(int c, const char *qs) {
+  char in[1024], real[PATH_MAX], args[512], emsg[256];
+  const char *base;
+  struct stat st;
+  int rc, pid = 0;
+  in[0] = args[0] = 0;
+  if (qs) {
+    qget(qs, "path", in, sizeof(in));
+    qget(qs, "args", args, sizeof(args));
+  }
+  rc = path_allowed(in, real, sizeof(real));
+  if (rc) {
+    send_result_json(c, rc == -2 ? 404 : 403, g_cors, 0,
+                     rc == -2 ? "file missing" : "path not allowed", 0, "", 0,
+                     "", "");
+    return;
+  }
+  base = strrchr(real, '/');
+  base = base ? base + 1 : real;
+  if (stat(real, &st) || !S_ISREG(st.st_mode)) {
+    send_result_json(c, 404, g_cors, 0, "file missing", 0, "", 0, "", base);
+    return;
+  }
+  if (!file_is_payload(real)) {
+    send_result_json(c, 415, g_cors, 0, "not an ELF or SELF", 0, "", 0, "",
+                     base);
+    return;
+  }
+  if (!send_lock_try()) {
+    send_result_json(c, 409, g_cors, 0, "busy", 0, "", 0, "", base);
+    return;
+  }
+  rc = elfldr_send_path(real, args, emsg, sizeof(emsg), 1500);
+  send_unlock();
+  if (rc == SEND_OK)
+    pid = find_pid_by_name(base);
+  send_result_json(c, send_http_code(rc), g_cors, rc == SEND_OK,
+                   send_err_text(rc), (long long)st.st_size, "", pid, emsg,
+                   base);
+}
+
+/* ---- POST /upload?name=&save=&auto=&args= (raw body) ---- */
+typedef struct upload_job {
+  int c;
+  size_t clen;
+  size_t pre_n;
+  char *pre;
+  char qs[1600];
+  char cors[256];
+} upload_job_t;
+
+static void remove_old_uploads(void) {
+  DIR *d = opendir(UPLOAD_DIR);
+  struct dirent *de;
+  char p[512];
+  if (!d)
+    return;
+  while ((de = readdir(d)) != NULL) {
+    if (de->d_name[0] == '.')
+      continue;
+    if (snprintf(p, sizeof(p), "%s/%s", UPLOAD_DIR, de->d_name) <
+        (int)sizeof(p))
+      unlink(p);
+  }
+  closedir(d);
+}
+
+static void run_upload(upload_job_t *j) {
+  char rawname[256], name[128], flag[8], args[512], dest[512], part[540];
+  char hex[65], emsg[256];
+  uint8_t hash[32];
+  unsigned char head[4];
+  size_t have = 0, headn = 0;
+  sha256_ctx ctx;
+  int save = 0, autoadd = 0, fd, rc, pid = 0, i;
+  char *buf = 0;
+  rawname[0] = args[0] = 0;
+  qget(j->qs, "name", rawname, sizeof(rawname));
+  qget(j->qs, "args", args, sizeof(args));
+  flag[0] = 0;
+  qget(j->qs, "save", flag, sizeof(flag));
+  save = flag[0] == '1';
+  flag[0] = 0;
+  qget(j->qs, "auto", flag, sizeof(flag));
+  autoadd = flag[0] == '1';
+  if (autoadd)
+    save = 1; /* AutoPayload reads from Downloaded */
+  if (sanitize_upload_name(rawname, name, sizeof(name))) {
+    send_result_json(j->c, 400, j->cors, 0, "bad name", 0, "", 0, "", "");
+    return;
+  }
+  mkdir("/data", 0755);
+  mkdir("/data/elf-launcher", 0755);
+  mkdir(save ? MIRROR_DIR : UPLOAD_DIR, 0755);
+  if (!save)
+    remove_old_uploads();
+  snprintf(dest, sizeof(dest), "%s/%s", save ? MIRROR_DIR : UPLOAD_DIR, name);
+  snprintf(part, sizeof(part), "%s.part", dest);
+  fd = open(part, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (fd < 0) {
+    send_result_json(j->c, 500, j->cors, 0, "cannot write file", 0, "", 0, "",
+                     name);
+    return;
+  }
+  buf = malloc(65536);
+  if (!buf) {
+    close(fd);
+    unlink(part);
+    send_result_json(j->c, 500, j->cors, 0, "no memory", 0, "", 0, "", name);
+    return;
+  }
+  sha256_init(&ctx);
+  sock_timeouts(j->c, 20000, 10000);
+  while (have < j->clen) {
+    const char *src;
+    size_t n;
+    if (j->pre_n) {
+      src = j->pre;
+      n = j->pre_n > j->clen ? j->clen : j->pre_n;
+      j->pre_n = 0;
+    } else {
+      ssize_t r = recv(j->c, buf, (j->clen - have) > 65536 ? 65536 : (j->clen - have), 0);
+      if (r <= 0)
+        break;
+      src = buf;
+      n = (size_t)r;
+    }
+    for (i = 0; headn < 4 && (size_t)i < n; i++)
+      head[headn++] = (unsigned char)src[i];
+    if (headn == 4 && have < 4 && !magic_ok(head)) {
+      have = 0;
+      break;
+    }
+    if (write(fd, src, n) != (ssize_t)n) {
+      have = 0;
+      break;
+    }
+    sha256_update(&ctx, (const uint8_t *)src, n);
+    have += n;
+  }
+  free(buf);
+  close(fd);
+  if (have != j->clen || headn < 4 || !magic_ok(head)) {
+    unlink(part);
+    if (headn == 4 && !magic_ok(head)) {
+      send_result_json(j->c, 415, j->cors, 0, "not an ELF or SELF", 0, "", 0,
+                       "", name);
+      drain_briefly(j->c);
+    }
+    else
+      send_result_json(j->c, 400, j->cors, 0, "upload incomplete", (long long)have,
+                       "", 0, "", name);
+    return;
+  }
+  if (rename(part, dest)) {
+    unlink(part);
+    send_result_json(j->c, 500, j->cors, 0, "cannot save file", 0, "", 0, "",
+                     name);
+    return;
+  }
+  sha256_final(&ctx, hash);
+  for (i = 0; i < 32; i++)
+    snprintf(hex + i * 2, 3, "%02x", hash[i]);
+  hex[64] = 0;
+  if (save)
+    write_sha256_sidecar(dest, hex);
+  if (autoadd && !strcasecmp(name + strlen(name) - 4, ".elf"))
+    add_to_auto_list(name);
+  rc = elfldr_send_path(dest, args, emsg, sizeof(emsg), 1500);
+  if (rc == SEND_OK)
+    pid = find_pid_by_name(name);
+  send_result_json(j->c, send_http_code(rc), j->cors, rc == SEND_OK,
+                   send_err_text(rc), (long long)have, hex, pid, emsg, name);
+}
+
+static void *upload_thread(void *arg) {
+  upload_job_t *j = arg;
+  run_upload(j);
+  close(j->c);
+  send_unlock();
+  free(j->pre);
+  free(j);
+  return NULL;
+}
+
+/* Called on the main loop; the body is read on a worker so the UI keeps
+ * answering while a phone uploads. The send lock is held until it is done. */
+/* Returns 1 when the socket was handed off (caller must not close it). */
+static int handle_upload(int c, const char *qs, const char *hdrs,
+                         const char *hend, const char *body, size_t body_n) {
+  char v[64];
+  long long clen;
+  upload_job_t *j;
+  pthread_t th;
+  if (hdr_get(hdrs, hend, "Content-Length", v, sizeof(v)) || !v[0]) {
+    send_json_code(c, 411, "{\"ok\":false,\"message\":\"length required\"}");
+    return 0;
+  }
+  clen = atoll(v);
+  if (clen < 4) {
+    send_json_code(c, 400, "{\"ok\":false,\"message\":\"empty file\"}");
+    return 0;
+  }
+  if (clen > UPLOAD_MAX) {
+    send_json_code(c, 413, "{\"ok\":false,\"message\":\"file too big (64 MB max)\"}");
+    return 0;
+  }
+  if (!send_lock_try()) {
+    send_json_code(c, 409, "{\"ok\":false,\"message\":\"busy\"}");
+    return 0;
+  }
+  j = malloc(sizeof(*j));
+  if (j)
+    memset(j, 0, sizeof(*j));
+  if (!j) {
+    send_unlock();
+    send_json_code(c, 500, "{\"ok\":false,\"message\":\"no memory\"}");
+    return 0;
+  }
+  j->c = c;
+  j->clen = (size_t)clen;
+  snprintf(j->qs, sizeof(j->qs), "%s", qs ? qs : "");
+  snprintf(j->cors, sizeof(j->cors), "%s", g_cors);
+  if (body_n) {
+    j->pre = malloc(body_n);
+    if (j->pre) {
+      memcpy(j->pre, body, body_n);
+      j->pre_n = body_n;
+    }
+  }
+  if (!hdr_get(hdrs, hend, "Expect", v, sizeof(v)) &&
+      !strcasecmp(v, "100-continue"))
+    send_all(c, "HTTP/1.1 100 Continue\r\n\r\n", 25);
+  if (pthread_create(&th, NULL, upload_thread, j)) {
+    upload_thread(j); /* closes c and unlocks */
+    return 1;
+  }
+  pthread_detach(th);
+  return 1;
+}
+
 static void run_headless_auto(void) {
   char listed[AUTO_MAX][AUTO_NAME_MAX];
   char use[AUTO_MAX][AUTO_NAME_MAX];
   int n, e, i, sent = 0, skipped = 0;
   char path[512];
-  int from_list;
+  char emsg[256];
+  int from_list, rc;
 
   sleep(1);
   n = read_auto_list(listed, AUTO_MAX);
@@ -1349,11 +2346,14 @@ static void run_headless_auto(void) {
       skipped++;
       continue;
     }
-    if (push_elfldr(path) == 0) {
+    send_lock_wait();
+    rc = elfldr_send_path(path, "", emsg, sizeof(emsg), 1000);
+    send_unlock();
+    if (rc == SEND_OK) {
       sent++;
-      usleep(400000);
+      usleep(300000);
     } else {
-      notify("Skipped %s (send failed)", use[i]);
+      notify("Skipped %s (%s)", use[i], send_err_text(rc));
       skipped++;
     }
   }
@@ -1376,8 +2376,8 @@ static void start_headless_auto(void) {
 }
 
 static void serve(void) {
-  int s = -1;
-  char req[2048];
+  int s = -1, tries;
+  static char req[REQ_MAX + 1];
   char path[512];
   int from_wkal = consume_wkal_mark();
   int want_open;
@@ -1410,7 +2410,14 @@ static void serve(void) {
 
   want_open = wk_wants_open();
 
-  if (bind_http(&s) != 0) {
+  /* The old server may need a moment to release :1000 after the kill. */
+  for (tries = already_up ? 20 : 3; tries > 0; tries--) {
+    if (bind_http(&s) == 0)
+      break;
+    s = -1;
+    usleep(250000);
+  }
+  if (s < 0) {
     if (want_open)
       start_fresh_browser();
     if (!home_icon_up_to_date()) {
@@ -1448,38 +2455,65 @@ static void serve(void) {
     char *p;
     char *sp;
     char *q;
-    int n;
+    char *hdrs, *hend;
+    char origin[200];
+    size_t hlen = 0, got = 0;
+    int is_post = 0, rr;
     if (c < 0)
       continue;
-    n = recv(c, req, sizeof(req) - 1, 0);
-    if (n <= 0) {
+    rr = read_request(c, req, sizeof(req), &hlen, &got);
+    if (rr) {
+      g_cors[0] = 0;
+      if (rr == -2) {
+        send_text_code(c, 431, "request headers too large");
+        drain_briefly(c);
+      }
       close(c);
       continue;
     }
-    req[n] = 0;
+    hdrs = strstr(req, "\r\n");
+    hdrs = hdrs ? hdrs + 2 : req + hlen;
+    hend = req + hlen;
+    origin[0] = 0;
+    hdr_get(hdrs, hend, "Origin", origin, sizeof(origin));
+    set_cors_for(c, origin);
     if (!strncmp(req, "OPTIONS ", 8)) {
-      const char *opt =
-          "HTTP/1.1 204 No Content\r\n"
-          "Access-Control-Allow-Origin: *\r\n"
-          "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
-          "Access-Control-Allow-Headers: *\r\n"
-          "Content-Length: 0\r\n"
-          "Connection: close\r\n\r\n";
-      send_all(c, opt, strlen(opt));
+      char opt[512];
+      int h;
+      if (g_cors[0])
+        h = snprintf(opt, sizeof(opt),
+                     "HTTP/1.1 204 No Content\r\n%s"
+                     "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
+                     "Access-Control-Allow-Headers: X-ELFL, Content-Type\r\n"
+                     "Access-Control-Max-Age: 600\r\n"
+                     "Content-Length: 0\r\nConnection: close\r\n\r\n",
+                     g_cors);
+      else
+        h = snprintf(opt, sizeof(opt),
+                     "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n"
+                     "Connection: close\r\n\r\n");
+      if (h > 0)
+        send_all(c, opt, (size_t)h);
       close(c);
       continue;
     }
     if (!strncmp(req, "GET ", 4))
       p = req + 4;
-    else if (!strncmp(req, "POST ", 5))
+    else if (!strncmp(req, "POST ", 5)) {
       p = req + 5;
-    else {
+      is_post = 1;
+    } else {
       close(c);
       continue;
     }
     sp = strchr(p, ' ');
     if (sp)
       *sp = 0;
+    else {
+      sp = strstr(p, "\r\n");
+      if (sp)
+        *sp = 0;
+    }
     q = strchr(p, '?');
     if (q)
       *q = 0;
@@ -1487,6 +2521,45 @@ static void serve(void) {
       p++;
     if (!strncmp(p, "files/", 6))
       p += 6;
+    if (is_mutating(p, q ? q + 1 : 0) && !req_trusted(c, hdrs, hend) &&
+        /* WK Autoloader pings this with a no-cors GET that may carry neither
+           Origin nor Referer. It only re-runs the user's own AutoPayload. */
+        !(!strcmp(p, "trigger-auto") && !has_origin_or_referer(hdrs, hend))) {
+      send_json_code(c, 403, "{\"ok\":false,\"message\":\"forbidden\"}");
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "ip")) {
+      char ip[48], json[96];
+      if (lan_ip(ip, sizeof(ip)))
+        conn_local_ip(c, ip, sizeof(ip));
+      snprintf(json, sizeof(json), "{\"ok\":true,\"ip\":\"%s\"}", ip);
+      send_json_code(c, 200, json);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "browse")) {
+      handle_browse(c, q ? q + 1 : 0);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "run_path")) {
+      if (!is_post)
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+      else
+        handle_run_path(c, q ? q + 1 : 0);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "upload")) {
+      if (!is_post)
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+      else if (handle_upload(c, q ? q + 1 : 0, hdrs, hend, req + hlen,
+                             got - hlen))
+        continue;
+      close(c);
+      continue;
+    }
     /* Connect-only check. Do not write bytes to :9021 (raw elfldr is one-shot). */
     if (!strcmp(p, "elfldr-ready")) {
       int fd = connect_port(9021);
@@ -1693,11 +2766,11 @@ static void serve(void) {
       }
       /* Serve raw JSON body for the page to parse. */
       {
-        char hdr[192];
+        char hdr[448];
         int h = snprintf(hdr, sizeof(hdr),
                          "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n"
-                         "Content-Length: %zu\r\nConnection: close\r\n\r\n",
-                         blen);
+                         "Content-Length: %zu\r\n%sConnection: close\r\n\r\n",
+                         blen, g_cors);
         if (h > 0)
           send_all(c, hdr, (size_t)h);
         send_all(c, buf, blen);
@@ -1887,9 +2960,9 @@ static void serve(void) {
       continue;
     }
     if (!strcmp(p, "ensure") || !strcmp(p, "run") || !strncmp(p, "load/", 5)) {
-      char rel[256];
+      char rel[256], mbuf[320];
       const char *msg = "ok";
-      int bad = 0;
+      int code = 200;
       rel[0] = 0;
       if (!strncmp(p, "load/", 5))
         snprintf(rel, sizeof(rel), "%s", p + 5);
@@ -1912,32 +2985,36 @@ static void serve(void) {
         }
       }
       if (mirror_disk(rel, path, sizeof(path))) {
-        bad = 1;
+        code = 400;
         msg = "bad path";
       } else if (!strcmp(p, "ensure")) {
-        bad = access(path, R_OK);
-        msg = bad ? "file missing" : "{\"source\":\"cache\"}";
+        code = access(path, R_OK) ? 404 : 200;
+        msg = code == 404 ? "file missing" : "{\"source\":\"cache\"}";
       } else if (access(path, R_OK)) {
-        bad = 1;
+        code = 404;
         msg = "file missing";
-      } else if (!file_is_elf(path)) {
-        bad = 1;
-        msg = "not an elf";
+      } else if (!file_is_payload(path)) {
+        code = 415;
+        msg = "not an ELF or SELF";
+      } else if (!send_lock_try()) {
+        code = 409;
+        msg = "busy, another payload is being sent";
       } else {
-        /* Raw ELF bytes to elfldr :9021. No ?uri= and no toast. */
-        bad = push_elfldr(path);
-        msg = bad ? "elfldr did not take the file" : "ok";
+        int rc;
+        char args[512], emsg[256];
+        args[0] = 0;
+        if (q)
+          qget(q + 1, "args", args, sizeof(args));
+        rc = elfldr_send_path(path, args, emsg, sizeof(emsg), 1500);
+        send_unlock();
+        code = send_http_code(rc);
+        if (rc != SEND_OK) {
+          snprintf(mbuf, sizeof(mbuf), "%s%s%s", send_err_text(rc),
+                   emsg[0] ? ": " : "", emsg);
+          msg = mbuf;
+        }
       }
-      {
-        char hdr[192];
-        int h = snprintf(hdr, sizeof(hdr),
-                         "HTTP/1.1 %s\r\nContent-Type: text/plain\r\n"
-                         "Content-Length: %zu\r\nConnection: close\r\n\r\n",
-                         bad ? "404 Not Found" : "200 OK", strlen(msg));
-        if (h > 0)
-          send_all(c, hdr, (size_t)h);
-        send_all(c, msg, strlen(msg));
-      }
+      send_text_code(c, code, msg);
       close(c);
       continue;
     }
