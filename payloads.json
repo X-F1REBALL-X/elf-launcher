@@ -101,19 +101,6 @@
       "source_direct": "https://github.com/itsPLK/ps5-payload-manager/releases/download/v0.5.2/pldmgr_v0.5.2.elf"
     },
     {
-      "name": "PS5HostPayloads.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/PS5HostPayloads.png",
-      "filename": "PS5HostPayloads.elf",
-      "path": "apps/PS5HostPayloads.elf",
-      "url": "https://github.com/MasterPS0/PS5HostPayloads/releases/download/1.0/PS5HostPayloads.elf",
-      "description": "Home screen menu of bundled payloads.",
-      "version": "1.0",
-      "category": "Loader",
-      "author": "MasterPS0",
-      "size": 22095424,
-      "checksum": "8210b32f1910f4949959ba31d14ae150809672f02df6c9c32eafca41374e261b"
-    },
-    {
       "name": "etaHEN-2.5B.bin",
       "icon": "https://raw.githubusercontent.com/etaHEN/etaHEN/dafa13b562ddb137a4b4a97b9aaa287c0c57cc9c/etaHEN-Icon.jpg",
       "filename": "etaHEN-2.5B.bin",
@@ -526,20 +513,6 @@
       "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_agent.elf"
     },
     {
-      "name": "actremotelink_pin_notify.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
-      "filename": "actremotelink_pin_notify.elf",
-      "path": "tools/actremotelink_pin_notify.elf",
-      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_pin_notify.elf",
-      "description": "Shows the Remote Play pairing PIN as a notification.",
-      "version": "v2.0",
-      "category": "Network",
-      "author": "francoataffarel",
-      "size": 115224,
-      "checksum": "f1e0aa745cdd8e3d65ac780193b317042e47da327ee632e2cbb25bc79108fe56",
-      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_pin_notify.elf"
-    },
-    {
       "name": "LinkDev.elf",
       "icon": "https://raw.githubusercontent.com/ps5-payload-dev/linkdev/8b1d47ed3acb5ead61602708ac1e58ad43f066f6/sce_sys/icon0.png",
       "filename": "LinkDev.elf",
@@ -682,19 +655,6 @@
       "author": "ps5-payload-dev",
       "size": 641440,
       "checksum": "63faa8240dd51bea0756e718d484f275d8c160fdc775ad8754f359b861393c23"
-    },
-    {
-      "name": "poweroff.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
-      "filename": "poweroff.elf",
-      "path": "system/poweroff.elf",
-      "url": "https://github.com/MasterPS0/PS5-Power-Payloads-Project/releases/download/1.0/poweroff.elf",
-      "description": "Powers the console off.",
-      "version": "1.0",
-      "category": "System",
-      "author": "MasterPS0",
-      "size": 134024,
-      "checksum": "42ed7983619a31f74a6ac74cc943b80899366ceaf07fed77a46384b9b0f51c48"
     },
     {
       "name": "ps5-fan-control-v0.3.elf",
