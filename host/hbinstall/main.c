@@ -1563,7 +1563,7 @@ static int is_mutating(const char *p, const char *qs) {
       return 1;
   if (!strncmp(p, "load/", 5))
     return 1;
-  if (!strncmp(p, "fs/", 3) && strcmp(p, "fs/status"))
+  if (!strncmp(p, "fs/", 3) && strcmp(p, "fs/status") && strcmp(p, "fs/read"))
     return 1;
   if (!qs)
     return 0;
@@ -1948,15 +1948,12 @@ static int under_root(const char *real, const char *root) {
   return !strncmp(real, root, n) && (real[n] == 0 || real[n] == '/');
 }
 
-/* Lexical check (no realpath: it is not reliable on the console's libc and
- * resolves nullfs mounts to other names). "." / ".." / empty parts are
- * folded or refused, and no symlink may appear below the root. */
-static int path_allowed(const char *in, char *real, size_t realsz) {
-  char norm[PATH_MAX];
+/* Lexical normalize (no realpath: it is not reliable on the console's libc
+ * and resolves nullfs mounts to other names): "." and empty parts are
+ * folded, ".." and relative paths refused. "/" stays "/". */
+static int path_norm(const char *in, char *norm, size_t nsz, size_t *olen) {
   size_t o = 0;
   const char *s = in;
-  int i;
-  struct stat st;
   if (!in || in[0] != '/' || strlen(in) >= 900 || has_dotdot(in))
     return -1;
   while (*s) {
@@ -1969,7 +1966,7 @@ static int path_allowed(const char *in, char *real, size_t realsz) {
     e = strchr(s, '/');
     n = e ? (size_t)(e - s) : strlen(s);
     if (!(n == 1 && s[0] == '.')) {
-      if (o + n + 2 >= sizeof(norm))
+      if (o + n + 2 >= nsz)
         return -1;
       norm[o++] = '/';
       memcpy(norm + o, s, n);
@@ -1978,33 +1975,90 @@ static int path_allowed(const char *in, char *real, size_t realsz) {
     s += n;
   }
   if (!o)
-    return -1;
+    norm[o++] = '/';
   norm[o] = 0;
-  for (i = 0; browse_roots[i]; i++) {
-    size_t rl = strlen(browse_roots[i]), k;
-    if (!under_root(norm, browse_roots[i]))
-      continue;
-    if (lstat(browse_roots[i], &st) && stat(browse_roots[i], &st))
-      return -2;
-    for (k = rl + 1; k <= o; k++) {
-      if (norm[k] == '/' || norm[k] == 0) {
-        char save = norm[k];
-        norm[k] = 0;
-        if (lstat(norm, &st)) {
-          norm[k] = save;
-          return -2;
-        }
-        norm[k] = save;
-        if (S_ISLNK(st.st_mode))
-          return -1;
-      }
-    }
-    if (o + 1 > realsz)
-      return -1;
-    memcpy(real, norm, o + 1);
+  *olen = o;
+  return 0;
+}
+
+/* Writable areas: /data, /mnt/usbN, /mnt/extN. Returns the root length. */
+static size_t writable_root_len(const char *p) {
+  const char *q;
+  if (under_root(p, "/data"))
+    return 5;
+  if (strncmp(p, "/mnt/usb", 8) && strncmp(p, "/mnt/ext", 8))
     return 0;
+  q = p + 8;
+  if (*q < '0' || *q > '9')
+    return 0;
+  while (*q >= '0' && *q <= '9')
+    q++;
+  return (*q == 0 || *q == '/') ? (size_t)(q - p) : 0;
+}
+
+/* No symlink may appear below index `from`; -2 when a part is missing. */
+static int path_nolinks(char *norm, size_t o, size_t from) {
+  size_t k;
+  struct stat st;
+  for (k = from; k <= o; k++) {
+    if (norm[k] == '/' || norm[k] == 0) {
+      char save = norm[k];
+      norm[k] = 0;
+      if (lstat(norm, &st)) {
+        norm[k] = save;
+        return -2;
+      }
+      norm[k] = save;
+      if (S_ISLNK(st.st_mode))
+        return -1;
+    }
   }
-  return -1;
+  return 0;
+}
+
+/* Write check: inside a writable area, no symlink below its root. */
+static int path_allowed(const char *in, char *real, size_t realsz) {
+  char norm[PATH_MAX];
+  size_t o, rl;
+  struct stat st;
+  int rc;
+  if (path_norm(in, norm, sizeof(norm), &o))
+    return -1;
+  rl = writable_root_len(norm);
+  if (!rl)
+    return -1;
+  {
+    char save = norm[rl];
+    norm[rl] = 0;
+    rc = lstat(norm, &st) && stat(norm, &st);
+    norm[rl] = save;
+    if (rc)
+      return -2;
+  }
+  if (o > rl && (rc = path_nolinks(norm, o, rl + 1)))
+    return rc;
+  if (o + 1 > realsz)
+    return -1;
+  memcpy(real, norm, o + 1);
+  return 0;
+}
+
+/* Read check: anywhere on the console. Inside writable areas the same
+ * no-symlink rule applies; system areas are read-only, links may resolve. */
+static int path_readable(const char *in, char *real, size_t realsz) {
+  char norm[PATH_MAX];
+  size_t o;
+  struct stat st;
+  if (path_norm(in, norm, sizeof(norm), &o))
+    return -1;
+  if (writable_root_len(norm))
+    return path_allowed(in, real, realsz);
+  if (stat(norm, &st))
+    return -2;
+  if (o + 1 > realsz)
+    return -1;
+  memcpy(real, norm, o + 1);
+  return 0;
 }
 
 static void json_str(char *out, size_t outsz, size_t *pos, const char *s) {
@@ -2026,7 +2080,7 @@ static void handle_browse(int c, const char *qs) {
   char *dbuf, *fbuf, *out;
   DIR *d;
   struct dirent *de;
-  int i, nd = 0, nf = 0, seen = 0, budget = 2000, all = 0;
+  int i, nd = 0, nf = 0, seen = 0, budget = 2000, all = 0, wr;
   char allf[4];
   dir[0] = allf[0] = 0;
   if (qs) {
@@ -2049,13 +2103,14 @@ static void handle_browse(int c, const char *qs) {
     send_json_code(c, 200, r);
     return;
   }
-  i = path_allowed(dir, real, sizeof(real));
+  i = path_readable(dir, real, sizeof(real));
   if (i) {
     send_json_code(c, i == -2 ? 404 : 403,
                    i == -2 ? "{\"ok\":false,\"message\":\"not found\"}"
                            : "{\"ok\":false,\"message\":\"path not allowed\"}");
     return;
   }
+  wr = writable_root_len(real) != 0;
   d = opendir(real);
   if (!d) {
     char m[120];
@@ -2083,16 +2138,18 @@ static void handle_browse(int c, const char *qs) {
     if (de->d_name[0] == '.' || !de->d_name[0])
       continue;
     seen++;
-    if (snprintf(child, sizeof(child), "%s/%s", real, de->d_name) >=
-        (int)sizeof(child))
+    if (snprintf(child, sizeof(child), "%s/%s", strcmp(real, "/") ? real : "",
+                 de->d_name) >= (int)sizeof(child))
       continue;
     if (de->d_type == DT_DIR)
       isdir = 1;
     else if (de->d_type == DT_REG)
       isreg = 1;
     if (all) {
-      if (de->d_type == DT_LNK || lstat(child, &st) || S_ISLNK(st.st_mode))
-        continue;
+      if (lstat(child, &st))
+        continue; /* unreadable: skip */
+      if (S_ISLNK(st.st_mode) && (wr || stat(child, &st)))
+        continue; /* links: hidden in writable areas, resolved elsewhere */
       have_st = 1;
       isdir = S_ISDIR(st.st_mode);
       isreg = S_ISREG(st.st_mode);
@@ -2152,8 +2209,8 @@ static void handle_browse(int c, const char *qs) {
     pos += (size_t)snprintf(out + pos, 2 * cap + 2048 - pos, "{\"ok\":true,\"dir\":");
     json_str(out, 2 * cap + 2048, &pos, real);
     pos += (size_t)snprintf(out + pos, 2 * cap + 2048 - pos,
-                            ",\"seen\":%d,\"dirs\":[%s],\"files\":[%s]}", seen,
-                            dbuf, fbuf);
+                            ",\"writable\":%s,\"seen\":%d,\"dirs\":[%s],\"files\":[%s]}",
+                            wr ? "true" : "false", seen, dbuf, fbuf);
     send_json_code(c, 200, out);
   }
   free(dbuf);
@@ -2185,11 +2242,8 @@ static struct {
 } fsj;
 
 static int fs_is_root(const char *real) {
-  int i;
-  for (i = 0; browse_roots[i]; i++)
-    if (!strcmp(real, browse_roots[i]))
-      return 1;
-  return !strcmp(real, "/data") || !strcmp(real, "/mnt");
+  size_t rl = writable_root_len(real);
+  return !rl || rl == strlen(real);
 }
 
 /* Paths the user may change (create in, delete, move, rename). */
@@ -2533,7 +2587,7 @@ static void fs_reply_bad(int c, int code, const char *msg) {
 
 /* rc from path_allowed -> reply; 0 = fine */
 static int fs_check(int c, const char *in, char *real, size_t realsz, int must_exist) {
-  int rc = path_allowed(in, real, realsz);
+  int rc = must_exist == 2 ? path_readable(in, real, realsz) : path_allowed(in, real, realsz);
   if (rc == -2 && !must_exist)
     return 0;
   if (rc) {
@@ -2541,6 +2595,145 @@ static int fs_check(int c, const char *in, char *real, size_t realsz, int must_e
     return -1;
   }
   return 0;
+}
+
+/* GET /fs/read?path= : first 512 KB of a file, read-only, anywhere readable.
+ * X-File-Size / X-Truncated / X-Binary / X-Mtime describe it; binary files
+ * (a NUL in the first 8 KB) come back with an empty body. */
+#define FS_READ_CAP (512 * 1024)
+static void handle_fs_read(int c, const char *qs) {
+  char in[1024], real[PATH_MAX], extra[480];
+  struct stat st;
+  char *buf;
+  size_t n = 0;
+  ssize_t r;
+  int fd, rc, bin;
+  if (fs_qget(qs, "path", in, sizeof(in))) {
+    fs_reply_bad(c, 400, "no path");
+    return;
+  }
+  rc = path_readable(in, real, sizeof(real));
+  if (rc) {
+    fs_reply_bad(c, rc == -2 ? 404 : 403, rc == -2 ? "not found" : "path not allowed");
+    return;
+  }
+  if (stat(real, &st) || !S_ISREG(st.st_mode)) {
+    fs_reply_bad(c, 404, "not a file");
+    return;
+  }
+  fd = open(real, O_RDONLY);
+  if (fd < 0) {
+    char m[120];
+    snprintf(m, sizeof(m), "cannot read: %s", strerror(errno));
+    fs_reply_bad(c, 403, m);
+    return;
+  }
+  buf = malloc(FS_READ_CAP);
+  if (!buf) {
+    close(fd);
+    fs_reply_bad(c, 500, "no memory");
+    return;
+  }
+  while (n < FS_READ_CAP && (r = read(fd, buf + n, FS_READ_CAP - n)) > 0)
+    n += (size_t)r;
+  close(fd);
+  bin = memchr(buf, 0, n < 8192 ? n : 8192) != NULL;
+  snprintf(extra, sizeof(extra),
+           "%sX-File-Size: %lld\r\nX-Truncated: %d\r\nX-Binary: %d\r\nX-Mtime: %lld\r\n",
+           g_cors, (long long)st.st_size, (long long)n < (long long)st.st_size, bin,
+           (long long)st.st_mtime);
+  send_code(c, 200, bin ? "application/octet-stream" : "text/plain; charset=utf-8",
+            extra, buf, bin ? 0 : n);
+  free(buf);
+}
+
+/* GET /icon?url=https://... : a catalog payload's icon, fetched once from
+ * GitHub (same host allowlist as downloads) and kept under
+ * /data/elf-launcher/icons. Only PNG/JPEG/GIF/WebP up to 1 MB. A failed
+ * fetch is remembered for an hour so a bad URL does not stall the page. */
+#define ICON_DIR LAUNCHER_DIR "/icons"
+static const char *icon_ctype(const uint8_t *m, size_t n) {
+  if (n >= 8 && m[0] == 0x89 && m[1] == 'P' && m[2] == 'N' && m[3] == 'G')
+    return "image/png";
+  if (n >= 3 && m[0] == 0xff && m[1] == 0xd8 && m[2] == 0xff)
+    return "image/jpeg";
+  if (n >= 6 && !memcmp(m, "GIF8", 4))
+    return "image/gif";
+  if (n >= 12 && !memcmp(m, "RIFF", 4) && !memcmp(m + 8, "WEBP", 4))
+    return "image/webp";
+  return 0;
+}
+
+static void icon_send(int c, const uint8_t *buf, size_t n, const char *ctype) {
+  char extra[300];
+  snprintf(extra, sizeof(extra), "%sX-Icon: 1\r\n", g_cors);
+  send_code(c, 200, ctype, extra, buf, n);
+}
+
+static void handle_icon(int c, const char *qs) {
+  char url[1400], path[200], bad[210], tmp[220];
+  uint8_t h[32], *buf = 0;
+  size_t blen = 0;
+  sha256_ctx ctx;
+  struct stat st;
+  const char *ct;
+  int i, fd;
+  url[0] = 0;
+  if (fs_qget(qs, "url", url, sizeof(url)) || !url_allowed_for_update(url)) {
+    fs_reply_bad(c, 403, "url not allowed");
+    return;
+  }
+  sha256_init(&ctx);
+  sha256_update(&ctx, (const uint8_t *)url, strlen(url));
+  sha256_final(&ctx, h);
+  i = snprintf(path, sizeof(path), "%s/", ICON_DIR);
+  for (fd = 0; fd < 10; fd++)
+    i += snprintf(path + i, sizeof(path) - i, "%02x", h[fd]);
+  snprintf(bad, sizeof(bad), "%s.bad", path);
+  snprintf(tmp, sizeof(tmp), "%s.part", path);
+  if (!stat(path, &st) && st.st_size > 0 && st.st_size <= 1024 * 1024) {
+    fd = open(path, O_RDONLY);
+    if (fd >= 0) {
+      buf = malloc((size_t)st.st_size);
+      if (buf && read(fd, buf, (size_t)st.st_size) == st.st_size &&
+          (ct = icon_ctype(buf, (size_t)st.st_size))) {
+        close(fd);
+        icon_send(c, buf, (size_t)st.st_size, ct);
+        free(buf);
+        return;
+      }
+      free(buf);
+      buf = 0;
+      close(fd);
+    }
+    unlink(path);
+  }
+  if (!stat(bad, &st) && time(0) - st.st_mtime < 3600) {
+    fs_reply_bad(c, 404, "icon unavailable");
+    return;
+  }
+  if (https_download_url(url, &buf, &blen) || !buf || !blen || blen > 1024 * 1024 ||
+      !(ct = icon_ctype(buf, blen))) {
+    free(buf);
+    mkdir(LAUNCHER_DIR, 0755);
+    mkdir(ICON_DIR, 0755);
+    fd = open(bad, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd >= 0)
+      close(fd);
+    fs_reply_bad(c, 404, "icon unavailable");
+    return;
+  }
+  mkdir(LAUNCHER_DIR, 0755);
+  mkdir(ICON_DIR, 0755);
+  fd = open(tmp, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (fd >= 0) {
+    int ok = write(fd, buf, blen) == (ssize_t)blen;
+    if (close(fd) || !ok || rename(tmp, path))
+      unlink(tmp);
+    unlink(bad);
+  }
+  icon_send(c, buf, blen, ct);
+  free(buf);
 }
 
 static void handle_fs_status(int c) {
@@ -2652,7 +2845,7 @@ static void handle_fs(int c, const char *op, const char *qs) {
           fs_reply_bad(c, 413, "too many items at once");
           return;
         }
-        if (fs_check(c, s, srcs[n], PATH_MAX, 1)) {
+        if (fs_check(c, s, srcs[n], PATH_MAX, kind == FS_COPY ? 2 : 1)) {
           __sync_lock_release(&fs_busy);
           return;
         }
@@ -2737,7 +2930,7 @@ static void handle_save_path(int c, const char *qs) {
     qget(qs, "auto", flag, sizeof(flag));
   }
   autoadd = flag[0] == '1';
-  rc = path_allowed(in, real, sizeof(real));
+  rc = path_readable(in, real, sizeof(real));
   if (rc) {
     send_result_json(c, rc == -2 ? 404 : 403, g_cors, 0,
                      rc == -2 ? "file missing" : "path not allowed", 0, "", 0,
@@ -2879,7 +3072,7 @@ static void handle_run_path(int c, const char *qs) {
     qget(qs, "path", in, sizeof(in));
     qget(qs, "args", args, sizeof(args));
   }
-  rc = path_allowed(in, real, sizeof(real));
+  rc = path_readable(in, real, sizeof(real));
   if (rc) {
     send_result_json(c, rc == -2 ? 404 : 403, g_cors, 0,
                      rc == -2 ? "file missing" : "path not allowed", 0, "", 0,
@@ -3432,6 +3625,16 @@ static void serve(void) {
     }
     if (!strcmp(p, "fs/status")) {
       handle_fs_status(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "icon")) {
+      handle_icon(c, q ? q + 1 : "");
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "fs/read")) {
+      handle_fs_read(c, q ? q + 1 : "");
       close(c);
       continue;
     }
