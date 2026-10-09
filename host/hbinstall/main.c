@@ -53,6 +53,9 @@ INCASSET(icon0_png, "sce_sys/icon0.png");
 INCASSET(pic1_png, "sce_sys/pic1.png");
 INCASSET(index_html, "webapp/index.html");
 INCASSET(ico_launcher_home, "icons/launcher-home.jpg");
+/* Hebrew-only font subset (Heebo, OFL, fonts/OFL.txt): a clean console has no Hebrew glyphs */
+INCASSET(font_he_400, "fonts/he-400.woff");
+INCASSET(font_he_700, "fonts/he-700.woff");
 
 static int send_blob(int c, const char *ctype, const void *body, size_t n);
 
@@ -62,6 +65,13 @@ static int send_icon(int c, const char *path) {
     name += 6;
   if (!strcmp(name, "launcher-home.jpg"))
     return send_blob(c, "image/jpeg", ico_launcher_home, ico_launcher_home_size);
+  if (!strncmp(path, "fonts/", 6)) {
+    name = path + 6;
+    if (!strcmp(name, "he-400.woff"))
+      return send_blob(c, "font/woff", font_he_400, font_he_400_size);
+    if (!strcmp(name, "he-700.woff"))
+      return send_blob(c, "font/woff", font_he_700, font_he_700_size);
+  }
   return -1;
 }
 
