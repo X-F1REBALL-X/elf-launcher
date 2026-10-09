@@ -24,6 +24,7 @@
 #include <sys/syscall.h>
 #include <sys/user.h>
 #include <ps5/kernel.h>
+#include <stdarg.h>
 
 int sceSystemServiceLaunchWebBrowser(const char *uri, void *);
 #define IOVEC_SIZE(x) (sizeof(x) / sizeof(struct iovec))
@@ -250,6 +251,7 @@ out:
 /* The loader starts only when the page is opened, not during install. */
 int start_real_elfldr(void);
 void notify(const char *fmt, ...);
+static void evlog(const char *kind, const char *fmt, ...);
 static int start_elfldr_guarded(void);
 static int loader_started;
 
@@ -1565,6 +1567,10 @@ static int is_mutating(const char *p, const char *qs) {
     return 1;
   if (!strncmp(p, "fs/", 3) && strcmp(p, "fs/status") && strcmp(p, "fs/read"))
     return 1;
+  if (!strcmp(p, "backup/save") || !strcmp(p, "events/add"))
+    return 1;
+  if (!strcmp(p, "profiles"))
+    return 1;
   if (!qs)
     return 0;
   if (!strcmp(p, "boot-auto") && strstr(qs, "done="))
@@ -2736,6 +2742,594 @@ static void handle_icon(int c, const char *qs) {
   free(buf);
 }
 
+/* ---- session event log (since this launcher started = since jailbreak) ---- */
+#define EV_MAX 160
+typedef struct {
+  long long t;
+  char kind[12];
+  char msg[200];
+} ev_t;
+static ev_t ev_ring[EV_MAX];
+static int ev_head, ev_count;
+static long long ev_seq, ev_started;
+static pthread_mutex_t ev_mx = PTHREAD_MUTEX_INITIALIZER;
+static void evlog(const char *kind, const char *fmt, ...) {
+  va_list ap;
+  ev_t *e;
+  pthread_mutex_lock(&ev_mx);
+  e = &ev_ring[ev_head];
+  e->t = (long long)time(NULL);
+  snprintf(e->kind, sizeof(e->kind), "%s", kind);
+  va_start(ap, fmt);
+  vsnprintf(e->msg, sizeof(e->msg), fmt, ap);
+  va_end(ap);
+  ev_head = (ev_head + 1) % EV_MAX;
+  if (ev_count < EV_MAX)
+    ev_count++;
+  ev_seq++;
+  pthread_mutex_unlock(&ev_mx);
+}
+static void handle_events(int c) {
+  char *out = malloc(EV_MAX * 460 + 256), k[40], m[420];
+  size_t pos;
+  int i, idx;
+  if (!out) {
+    send_json_code(c, 500, "{\"ok\":false}");
+    return;
+  }
+  pthread_mutex_lock(&ev_mx);
+  pos = (size_t)sprintf(out, "{\"ok\":true,\"started\":%lld,\"now\":%lld,\"seq\":%lld,\"events\":[",
+                        ev_started, (long long)time(NULL), ev_seq);
+  for (i = 0; i < ev_count; i++) {
+    idx = (ev_head - ev_count + i + EV_MAX) % EV_MAX;
+    json_escape_name(ev_ring[idx].kind, k, sizeof(k));
+    json_escape_name(ev_ring[idx].msg, m, sizeof(m));
+    pos += (size_t)sprintf(out + pos, "%s{\"t\":%lld,\"kind\":\"%s\",\"msg\":\"%s\"}", i ? "," : "",
+                           ev_ring[idx].t, k, m);
+  }
+  pthread_mutex_unlock(&ev_mx);
+  strcpy(out + pos, "]}");
+  send_json_code(c, 200, out);
+  free(out);
+}
+/* POST /events/add?kind=crash|error|load|kill|update|info&msg= (from the page) */
+static void handle_events_add(int c, const char *qs) {
+  static const char *kinds[] = {"crash", "error", "load", "kill", "update", "info", 0};
+  char k[16], m[200];
+  int i;
+  k[0] = m[0] = 0;
+  qget(qs, "kind", k, sizeof(k));
+  qget(qs, "msg", m, sizeof(m));
+  for (i = 0; kinds[i]; i++)
+    if (!strcmp(k, kinds[i]))
+      break;
+  if (!kinds[i] || !m[0]) {
+    fs_reply_bad(c, 400, "bad event");
+    return;
+  }
+  for (i = 0; m[i]; i++)
+    if ((unsigned char)m[i] < 32)
+      m[i] = ' ';
+  evlog(k, "%s", m);
+  send_json_code(c, 200, "{\"ok\":true}");
+}
+
+/* ---- request body (small JSON posts) ---- */
+static char *read_body(int c, const char *req, size_t hlen, size_t got, const char *hdrs,
+                       const char *hend, size_t max, size_t *outn, const char **why) {
+  char v[32];
+  long long cl;
+  size_t have;
+  char *body;
+  *why = "length required";
+  if (hdr_get(hdrs, hend, "Content-Length", v, sizeof(v)) || (cl = atoll(v)) < 2)
+    return NULL;
+  *why = "too big";
+  if ((size_t)cl > max)
+    return NULL;
+  *why = "no memory";
+  body = malloc((size_t)cl + 1);
+  if (!body)
+    return NULL;
+  have = got > hlen ? got - hlen : 0;
+  if (have > (size_t)cl)
+    have = (size_t)cl;
+  memcpy(body, req + hlen, have);
+  while (have < (size_t)cl) {
+    ssize_t r = recv(c, body + have, (size_t)cl - have, 0);
+    if (r <= 0)
+      break;
+    have += (size_t)r;
+  }
+  body[have] = 0;
+  *why = "incomplete body";
+  if (have != (size_t)cl) {
+    free(body);
+    return NULL;
+  }
+  *outn = have;
+  return body;
+}
+
+/* ---- AutoPayload profiles: /data/elf-launcher/profiles.json ---- */
+#define PROFILES_FILE LAUNCHER_DIR "/profiles.json"
+static void handle_profiles(int c, int is_post, const char *req, size_t hlen, size_t got,
+                            const char *hdrs, const char *hend) {
+  if (!is_post) {
+    char *buf;
+    struct stat st;
+    int fd = open(PROFILES_FILE, O_RDONLY);
+    if (fd < 0 || fstat(fd, &st) || st.st_size > 65536 || !(buf = malloc((size_t)st.st_size + 1))) {
+      if (fd >= 0)
+        close(fd);
+      send_json_code(c, 200, "{\"ok\":true,\"profiles\":null}");
+      return;
+    }
+    {
+      ssize_t r = read(fd, buf, (size_t)st.st_size);
+      char *out;
+      close(fd);
+      buf[r > 0 ? r : 0] = 0;
+      out = malloc((size_t)(r > 0 ? r : 0) + 64);
+      if (out && r > 1 && buf[0] == '{') {
+        sprintf(out, "{\"ok\":true,\"profiles\":%s}", buf);
+        send_json_code(c, 200, out);
+      } else
+        send_json_code(c, 200, "{\"ok\":true,\"profiles\":null}");
+      free(out);
+      free(buf);
+    }
+    return;
+  } else {
+    const char *why;
+    size_t n;
+    char *body = read_body(c, req, hlen, got, hdrs, hend, 65536, &n, &why);
+    int ok;
+    if (!body) {
+      fs_reply_bad(c, 400, why);
+      return;
+    }
+    if (body[0] != '{' || body[n - 1] != '}') {
+      free(body);
+      fs_reply_bad(c, 400, "not JSON");
+      return;
+    }
+    mkdir(LAUNCHER_DIR, 0777);
+    ok = !write_atomic_under_data(PROFILES_FILE, (const uint8_t *)body, n);
+    free(body);
+    if (ok)
+      send_json_code(c, 200, "{\"ok\":true}");
+    else
+      fs_reply_bad(c, 500, "write failed");
+  }
+}
+
+/* ---- system info: temperatures, memory, free space ---- */
+int sceKernelGetCpuTemperature(int *);
+int sceKernelGetSocSensorTemperature(int, int *);
+static void handle_sysinfo(int c) {
+  static const char *places[] = {"/data", "/mnt/usb0", "/mnt/usb1", "/mnt/usb2", "/mnt/usb3",
+                                 "/mnt/ext0", "/mnt/ext1", 0};
+  char out[2048];
+  size_t pos;
+  int t = 0, i, n = 0;
+  long long physmem = 0;
+  unsigned int fc = 0, ic = 0, pg = 0;
+  size_t sz;
+  struct statfs sf;
+  struct stat st, mst;
+  pos = (size_t)snprintf(out, sizeof(out), "{\"ok\":true,\"uptime\":%lld",
+                         (long long)time(NULL) - ev_started);
+  if (sceKernelGetCpuTemperature(&t) == 0 && t > 0 && t < 150)
+    pos += (size_t)snprintf(out + pos, sizeof(out) - pos, ",\"cpuTemp\":%d", t);
+  t = 0;
+  if (sceKernelGetSocSensorTemperature(0, &t) == 0 && t > 0 && t < 150)
+    pos += (size_t)snprintf(out + pos, sizeof(out) - pos, ",\"socTemp\":%d", t);
+  sz = sizeof(physmem);
+  if (sysctlbyname("hw.physmem", &physmem, &sz, NULL, 0))
+    physmem = 0;
+  sz = sizeof(pg);
+  if (sysctlbyname("hw.pagesize", &pg, &sz, NULL, 0))
+    pg = 0;
+  sz = sizeof(fc);
+  if (sysctlbyname("vm.stats.vm.v_free_count", &fc, &sz, NULL, 0))
+    fc = 0;
+  sz = sizeof(ic);
+  if (sysctlbyname("vm.stats.vm.v_inactive_count", &ic, &sz, NULL, 0))
+    ic = 0;
+  if (physmem > 0 && pg && fc)
+    pos += (size_t)snprintf(out + pos, sizeof(out) - pos, ",\"memTotal\":%lld,\"memFree\":%lld",
+                            physmem, ((long long)fc + ic) * pg);
+  pos += (size_t)snprintf(out + pos, sizeof(out) - pos, ",\"disks\":[");
+  if (stat("/mnt", &mst))
+    mst.st_dev = 0;
+  for (i = 0; places[i]; i++) {
+    if (stat(places[i], &st) || !S_ISDIR(st.st_mode))
+      continue;
+    /* an empty /mnt/usbN folder with nothing mounted is not a drive */
+    if (i && st.st_dev == mst.st_dev)
+      continue;
+    if (statfs(places[i], &sf) || !sf.f_blocks)
+      continue;
+    pos += (size_t)snprintf(out + pos, sizeof(out) - pos,
+                            "%s{\"path\":\"%s\",\"free\":%lld,\"total\":%lld}", n++ ? "," : "",
+                            places[i], (long long)sf.f_bavail * (long long)sf.f_bsize,
+                            (long long)sf.f_blocks * (long long)sf.f_bsize);
+  }
+  snprintf(out + pos, sizeof(out) - pos, "]}");
+  send_json_code(c, 200, out);
+}
+
+/* ---- POST /fs/upload?dir=&name= : raw body into a writable folder ---- */
+#define FSUP_MAX (4LL * 1024 * 1024 * 1024)
+typedef struct {
+  int c;
+  long long clen;
+  size_t pre_n;
+  char *pre;
+  char dst[PATH_MAX + 200];
+  char cors[256];
+} fsup_t;
+static volatile int fsup_busy;
+static void *fsup_thread(void *arg) {
+  fsup_t *j = arg;
+  char tmp[PATH_MAX + 220], *b = malloc(65536), json[300];
+  long long have = 0;
+  int fd, ok = 1, code = 200;
+  const char *m = "";
+  snprintf(tmp, sizeof(tmp), "%s.part", j->dst);
+  fd = open(tmp, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (fd < 0 || !b) {
+    ok = 0;
+    code = 500;
+    m = "cannot write here";
+  }
+  if (ok && j->pre_n) {
+    ok = write(fd, j->pre, j->pre_n) == (ssize_t)j->pre_n;
+    have = (long long)j->pre_n;
+  }
+  while (ok && have < j->clen) {
+    size_t want = (size_t)(j->clen - have > 65536 ? 65536 : j->clen - have);
+    ssize_t r = recv(j->c, b, want, 0);
+    if (r <= 0) {
+      ok = 0;
+      code = 400;
+      m = "upload incomplete";
+      break;
+    }
+    if (write(fd, b, (size_t)r) != r) {
+      ok = 0;
+      code = 507;
+      m = "disk full or write failed";
+      break;
+    }
+    have += r;
+  }
+  if (fd >= 0 && close(fd) && ok) {
+    ok = 0;
+    code = 507;
+    m = "disk full or write failed";
+  }
+  if (ok && rename(tmp, j->dst)) {
+    ok = 0;
+    code = 500;
+    m = "rename failed";
+  }
+  if (!ok) {
+    if (!m[0])
+      m = "write failed";
+    unlink(tmp);
+    evlog("error", "upload to %s failed: %s", j->dst, m);
+  } else
+    evlog("info", "uploaded %s (%lld bytes)", j->dst, have);
+  {
+    char e[PATH_MAX + 220];
+    json_escape_name(ok ? j->dst : m, e, sizeof(e));
+    snprintf(json, sizeof(json), ok ? "{\"ok\":true,\"path\":\"%s\",\"bytes\":%lld}" : "{\"ok\":false,\"message\":\"%s\",\"bytes\":%lld}", e, have);
+  }
+  send_code(j->c, code, "application/json", j->cors, json, strlen(json));
+  close(j->c);
+  free(b);
+  free(j->pre);
+  free(j);
+  fsup_busy = 0;
+  return NULL;
+}
+/* returns 1 when the socket was handed to the worker */
+static int handle_fs_upload(int c, const char *qs, const char *req, size_t hlen, size_t got,
+                            const char *hdrs, const char *hend) {
+  char in[1024], dir[PATH_MAX], name[256], clean[256], v[32];
+  long long cl;
+  fsup_t *j;
+  pthread_t th;
+  size_t i, k = 0;
+  struct stat st;
+  if (fs_qget(qs, "dir", in, sizeof(in)) || fs_qget(qs, "name", name, sizeof(name))) {
+    fs_reply_bad(c, 400, "no folder or name");
+    return 0;
+  }
+  if (fs_check(c, in, dir, sizeof(dir), 1))
+    return 0;
+  if (!fs_dest_ok(dir)) {
+    fs_reply_bad(c, 403, "protected");
+    return 0;
+  }
+  if (stat(dir, &st) || !S_ISDIR(st.st_mode)) {
+    fs_reply_bad(c, 404, "not a folder");
+    return 0;
+  }
+  for (i = 0; name[i] && k + 1 < sizeof(clean); i++) {
+    unsigned char ch = (unsigned char)name[i];
+    if (ch == '/' || ch == '\\' || ch < 32)
+      ch = '_';
+    clean[k++] = (char)ch;
+  }
+  clean[k] = 0;
+  if (!k || clean[0] == '.' || strlen(clean) > 200) {
+    fs_reply_bad(c, 400, "bad name");
+    return 0;
+  }
+  if (hdr_get(hdrs, hend, "Content-Length", v, sizeof(v)) || (cl = atoll(v)) < 0) {
+    fs_reply_bad(c, 411, "length required");
+    return 0;
+  }
+  if (cl > FSUP_MAX) {
+    fs_reply_bad(c, 413, "file too big (4 GB max)");
+    return 0;
+  }
+  if (fsup_busy) {
+    fs_reply_bad(c, 409, "busy");
+    return 0;
+  }
+  j = calloc(1, sizeof(*j));
+  if (!j) {
+    fs_reply_bad(c, 500, "no memory");
+    return 0;
+  }
+  snprintf(j->dst, sizeof(j->dst), "%s/%s", strcmp(dir, "/") ? dir : "", clean);
+  if (!lstat(j->dst, &st)) {
+    free(j);
+    fs_reply_bad(c, 409, "exists");
+    return 0;
+  }
+  j->c = c;
+  j->clen = cl;
+  snprintf(j->cors, sizeof(j->cors), "%s", g_cors);
+  if (got > hlen) {
+    j->pre_n = got - hlen;
+    if ((long long)j->pre_n > cl)
+      j->pre_n = (size_t)cl;
+    j->pre = malloc(j->pre_n ? j->pre_n : 1);
+    if (!j->pre) {
+      free(j);
+      fs_reply_bad(c, 500, "no memory");
+      return 0;
+    }
+    memcpy(j->pre, req + hlen, j->pre_n);
+  }
+  if (!hdr_get(hdrs, hend, "Expect", v, sizeof(v)) && !strcasecmp(v, "100-continue"))
+    send_all(c, "HTTP/1.1 100 Continue\r\n\r\n", 25);
+  fsup_busy = 1;
+  if (pthread_create(&th, NULL, fsup_thread, j)) {
+    fsup_thread(j);
+    return 1;
+  }
+  pthread_detach(th);
+  return 1;
+}
+
+/* ---- Backup & Restore ----
+ * GET  /backup/inventory          files in Downloads with size + sha256
+ * GET  /backup/list               places that can hold a backup and what is there
+ * POST /backup/save?dir=&local=   body = backup JSON; writes
+ *      <dir>/elf-launcher-backup/backup.json and copies the listed Downloads
+ *      files (uploads that are not from a catalog) into .../files/.
+ * Restore uses /fs/read (JSON), /update (catalog files, sha checked) and
+ * /save_path (local files). Same X-ELFL / path rules as everything else. */
+#define BACKUP_SUB "elf-launcher-backup"
+#define BACKUP_MAX (256 * 1024)
+static int sha256_file_hex(const char *path, char out[65]) {
+  uint8_t h[32], b[16384];
+  sha256_ctx ctx;
+  ssize_t r;
+  int fd = open(path, O_RDONLY), i;
+  if (fd < 0)
+    return -1;
+  sha256_init(&ctx);
+  while ((r = read(fd, b, sizeof(b))) > 0)
+    sha256_update(&ctx, b, (size_t)r);
+  close(fd);
+  if (r < 0)
+    return -1;
+  sha256_final(&ctx, h);
+  for (i = 0; i < 32; i++)
+    snprintf(out + i * 2, 3, "%02x", h[i]);
+  return 0;
+}
+
+static int backup_skip_name(const char *n) {
+  size_t l = strlen(n);
+  if (n[0] == '.' || !l)
+    return 1;
+  if (l > 7 && !strcmp(n + l - 7, ".sha256"))
+    return 1;
+  if (l > 5 && !strcmp(n + l - 5, ".part"))
+    return 1;
+  return !has_payload_ext(n);
+}
+
+static void handle_backup_inventory(int c) {
+  DIR *d = opendir(MIRROR_DIR);
+  struct dirent *de;
+  size_t cap = 96 * 1024, pos = 0;
+  char *out = malloc(cap), path[600], sum[65], e[300];
+  struct stat st;
+  int n = 0;
+  if (!out) {
+    if (d)
+      closedir(d);
+    fs_reply_bad(c, 500, "no memory");
+    return;
+  }
+  pos += (size_t)snprintf(out, cap, "{\"ok\":true,\"files\":[");
+  while (d && (de = readdir(d)) != NULL && pos + 600 < cap) {
+    if (backup_skip_name(de->d_name))
+      continue;
+    if (snprintf(path, sizeof(path), "%s/%s", MIRROR_DIR, de->d_name) >= (int)sizeof(path) ||
+        lstat(path, &st) || !S_ISREG(st.st_mode))
+      continue;
+    if (read_sha256_sidecar(path, sum, sizeof(sum)) && sha256_file_hex(path, sum))
+      continue;
+    json_escape_name(de->d_name, e, sizeof(e));
+    pos += (size_t)snprintf(out + pos, cap - pos,
+                            "%s{\"name\":\"%s\",\"size\":%lld,\"sha256\":\"%s\"}",
+                            n++ ? "," : "", e, (long long)st.st_size, sum);
+  }
+  if (d)
+    closedir(d);
+  snprintf(out + pos, cap - pos, "]}");
+  send_json_code(c, 200, out);
+  free(out);
+}
+
+static void handle_backup_list(int c) {
+  static const char *places[] = {"/mnt/usb0", "/mnt/usb1", "/mnt/usb2", "/mnt/usb3",
+                                 "/mnt/ext0", "/mnt/ext1", "/data", 0};
+  char out[2400], f[300];
+  size_t pos = 0;
+  int i, n = 0;
+  struct stat st;
+  pos += (size_t)snprintf(out, sizeof(out), "{\"ok\":true,\"places\":[");
+  for (i = 0; places[i]; i++) {
+    int has;
+    if (stat(places[i], &st) || !S_ISDIR(st.st_mode))
+      continue;
+    snprintf(f, sizeof(f), "%s/%s/backup.json", places[i], BACKUP_SUB);
+    has = !stat(f, &st) && S_ISREG(st.st_mode);
+    pos += (size_t)snprintf(out + pos, sizeof(out) - pos,
+                            "%s{\"root\":\"%s\",\"dir\":\"%s/%s\",\"backup\":%s,\"mtime\":%lld,\"size\":%lld}",
+                            n++ ? "," : "", places[i], places[i], BACKUP_SUB,
+                            has ? "true" : "false", has ? (long long)st.st_mtime : 0LL,
+                            has ? (long long)st.st_size : 0LL);
+  }
+  snprintf(out + pos, sizeof(out) - pos, "]}");
+  send_json_code(c, 200, out);
+}
+
+static int copy_plain(const char *src, const char *dst) {
+  char tmp[700], b[16384];
+  int in, out, ok = 1;
+  ssize_t r;
+  snprintf(tmp, sizeof(tmp), "%s.part", dst);
+  in = open(src, O_RDONLY);
+  if (in < 0)
+    return -1;
+  out = open(tmp, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (out < 0) {
+    close(in);
+    return -1;
+  }
+  while (ok && (r = read(in, b, sizeof(b))) > 0)
+    ok = write(out, b, (size_t)r) == r;
+  if (r < 0)
+    ok = 0;
+  close(in);
+  if (close(out))
+    ok = 0;
+  if (!ok || rename(tmp, dst)) {
+    unlink(tmp);
+    return -1;
+  }
+  return 0;
+}
+
+static void handle_backup_save(int c, const char *qs, const char *req, size_t hlen,
+                               size_t got, const char *hdrs, const char *hend) {
+  char in[1024], dir[PATH_MAX], bdir[PATH_MAX + 32], fdir[PATH_MAX + 40], dst[PATH_MAX + 300],
+      src[600], names[4096], *body, *s, *e;
+  size_t have, need;
+  int nfiles = 0, fd, okw;
+  if (fs_qget(qs, "dir", in, sizeof(in))) {
+    fs_reply_bad(c, 400, "no folder");
+    return;
+  }
+  if (fs_check(c, in, dir, sizeof(dir), 1))
+    return;
+  if (!fs_dest_ok(dir)) {
+    fs_reply_bad(c, 403, "protected");
+    return;
+  }
+  names[0] = 0;
+  if (qget(qs, "local", names, sizeof(names)) == 0 && strlen(names) + 1 >= sizeof(names)) {
+    fs_reply_bad(c, 413, "too many files");
+    return;
+  }
+  {
+    const char *why;
+    body = read_body(c, req, hlen, got, hdrs, hend, BACKUP_MAX, &have, &why);
+    if (!body) {
+      fs_reply_bad(c, 400, why);
+      return;
+    }
+    need = have;
+  }
+  body[have] = 0;
+  if (have != need || body[0] != '{' || !strstr(body, "\"elf-launcher-backup\"")) {
+    free(body);
+    fs_reply_bad(c, 400, "not a backup");
+    return;
+  }
+  snprintf(bdir, sizeof(bdir), "%s/%s", strcmp(dir, "/") ? dir : "", BACKUP_SUB);
+  snprintf(fdir, sizeof(fdir), "%s/files", bdir);
+  mkdir(bdir, 0777);
+  mkdir(fdir, 0777);
+  /* local files first, the JSON last (a backup.json means the set is whole) */
+  for (s = names; s && *s; s = e ? e + 1 : 0) {
+    char clean[128];
+    e = strchr(s, ',');
+    if (e)
+      *e = 0;
+    if (!*s)
+      continue;
+    if (sanitize_upload_name(s, clean, sizeof(clean)) || strcmp(clean, s)) {
+      free(body);
+      fs_reply_bad(c, 400, "bad file name");
+      return;
+    }
+    snprintf(src, sizeof(src), "%s/%s", MIRROR_DIR, clean);
+    snprintf(dst, sizeof(dst), "%s/%s", fdir, clean);
+    if (copy_plain(src, dst)) {
+      char m[200];
+      snprintf(m, sizeof(m), "cannot copy %s: %s", clean, strerror(errno));
+      free(body);
+      fs_reply_bad(c, 500, m);
+      return;
+    }
+    nfiles++;
+  }
+  snprintf(dst, sizeof(dst), "%s/backup.json.part", bdir);
+  fd = open(dst, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  okw = fd >= 0 && write(fd, body, have) == (ssize_t)have;
+  if (fd >= 0 && close(fd))
+    okw = 0;
+  free(body);
+  snprintf(src, sizeof(src), "%s/backup.json", bdir);
+  if (!okw || rename(dst, src)) {
+    char m[160];
+    unlink(dst);
+    snprintf(m, sizeof(m), "cannot write backup: %s", strerror(errno));
+    fs_reply_bad(c, 500, m);
+    return;
+  }
+  {
+    char out[800], ep[700];
+    json_escape_name(src, ep, sizeof(ep));
+    snprintf(out, sizeof(out), "{\"ok\":true,\"path\":\"%s\",\"files\":%d}", ep, nfiles);
+    evlog("info", "backup saved to %s (%d files)", src, nfiles);
+    send_json_code(c, 200, out);
+  }
+}
+
 static void handle_fs_status(int c) {
   char out[900], cur[300], err[260];
   json_escape_name(fsj.cur, cur, sizeof(cur));
@@ -2902,6 +3496,16 @@ static void send_result_json(int c, int code, const char *cors, int ok,
                              const char *sha, int pid, const char *emsg,
                              const char *name) {
   char json[1024], m[200], e[300], n[200];
+  if (name && name[0]) {
+    if (!ok)
+      evlog("error", "%s: %s", name, message ? message : "failed");
+    else if (message && !strcmp(message, "saved"))
+      evlog("info", "%s saved to Downloads", name);
+    else if (pid > 0)
+      evlog("load", "%s (pid %d)", name, pid);
+    else
+      evlog("load", "%s", name);
+  }
   json_escape_name(message ? message : "", m, sizeof(m));
   json_escape_name(emsg ? emsg : "", e, sizeof(e));
   json_escape_name(name ? name : "", n, sizeof(n));
@@ -3378,6 +3982,7 @@ static void run_headless_auto(void) {
   for (i = 0; i < e; i++) {
     if (auto_disk_path(use[i], path, sizeof(path))) {
       notify("Skipped %s (file missing)", use[i]);
+      evlog("error", "AutoPayload skipped %s (file missing)", use[i]);
       skipped++;
       continue;
     }
@@ -3386,8 +3991,10 @@ static void run_headless_auto(void) {
     send_unlock();
     if (rc == SEND_OK) {
       sent++;
+      evlog("load", "AutoPayload loaded %s", use[i]);
       usleep(300000);
     } else {
+      evlog("error", "AutoPayload skipped %s (%s)", use[i], send_err_text(rc));
       notify("Skipped %s (%s)", use[i], send_err_text(rc));
       skipped++;
     }
@@ -3625,6 +4232,57 @@ static void serve(void) {
     }
     if (!strcmp(p, "fs/status")) {
       handle_fs_status(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "events")) {
+      handle_events(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "events/add")) {
+      handle_events_add(c, q ? q + 1 : "");
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "sysinfo")) {
+      handle_sysinfo(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "profiles")) {
+      handle_profiles(c, is_post, req, hlen, got, hdrs, hend);
+      if (is_post)
+        drain_briefly(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "fs/upload")) {
+      if (!is_post) {
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+        close(c);
+      } else if (!handle_fs_upload(c, q ? q + 1 : "", req, hlen, got, hdrs, hend)) {
+        drain_briefly(c); /* refused before the body: let the client read why */
+        close(c);
+      }
+      continue;
+    }
+    if (!strcmp(p, "backup/inventory")) {
+      handle_backup_inventory(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "backup/list")) {
+      handle_backup_list(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "backup/save")) {
+      if (!is_post)
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+      else
+        handle_backup_save(c, q ? q + 1 : "", req, hlen, got, hdrs, hend);
+      drain_briefly(c);
       close(c);
       continue;
     }
@@ -3949,6 +4607,7 @@ static void serve(void) {
       }
       drc = https_download_url(url, &buf, &blen);
       if (drc || !buf) {
+        evlog("error", "download %s failed: %s", rel, g_upd_err[0] ? g_upd_err : "download failed");
         snprintf(json, sizeof(json),
                  "{\"ok\":false,\"message\":\"%s\"}",
                  g_upd_err[0] ? g_upd_err : "download failed");
@@ -3967,6 +4626,7 @@ static void serve(void) {
       }
       sha256_hex(buf, blen, got_hex);
       if (strcasecmp(got_hex, sha_exp)) {
+        evlog("error", "download %s: sha256 mismatch", rel);
         snprintf(json, sizeof(json),
                  "{\"ok\":false,\"message\":\"sha256 mismatch got %.12s\"}",
                  got_hex);
@@ -3986,6 +4646,7 @@ static void serve(void) {
       }
       /* Keep .sha256 sidecar so Update can compare without rehashing. */
       write_sha256_sidecar(dest, got_hex);
+      evlog("update", "downloaded %s (sha %.12s)", rel, got_hex);
       snprintf(json, sizeof(json),
                "{\"ok\":true,\"bytes\":%zu,\"sha256\":\"%s\"}", blen,
                got_hex);
@@ -4039,6 +4700,10 @@ static void serve(void) {
         snprintf(json_resp, sizeof(json_resp),
                  "{\"ok\":%s,\"pid\":%d,\"message\":\"%s\"}",
                  rc == 0 ? "true" : "false", pid, m);
+        if (rc == 0)
+          evlog("kill", "stopped %s (pid %d)", pname[0] ? pname : "?", pid);
+        else
+          evlog("error", "stop pid %d failed: %s", pid, m);
         send_json_code(c, code, json_resp);
       }
       close(c);
@@ -4223,6 +4888,8 @@ int main(void) {
   /* So re-sends can find/kill us (elfldr default name is payload.elf). */
   syscall(SYS_thr_set_name, -1, "elf-launcher");
   make_data_dir();
+  ev_started = (long long)time(NULL);
+  evlog("info", "launcher started");
   (void)update_http_init(); /* optional; Update uses sceHttp when available */
   serve();
   return 0;
