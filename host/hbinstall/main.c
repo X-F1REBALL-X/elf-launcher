@@ -1567,7 +1567,8 @@ static int is_mutating(const char *p, const char *qs) {
     return 1;
   if (!strncmp(p, "fs/", 3) && strcmp(p, "fs/status") && strcmp(p, "fs/read"))
     return 1;
-  if (!strcmp(p, "backup/save") || !strcmp(p, "events/add"))
+  if (!strcmp(p, "backup/save") || !strcmp(p, "events/add") || !strcmp(p, "open-browser") ||
+      !strcmp(p, "frame-check") || !strcmp(p, "web-save"))
     return 1;
   if (!strcmp(p, "profiles"))
     return 1;
@@ -3118,6 +3119,296 @@ static int handle_fs_upload(int c, const char *qs, const char *req, size_t hlen,
   return 1;
 }
 
+/* ---- in-page Browser helpers ----
+ * GET /open-browser?url=   opens a page in the PS5's own web browser
+ * GET /frame-check?url=    reads the page's headers (no body) and says whether
+ *                          it allows being shown inside a frame
+ * Both need the page's X-ELFL header (see is_mutating). */
+static int web_url_ok(const char *u) {
+  size_t i, n = strlen(u);
+  if (n < 8 || n > 1000)
+    return 0;
+  if (strncasecmp(u, "https://", 8) && strncasecmp(u, "http://", 7))
+    return 0;
+  for (i = 0; i < n; i++)
+    if ((unsigned char)u[i] <= 32 || u[i] == '"' || u[i] == '\\' || u[i] == '<' || u[i] == '>')
+      return 0;
+  return 1;
+}
+static void *open_browser_thread(void *arg) {
+  char *u = arg;
+  sceSystemServiceLaunchWebBrowser(u, 0);
+  free(u);
+  return NULL;
+}
+static void handle_open_browser(int c, const char *qs) {
+  char url[1100];
+  pthread_t th;
+  char *dup;
+  url[0] = 0;
+  qget(qs, "url", url, sizeof(url));
+  if (!web_url_ok(url)) {
+    fs_reply_bad(c, 400, "bad url");
+    return;
+  }
+  dup = strdup(url);
+  if (!dup || pthread_create(&th, NULL, open_browser_thread, dup)) {
+    free(dup);
+    fs_reply_bad(c, 500, "cannot open the browser");
+    return;
+  }
+  pthread_detach(th);
+  evlog("info", "opened %s in the PS5 browser", url);
+  send_json_code(c, 200, "{\"ok\":true}");
+}
+
+/* 1 blocked, 0 allowed, from X-Frame-Options / CSP frame-ancestors */
+static int frame_blocked_by(const char *h, size_t n, char *why, size_t whysz) {
+  const char *p = h, *end = h + n, *ls, *le, *v;
+  for (ls = p; ls < end; ls = le + 1) {
+    char line[1200];
+    size_t L;
+    le = memchr(ls, '\n', (size_t)(end - ls));
+    if (!le)
+      le = end;
+    L = (size_t)(le - ls);
+    if (L >= sizeof(line))
+      L = sizeof(line) - 1;
+    memcpy(line, ls, L);
+    line[L] = 0;
+    if (L && line[L - 1] == '\r')
+      line[--L] = 0;
+    if (!strncasecmp(line, "X-Frame-Options:", 16)) {
+      v = line + 16;
+      while (*v == ' ')
+        v++;
+      if (!strncasecmp(v, "deny", 4) || !strncasecmp(v, "sameorigin", 10)) {
+        snprintf(why, whysz, "X-Frame-Options: %.40s", v);
+        return 1;
+      }
+    }
+    if (!strncasecmp(line, "Content-Security-Policy:", 24)) {
+      char *fa, *q2;
+      for (q2 = line; *q2; q2++)
+        if (*q2 >= 'A' && *q2 <= 'Z')
+          *q2 = (char)(*q2 + 32);
+      fa = strstr(line, "frame-ancestors");
+      if (fa) {
+        char *semi = strchr(fa, ';');
+        if (semi)
+          *semi = 0;
+        /* only a bare * lets any site frame it */
+        if (!strstr(fa + 15, " *") && !strstr(fa + 15, "\t*")) {
+          snprintf(why, whysz, "CSP %.60s", fa);
+          return 1;
+        }
+      }
+    }
+    if (le == end)
+      break;
+  }
+  return 0;
+}
+typedef struct {
+  int c;
+  char url[1100];
+  char cors[256];
+} fc_job_t;
+static void *frame_check_thread(void *arg) {
+  fc_job_t *j = arg;
+  char cur[1100], next[2048], why[160], json[400], ew[200];
+  int hops, conn, req, status = 0, verdict = -1;
+  why[0] = 0;
+  snprintf(cur, sizeof(cur), "%s", j->url);
+  if (update_http_init() == 0) {
+    pthread_mutex_lock(&g_upd_mu);
+    for (hops = 0; hops < 5; hops++) {
+      char *hdrs = 0;
+      size_t hsz = 0;
+      conn = sceHttpCreateConnectionWithURL(g_upd_tmpl, cur, 0);
+      if (conn < 0)
+        break;
+      req = sceHttpCreateRequestWithURL(conn, 0, cur, 0);
+      if (req < 0) {
+        sceHttpDeleteConnection(conn);
+        break;
+      }
+      if (sceHttpSendRequest(req, 0, 0) < 0 || sceHttpGetStatusCode(req, &status) < 0) {
+        sceHttpDeleteRequest(req);
+        sceHttpDeleteConnection(conn);
+        break;
+      }
+      if (status < 100) {
+        sceHttpDeleteRequest(req);
+        sceHttpDeleteConnection(conn);
+        break;
+      }
+      if (status >= 300 && status < 400 && !extract_location(req, cur, next, sizeof(next)) &&
+          strlen(next) < sizeof(cur)) {
+        sceHttpDeleteRequest(req);
+        sceHttpDeleteConnection(conn);
+        snprintf(cur, sizeof(cur), "%s", next);
+        continue;
+      }
+      if (!sceHttpGetAllResponseHeaders(req, &hdrs, &hsz) && hdrs && hsz)
+        verdict = frame_blocked_by(hdrs, hsz, why, sizeof(why));
+      else
+        verdict = 0;
+      sceHttpDeleteRequest(req);
+      sceHttpDeleteConnection(conn);
+      break;
+    }
+    pthread_mutex_unlock(&g_upd_mu);
+  }
+  json_escape_name(why, ew, sizeof(ew));
+  snprintf(json, sizeof(json), "{\"ok\":true,\"frame\":\"%s\",\"status\":%d,\"why\":\"%s\"}",
+           verdict < 0 ? "unknown" : verdict ? "blocked" : "ok", status, ew);
+  send_code(j->c, 200, "application/json", j->cors, json, strlen(json));
+  close(j->c);
+  free(j);
+  return NULL;
+}
+/* returns 1 when the socket went to the worker */
+static int handle_frame_check(int c, const char *qs) {
+  fc_job_t *j;
+  pthread_t th;
+  j = calloc(1, sizeof(*j));
+  if (!j) {
+    fs_reply_bad(c, 500, "no memory");
+    return 0;
+  }
+  qget(qs, "url", j->url, sizeof(j->url));
+  if (!web_url_ok(j->url)) {
+    free(j);
+    fs_reply_bad(c, 400, "bad url");
+    return 0;
+  }
+  j->c = c;
+  snprintf(j->cors, sizeof(j->cors), "%s", g_cors);
+  if (pthread_create(&th, NULL, frame_check_thread, j)) {
+    free(j);
+    fs_reply_bad(c, 500, "busy");
+    return 0;
+  }
+  pthread_detach(th);
+  return 1;
+}
+
+/* GET /web-save?url=&name=  (X-ELFL) the browser's "Save to Downloads" for a
+ * direct file link: https only, payload/archive extensions only, never
+ * overwrites, same downloader (TLS, 64 MB cap, redirects) and the same
+ * Downloads folder rules as catalog files; one at a time. */
+static volatile int g_websave_busy;
+typedef struct {
+  int c;
+  char url[1100], dest[512], name[200], cors[256];
+} ws_job_t;
+static int web_save_ext_ok(const char *n) {
+  static const char *ok[] = {".elf", ".bin", ".self", ".prx", ".sprx", ".zip", ".7z", ".rar",
+                             ".tar", ".gz", ".pkg", ".lua", ".js", ".json", ".txt", 0};
+  const char *dot = strrchr(n, '.');
+  int i;
+  if (!dot)
+    return 0;
+  for (i = 0; ok[i]; i++)
+    if (!strcasecmp(dot, ok[i]))
+      return 1;
+  return 0;
+}
+static void *web_save_thread(void *arg) {
+  ws_job_t *j = arg;
+  uint8_t *buf = 0;
+  size_t blen = 0;
+  char json[600], hex[65], en[400], err[200];
+  struct stat st;
+  int code = 200;
+  if (https_download_url(j->url, &buf, &blen) || !buf) {
+    json_escape_name(g_upd_err[0] ? g_upd_err : "download failed", err, sizeof(err));
+    evlog("error", "browser save %s failed: %s", j->name, g_upd_err[0] ? g_upd_err : "download failed");
+    snprintf(json, sizeof(json), "{\"ok\":false,\"message\":\"%s\"}", err);
+    code = 502;
+  } else if (!blen) {
+    snprintf(json, sizeof(json), "{\"ok\":false,\"message\":\"empty file\"}");
+    code = 502;
+  } else if (!stat(j->dest, &st)) {
+    snprintf(json, sizeof(json), "{\"ok\":false,\"message\":\"exists\"}");
+    code = 409;
+  } else if (write_atomic_under_data(j->dest, buf, blen)) {
+    snprintf(json, sizeof(json), "{\"ok\":false,\"message\":\"write failed\"}");
+    code = 500;
+  } else {
+    sha256_hex(buf, blen, hex);
+    write_sha256_sidecar(j->dest, hex);
+    json_escape_name(j->name, en, sizeof(en));
+    evlog("update", "saved %s from the browser (%zu bytes)", j->name, blen);
+    snprintf(json, sizeof(json), "{\"ok\":true,\"name\":\"%s\",\"bytes\":%zu,\"sha256\":\"%s\"}", en, blen, hex);
+  }
+  free(buf);
+  send_code(j->c, code, "application/json", j->cors, json, strlen(json));
+  close(j->c);
+  free(j);
+  g_websave_busy = 0;
+  return NULL;
+}
+static int handle_web_save(int c, const char *qs) {
+  ws_job_t *j;
+  pthread_t th;
+  struct stat st;
+  char *e;
+  j = calloc(1, sizeof(*j));
+  if (!j) {
+    fs_reply_bad(c, 500, "no memory");
+    return 0;
+  }
+  qget(qs, "url", j->url, sizeof(j->url));
+  qget(qs, "name", j->name, sizeof(j->name));
+  if (!web_url_ok(j->url) || strncmp(j->url, "https://", 8)) {
+    free(j);
+    fs_reply_bad(c, 400, "https link needed");
+    return 0;
+  }
+  if (!j->name[0]) {
+    const char *b = strrchr(j->url + 8, '/');
+    snprintf(j->name, sizeof(j->name), "%s", b ? b + 1 : "");
+    for (e = j->name; *e; e++)
+      if (*e == '?' || *e == '#') {
+        *e = 0;
+        break;
+      }
+  }
+  if (mirror_disk(j->name, j->dest, sizeof(j->dest)) || strchr(j->name, '/') || j->name[0] == '.') {
+    free(j);
+    fs_reply_bad(c, 400, "bad name");
+    return 0;
+  }
+  if (!web_save_ext_ok(j->name)) {
+    free(j);
+    fs_reply_bad(c, 415, "not a payload or archive");
+    return 0;
+  }
+  if (!stat(j->dest, &st)) {
+    free(j);
+    fs_reply_bad(c, 409, "exists");
+    return 0;
+  }
+  if (g_websave_busy) {
+    free(j);
+    fs_reply_bad(c, 409, "busy");
+    return 0;
+  }
+  g_websave_busy = 1;
+  j->c = c;
+  snprintf(j->cors, sizeof(j->cors), "%s", g_cors);
+  if (pthread_create(&th, NULL, web_save_thread, j)) {
+    g_websave_busy = 0;
+    free(j);
+    fs_reply_bad(c, 500, "busy");
+    return 0;
+  }
+  pthread_detach(th);
+  return 1;
+}
+
 /* ---- Backup & Restore ----
  * GET  /backup/inventory          files in Downloads with size + sha256
  * GET  /backup/list               places that can hold a backup and what is there
@@ -4233,6 +4524,21 @@ static void serve(void) {
     if (!strcmp(p, "fs/status")) {
       handle_fs_status(c);
       close(c);
+      continue;
+    }
+    if (!strcmp(p, "open-browser")) {
+      handle_open_browser(c, q ? q + 1 : "");
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "web-save")) {
+      if (!handle_web_save(c, q ? q + 1 : ""))
+        close(c);
+      continue;
+    }
+    if (!strcmp(p, "frame-check")) {
+      if (!handle_frame_check(c, q ? q + 1 : ""))
+        close(c);
       continue;
     }
     if (!strcmp(p, "events")) {
