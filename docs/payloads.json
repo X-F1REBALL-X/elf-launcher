@@ -573,25 +573,6 @@
       }
     },
     {
-      "name": "HearBridge-PS5-mtk-test.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/6fff4b33cd92e82d65bfcabf6cde456fb0cc6138/assets/icon0.png",
-      "filename": "HearBridge-PS5-mtk-test.elf",
-      "path": "apps/HearBridge-PS5-mtk-test.elf",
-      "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0-mtk-test.elf",
-      "description": "HearBridge test build for MediaTek Bluetooth chips (every Pro, some fat and Slim).",
-      "version": "1.1.0",
-      "category": "Media",
-      "author": "X-F1REBALL-X",
-      "size": 494776,
-      "checksum": "79eafb31723c80e9e6079f454605c6e1d777290f6694cfacf21cf8205023bd06",
-      "sha256": "79eafb31723c80e9e6079f454605c6e1d777290f6694cfacf21cf8205023bd06",
-      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0-mtk-test.elf",
-      "github_latest": {
-        "repo": "X-F1REBALL-X/HearBridge-PS5",
-        "asset": "^HearBridge-PS5-[0-9.]+-mtk-test\\.elf$"
-      }
-    },
-    {
       "name": "bfplayer-standalone.elf",
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/bfplayer-standalone.png",
       "filename": "bfplayer-standalone.elf",
