@@ -6,9 +6,16 @@
 <meta name="color-scheme" content="dark">
 <script>(function(){ var v=""; try{ v=localStorage.getItem("ps5elfs-theme")||""; }catch(e){} if(!/^(gray|white|lavender|sky|gold|black)$/.test(v)) v=""; if(v){ document.documentElement.setAttribute("data-theme", v); if(v==="gold"||v==="black") document.documentElement.className+=" dark"; } })();</script>
 <style>
-/* Hebrew glyphs ship inside the launcher: a clean PS5 has no Hebrew font (squares). Heebo subset, OFL, Hebrew block only */
-@font-face{font-family:"ELF Hebrew";font-weight:400;font-display:swap;src:url(fonts/he-400.woff?v=1) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
-@font-face{font-family:"ELF Hebrew";font-weight:600 900;font-display:swap;src:url(fonts/he-700.woff?v=1) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
+/* Hebrew glyphs ship inside the launcher: a clean PS5 has no Hebrew font (squares). Assistant subset, OFL, Hebrew block only.
+   One face per weight (no weight ranges, older WebKit drops them) and no synthetic bold, so text never gets smeared */
+@font-face{font-family:"ELF Hebrew";font-weight:300;font-display:swap;src:url(fonts/he-400.woff?v=2) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
+@font-face{font-family:"ELF Hebrew";font-weight:400;font-display:swap;src:url(fonts/he-400.woff?v=2) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
+@font-face{font-family:"ELF Hebrew";font-weight:500;font-display:swap;src:url(fonts/he-400.woff?v=2) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
+@font-face{font-family:"ELF Hebrew";font-weight:600;font-display:swap;src:url(fonts/he-600.woff?v=2) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
+@font-face{font-family:"ELF Hebrew";font-weight:700;font-display:swap;src:url(fonts/he-600.woff?v=2) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
+@font-face{font-family:"ELF Hebrew";font-weight:800;font-display:swap;src:url(fonts/he-600.woff?v=2) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
+@font-face{font-family:"ELF Hebrew";font-weight:900;font-display:swap;src:url(fonts/he-600.woff?v=2) format("woff");unicode-range:U+0590-05FF,U+FB1D-FB4F,U+20AA}
+html{font-synthesis:none}
 :root{--bg:#f7f4ee;--void:var(--void);--deck:#fffdf9;--card:#fffdf8;--card2:#f4efe5;--edge:#e5ddcd;--edge2:#cfc2ab;
 --ink:#231c14;--ink2:#463b2d;--mute:#665a49;
 --pri:#4f46e5;--pri2:#7c3aed;--rose:#db2777;--mint:#047857;--amber:#b45309;--sky:#0369a1;--teal:#0f766e;--bad:#b91c1c;
