@@ -14,6 +14,7 @@
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
+#include <sys/time.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <pthread.h>
@@ -31,7 +32,7 @@ int sceSystemServiceLaunchWebBrowser(const char *uri, void *);
 #ifndef PORT
 #define PORT 1000
 #endif
-#define HOME_ICON_VERSION "1.0.21"
+#define HOME_ICON_VERSION "1.0.22"
 #define HOME_ICON_VER_PATH "/data/elf-launcher/home-icon.ver"
 
 #define INCASSET(name, file)                                                   \
@@ -375,6 +376,7 @@ static int is_protected_proc_name(const char *name) {
 }
 
 /* PLDMGR-compatible JSON: {"processes":[{"pid","name","memory","is_daemon"}, ...]} */
+static int is_protected_proc_name(const char *name);
 static size_t process_list_json(char *buf, size_t max_size) {
   int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC, 0};
   size_t buf_size = 0;
@@ -423,9 +425,12 @@ static size_t process_list_json(char *buf, size_t max_size) {
         mem_mib = MiB((double)ki->ki_rssize * (double)PAGE_SIZE);
 
         n = snprintf(buf + pos, max_size - pos,
-                     "%s {\"pid\":%d,\"name\":\"%s\",\"memory\":%.1f,\"is_daemon\":%s}",
+                     "%s {\"pid\":%d,\"name\":\"%s\",\"memory\":%.1f,\"is_daemon\":%s,"
+                     "\"app_id\":%u,\"self\":%s,\"protected\":%s}",
                      (count > 0) ? ",\n" : "", (int)ki->ki_pid, name_e, mem_mib,
-                     is_daemon ? "true" : "false");
+                     is_daemon ? "true" : "false", (unsigned)appinfo.app_id,
+                     ki->ki_pid == getpid() ? "true" : "false",
+                     is_protected_proc_name(nm) ? "true" : "false");
         if (n < 0 || (size_t)n >= max_size - pos)
           break;
         pos += (size_t)n;
@@ -765,6 +770,7 @@ static void start_fresh_browser(void) {
 
 #define OPEN_AFTER_JB_PATH "/data/elf-launcher/open-after-jb"
 #define WKAL_MARK_PATH "/data/elf-launcher/from-wkal"
+#define TAKEOVER_MARK_PATH "/data/elf-launcher/update-takeover"
 #define BOOT_AUTO_DONE_PATH "/data/elf-launcher/boot-auto-done"
 
 static int64_t mono_secs(void) {
@@ -848,6 +854,48 @@ static int consume_wkal_mark(void) {
   fclose(f);
   unlink(WKAL_MARK_PATH);
   return 1;
+}
+
+/* A live :1000 answers HTTP. A port that accepts but never replies (old
+ * instance wedged, e.g. after rest mode) is not "up": take it over. */
+/* Self-update hand-off: the running launcher stamps this file right before it
+ * sends the new ELF to elfldr. The new instance then always takes over :1000,
+ * and skips AutoPayload and the browser (nothing was jailbroken). */
+static int write_takeover_mark(void) {
+  FILE *f = fopen(TAKEOVER_MARK_PATH, "w");
+  if (!f)
+    return -1;
+  fprintf(f, "%lld\n", (long long)mono_secs());
+  fclose(f);
+  return 0;
+}
+
+static int consume_takeover_mark(void) {
+  FILE *f = fopen(TAKEOVER_MARK_PATH, "r");
+  long long at = -1;
+  int64_t now = mono_secs();
+  if (!f)
+    return 0;
+  if (fscanf(f, "%lld", &at) != 1)
+    at = -1;
+  fclose(f);
+  unlink(TAKEOVER_MARK_PATH);
+  return at >= 0 && at <= now && now - at <= 120;
+}
+
+static int http_alive(void) {
+  struct timeval tv = {2, 0};
+  static const char rq[] = "GET /ip HTTP/1.0\r\nHost: 127.0.0.1\r\n\r\n";
+  char buf[16];
+  ssize_t n;
+  int fd = connect_port(PORT);
+  if (fd < 0)
+    return 0;
+  setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+  setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+  n = send_all(fd, rq, sizeof(rq) - 1) ? -1 : recv(fd, buf, sizeof(buf), 0);
+  close(fd);
+  return n >= 7 && !memcmp(buf, "HTTP/1.", 7);
 }
 
 static int http_port_open(void) {
@@ -1508,7 +1556,7 @@ static int is_mutating(const char *p, const char *qs) {
   static const char *always[] = {"trigger-auto", "install-home", "file_delete",
                                  "update",       "process_kill", "relay",
                                  "run",          "upload",       "run_path",
-                                 0};
+                                 "save_path",    "self_update",  0};
   int i;
   for (i = 0; always[i]; i++)
     if (!strcmp(p, always[i]))
@@ -1898,23 +1946,61 @@ static int under_root(const char *real, const char *root) {
   return !strncmp(real, root, n) && (real[n] == 0 || real[n] == '/');
 }
 
+/* Lexical check (no realpath: it is not reliable on the console's libc and
+ * resolves nullfs mounts to other names). "." / ".." / empty parts are
+ * folded or refused, and no symlink may appear below the root. */
 static int path_allowed(const char *in, char *real, size_t realsz) {
-  char tmp[PATH_MAX], rr[PATH_MAX];
+  char norm[PATH_MAX];
+  size_t o = 0;
+  const char *s = in;
   int i;
-  if (!in || in[0] != '/' || has_dotdot(in) || strlen(in) >= 900)
+  struct stat st;
+  if (!in || in[0] != '/' || strlen(in) >= 900 || has_dotdot(in))
     return -1;
-  if (!realpath(in, tmp))
-    return -2;
-  for (i = 0; browse_roots[i]; i++) {
-    int ok = under_root(tmp, browse_roots[i]);
-    if (!ok && realpath(browse_roots[i], rr))
-      ok = under_root(tmp, rr);
-    if (ok) {
-      if (strlen(tmp) + 1 > realsz)
+  while (*s) {
+    const char *e;
+    size_t n;
+    while (*s == '/')
+      s++;
+    if (!*s)
+      break;
+    e = strchr(s, '/');
+    n = e ? (size_t)(e - s) : strlen(s);
+    if (!(n == 1 && s[0] == '.')) {
+      if (o + n + 2 >= sizeof(norm))
         return -1;
-      memcpy(real, tmp, strlen(tmp) + 1);
-      return 0;
+      norm[o++] = '/';
+      memcpy(norm + o, s, n);
+      o += n;
     }
+    s += n;
+  }
+  if (!o)
+    return -1;
+  norm[o] = 0;
+  for (i = 0; browse_roots[i]; i++) {
+    size_t rl = strlen(browse_roots[i]), k;
+    if (!under_root(norm, browse_roots[i]))
+      continue;
+    if (lstat(browse_roots[i], &st) && stat(browse_roots[i], &st))
+      return -2;
+    for (k = rl + 1; k <= o; k++) {
+      if (norm[k] == '/' || norm[k] == 0) {
+        char save = norm[k];
+        norm[k] = 0;
+        if (lstat(norm, &st)) {
+          norm[k] = save;
+          return -2;
+        }
+        norm[k] = save;
+        if (S_ISLNK(st.st_mode))
+          return -1;
+      }
+    }
+    if (o + 1 > realsz)
+      return -1;
+    memcpy(real, norm, o + 1);
+    return 0;
   }
   return -1;
 }
@@ -1929,34 +2015,32 @@ static void json_str(char *out, size_t outsz, size_t *pos, const char *s) {
 }
 
 /* GET /browse            -> {"ok":true,"roots":[{"path","ok"}]}
- * GET /browse?dir=/data  -> {"ok":true,"dir","dirs":[...],"files":[{"name","size"}]} */
+ * GET /browse?dir=/data  -> {"ok":true,"dir","dirs":[...],
+ *                            "files":[{"name","size","ok"}],"seen":n}
+ * d_type can be DT_UNKNOWN on exfat/fat USB drives, so fall back to stat. */
 static void handle_browse(int c, const char *qs) {
   char dir[1024], real[PATH_MAX];
-  size_t cap = 96 * 1024, pos = 0;
-  char *out;
+  size_t cap = 128 * 1024, dpos = 0, fpos = 0;
+  char *dbuf, *fbuf, *out;
   DIR *d;
   struct dirent *de;
-  int i, nd = 0, nf = 0, budget = 600;
+  int i, nd = 0, nf = 0, seen = 0, budget = 2000;
   dir[0] = 0;
   if (qs)
     qget(qs, "dir", dir, sizeof(dir));
-  out = malloc(cap);
-  if (!out) {
-    send_json_code(c, 500, "{\"ok\":false,\"message\":\"no memory\"}");
-    return;
-  }
   if (!dir[0]) {
-    pos += (size_t)snprintf(out + pos, cap - pos, "{\"ok\":true,\"roots\":[");
+    char r[512];
+    size_t pos = 0;
+    pos += (size_t)snprintf(r + pos, sizeof(r) - pos, "{\"ok\":true,\"roots\":[");
     for (i = 0; browse_roots[i]; i++) {
       struct stat st;
       int ok = !stat(browse_roots[i], &st) && S_ISDIR(st.st_mode);
-      pos += (size_t)snprintf(out + pos, cap - pos,
+      pos += (size_t)snprintf(r + pos, sizeof(r) - pos,
                               "%s{\"path\":\"%s\",\"ok\":%s}", i ? "," : "",
                               browse_roots[i], ok ? "true" : "false");
     }
-    snprintf(out + pos, cap - pos, "]}");
-    send_json_code(c, 200, out);
-    free(out);
+    snprintf(r + pos, sizeof(r) - pos, "]}");
+    send_json_code(c, 200, r);
     return;
   }
   i = path_allowed(dir, real, sizeof(real));
@@ -1964,58 +2048,84 @@ static void handle_browse(int c, const char *qs) {
     send_json_code(c, i == -2 ? 404 : 403,
                    i == -2 ? "{\"ok\":false,\"message\":\"not found\"}"
                            : "{\"ok\":false,\"message\":\"path not allowed\"}");
-    free(out);
     return;
   }
   d = opendir(real);
   if (!d) {
-    send_json_code(c, 404, "{\"ok\":false,\"message\":\"cannot open folder\"}");
-    free(out);
+    char m[120];
+    snprintf(m, sizeof(m),
+             "{\"ok\":false,\"message\":\"cannot open folder\",\"errno\":%d}",
+             errno);
+    send_json_code(c, errno == ENOENT ? 404 : 500, m);
     return;
   }
-  pos += (size_t)snprintf(out + pos, cap - pos, "{\"ok\":true,\"dir\":");
-  json_str(out, cap, &pos, real);
-  pos += (size_t)snprintf(out + pos, cap - pos, ",\"dirs\":[");
-  /* two passes keep dirs and files apart without extra buffers */
-  while ((de = readdir(d)) != NULL && budget-- > 0 && pos + 700 < cap) {
+  dbuf = malloc(cap);
+  fbuf = malloc(cap);
+  out = malloc(2 * cap + 2048);
+  if (!dbuf || !fbuf || !out) {
+    free(dbuf);
+    free(fbuf);
+    free(out);
+    closedir(d);
+    send_json_code(c, 500, "{\"ok\":false,\"message\":\"no memory\"}");
+    return;
+  }
+  while ((de = readdir(d)) != NULL && budget-- > 0) {
     char child[PATH_MAX];
     struct stat st;
-    if (de->d_name[0] == '.')
+    int isdir = 0, isreg = 0, have_st = 0;
+    if (de->d_name[0] == '.' || !de->d_name[0])
       continue;
+    seen++;
     if (snprintf(child, sizeof(child), "%s/%s", real, de->d_name) >=
         (int)sizeof(child))
       continue;
-    if (stat(child, &st) || !S_ISDIR(st.st_mode))
-      continue;
-    if (nd++)
-      out[pos++] = ',';
-    json_str(out, cap, &pos, de->d_name);
+    if (de->d_type == DT_DIR)
+      isdir = 1;
+    else if (de->d_type == DT_REG)
+      isreg = 1;
+    if (!isdir && !isreg) {
+      if (stat(child, &st))
+        continue;
+      have_st = 1;
+      isdir = S_ISDIR(st.st_mode);
+      isreg = S_ISREG(st.st_mode);
+    }
+    if (isdir) {
+      if (dpos + 700 >= cap)
+        continue;
+      if (nd++)
+        dbuf[dpos++] = ',';
+      json_str(dbuf, cap, &dpos, de->d_name);
+    } else if (isreg && has_payload_ext(de->d_name)) {
+      if (fpos + 800 >= cap)
+        continue;
+      if (!have_st && stat(child, &st))
+        continue;
+      if (nf++)
+        fbuf[fpos++] = ',';
+      fpos += (size_t)snprintf(fbuf + fpos, cap - fpos, "{\"name\":");
+      json_str(fbuf, cap, &fpos, de->d_name);
+      fpos += (size_t)snprintf(fbuf + fpos, cap - fpos,
+                               ",\"size\":%lld,\"ok\":%s}",
+                               (long long)st.st_size,
+                               file_is_payload(child) ? "true" : "false");
+    }
   }
   closedir(d);
-  pos += (size_t)snprintf(out + pos, cap - pos, "],\"files\":[");
-  d = opendir(real);
-  budget = 600;
-  while (d && (de = readdir(d)) != NULL && budget-- > 0 && pos + 700 < cap) {
-    char child[PATH_MAX];
-    struct stat st;
-    if (de->d_name[0] == '.' || !has_payload_ext(de->d_name))
-      continue;
-    if (snprintf(child, sizeof(child), "%s/%s", real, de->d_name) >=
-        (int)sizeof(child))
-      continue;
-    if (stat(child, &st) || !S_ISREG(st.st_mode) || !file_is_payload(child))
-      continue;
-    if (nf++)
-      out[pos++] = ',';
-    pos += (size_t)snprintf(out + pos, cap - pos, "{\"name\":");
-    json_str(out, cap, &pos, de->d_name);
-    pos += (size_t)snprintf(out + pos, cap - pos, ",\"size\":%lld}",
-                            (long long)st.st_size);
+  dbuf[dpos] = 0;
+  fbuf[fpos] = 0;
+  {
+    size_t pos = 0;
+    pos += (size_t)snprintf(out + pos, 2 * cap + 2048 - pos, "{\"ok\":true,\"dir\":");
+    json_str(out, 2 * cap + 2048, &pos, real);
+    pos += (size_t)snprintf(out + pos, 2 * cap + 2048 - pos,
+                            ",\"seen\":%d,\"dirs\":[%s],\"files\":[%s]}", seen,
+                            dbuf, fbuf);
+    send_json_code(c, 200, out);
   }
-  if (d)
-    closedir(d);
-  snprintf(out + pos, cap - pos, "]}");
-  send_json_code(c, 200, out);
+  free(dbuf);
+  free(fbuf);
   free(out);
 }
 
@@ -2035,6 +2145,155 @@ static void send_result_json(int c, int code, const char *cors, int ok,
 }
 
 /* POST /run_path?path=/mnt/usb0/x.elf[&args=] runs the file where it is. */
+/* Copy a PS5 file into Downloaded (mirror), optionally marking it
+ * AutoPayload. AutoPayload only runs files from Downloaded. */
+static void handle_save_path(int c, const char *qs) {
+  char in[1024], real[PATH_MAX], name[128], dest[512], part[540], hex[65], flag[8];
+  uint8_t hash[32];
+  sha256_ctx ctx;
+  struct stat st;
+  const char *base;
+  char *buf;
+  int rc, src, fd, ok = 1, i, autoadd;
+  ssize_t r;
+  in[0] = flag[0] = 0;
+  if (qs) {
+    qget(qs, "path", in, sizeof(in));
+    qget(qs, "auto", flag, sizeof(flag));
+  }
+  autoadd = flag[0] == '1';
+  rc = path_allowed(in, real, sizeof(real));
+  if (rc) {
+    send_result_json(c, rc == -2 ? 404 : 403, g_cors, 0,
+                     rc == -2 ? "file missing" : "path not allowed", 0, "", 0,
+                     "", "");
+    return;
+  }
+  base = strrchr(real, '/');
+  base = base ? base + 1 : real;
+  if (stat(real, &st) || !S_ISREG(st.st_mode) || sanitize_upload_name(base, name, sizeof(name))) {
+    send_result_json(c, 404, g_cors, 0, "file missing", 0, "", 0, "", base);
+    return;
+  }
+  if (st.st_size > UPLOAD_MAX) {
+    send_result_json(c, 413, g_cors, 0, "file too big", 0, "", 0, "", name);
+    return;
+  }
+  if (!file_is_payload(real)) {
+    send_result_json(c, 415, g_cors, 0, "not an ELF or SELF", 0, "", 0, "", name);
+    return;
+  }
+  mkdir("/data/elf-launcher", 0755);
+  mkdir(MIRROR_DIR, 0755);
+  snprintf(dest, sizeof(dest), "%s/%s", MIRROR_DIR, name);
+  if (strcmp(dest, real)) {
+    snprintf(part, sizeof(part), "%s.part", dest);
+    src = open(real, O_RDONLY);
+    fd = src < 0 ? -1 : open(part, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    buf = malloc(65536);
+    if (src < 0 || fd < 0 || !buf) {
+      if (src >= 0)
+        close(src);
+      if (fd >= 0) {
+        close(fd);
+        unlink(part);
+      }
+      free(buf);
+      send_result_json(c, 500, g_cors, 0, "cannot copy file", 0, "", 0, "", name);
+      return;
+    }
+    sha256_init(&ctx);
+    while ((r = read(src, buf, 65536)) > 0) {
+      if (write(fd, buf, (size_t)r) != r) {
+        ok = 0;
+        break;
+      }
+      sha256_update(&ctx, (const uint8_t *)buf, (size_t)r);
+    }
+    if (r < 0)
+      ok = 0;
+    free(buf);
+    close(src);
+    close(fd);
+    if (!ok || rename(part, dest)) {
+      unlink(part);
+      send_result_json(c, 500, g_cors, 0, "cannot copy file", 0, "", 0, "", name);
+      return;
+    }
+    sha256_final(&ctx, hash);
+    for (i = 0; i < 32; i++)
+      snprintf(hex + i * 2, 3, "%02x", hash[i]);
+    hex[64] = 0;
+    write_sha256_sidecar(dest, hex);
+  }
+  if (autoadd && strlen(name) > 4 && !strcasecmp(name + strlen(name) - 4, ".elf"))
+    add_to_auto_list(name);
+  send_result_json(c, 200, g_cors, 1, "saved", (long long)st.st_size, "", 0, "", name);
+}
+
+/* Verify mirror/elf-launcher.elf against its .sha256 (written by /update),
+ * stamp the hand-off and give it to elfldr. The new instance kills us. */
+#define SELF_ELF_PATH MIRROR_DIR "/elf-launcher.elf"
+static void handle_self_update(int c) {
+  char want[80], got[65], emsg[256], body[200];
+  uint8_t hash[32];
+  sha256_ctx ctx;
+  struct stat st;
+  FILE *f;
+  char *buf;
+  int fd, rc, i;
+  ssize_t r;
+  want[0] = 0;
+  if (stat(SELF_ELF_PATH, &st) || !S_ISREG(st.st_mode) || !file_is_payload(SELF_ELF_PATH)) {
+    send_json_code(c, 404, "{\"ok\":false,\"message\":\"new launcher not downloaded\"}");
+    return;
+  }
+  f = fopen(SELF_ELF_PATH ".sha256", "r");
+  if (f) {
+    if (!fgets(want, sizeof(want), f))
+      want[0] = 0;
+    fclose(f);
+  }
+  want[64] = 0;
+  fd = open(SELF_ELF_PATH, O_RDONLY);
+  buf = malloc(65536);
+  if (fd < 0 || !buf || strlen(want) != 64) {
+    if (fd >= 0)
+      close(fd);
+    free(buf);
+    send_json_code(c, 409, "{\"ok\":false,\"message\":\"no verified download\"}");
+    return;
+  }
+  sha256_init(&ctx);
+  while ((r = read(fd, buf, 65536)) > 0)
+    sha256_update(&ctx, (const uint8_t *)buf, (size_t)r);
+  close(fd);
+  free(buf);
+  sha256_final(&ctx, hash);
+  for (i = 0; i < 32; i++)
+    snprintf(got + i * 2, 3, "%02x", hash[i]);
+  got[64] = 0;
+  if (strcasecmp(got, want)) {
+    send_json_code(c, 409, "{\"ok\":false,\"message\":\"sha256 mismatch\"}");
+    return;
+  }
+  if (!send_lock_try()) {
+    send_json_code(c, 409, "{\"ok\":false,\"message\":\"busy\"}");
+    return;
+  }
+  write_takeover_mark();
+  rc = elfldr_send_path(SELF_ELF_PATH, "", emsg, sizeof(emsg), 1500);
+  send_unlock();
+  if (rc != SEND_OK) {
+    unlink(TAKEOVER_MARK_PATH);
+    snprintf(body, sizeof(body), "{\"ok\":false,\"message\":\"%s\"}", send_err_text(rc));
+    send_json_code(c, send_http_code(rc), body);
+    return;
+  }
+  snprintf(body, sizeof(body), "{\"ok\":true,\"old_pid\":%d,\"sha256\":\"%s\"}", (int)getpid(), got);
+  send_json_code(c, 200, body);
+}
+
 static void handle_run_path(int c, const char *qs) {
   char in[1024], real[PATH_MAX], args[512], emsg[256];
   const char *base;
@@ -2203,6 +2462,14 @@ static void run_upload(upload_job_t *j) {
     write_sha256_sidecar(dest, hex);
   if (autoadd && !strcasecmp(name + strlen(name) - 4, ".elf"))
     add_to_auto_list(name);
+  flag[0] = 0;
+  qget(j->qs, "run", flag, sizeof(flag));
+  if (save && flag[0] == '0') {
+    /* Save only (e.g. "add to AutoPayload" from a multi-select). */
+    send_result_json(j->c, 200, j->cors, 1, "saved", (long long)have, hex, 0,
+                     "", name);
+    return;
+  }
   rc = elfldr_send_path(dest, args, emsg, sizeof(emsg), 1500);
   if (rc == SEND_OK)
     pid = find_pid_by_name(name);
@@ -2380,13 +2647,22 @@ static void serve(void) {
   static char req[REQ_MAX + 1];
   char path[512];
   int from_wkal = consume_wkal_mark();
-  int want_open;
-  int already_up = http_port_open();
+  int takeover = consume_takeover_mark();
+  int want_open, accept_fail = 0;
+  int port_busy = http_port_open();
+  int already_up = port_busy && http_alive();
 
   /* Clear AutoPayload one-shot on every fresh :1000 bind (new ELF after JB).
    * from-wkal used to be required, but Hybrid often sends only elf-launcher.elf
    * (no mark), so Open browser skipped Auto while Leave closed still ran. */
-  if (!already_up)
+  if (takeover) {
+    /* Update hand-off: replace the old server, keep the AutoPayload one-shot. */
+    if (port_busy) {
+      kill_other_elf_launchers();
+      usleep(300000);
+    }
+    already_up = 1; /* long bind retry below */
+  } else if (!already_up)
     clear_boot_auto_done();
   else if (from_wkal)
     clear_boot_auto_done();
@@ -2395,7 +2671,7 @@ static void serve(void) {
    * mark. If :1000 is already up and we are not forcing a manual takeover
    * (open preference + no mark), keep the live server and only open the
    * page or run AutoPayload. Manual open still takes over :1000. */
-  if (already_up) {
+  if (already_up && !takeover) {
     if (from_wkal || !wk_wants_open()) {
       /* Open browser still needs disk Auto (auto.list); page localStorage often empty. */
       if (!boot_auto_done())
@@ -2406,9 +2682,14 @@ static void serve(void) {
     }
     kill_other_elf_launchers();
     usleep(300000);
+  } else if (port_busy && !takeover) {
+    /* Something holds :1000 but does not answer: replace it. */
+    kill_other_elf_launchers();
+    usleep(300000);
+    already_up = 1;
   }
 
-  want_open = wk_wants_open();
+  want_open = takeover ? 0 : wk_wants_open();
 
   /* The old server may need a moment to release :1000 after the kill. */
   for (tries = already_up ? 20 : 3; tries > 0; tries--) {
@@ -2416,6 +2697,18 @@ static void serve(void) {
       break;
     s = -1;
     usleep(250000);
+  }
+  /* The server must stay up whatever the open setting is. If the port is
+   * still taken, clear stale launchers and keep trying for a minute; only
+   * give up when another healthy launcher answers on :1000. */
+  for (tries = 0; s < 0 && tries < 30; tries++) {
+    if (!takeover && http_alive())
+      break;
+    if (tries == 0 || tries == 10)
+      kill_other_elf_launchers();
+    sleep(2);
+    if (bind_http(&s))
+      s = -1;
   }
   if (s < 0) {
     if (want_open)
@@ -2443,7 +2736,9 @@ static void serve(void) {
   puts("listening");
   /* Open browser: same disk Auto as Leave closed (do not gate on boot-auto-done
    * here — flag was just cleared on fresh bind). Then open the WebView. */
-  if (want_open) {
+  if (takeover)
+    notify("ELF Launcher updated");
+  else if (want_open) {
     run_headless_auto();
     start_fresh_browser();
   } else
@@ -2459,8 +2754,25 @@ static void serve(void) {
     char origin[200];
     size_t hlen = 0, got = 0;
     int is_post = 0, rr;
-    if (c < 0)
+    if (c < 0) {
+      /* Rest mode can leave the listen socket dead: no busy loop, and
+       * rebuild it after repeated failures so :1000 keeps answering. */
+      if (errno != EINTR && ++accept_fail >= 20) {
+        int ns = -1;
+        close(s);
+        while (bind_http(&ns) || listen(ns, 16) < 0) {
+          if (ns >= 0)
+            close(ns);
+          ns = -1;
+          sleep(1);
+        }
+        s = ns;
+        accept_fail = 0;
+      } else
+        usleep(50000);
       continue;
+    }
+    accept_fail = 0;
     rr = read_request(c, req, sizeof(req), &hlen, &got);
     if (rr) {
       g_cors[0] = 0;
@@ -2540,6 +2852,30 @@ static void serve(void) {
     }
     if (!strcmp(p, "browse")) {
       handle_browse(c, q ? q + 1 : 0);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "version")) {
+      char vb[160];
+      snprintf(vb, sizeof(vb), "{\"ok\":true,\"pid\":%d,\"build\":\"%s %s\",\"icon\":\"%s\"}",
+               (int)getpid(), __DATE__, __TIME__, HOME_ICON_VERSION);
+      send_json(c, 1, vb, strlen(vb));
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "self_update")) {
+      if (!is_post)
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+      else
+        handle_self_update(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "save_path")) {
+      if (!is_post)
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+      else
+        handle_save_path(c, q ? q + 1 : 0);
       close(c);
       continue;
     }
@@ -2876,12 +3212,37 @@ static void serve(void) {
         close(c);
         continue;
       }
-      rc = process_kill_pid(pid);
-      snprintf(json_resp, sizeof(json_resp),
-               "{\"ok\":%s,\"message\":\"%s\"}",
-               rc == 0 ? "true" : "false",
-               rc == 0 ? "Killed" : "Failed to kill");
-      send_json(c, rc == 0, json_resp, strlen(json_resp));
+      {
+        char pname[64];
+        int code = 200;
+        const char *m = "Killed";
+        if (pid == (int)getpid()) {
+          rc = -1; code = 403; m = "This is the launcher itself";
+        } else if (process_name_for_pid(pid, pname, sizeof(pname)) || !pname[0]) {
+          rc = -1; code = 404; m = "Not running";
+        } else if (is_protected_proc_name(pname)) {
+          rc = -1; code = 403; m = "Protected process";
+        } else {
+          int64_t until;
+          rc = process_kill_pid(pid);
+          if (rc) {
+            code = 500; m = "Failed to kill";
+          } else {
+            /* SIGKILL is async: wait until it is really gone */
+            until = mono_ms() + 2000;
+            while (mono_ms() < until &&
+                   !process_name_for_pid(pid, pname, sizeof(pname)) && pname[0])
+              usleep(100000);
+            if (!process_name_for_pid(pid, pname, sizeof(pname)) && pname[0]) {
+              rc = -1; code = 500; m = "Still running after kill";
+            }
+          }
+        }
+        snprintf(json_resp, sizeof(json_resp),
+                 "{\"ok\":%s,\"pid\":%d,\"message\":\"%s\"}",
+                 rc == 0 ? "true" : "false", pid, m);
+        send_json_code(c, code, json_resp);
+      }
       close(c);
       continue;
     }
