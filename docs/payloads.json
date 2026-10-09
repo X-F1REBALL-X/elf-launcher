@@ -17,6 +17,7 @@
     },
     {
       "name": "elfldr-ps5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/loader.png",
       "filename": "elfldr-ps5.elf",
       "path": "loader/elfldr-ps5.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/elfldr-ps5.elf",
@@ -128,6 +129,7 @@
     },
     {
       "name": "Lapy-JB-Daemon.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
       "filename": "Lapy-JB-Daemon.elf",
       "path": "hen/Lapy-JB-Daemon.elf",
       "url": "https://github.com/itsPLK/PS5-Lapy-JB-Daemon/releases/download/v1.2/lapy_jb_daemon-v1.2.elf",
@@ -155,6 +157,7 @@
     },
     {
       "name": "kstuff-lite.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
       "filename": "kstuff-lite.elf",
       "path": "hen/kstuff-lite.elf",
       "url": "https://github.com/EchoStretch/kstuff-lite/releases/download/v1.11/kstuff.elf",
@@ -168,6 +171,7 @@
     },
     {
       "name": "kstuff-v1.6.7.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
       "filename": "kstuff-v1.6.7.elf",
       "path": "hen/kstuff-v1.6.7.elf",
       "url": "https://github.com/EchoStretch/kstuff/releases/download/v1.6.7/kstuff.elf",
@@ -180,6 +184,7 @@
     },
     {
       "name": "fetchpkg.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
       "filename": "fetchpkg.elf",
       "path": "apps/fetchpkg.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/fetchpkg.elf",
@@ -235,6 +240,7 @@
     },
     {
       "name": "dump_runner.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
       "filename": "dump_runner.elf",
       "path": "storage/dump_runner.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/dump_runner.elf",
@@ -302,6 +308,7 @@
     },
     {
       "name": "garlic-savemgr-v1.13.1.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
       "filename": "garlic-savemgr-v1.13.1.elf",
       "path": "storage/garlic-savemgr-v1.13.1.elf",
       "url": "https://git.etawen.dev/earthonion/garlic-savemgr/releases/download/v1.13.1/garlic-savemgr.elf",
@@ -315,6 +322,7 @@
     },
     {
       "name": "mounter.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
       "filename": "mounter.elf",
       "path": "storage/mounter.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/mounter.elf",
@@ -328,6 +336,7 @@
     },
     {
       "name": "BackPork.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
       "filename": "BackPork.elf",
       "path": "tools/BackPork.elf",
       "url": "https://github.com/BestPig/BackPork/releases/download/0.1/ps5-backpork.elf",
@@ -355,6 +364,7 @@
     },
     {
       "name": "Common_FPS_PS5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
       "filename": "Common_FPS_PS5.elf",
       "path": "tools/Common_FPS_PS5.elf",
       "url": "https://github.com/porhe911/Common-FPS-for-PS5/releases/download/v1.2.1/Common_FPS_PS5_v1.2.1.elf",
@@ -367,6 +377,7 @@
     },
     {
       "name": "patch-bundle-loader-prospero.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
       "filename": "patch-bundle-loader-prospero.elf",
       "path": "tools/patch-bundle-loader-prospero.elf",
       "url": "https://github.com/illusionyy/ps-patch-system/releases/download/37549880588/patch-bundle-loader-prospero.elf",
@@ -474,6 +485,7 @@
     },
     {
       "name": "nanodns.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
       "filename": "nanodns.elf",
       "path": "files/nanodns.elf",
       "url": "https://github.com/drakmor/nanoDNS/releases/download/0.4/nanodns.elf",
@@ -501,6 +513,7 @@
     },
     {
       "name": "actremotelink_agent.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
       "filename": "actremotelink_agent.elf",
       "path": "tools/actremotelink_agent.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_agent.elf",
@@ -514,6 +527,7 @@
     },
     {
       "name": "actremotelink_pin_notify.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
       "filename": "actremotelink_pin_notify.elf",
       "path": "tools/actremotelink_pin_notify.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_pin_notify.elf",
@@ -555,6 +569,7 @@
     },
     {
       "name": "rp-get-pin.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
       "filename": "rp-get-pin.elf",
       "path": "tools/rp-get-pin.elf",
       "url": "https://github.com/idlesauce/ps5-remoteplay-get-pin/releases/download/v0.1.1/rp-get-pin.elf",
@@ -670,6 +685,7 @@
     },
     {
       "name": "poweroff.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
       "filename": "poweroff.elf",
       "path": "system/poweroff.elf",
       "url": "https://github.com/MasterPS0/PS5-Power-Payloads-Project/releases/download/1.0/poweroff.elf",
@@ -682,6 +698,7 @@
     },
     {
       "name": "ps5-fan-control-v0.3.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
       "filename": "ps5-fan-control-v0.3.elf",
       "path": "system/ps5-fan-control-v0.3.elf",
       "url": "https://github.com/owendswang/ps5-fan-control/releases/download/v0.3/ps5-fan-control-v0.3.elf",
@@ -694,6 +711,7 @@
     },
     {
       "name": "reboot.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/payloads/reboot.png",
       "filename": "reboot.elf",
       "path": "system/reboot.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/reboot.elf",
@@ -707,6 +725,7 @@
     },
     {
       "name": "suspend.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/payloads/suspend.png",
       "filename": "suspend.elf",
       "path": "system/suspend.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/suspend.elf",
@@ -720,6 +739,7 @@
     },
     {
       "name": "SystemStateManager.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
       "filename": "SystemStateManager.elf",
       "path": "system/SystemStateManager.elf",
       "url": "https://github.com/StonedModder/PS5-SystemStateManager/releases/download/1.0.0/SystemStateManager.elf",
@@ -732,6 +752,7 @@
     },
     {
       "name": "gdbsrv-ps5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
       "filename": "gdbsrv-ps5.elf",
       "path": "tools/gdbsrv-ps5.elf",
       "url": "https://github.com/ps5-payload-dev/gdbsrv/releases/download/v0.9/gdbsrv-ps5.elf",
@@ -744,6 +765,7 @@
     },
     {
       "name": "klogsrv-ps5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
       "filename": "klogsrv-ps5.elf",
       "path": "tools/klogsrv-ps5.elf",
       "url": "https://github.com/ps5-payload-dev/klogsrv/releases/download/v0.9/klogsrv-ps5.elf",
@@ -757,6 +779,7 @@
     },
     {
       "name": "notify_test.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
       "filename": "notify_test.elf",
       "path": "tools/notify_test.elf",
       "url": "https://github.com/MasterPS0/PS5-Power-Payloads-Project/releases/download/1.0/notify_test.elf",
@@ -769,6 +792,7 @@
     },
     {
       "name": "ps5-self-pager-full-system.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
       "filename": "ps5-self-pager-full-system.elf",
       "path": "tools/ps5-self-pager-full-system.elf",
       "url": "https://github.com/idlesauce/ps5-self-pager/releases/download/v1.2/ps5-self-pager-full-system.elf",
@@ -781,6 +805,7 @@
     },
     {
       "name": "ps5-self-pager-game.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
       "filename": "ps5-self-pager-game.elf",
       "path": "tools/ps5-self-pager-game.elf",
       "url": "https://github.com/idlesauce/ps5-self-pager/releases/download/v1.2/ps5-self-pager-game.elf",
@@ -793,6 +818,7 @@
     },
     {
       "name": "ps5-self-pager-shellcore.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
       "filename": "ps5-self-pager-shellcore.elf",
       "path": "tools/ps5-self-pager-shellcore.elf",
       "url": "https://github.com/idlesauce/ps5-self-pager/releases/download/v1.2/ps5-self-pager-shellcore.elf",
@@ -805,6 +831,7 @@
     },
     {
       "name": "ps5-self-pager-system-common-lib.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
       "filename": "ps5-self-pager-system-common-lib.elf",
       "path": "tools/ps5-self-pager-system-common-lib.elf",
       "url": "https://github.com/idlesauce/ps5-self-pager/releases/download/v1.2/ps5-self-pager-system-common-lib.elf",
@@ -817,6 +844,7 @@
     },
     {
       "name": "ps5debug-NG.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
       "filename": "ps5debug-NG.elf",
       "path": "tools/ps5debug-NG.elf",
       "url": "https://github.com/Pharaoh2k/ps5debug-NG/releases/download/1.3.2/ps5debug-NG_v1.3.2.elf",
@@ -830,6 +858,7 @@
     },
     {
       "name": "shsrv-ps5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
       "filename": "shsrv-ps5.elf",
       "path": "tools/shsrv-ps5.elf",
       "url": "https://github.com/ps5-payload-dev/shsrv/releases/download/v0.20/shsrv-ps5.elf",
