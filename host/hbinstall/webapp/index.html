@@ -6185,7 +6185,7 @@ function backgroundCatalogRefresh(tries){
     function apply(){
       if(uiBusy() || autoArmed()){ setTimeout(apply, 1500); return; }
       var before=PAYLOADS ? PAYLOADS.slice() : [];
-      var same=catalogFingerprint(before)===catalogFingerprint(list);
+      var same=catalogFingerprint(before)===catalogFingerprint(list) && before.map(function(m){ return m.icon||''; }).join('|')===list.map(function(m){ return m.icon||''; }).join('|');
       PAYLOADS=list;
       writeCatalogCache(PAYLOADS);
       if(!same) rerenderCatalogViews();
