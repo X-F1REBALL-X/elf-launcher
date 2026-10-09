@@ -377,6 +377,36 @@ static int is_protected_proc_name(const char *name) {
   return 0;
 }
 
+/* Console system processes (shell, compositor, audio, Sce* services):
+   listed under "Show all processes" but never killable from the launcher. */
+static int is_system_proc_name(const char *name) {
+  static const char *const sys[] = {"mini-syscore.elf", "agccompositor.elf", "orbis_audiod.elf",
+                                    "fs_cleaner.elf", "webrtc_daemon.self", NULL};
+  const char *s;
+  int i;
+  if (!name || !*name)
+    return 0;
+  s = strrchr(name, '/');
+  s = s ? s + 1 : name;
+  if (!strncmp(s, "Sce", 3))
+    return 1;
+  for (i = 0; sys[i]; i++)
+    if (!strcasecmp(s, sys[i]))
+      return 1;
+  return 0;
+}
+/* Kernel/system threads have no extension and are not payload daemons;
+   games and system apps carry an app id. */
+static int is_system_proc(const char *name, int is_daemon, unsigned app_id) {
+  if (is_system_proc_name(name))
+    return 1;
+  if (is_daemon)
+    return 0;
+  if (app_id)
+    return 1;
+  return name && !strchr(name, '.');
+}
+
 /* PLDMGR-compatible JSON: {"processes":[{"pid","name","memory","is_daemon"}, ...]} */
 static int is_protected_proc_name(const char *name);
 static size_t process_list_json(char *buf, size_t max_size) {
@@ -428,11 +458,12 @@ static size_t process_list_json(char *buf, size_t max_size) {
 
         n = snprintf(buf + pos, max_size - pos,
                      "%s {\"pid\":%d,\"name\":\"%s\",\"memory\":%.1f,\"is_daemon\":%s,"
-                     "\"app_id\":%u,\"self\":%s,\"protected\":%s}",
+                     "\"app_id\":%u,\"self\":%s,\"protected\":%s,\"system\":%s}",
                      (count > 0) ? ",\n" : "", (int)ki->ki_pid, name_e, mem_mib,
                      is_daemon ? "true" : "false", (unsigned)appinfo.app_id,
                      ki->ki_pid == getpid() ? "true" : "false",
-                     is_protected_proc_name(nm) ? "true" : "false");
+                     is_protected_proc_name(nm) ? "true" : "false",
+                     is_system_proc(nm, is_daemon, (unsigned)appinfo.app_id) ? "true" : "false");
         if (n < 0 || (size_t)n >= max_size - pos)
           break;
         pos += (size_t)n;
@@ -484,7 +515,7 @@ static int process_kill_pid(int pid) {
   if (pid == (int)getpid())
     return -1;
   if (process_name_for_pid(pid, name, sizeof(name)) == 0 &&
-      is_protected_proc_name(name))
+      (is_protected_proc_name(name) || is_system_proc_name(name)))
     return -1;
   if (kill((pid_t)pid, SIGKILL) == 0)
     return 0;
@@ -5234,7 +5265,7 @@ static void serve(void) {
           rc = -1; code = 403; m = "This is the launcher itself";
         } else if (process_name_for_pid(pid, pname, sizeof(pname)) || !pname[0]) {
           rc = -1; code = 404; m = "Not running";
-        } else if (is_protected_proc_name(pname)) {
+        } else if (is_protected_proc_name(pname) || is_system_proc_name(pname)) {
           rc = -1; code = 403; m = "Protected process";
         } else {
           int64_t until;
