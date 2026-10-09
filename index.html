@@ -142,7 +142,7 @@ button[disabled]{cursor:default;opacity:.45}
 .foldgrid button.active{color:#0b0d14}.foldgrid button.active:before{background:var(--c,var(--sky));border-color:var(--c,var(--sky))}
 .foldgrid button.active>span:first-child:before{background:#0b0d14}
 .foldgrid button.active .ncount{background:rgba(11,13,20,.25);color:#0b0d14}
-.subfold[data-sub=loader]{--c:var(--pri)}.subfold[data-sub=hen]{--c:var(--rose)}.subfold[data-sub=apps]{--c:var(--mint)}.subfold[data-sub=files]{--c:var(--amber)}
+.subfold[data-sub=loader]{--c:var(--pri)}.subfold[data-sub=hen]{--c:var(--rose)}.subfold[data-sub=mods]{--c:var(--mint)}.subfold[data-sub=files]{--c:var(--amber)}.subfold[data-sub=net]{--c:#fb923c}
 .subfold[data-sub=storage]{--c:var(--pri2)}.subfold[data-sub=media]{--c:var(--sky)}.subfold[data-sub=system]{--c:#94a3b8}.subfold[data-sub=tools]{--c:var(--teal)}
 /* payload rows */
 .listgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-gap:.55rem var(--s3);align-items:stretch}
@@ -640,15 +640,18 @@ window.fetch=function(url, opts){
   }
 })();
 var FOLDERS=[
-{id:"loader",label:"Loader"},
-{id:"hen",label:"HEN"},
-{id:"apps",label:"Apps"},
-{id:"files",label:"Files"},
-{id:"storage",label:"Storage"},
-{id:"media",label:"Media"},
+{id:"loader",label:"Loaders"},
+{id:"hen",label:"Jailbreak & HEN"},
+{id:"storage",label:"Game Library"},
+{id:"mods",label:"Mods & Saves"},
+{id:"files",label:"Files & Transfer"},
+{id:"net",label:"Network & Remote"},
+{id:"media",label:"Media & Audio"},
 {id:"system",label:"System"},
-{id:"tools",label:"Tools"}
+{id:"tools",label:"Dev Tools"}
 ];
+/* Old folder ids that still show up in saved links. */
+var FOLDER_ALIAS={apps:'loader'};
 var APP_VERSION="1.1.8";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
@@ -748,7 +751,7 @@ var FLAGS={
 var I18N={
 en:{
  menu:'Menu',ready:'Ready',language:'Language',home:'Home',elfFiles:'Elf Files',downloaded:'Downloaded',autoPayload:'AutoPayload',
- f_loader:'Loader',f_hen:'HEN',f_apps:'Apps',f_files:'Files',f_storage:'Storage',f_media:'Media',f_system:'System',f_tools:'Tools',
+ f_loader:'Loaders',f_hen:'Jailbreak & HEN',f_storage:'Game Library',f_mods:'Mods & Saves',f_files:'Files & Transfer',f_net:'Network & Remote',f_media:'Media & Audio',f_system:'System',f_tools:'Dev Tools',
  homeDesc:'Open Elf Files on the left. Download saves the ELF. Payload sends it to elfldr (9021).',
  afterJb:'After jailbreak',openBrowser:'Open browser',leaveClosed:'Leave closed',
  autoDelay:'Auto delay',delay3s:'3 seconds',delay0:'0 seconds',
@@ -774,7 +777,7 @@ en:{
 },
 ar:{
  menu:'\u0627\u0644\u0642\u0627\u0626\u0645\u0629',ready:'\u062c\u0627\u0647\u0632',language:'\u0627\u0644\u0644\u063a\u0629',home:'\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629',elfFiles:'\u0645\u0644\u0641\u0627\u062a ELF',downloaded:'\u0627\u0644\u0645\u064f\u0646\u0632\u0651\u064e\u0644\u0629',autoPayload:'\u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a',
- f_loader:'\u0627\u0644\u0645\u064f\u062d\u0645\u0651\u0650\u0644',f_hen:'HEN',f_apps:'\u0627\u0644\u062a\u0637\u0628\u064a\u0642\u0627\u062a',f_files:'\u0627\u0644\u0645\u0644\u0641\u0627\u062a',f_storage:'\u0627\u0644\u062a\u062e\u0632\u064a\u0646',f_media:'\u0627\u0644\u0648\u0633\u0627\u0626\u0637',f_system:'\u0627\u0644\u0646\u0638\u0627\u0645',f_tools:'\u0627\u0644\u0623\u062f\u0648\u0627\u062a',
+ f_loader:'\u0627\u0644\u0645\u064f\u062d\u0645\u0650\u0651\u0644\u0627\u062a',f_hen:'\u0627\u0644\u062c\u064a\u0644\u0628\u0631\u064a\u0643 \u0648 HEN',f_storage:'\u0645\u0643\u062a\u0628\u0629 \u0627\u0644\u0623\u0644\u0639\u0627\u0628',f_mods:'\u0627\u0644\u062a\u0639\u062f\u064a\u0644\u0627\u062a \u0648\u0627\u0644\u062d\u0641\u0638',f_files:'\u0627\u0644\u0645\u0644\u0641\u0627\u062a \u0648\u0627\u0644\u0646\u0642\u0644',f_net:'\u0627\u0644\u0634\u0628\u0643\u0629 \u0648\u0627\u0644\u062a\u062d\u0643\u0645 \u0639\u0646 \u0628\u064f\u0639\u062f',f_media:'\u0627\u0644\u0648\u0633\u0627\u0626\u0637 \u0648\u0627\u0644\u0635\u0648\u062a',f_system:'\u0627\u0644\u0646\u0638\u0627\u0645',f_tools:'\u0623\u062f\u0648\u0627\u062a \u0627\u0644\u0645\u0637\u0648\u0631\u064a\u0646',
  homeDesc:'\u0627\u0641\u062a\u062d \u0645\u0644\u0641\u0627\u062a ELF \u0645\u0646 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062c\u0627\u0646\u0628\u064a\u0629. \u00ab\u062a\u0646\u0632\u064a\u0644\u00bb \u064a\u062d\u0641\u0638 \u0627\u0644\u0645\u0644\u0641\u060c \u0648\u00ab\u062a\u0634\u063a\u064a\u0644\u00bb \u064a\u0631\u0633\u0644\u0647 \u0625\u0644\u0649 elfldr (9021).',
  afterJb:'\u0628\u0639\u062f \u0643\u0633\u0631 \u0627\u0644\u062d\u0645\u0627\u064a\u0629',openBrowser:'\u0641\u062a\u062d \u0627\u0644\u0645\u062a\u0635\u0641\u062d',leaveClosed:'\u0625\u0628\u0642\u0627\u0621 \u0645\u063a\u0644\u0642\u064b\u0627',
  autoDelay:'\u062a\u0623\u062e\u064a\u0631 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a',delay3s:'3 \u062b\u0648\u0627\u0646',delay0:'0 \u062b\u0648\u0627\u0646',
@@ -800,7 +803,7 @@ ar:{
 },
 es:{
  menu:'Men\u00fa',ready:'Listo',language:'Idioma',home:'Inicio',elfFiles:'Archivos ELF',downloaded:'Descargados',autoPayload:'AutoPayload',
- f_loader:'Cargador',f_hen:'HEN',f_apps:'Apps',f_files:'Archivos',f_storage:'Almacenamiento',f_media:'Multimedia',f_system:'Sistema',f_tools:'Herramientas',
+ f_loader:'Cargadores',f_hen:'Jailbreak y HEN',f_storage:'Biblioteca de juegos',f_mods:'Mods y partidas',f_files:'Archivos y transferencia',f_net:'Red y remoto',f_media:'Multimedia y audio',f_system:'Sistema',f_tools:'Herramientas dev',
  homeDesc:'Abre Archivos ELF a la izquierda. Descargar guarda el ELF. Cargar lo env\u00eda a elfldr (9021).',
  afterJb:'Despu\u00e9s del jailbreak',openBrowser:'Abrir navegador',leaveClosed:'Dejar cerrado',
  autoDelay:'Retraso Auto',delay3s:'3 segundos',delay0:'0 segundos',
@@ -826,7 +829,7 @@ es:{
 },
 fr:{
  menu:'Menu',ready:'Pr\u00eat',language:'Langue',home:'Accueil',elfFiles:'Fichiers ELF',downloaded:'T\u00e9l\u00e9charg\u00e9s',autoPayload:'AutoPayload',
- f_loader:'Chargeur',f_hen:'HEN',f_apps:'Applis',f_files:'Fichiers',f_storage:'Stockage',f_media:'M\u00e9dias',f_system:'Syst\u00e8me',f_tools:'Outils',
+ f_loader:'Chargeurs',f_hen:'Jailbreak et HEN',f_storage:'Biblioth\u00e8que de jeux',f_mods:'Mods et sauvegardes',f_files:'Fichiers et transfert',f_net:'R\u00e9seau et distance',f_media:'M\u00e9dias et audio',f_system:'Syst\u00e8me',f_tools:'Outils dev',
  homeDesc:'Ouvrez Fichiers ELF \u00e0 gauche. T\u00e9l\u00e9charger enregistre l\u2019ELF. Charger l\u2019envoie \u00e0 elfldr (9021).',
  afterJb:'Apr\u00e8s le jailbreak',openBrowser:'Ouvrir le navigateur',leaveClosed:'Laisser ferm\u00e9',
  autoDelay:'D\u00e9lai Auto',delay3s:'3 secondes',delay0:'0 seconde',
@@ -852,7 +855,7 @@ fr:{
 },
 de:{
  menu:'Men\u00fc',ready:'Bereit',language:'Sprache',home:'Start',elfFiles:'ELF-Dateien',downloaded:'Heruntergeladen',autoPayload:'AutoPayload',
- f_loader:'Loader',f_hen:'HEN',f_apps:'Apps',f_files:'Dateien',f_storage:'Speicher',f_media:'Medien',f_system:'System',f_tools:'Werkzeuge',
+ f_loader:'Loader',f_hen:'Jailbreak & HEN',f_storage:'Spielebibliothek',f_mods:'Mods & Spielst\u00e4nde',f_files:'Dateien & Transfer',f_net:'Netzwerk & Remote',f_media:'Medien & Audio',f_system:'System',f_tools:'Entwickler-Tools',
  homeDesc:'\u00d6ffne links ELF-Dateien. Herunterladen speichert die ELF. Laden sendet sie an elfldr (9021).',
  afterJb:'Nach dem Jailbreak',openBrowser:'Browser \u00f6ffnen',leaveClosed:'Geschlossen lassen',
  autoDelay:'Auto-Verz\u00f6gerung',delay3s:'3 Sekunden',delay0:'0 Sekunden',
@@ -878,7 +881,7 @@ de:{
 },
 pt:{
  menu:'Menu',ready:'Pronto',language:'Idioma',home:'In\u00edcio',elfFiles:'Arquivos ELF',downloaded:'Baixados',autoPayload:'AutoPayload',
- f_loader:'Carregador',f_hen:'HEN',f_apps:'Apps',f_files:'Arquivos',f_storage:'Armazenamento',f_media:'M\u00eddia',f_system:'Sistema',f_tools:'Ferramentas',
+ f_loader:'Carregadores',f_hen:'Jailbreak e HEN',f_storage:'Biblioteca de jogos',f_mods:'Mods e saves',f_files:'Arquivos e transfer\u00eancia',f_net:'Rede e remoto',f_media:'M\u00eddia e \u00e1udio',f_system:'Sistema',f_tools:'Ferramentas dev',
  homeDesc:'Abra Arquivos ELF \u00e0 esquerda. Baixar salva o ELF. Carregar envia para o elfldr (9021).',
  afterJb:'Ap\u00f3s o jailbreak',openBrowser:'Abrir navegador',leaveClosed:'Deixar fechado',
  autoDelay:'Atraso Auto',delay3s:'3 segundos',delay0:'0 segundos',
@@ -904,7 +907,7 @@ pt:{
 },
 ru:{
  menu:'\u041c\u0435\u043d\u044e',ready:'\u0413\u043e\u0442\u043e\u0432\u043e',language:'\u042f\u0437\u044b\u043a',home:'\u0413\u043b\u0430\u0432\u043d\u0430\u044f',elfFiles:'\u0424\u0430\u0439\u043b\u044b ELF',downloaded:'\u0417\u0430\u0433\u0440\u0443\u0436\u0435\u043d\u043d\u044b\u0435',autoPayload:'\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a',
- f_loader:'\u0417\u0430\u0433\u0440\u0443\u0437\u0447\u0438\u043a',f_hen:'HEN',f_apps:'\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f',f_files:'\u0424\u0430\u0439\u043b\u044b',f_storage:'\u0425\u0440\u0430\u043d\u0438\u043b\u0438\u0449\u0435',f_media:'\u041c\u0435\u0434\u0438\u0430',f_system:'\u0421\u0438\u0441\u0442\u0435\u043c\u0430',f_tools:'\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b',
+ f_loader:'\u0417\u0430\u0433\u0440\u0443\u0437\u0447\u0438\u043a\u0438',f_hen:'\u0414\u0436\u0435\u0439\u043b\u0431\u0440\u0435\u0439\u043a \u0438 HEN',f_storage:'\u0411\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0430 \u0438\u0433\u0440',f_mods:'\u041c\u043e\u0434\u044b \u0438 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f',f_files:'\u0424\u0430\u0439\u043b\u044b \u0438 \u043f\u0435\u0440\u0435\u0434\u0430\u0447\u0430',f_net:'\u0421\u0435\u0442\u044c \u0438 \u0443\u0434\u0430\u043b\u0451\u043d\u043d\u044b\u0439 \u0434\u043e\u0441\u0442\u0443\u043f',f_media:'\u041c\u0435\u0434\u0438\u0430 \u0438 \u0430\u0443\u0434\u0438\u043e',f_system:'\u0421\u0438\u0441\u0442\u0435\u043c\u0430',f_tools:'\u0414\u043b\u044f \u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u0447\u0438\u043a\u043e\u0432',
  homeDesc:'\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0424\u0430\u0439\u043b\u044b ELF \u0441\u043b\u0435\u0432\u0430. \u00ab\u0421\u043a\u0430\u0447\u0430\u0442\u044c\u00bb \u0441\u043e\u0445\u0440\u0430\u043d\u044f\u0435\u0442 ELF. \u00ab\u0417\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u044c\u00bb \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u0442 \u0435\u0433\u043e \u0432 elfldr (9021).',
  afterJb:'\u041f\u043e\u0441\u043b\u0435 \u0434\u0436\u0435\u0439\u043b\u0431\u0440\u0435\u0439\u043a\u0430',openBrowser:'\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u0431\u0440\u0430\u0443\u0437\u0435\u0440',leaveClosed:'\u041d\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0442\u044c',
  autoDelay:'\u0417\u0430\u0434\u0435\u0440\u0436\u043a\u0430 Auto',delay3s:'3 \u0441\u0435\u043a\u0443\u043d\u0434\u044b',delay0:'0 \u0441\u0435\u043a\u0443\u043d\u0434',
@@ -930,7 +933,7 @@ ru:{
 },
 ja:{
  menu:'\u30e1\u30cb\u30e5\u30fc',ready:'\u6e96\u5099\u5b8c\u4e86',language:'\u8a00\u8a9e',home:'\u30db\u30fc\u30e0',elfFiles:'ELF\u30d5\u30a1\u30a4\u30eb',downloaded:'\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u6e08\u307f',autoPayload:'\u81ea\u52d5\u30da\u30a4\u30ed\u30fc\u30c9',
- f_loader:'\u30ed\u30fc\u30c0\u30fc',f_hen:'HEN',f_apps:'\u30a2\u30d7\u30ea',f_files:'\u30d5\u30a1\u30a4\u30eb',f_storage:'\u30b9\u30c8\u30ec\u30fc\u30b8',f_media:'\u30e1\u30c7\u30a3\u30a2',f_system:'\u30b7\u30b9\u30c6\u30e0',f_tools:'\u30c4\u30fc\u30eb',
+ f_loader:'\u30ed\u30fc\u30c0\u30fc',f_hen:'\u8131\u7344\u3068HEN',f_storage:'\u30b2\u30fc\u30e0\u30e9\u30a4\u30d6\u30e9\u30ea',f_mods:'Mod\u3068\u30bb\u30fc\u30d6',f_files:'\u30d5\u30a1\u30a4\u30eb\u3068\u8ee2\u9001',f_net:'\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u3068\u30ea\u30e2\u30fc\u30c8',f_media:'\u30e1\u30c7\u30a3\u30a2\u3068\u30aa\u30fc\u30c7\u30a3\u30aa',f_system:'\u30b7\u30b9\u30c6\u30e0',f_tools:'\u958b\u767a\u30c4\u30fc\u30eb',
  homeDesc:'\u5de6\u306e\u300cELF\u30d5\u30a1\u30a4\u30eb\u300d\u3092\u958b\u3044\u3066\u304f\u3060\u3055\u3044\u3002\u300c\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u300d\u3067ELF\u3092\u4fdd\u5b58\u3057\u3001\u300c\u30ed\u30fc\u30c9\u300d\u3067elfldr (9021) \u306b\u9001\u4fe1\u3057\u307e\u3059\u3002',
  afterJb:'\u8131\u7344\u5f8c',openBrowser:'\u30d6\u30e9\u30a6\u30b6\u3092\u958b\u304f',leaveClosed:'\u9589\u3058\u305f\u307e\u307e',
  autoDelay:'\u81ea\u52d5\u306e\u5f85\u6a5f',delay3s:'3\u79d2',delay0:'0\u79d2',
@@ -956,7 +959,7 @@ ja:{
 },
 zh:{
  menu:'\u83dc\u5355',ready:'\u5c31\u7eea',language:'\u8bed\u8a00',home:'\u4e3b\u9875',elfFiles:'ELF \u6587\u4ef6',downloaded:'\u5df2\u4e0b\u8f7d',autoPayload:'\u81ea\u52a8\u8f7d\u8377',
- f_loader:'\u52a0\u8f7d\u5668',f_hen:'HEN',f_apps:'\u5e94\u7528',f_files:'\u6587\u4ef6',f_storage:'\u5b58\u50a8',f_media:'\u5a92\u4f53',f_system:'\u7cfb\u7edf',f_tools:'\u5de5\u5177',
+ f_loader:'\u52a0\u8f7d\u5668',f_hen:'\u8d8a\u72f1\u4e0e HEN',f_storage:'\u6e38\u620f\u5e93',f_mods:'\u4fee\u6539\u4e0e\u5b58\u6863',f_files:'\u6587\u4ef6\u4e0e\u4f20\u8f93',f_net:'\u7f51\u7edc\u4e0e\u8fdc\u7a0b',f_media:'\u5a92\u4f53\u4e0e\u97f3\u9891',f_system:'\u7cfb\u7edf',f_tools:'\u5f00\u53d1\u5de5\u5177',
  homeDesc:'\u5728\u5de6\u4fa7\u6253\u5f00\u201cELF \u6587\u4ef6\u201d\u3002\u201c\u4e0b\u8f7d\u201d\u4fdd\u5b58 ELF\uff0c\u201c\u52a0\u8f7d\u201d\u5c06\u5176\u53d1\u9001\u5230 elfldr (9021)\u3002',
  afterJb:'\u8d8a\u72f1\u540e',openBrowser:'\u6253\u5f00\u6d4f\u89c8\u5668',leaveClosed:'\u4fdd\u6301\u5173\u95ed',
  autoDelay:'\u81ea\u52a8\u5ef6\u8fdf',delay3s:'3 \u79d2',delay0:'0 \u79d2',
@@ -982,7 +985,7 @@ zh:{
 },
 it:{
  menu:'Menu',ready:'Pronto',language:'Lingua',home:'Home',elfFiles:'File ELF',downloaded:'Scaricati',autoPayload:'AutoPayload',
- f_loader:'Loader',f_hen:'HEN',f_apps:'App',f_files:'File',f_storage:'Archiviazione',f_media:'Media',f_system:'Sistema',f_tools:'Strumenti',
+ f_loader:'Loader',f_hen:'Jailbreak e HEN',f_storage:'Libreria giochi',f_mods:'Mod e salvataggi',f_files:'File e trasferimento',f_net:'Rete e remoto',f_media:'Media e audio',f_system:'Sistema',f_tools:'Strumenti dev',
  homeDesc:'Apri File ELF a sinistra. Scarica salva l\u2019ELF. Carica lo invia a elfldr (9021).',
  afterJb:'Dopo il jailbreak',openBrowser:'Apri il browser',leaveClosed:'Lascia chiuso',
  autoDelay:'Ritardo Auto',delay3s:'3 secondi',delay0:'0 secondi',
@@ -1006,7 +1009,7 @@ it:{
  downloadedName:'{name} scaricato',markFirst:'Seleziona prima i payload',loadedN:'Caricati: {n}',catalogVersion:'Versione nel catalogo',
  credit:'Developed by X-F1REBALL-X',looking:'ricerca...',unavailable:'non disponibile',langSet:'Lingua: Italiano',selfUpdate:'Elf Launcher {ver} disponibile',selfUpdateDl:'Scarica aggiornamento',selfUpdateLater:'Pi\u00f9 tardi',selfUpdating:'Download di Elf Launcher {ver}...',selfUpdated:'Elf Launcher {ver} scaricato. Caricalo per applicare.',selfUpdateFail:'Aggiornamento launcher non riuscito: {msg}'
 },
- he:{menu:'\u05ea\u05e4\u05e8\u05d9\u05d8',ready:'\u05de\u05d5\u05db\u05df',language:'\u05e9\u05e4\u05d4',home:'\u05d1\u05d9\u05ea',elfFiles:'\u05e7\u05d1\u05e6\u05d9 ELF',downloaded:'\u05d4\u05d5\u05e8\u05d3\u05d5',autoPayload:'AutoPayload',f_loader:'Loader',f_hen:'HEN',f_apps:'\u05d0\u05e4\u05dc\u05d9\u05e7\u05e6\u05d9\u05d5\u05ea',f_files:'\u05e7\u05d1\u05e6\u05d9\u05dd',f_storage:'\u05d0\u05d7\u05e1\u05d5\u05df',f_media:'\u05de\u05d3\u05d9\u05d4',f_system:'\u05de\u05e2\u05e8\u05db\u05ea',f_tools:'\u05db\u05dc\u05d9\u05dd',homeDesc:'\u05e4\u05ea\u05d7 \u00ab\u05e7\u05d1\u05e6\u05d9 ELF\u00bb \u05de\u05e9\u05de\u05d0\u05dc. \u05d4\u05d5\u05e8\u05d3\u05d4 \u05e9\u05d5\u05de\u05e8\u05ea \u05d0\u05ea \u05d4-ELF. Payload \u05e9\u05d5\u05dc\u05d7 \u05d0\u05d5\u05ea\u05d5 \u05dc-elfldr (9021).',afterJb:'\u05d0\u05d7\u05e8\u05d9 jailbreak',openBrowser:'\u05e4\u05ea\u05d7 \u05d3\u05e4\u05d3\u05e4\u05df',leaveClosed:'\u05d4\u05e9\u05d0\u05e8 \u05e1\u05d2\u05d5\u05e8',autoDelay:'\u05d4\u05e9\u05d4\u05d9\u05d9\u05ea \u05d0\u05d5\u05d8\u05d5',delay3s:'3 \u05e9\u05e0\u05d9\u05d5\u05ea',delay0:'0 \u05e9\u05e0\u05d9\u05d5\u05ea',homeHint:'\u05e1\u05de\u05df Auto \u05d1-AutoPayload. AutoPayload \u05e8\u05e5 \u05e4\u05e2\u05dd \u05d0\u05d7\u05ea \u05d0\u05d7\u05e8\u05d9 \u05db\u05dc jailbreak. \u05d1\u05d7\u05e8 \u05d4\u05e9\u05d4\u05d9\u05d4 \u05e9\u05dc 3 \u05e9\u05e0\u05d9\u05d5\u05ea \u05d0\u05d5 0. \u05d1\u05d9\u05d8\u05d5\u05dc \u05e2\u05d5\u05e6\u05e8 \u05d0\u05d5\u05ea\u05d5. \u00ab\u05d4\u05e9\u05d0\u05e8 \u05e1\u05d2\u05d5\u05e8\u00bb \u05e1\u05d5\u05d2\u05e8 \u05d0\u05ea \u05d4\u05e2\u05de\u05d5\u05d3 \u05d0\u05d7\u05e8 \u05db\u05da.',autoStarts:'AutoPayload \u05de\u05ea\u05d7\u05d9\u05dc \u05d1\u05e2\u05d5\u05d3 3 \u05e9\u05e0\u05d9\u05d5\u05ea',autoStartsNow:'AutoPayload \u05de\u05ea\u05d7\u05d9\u05dc \u05e2\u05db\u05e9\u05d9\u05d5',autoRunning:'AutoPayload \u05e8\u05e5',cancelHint:'\u05dc\u05d7\u05e5 \u05d1\u05d9\u05d8\u05d5\u05dc \u05d0\u05d5 Square \u05db\u05d3\u05d9 \u05dc\u05e2\u05e6\u05d5\u05e8.',cancel:'\u05d1\u05d9\u05d8\u05d5\u05dc',autoCancelled:'\u05d4\u05d0\u05d5\u05d8\u05d5 \u05d1\u05d5\u05d8\u05dc',autoDone:'AutoPayload \u05d4\u05e1\u05ea\u05d9\u05d9\u05dd',closingBrowser:'\u05e1\u05d5\u05d2\u05e8 \u05d3\u05e4\u05d3\u05e4\u05df',autoEmpty:'AutoPayload: \u05d0\u05d9\u05df \u05de\u05d4 \u05dc\u05d4\u05e8\u05d9\u05e5',autoAlreadyDone:'AutoPayload \u05db\u05d1\u05e8 \u05e8\u05e5 \u05d1-jailbreak \u05d4\u05d6\u05d4',autoWaiting:'\u05de\u05de\u05ea\u05d9\u05df \u05dc-elfldr...',autoWaitGiveUp:'AutoPayload: elfldr \u05dc\u05d0 \u05e0\u05de\u05e6\u05d0, \u05db\u05dc\u05d5\u05dd \u05dc\u05d0 \u05e8\u05e5',download:'\u05d4\u05d5\u05e8\u05d3\u05d4',payload:'Payload',loaded:'\u05d8\u05e2\u05d5\u05df',downloadedBtn:'\u05d4\u05d5\u05e8\u05d3',fail:'\u05e0\u05db\u05e9\u05dc',update:'\u05e2\u05d3\u05db\u05d5\u05df',updating:'\u05de\u05e2\u05d3\u05db\u05df...',del:'\u05de\u05d7\u05e7',close:'\u05e1\u05d2\u05d5\u05e8',auto:'Auto',select:'\u05d1\u05d7\u05d9\u05e8\u05d4',multi:'Multi Payload',colPayload:'Payload',colVer:'\u05d2\u05e8\u05e1\u05d4',noSaved:'\u05d0\u05d9\u05df \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05e9\u05de\u05d5\u05e8\u05d9\u05dd \u05d1\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4 \u05d4\u05d6\u05d5.',savedOnConsole:'\u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05e9\u05de\u05d5\u05e8\u05d9\u05dd \u05de\u05d5\u05e6\u05d2\u05d9\u05dd \u05d1\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4.',checkingSaved:'\u05d1\u05d5\u05d3\u05e7 \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05e9\u05de\u05d5\u05e8\u05d9\u05dd...',noLoaded:'\u05d0\u05d9\u05df \u05e7\u05d1\u05e6\u05d9 ELF \u05d8\u05e2\u05d5\u05e0\u05d9\u05dd.',checkingLoaded:'\u05d1\u05d5\u05d3\u05e7 \u05e7\u05d1\u05e6\u05d9 ELF \u05d8\u05e2\u05d5\u05e0\u05d9\u05dd...',emptyFolder:'\u05d0\u05d9\u05df \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05d1\u05ea\u05d9\u05e7\u05d9\u05d9\u05d4 \u05d4\u05d6\u05d5.',noAutoDl:'\u05d0\u05d9\u05df \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05e9\u05d4\u05d5\u05e8\u05d3\u05d5 \u05d1-AutoPayload.',refreshing:'\u05de\u05e8\u05e2\u05e0\u05df \u05e7\u05d8\u05dc\u05d5\u05d2...',catalogN:'\u05e7\u05d8\u05dc\u05d5\u05d2: {n} \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd ({live} \u05de\u05e7\u05d5\u05e8\u05d5\u05ea)',catalogOffline:'\u05d4\u05e7\u05d8\u05dc\u05d5\u05d2 \u05dc\u05d0 \u05d6\u05de\u05d9\u05df',updFailedOffline:'\u05d4\u05e2\u05d3\u05db\u05d5\u05df \u05e0\u05db\u05e9\u05dc: \u05d4\u05e7\u05d8\u05dc\u05d5\u05d2 \u05dc\u05d0 \u05d6\u05de\u05d9\u05df. \u05e0\u05e1\u05d4 \u05e9\u05d5\u05d1.',updatedPartial:'\u05e2\u05d5\u05d3\u05db\u05e0\u05d5 {done} \u05de\u05ea\u05d5\u05da {total}. \u05e0\u05db\u05e9\u05dc\u05d5: {names}',updatedFiles:'\u05e7\u05d1\u05e6\u05d9\u05dd \u05e9\u05e2\u05d5\u05d3\u05db\u05e0\u05d5: {n}. \u05e7\u05d8\u05dc\u05d5\u05d2: {c}',catalogUpdated:'\u05d4\u05e7\u05d8\u05dc\u05d5\u05d2 \u05e2\u05d5\u05d3\u05db\u05df ({n})',catalogUnchanged:'\u05d4\u05e7\u05d8\u05dc\u05d5\u05d2 \u05de\u05e2\u05d5\u05d3\u05db\u05df',catalogChanged:'\u05e2\u05d5\u05d3\u05db\u05df: {names}',catalogNoNew:'\u05d0\u05d9\u05df \u05e9\u05d9\u05e0\u05d5\u05d9\u05d9\u05dd \u05d1\u05e7\u05d8\u05dc\u05d5\u05d2',updatingItem:'\u05de\u05e2\u05d3\u05db\u05df \u05d0\u05ea {name} ({i}/{n})...',updatingName:'\u05de\u05e2\u05d3\u05db\u05df \u05d0\u05ea {name}...',updateFailed:'\u05d4\u05e2\u05d3\u05db\u05d5\u05df \u05e0\u05db\u05e9\u05dc: {msg}',updatedName:'\u05e2\u05d5\u05d3\u05db\u05df {name}',updMissing:'\u05e2\u05d3\u05db\u05d5\u05df: \u05d7\u05e1\u05e8\u05d4 \u05d1\u05d3\u05d9\u05e7\u05ea \u05ea\u05e7\u05d9\u05e0\u05d5\u05ea \u05d1\u05e7\u05d8\u05dc\u05d5\u05d2',updatesAvail:'\u05e2\u05d3\u05db\u05d5\u05e0\u05d9\u05dd \u05d6\u05de\u05d9\u05e0\u05d9\u05dd: {n}',upToDate:'\u05d4\u05e7\u05d1\u05e6\u05d9\u05dd \u05e9\u05d4\u05d5\u05e8\u05d3\u05d5 \u05de\u05e2\u05d5\u05d3\u05db\u05e0\u05d9\u05dd',loadingName:'\u05d8\u05d5\u05e2\u05df \u05d0\u05ea {name}',loadedName:'\u05e0\u05d8\u05e2\u05df {name}',loadFailed:'\u05d8\u05e2\u05d9\u05e0\u05d4 \u05e0\u05db\u05e9\u05dc\u05d4 {name}: {msg}',deleting:'\u05de\u05d5\u05d7\u05e7 \u05d0\u05ea {name}',deleteFailed:'\u05d4\u05de\u05d7\u05d9\u05e7\u05d4 \u05e0\u05db\u05e9\u05dc\u05d4',deleted:'\u05e0\u05de\u05d7\u05e7 {name}',skipNotConsole:'\u05d3\u05d9\u05dc\u05d5\u05d2 {name}: \u05dc\u05d0 \u05d1\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4',skipMissing:'\u05d3\u05d9\u05dc\u05d5\u05d2 {name}: \u05d7\u05e1\u05e8',autoName:'Auto: {name}',downloadingName:'\u05de\u05d5\u05e8\u05d9\u05d3 \u05d0\u05ea {name}...',downloadedFtp:'\u05d4\u05d5\u05e8\u05d3 {name}. \u05d4\u05e2\u05dc\u05d4 \u05d0\u05d5\u05ea\u05d5 \u05d1-FTP \u05d0\u05dc /data',downloadFailed:'\u05d4\u05d4\u05d5\u05e8\u05d3\u05d4 \u05e0\u05db\u05e9\u05dc\u05d4: {msg}',downloadedName:'\u05d4\u05d5\u05e8\u05d3 {name}',markFirst:'\u05e1\u05de\u05df \u05e7\u05d5\u05d3\u05dd \u05e4\u05e8\u05d9\u05d8\u05d9\u05dd',loadedN:'\u05e0\u05d8\u05e2\u05e0\u05d5 {n}',catalogVersion:'\u05d2\u05e8\u05e1\u05ea \u05e7\u05d8\u05dc\u05d5\u05d2',credit:'Developed by X-F1REBALL-X',looking:'\u05de\u05d7\u05e4\u05e9...',unavailable:'\u05dc\u05d0 \u05d6\u05de\u05d9\u05df',langSet:'\u05e9\u05e4\u05d4: \u05e2\u05d1\u05e8\u05d9\u05ea',selfUpdate:'Elf Launcher {ver} \u05d6\u05de\u05d9\u05df',selfUpdateDl:'\u05d4\u05d5\u05e8\u05d3 \u05e2\u05d3\u05db\u05d5\u05df',selfUpdateLater:'\u05de\u05d0\u05d5\u05d7\u05e8 \u05d9\u05d5\u05ea\u05e8',selfUpdating:'\u05de\u05d5\u05e8\u05d9\u05d3 \u05d0\u05ea Elf Launcher {ver}...',selfUpdated:'Elf Launcher {ver} \u05d4\u05d5\u05e8\u05d3. \u05d8\u05e2\u05df \u05d0\u05d5\u05ea\u05d5 \u05db\u05d3\u05d9 \u05dc\u05d4\u05d7\u05d9\u05dc.',selfUpdateFail:'\u05e2\u05d3\u05db\u05d5\u05df \u05d4-launcher \u05e0\u05db\u05e9\u05dc: {msg}'}
+ he:{menu:'\u05ea\u05e4\u05e8\u05d9\u05d8',ready:'\u05de\u05d5\u05db\u05df',language:'\u05e9\u05e4\u05d4',home:'\u05d1\u05d9\u05ea',elfFiles:'\u05e7\u05d1\u05e6\u05d9 ELF',downloaded:'\u05d4\u05d5\u05e8\u05d3\u05d5',autoPayload:'AutoPayload',f_loader:'\u05d8\u05d5\u05e2\u05e0\u05d9\u05dd',f_hen:'\u05e4\u05e8\u05d9\u05e6\u05d4 \u05d5-HEN',f_storage:'\u05e1\u05e4\u05e8\u05d9\u05d9\u05ea \u05de\u05e9\u05d7\u05e7\u05d9\u05dd',f_mods:'\u05de\u05d5\u05d3\u05d9\u05dd \u05d5\u05e9\u05de\u05d9\u05e8\u05d5\u05ea',f_files:'\u05e7\u05d1\u05e6\u05d9\u05dd \u05d5\u05d4\u05e2\u05d1\u05e8\u05d4',f_net:'\u05e8\u05e9\u05ea \u05d5\u05e9\u05dc\u05d9\u05d8\u05d4 \u05de\u05e8\u05d7\u05d5\u05e7',f_media:'\u05de\u05d3\u05d9\u05d4 \u05d5\u05e9\u05de\u05e2',f_system:'\u05de\u05e2\u05e8\u05db\u05ea',f_tools:'\u05db\u05dc\u05d9 \u05e4\u05d9\u05ea\u05d5\u05d7',homeDesc:'\u05e4\u05ea\u05d7 \u00ab\u05e7\u05d1\u05e6\u05d9 ELF\u00bb \u05de\u05e9\u05de\u05d0\u05dc. \u05d4\u05d5\u05e8\u05d3\u05d4 \u05e9\u05d5\u05de\u05e8\u05ea \u05d0\u05ea \u05d4-ELF. Payload \u05e9\u05d5\u05dc\u05d7 \u05d0\u05d5\u05ea\u05d5 \u05dc-elfldr (9021).',afterJb:'\u05d0\u05d7\u05e8\u05d9 jailbreak',openBrowser:'\u05e4\u05ea\u05d7 \u05d3\u05e4\u05d3\u05e4\u05df',leaveClosed:'\u05d4\u05e9\u05d0\u05e8 \u05e1\u05d2\u05d5\u05e8',autoDelay:'\u05d4\u05e9\u05d4\u05d9\u05d9\u05ea \u05d0\u05d5\u05d8\u05d5',delay3s:'3 \u05e9\u05e0\u05d9\u05d5\u05ea',delay0:'0 \u05e9\u05e0\u05d9\u05d5\u05ea',homeHint:'\u05e1\u05de\u05df Auto \u05d1-AutoPayload. AutoPayload \u05e8\u05e5 \u05e4\u05e2\u05dd \u05d0\u05d7\u05ea \u05d0\u05d7\u05e8\u05d9 \u05db\u05dc jailbreak. \u05d1\u05d7\u05e8 \u05d4\u05e9\u05d4\u05d9\u05d4 \u05e9\u05dc 3 \u05e9\u05e0\u05d9\u05d5\u05ea \u05d0\u05d5 0. \u05d1\u05d9\u05d8\u05d5\u05dc \u05e2\u05d5\u05e6\u05e8 \u05d0\u05d5\u05ea\u05d5. \u00ab\u05d4\u05e9\u05d0\u05e8 \u05e1\u05d2\u05d5\u05e8\u00bb \u05e1\u05d5\u05d2\u05e8 \u05d0\u05ea \u05d4\u05e2\u05de\u05d5\u05d3 \u05d0\u05d7\u05e8 \u05db\u05da.',autoStarts:'AutoPayload \u05de\u05ea\u05d7\u05d9\u05dc \u05d1\u05e2\u05d5\u05d3 3 \u05e9\u05e0\u05d9\u05d5\u05ea',autoStartsNow:'AutoPayload \u05de\u05ea\u05d7\u05d9\u05dc \u05e2\u05db\u05e9\u05d9\u05d5',autoRunning:'AutoPayload \u05e8\u05e5',cancelHint:'\u05dc\u05d7\u05e5 \u05d1\u05d9\u05d8\u05d5\u05dc \u05d0\u05d5 Square \u05db\u05d3\u05d9 \u05dc\u05e2\u05e6\u05d5\u05e8.',cancel:'\u05d1\u05d9\u05d8\u05d5\u05dc',autoCancelled:'\u05d4\u05d0\u05d5\u05d8\u05d5 \u05d1\u05d5\u05d8\u05dc',autoDone:'AutoPayload \u05d4\u05e1\u05ea\u05d9\u05d9\u05dd',closingBrowser:'\u05e1\u05d5\u05d2\u05e8 \u05d3\u05e4\u05d3\u05e4\u05df',autoEmpty:'AutoPayload: \u05d0\u05d9\u05df \u05de\u05d4 \u05dc\u05d4\u05e8\u05d9\u05e5',autoAlreadyDone:'AutoPayload \u05db\u05d1\u05e8 \u05e8\u05e5 \u05d1-jailbreak \u05d4\u05d6\u05d4',autoWaiting:'\u05de\u05de\u05ea\u05d9\u05df \u05dc-elfldr...',autoWaitGiveUp:'AutoPayload: elfldr \u05dc\u05d0 \u05e0\u05de\u05e6\u05d0, \u05db\u05dc\u05d5\u05dd \u05dc\u05d0 \u05e8\u05e5',download:'\u05d4\u05d5\u05e8\u05d3\u05d4',payload:'Payload',loaded:'\u05d8\u05e2\u05d5\u05df',downloadedBtn:'\u05d4\u05d5\u05e8\u05d3',fail:'\u05e0\u05db\u05e9\u05dc',update:'\u05e2\u05d3\u05db\u05d5\u05df',updating:'\u05de\u05e2\u05d3\u05db\u05df...',del:'\u05de\u05d7\u05e7',close:'\u05e1\u05d2\u05d5\u05e8',auto:'Auto',select:'\u05d1\u05d7\u05d9\u05e8\u05d4',multi:'Multi Payload',colPayload:'Payload',colVer:'\u05d2\u05e8\u05e1\u05d4',noSaved:'\u05d0\u05d9\u05df \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05e9\u05de\u05d5\u05e8\u05d9\u05dd \u05d1\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4 \u05d4\u05d6\u05d5.',savedOnConsole:'\u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05e9\u05de\u05d5\u05e8\u05d9\u05dd \u05de\u05d5\u05e6\u05d2\u05d9\u05dd \u05d1\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4.',checkingSaved:'\u05d1\u05d5\u05d3\u05e7 \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05e9\u05de\u05d5\u05e8\u05d9\u05dd...',noLoaded:'\u05d0\u05d9\u05df \u05e7\u05d1\u05e6\u05d9 ELF \u05d8\u05e2\u05d5\u05e0\u05d9\u05dd.',checkingLoaded:'\u05d1\u05d5\u05d3\u05e7 \u05e7\u05d1\u05e6\u05d9 ELF \u05d8\u05e2\u05d5\u05e0\u05d9\u05dd...',emptyFolder:'\u05d0\u05d9\u05df \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05d1\u05ea\u05d9\u05e7\u05d9\u05d9\u05d4 \u05d4\u05d6\u05d5.',noAutoDl:'\u05d0\u05d9\u05df \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd \u05e9\u05d4\u05d5\u05e8\u05d3\u05d5 \u05d1-AutoPayload.',refreshing:'\u05de\u05e8\u05e2\u05e0\u05df \u05e7\u05d8\u05dc\u05d5\u05d2...',catalogN:'\u05e7\u05d8\u05dc\u05d5\u05d2: {n} \u05e4\u05d9\u05d9\u05dc\u05d5\u05d0\u05d3\u05d9\u05dd ({live} \u05de\u05e7\u05d5\u05e8\u05d5\u05ea)',catalogOffline:'\u05d4\u05e7\u05d8\u05dc\u05d5\u05d2 \u05dc\u05d0 \u05d6\u05de\u05d9\u05df',updFailedOffline:'\u05d4\u05e2\u05d3\u05db\u05d5\u05df \u05e0\u05db\u05e9\u05dc: \u05d4\u05e7\u05d8\u05dc\u05d5\u05d2 \u05dc\u05d0 \u05d6\u05de\u05d9\u05df. \u05e0\u05e1\u05d4 \u05e9\u05d5\u05d1.',updatedPartial:'\u05e2\u05d5\u05d3\u05db\u05e0\u05d5 {done} \u05de\u05ea\u05d5\u05da {total}. \u05e0\u05db\u05e9\u05dc\u05d5: {names}',updatedFiles:'\u05e7\u05d1\u05e6\u05d9\u05dd \u05e9\u05e2\u05d5\u05d3\u05db\u05e0\u05d5: {n}. \u05e7\u05d8\u05dc\u05d5\u05d2: {c}',catalogUpdated:'\u05d4\u05e7\u05d8\u05dc\u05d5\u05d2 \u05e2\u05d5\u05d3\u05db\u05df ({n})',catalogUnchanged:'\u05d4\u05e7\u05d8\u05dc\u05d5\u05d2 \u05de\u05e2\u05d5\u05d3\u05db\u05df',catalogChanged:'\u05e2\u05d5\u05d3\u05db\u05df: {names}',catalogNoNew:'\u05d0\u05d9\u05df \u05e9\u05d9\u05e0\u05d5\u05d9\u05d9\u05dd \u05d1\u05e7\u05d8\u05dc\u05d5\u05d2',updatingItem:'\u05de\u05e2\u05d3\u05db\u05df \u05d0\u05ea {name} ({i}/{n})...',updatingName:'\u05de\u05e2\u05d3\u05db\u05df \u05d0\u05ea {name}...',updateFailed:'\u05d4\u05e2\u05d3\u05db\u05d5\u05df \u05e0\u05db\u05e9\u05dc: {msg}',updatedName:'\u05e2\u05d5\u05d3\u05db\u05df {name}',updMissing:'\u05e2\u05d3\u05db\u05d5\u05df: \u05d7\u05e1\u05e8\u05d4 \u05d1\u05d3\u05d9\u05e7\u05ea \u05ea\u05e7\u05d9\u05e0\u05d5\u05ea \u05d1\u05e7\u05d8\u05dc\u05d5\u05d2',updatesAvail:'\u05e2\u05d3\u05db\u05d5\u05e0\u05d9\u05dd \u05d6\u05de\u05d9\u05e0\u05d9\u05dd: {n}',upToDate:'\u05d4\u05e7\u05d1\u05e6\u05d9\u05dd \u05e9\u05d4\u05d5\u05e8\u05d3\u05d5 \u05de\u05e2\u05d5\u05d3\u05db\u05e0\u05d9\u05dd',loadingName:'\u05d8\u05d5\u05e2\u05df \u05d0\u05ea {name}',loadedName:'\u05e0\u05d8\u05e2\u05df {name}',loadFailed:'\u05d8\u05e2\u05d9\u05e0\u05d4 \u05e0\u05db\u05e9\u05dc\u05d4 {name}: {msg}',deleting:'\u05de\u05d5\u05d7\u05e7 \u05d0\u05ea {name}',deleteFailed:'\u05d4\u05de\u05d7\u05d9\u05e7\u05d4 \u05e0\u05db\u05e9\u05dc\u05d4',deleted:'\u05e0\u05de\u05d7\u05e7 {name}',skipNotConsole:'\u05d3\u05d9\u05dc\u05d5\u05d2 {name}: \u05dc\u05d0 \u05d1\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4',skipMissing:'\u05d3\u05d9\u05dc\u05d5\u05d2 {name}: \u05d7\u05e1\u05e8',autoName:'Auto: {name}',downloadingName:'\u05de\u05d5\u05e8\u05d9\u05d3 \u05d0\u05ea {name}...',downloadedFtp:'\u05d4\u05d5\u05e8\u05d3 {name}. \u05d4\u05e2\u05dc\u05d4 \u05d0\u05d5\u05ea\u05d5 \u05d1-FTP \u05d0\u05dc /data',downloadFailed:'\u05d4\u05d4\u05d5\u05e8\u05d3\u05d4 \u05e0\u05db\u05e9\u05dc\u05d4: {msg}',downloadedName:'\u05d4\u05d5\u05e8\u05d3 {name}',markFirst:'\u05e1\u05de\u05df \u05e7\u05d5\u05d3\u05dd \u05e4\u05e8\u05d9\u05d8\u05d9\u05dd',loadedN:'\u05e0\u05d8\u05e2\u05e0\u05d5 {n}',catalogVersion:'\u05d2\u05e8\u05e1\u05ea \u05e7\u05d8\u05dc\u05d5\u05d2',credit:'Developed by X-F1REBALL-X',looking:'\u05de\u05d7\u05e4\u05e9...',unavailable:'\u05dc\u05d0 \u05d6\u05de\u05d9\u05df',langSet:'\u05e9\u05e4\u05d4: \u05e2\u05d1\u05e8\u05d9\u05ea',selfUpdate:'Elf Launcher {ver} \u05d6\u05de\u05d9\u05df',selfUpdateDl:'\u05d4\u05d5\u05e8\u05d3 \u05e2\u05d3\u05db\u05d5\u05df',selfUpdateLater:'\u05de\u05d0\u05d5\u05d7\u05e8 \u05d9\u05d5\u05ea\u05e8',selfUpdating:'\u05de\u05d5\u05e8\u05d9\u05d3 \u05d0\u05ea Elf Launcher {ver}...',selfUpdated:'Elf Launcher {ver} \u05d4\u05d5\u05e8\u05d3. \u05d8\u05e2\u05df \u05d0\u05d5\u05ea\u05d5 \u05db\u05d3\u05d9 \u05dc\u05d4\u05d7\u05d9\u05dc.',selfUpdateFail:'\u05e2\u05d3\u05db\u05d5\u05df \u05d4-launcher \u05e0\u05db\u05e9\u05dc: {msg}'}
 };
 var LANG='en';
 function langInfo(code){ var i; for(i=0;i<LANGS.length;i++){ if(LANGS[i].code===code) return LANGS[i]; } return LANGS[0]; }
@@ -1081,6 +1084,7 @@ LANG=readLang();
 function getHashFolder(){
   var h=location.hash||'';
   var m=h.match(/folder=([a-z0-9\-]+)/i);
+  if(m && FOLDER_ALIAS.hasOwnProperty(m[1])) return FOLDER_ALIAS[m[1]];
   return m?m[1]:null;
 }
 
@@ -1219,16 +1223,33 @@ function isConsoleHost(){
   return h==='127.0.0.1'||h==='localhost'||location.port==='1000';
 }
 
-function mapUpstreamFolder(cat){
+/* Exact category names used by our payloads.json (and older ones). */
+var CATEGORY_FOLDER={'loader':'loader','hen':'hen','jailbreak':'hen','jailbreak & hen':'hen',
+ 'game storage':'storage','game library':'storage','storage':'storage','mods & saves':'mods','mods':'mods',
+ 'files':'files','files & transfer':'files','network':'net','network & remote':'net','media':'media','media & audio':'media',
+ 'system':'system','dev tools':'tools','tools':'tools'};
+function mapUpstreamFolder(cat, name){
   cat=String(cat||'').toLowerCase().trim();
-  if(cat==='loader' || cat.indexOf('load')>=0) return 'loader';
-  if(cat==='hen' || cat.indexOf('jail')>=0 || cat.indexOf('hen')>=0) return 'hen';
-  if(cat==='system' || cat.indexOf('power')>=0 || cat.indexOf('fan')>=0 || cat.indexOf('reboot')>=0 || cat.indexOf('suspend')>=0) return 'system';
-  if(cat==='files' || cat.indexOf('network')>=0 || cat.indexOf('server')>=0 || cat.indexOf('ftp')>=0 || cat.indexOf('dns')>=0) return 'files';
-  if(cat==='storage' || cat.indexOf('stor')>=0 || cat.indexOf('dump')>=0 || cat.indexOf('mount')>=0 || cat.indexOf('save')>=0) return 'storage';
-  if(cat==='media' || cat.indexOf('media')>=0 || cat.indexOf('player')>=0 || cat.indexOf('stream')>=0) return 'media';
-  if(cat==='apps' || cat.indexOf('app')>=0 || cat.indexOf('pkg')>=0) return 'apps';
-  if(cat==='tools' || cat.indexOf('util')>=0 || cat.indexOf('tool')>=0 || cat.indexOf('cheat')>=0 || cat.indexOf('debug')>=0) return 'tools';
+  name=String(name||'').toLowerCase();
+  if(CATEGORY_FOLDER.hasOwnProperty(cat)) return CATEGORY_FOLDER[cat];
+  /* Other catalogs use broad groups, so look at the payload name first. */
+  if(/linux|power|reboot|suspend|fan[-_ ]|syslang|date[-_ ]?time|state[-_ ]?manager/.test(name)) return 'system';
+  if(/etahen|onionhen|kstuff|jb[-_ ]?daemon|jailbreak/.test(name)) return 'hen';
+  if(/elfldr|autoload|pldmgr|payload[-_ ]?manager|launcher|launchpad|hostpayloads/.test(name)) return 'loader';
+  if(/cheat|fps|patch|backpork|save/.test(name)) return 'mods';
+  if(/shadowmount|smplus|dump|mounter|compress|pkg/.test(name)) return 'storage';
+  if(/gdb|klog|shsrv|debug|pager|notify/.test(name)) return 'tools';
+  if(/ftp|file|upload|kura|bfpilot|unrar|7zip/.test(name)) return 'files';
+  if(/websrv|dns|remote|rp[-_]|linkdev|offact|tailscale/.test(name)) return 'net';
+  if(/player|plutotv|svtplay|tv4play|hearbridge|media|audio|vlc/.test(name)) return 'media';
+  if(cat.indexOf('load')>=0) return 'loader';
+  if(cat.indexOf('jail')>=0 || cat.indexOf('hen')>=0) return 'hen';
+  if(cat.indexOf('system')>=0 || cat.indexOf('power')>=0) return 'system';
+  if(cat.indexOf('network')>=0 || cat.indexOf('server')>=0 || cat.indexOf('remote')>=0) return 'net';
+  if(cat.indexOf('file')>=0 || cat.indexOf('ftp')>=0) return 'files';
+  if(cat.indexOf('stor')>=0 || cat.indexOf('dump')>=0 || cat.indexOf('mount')>=0 || cat.indexOf('game')>=0) return 'storage';
+  if(cat.indexOf('save')>=0 || cat.indexOf('cheat')>=0 || cat.indexOf('mod')>=0) return 'mods';
+  if(cat.indexOf('media')>=0 || cat.indexOf('player')>=0 || cat.indexOf('stream')>=0) return 'media';
   return 'tools';
 }
 function isItsplkMirrorUrl(url){
@@ -1274,7 +1295,7 @@ function mapRemotePayload(item, srcName){
   if(!base || base.indexOf('..')>=0) return null;
   var path='mirror/'+base;
   return {
-    folder:item.folder || mapUpstreamFolder(item.category),
+    folder:mapUpstreamFolder(item.folder||item.category, fn),
     path:path,
     name:fn,
     version:item.version||'',
@@ -1370,11 +1391,19 @@ function betterEntry(a, b){
   /* Prefer our ideal folder/category path when otherwise tied. */
   var fa=String(a.folder||a.category||'').toLowerCase();
   var fb=String(b.folder||b.category||'').toLowerCase();
-  var our=['loader','hen','apps','files','storage','media','system','tools','launcher'];
+  var our=['loader','hen','storage','mods','files','net','media','system','tools','launcher'];
   var ia=our.indexOf(fa), ib=our.indexOf(fb);
   if(ia>=0 && ib<0) return a;
   if(ib>=0 && ia<0) return b;
   return a;
+}
+/* Our catalog decides the folder, even when another catalog has the newer copy. */
+function keepOurFolder(w, a, b){
+  var cur=(a && a.sourceName==='X-F1REBALL-X') ? a : ((b && b.sourceName==='X-F1REBALL-X') ? b : null), c, k;
+  if(!cur || cur===w || !w || w.folder===cur.folder) return w;
+  c={}; for(k in w) if(w.hasOwnProperty(k)) c[k]=w[k];
+  c.folder=cur.folder;
+  return c;
 }
 function dedupePayloads(list){
   var map={}, order=[], i, m, k, prev;
@@ -1385,7 +1414,7 @@ function dedupePayloads(list){
     if(!k){ order.push('raw:'+i); map['raw:'+i]=m; continue; }
     prev=map[k];
     if(!prev){ map[k]=m; order.push(k); }
-    else map[k]=betterEntry(prev, m);
+    else map[k]=keepOurFolder(betterEntry(prev, m), prev, m);
   }
   var out=[], j;
   for(j=0;j<order.length;j++) out.push(map[order[j]]);
