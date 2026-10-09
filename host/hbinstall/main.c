@@ -522,6 +522,58 @@ static int process_kill_pid(int pid) {
   return -1;
 }
 
+
+/* ---- power: restart / rest mode / power off, done natively (no payload) ----
+   Same calls as reboot.elf (sync + reboot(0)), suspend.elf
+   (sceSystemStateMgrEnterStandby) and poweroff.elf (reboot(RB_POWEROFF)). */
+#ifndef PWR_SYS
+#define PWR_SYS(how) syscall(55 /* SYS_reboot */, (how))
+#endif
+#define PWR_RB_POWEROFF 0x4008 /* RB_HALT | RB_POWEROFF */
+int sceSystemStateMgrEnterStandby(void);
+static int send_json_code(int c, int code, const char *body);
+static int send_json(int c, int http_ok, const char *body, size_t n);
+static void *power_thread(void *arg) {
+  int what = (int)(intptr_t)arg;
+  sleep(1); /* let the HTTP reply and the page's message go out first */
+  sync();
+  if (what == 1)
+    PWR_SYS(0);
+  else if (what == 2)
+    sceSystemStateMgrEnterStandby();
+  else if (what == 3)
+    PWR_SYS(PWR_RB_POWEROFF);
+  return NULL;
+}
+static void handle_power(int c, const char *qs, int is_post) {
+  const char *d = qs ? strstr(qs, "do=") : 0;
+  int what = 0;
+  pthread_t th;
+  char out[96];
+  if (!is_post) {
+    send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+    return;
+  }
+  if (d) {
+    d += 3;
+    if (!strncmp(d, "restart", 7) && (d[7] == 0 || d[7] == '&'))
+      what = 1;
+    else if (!strncmp(d, "rest", 4) && (d[4] == 0 || d[4] == '&'))
+      what = 2;
+    else if (!strncmp(d, "off", 3) && (d[3] == 0 || d[3] == '&'))
+      what = 3;
+  }
+  if (!what) {
+    send_json_code(c, 400, "{\"ok\":false,\"message\":\"do must be restart, rest or off\"}");
+    return;
+  }
+  evlog("info", "%s from the launcher", what == 1 ? "restart" : what == 2 ? "rest mode" : "power off");
+  snprintf(out, sizeof(out), "{\"ok\":true,\"do\":\"%s\"}", what == 1 ? "restart" : what == 2 ? "rest" : "off");
+  send_json(c, 1, out, strlen(out));
+  if (pthread_create(&th, NULL, power_thread, (void *)(intptr_t)what) == 0)
+    pthread_detach(th);
+}
+
 /* CORS lines for the response being built on the main loop. */
 static char g_cors[256];
 
@@ -1591,7 +1643,7 @@ static int is_mutating(const char *p, const char *qs) {
   static const char *always[] = {"trigger-auto", "install-home", "file_delete",
                                  "update",       "process_kill", "relay",
                                  "run",          "upload",       "run_path",
-                                 "save_path",    "self_update",  0};
+                                 "save_path",    "self_update",  "power", 0};
   int i;
   for (i = 0; always[i]; i++)
     if (!strcmp(p, always[i]))
@@ -1601,7 +1653,7 @@ static int is_mutating(const char *p, const char *qs) {
   if (!strncmp(p, "fs/", 3) && strcmp(p, "fs/status") && strcmp(p, "fs/read") &&
       strcmp(p, "fs/backups") && strcmp(p, "fs/backup_read"))
     return 1;
-  if (!strcmp(p, "backup/save") || !strcmp(p, "events/add"))
+  if (!strcmp(p, "backup/save") || !strcmp(p, "events/add") || !strcmp(p, "events/clear"))
     return 1;
   if (!strcmp(p, "profiles"))
     return 1;
@@ -3349,6 +3401,15 @@ static void handle_events(int c) {
   send_json_code(c, 200, out);
   free(out);
 }
+/* POST /events/clear: empties the event log (crash entries included) */
+static void handle_events_clear(int c) {
+  pthread_mutex_lock(&ev_mx);
+  memset(ev_ring, 0, sizeof(ev_ring));
+  ev_head = ev_count = 0;
+  ev_seq++;
+  pthread_mutex_unlock(&ev_mx);
+  send_json_code(c, 200, "{\"ok\":true,\"events\":[]}");
+}
 /* POST /events/add?kind=crash|error|load|kill|update|info&msg= (from the page) */
 static void handle_events_add(int c, const char *qs) {
   static const char *kinds[] = {"crash", "error", "load", "kill", "update", "info", 0};
@@ -4797,6 +4858,14 @@ static void serve(void) {
       close(c);
       continue;
     }
+    if (!strcmp(p, "events/clear")) {
+      if (!is_post)
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+      else
+        handle_events_clear(c);
+      close(c);
+      continue;
+    }
     if (!strcmp(p, "events/add")) {
       handle_events_add(c, q ? q + 1 : "");
       close(c);
@@ -4902,6 +4971,11 @@ static void serve(void) {
       snprintf(vb, sizeof(vb), "{\"ok\":true,\"pid\":%d,\"build\":\"%s %s\",\"icon\":\"%s\"}",
                (int)getpid(), __DATE__, __TIME__, HOME_ICON_VERSION);
       send_json(c, 1, vb, strlen(vb));
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "power")) {
+      handle_power(c, q ? q + 1 : "", is_post);
       close(c);
       continue;
     }
