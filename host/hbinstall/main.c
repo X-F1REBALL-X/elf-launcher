@@ -507,9 +507,11 @@ static const char *http_reason(int code) {
   case 411: return "411 Length Required";
   case 413: return "413 Payload Too Large";
   case 415: return "415 Unsupported Media Type";
+  case 428: return "428 Precondition Required";
   case 431: return "431 Request Header Fields Too Large";
   case 502: return "502 Bad Gateway";
   case 503: return "503 Service Unavailable";
+  case 507: return "507 Insufficient Storage";
   default: return "500 Internal Server Error";
   }
 }
@@ -1565,7 +1567,8 @@ static int is_mutating(const char *p, const char *qs) {
       return 1;
   if (!strncmp(p, "load/", 5))
     return 1;
-  if (!strncmp(p, "fs/", 3) && strcmp(p, "fs/status") && strcmp(p, "fs/read"))
+  if (!strncmp(p, "fs/", 3) && strcmp(p, "fs/status") && strcmp(p, "fs/read") &&
+      strcmp(p, "fs/backups") && strcmp(p, "fs/backup_read"))
     return 1;
   if (!strcmp(p, "backup/save") || !strcmp(p, "events/add"))
     return 1;
@@ -2651,6 +2654,529 @@ static void handle_fs_read(int c, const char *qs) {
   send_code(c, 200, bin ? "application/octet-stream" : "text/plain; charset=utf-8",
             extra, buf, bin ? 0 : n);
   free(buf);
+}
+
+/* ---- text editing: /fs/write, /fs/backups, /fs/backup_read, /fs/restore,
+ * /fs/backup_delete ----
+ * Saves replace an existing text file (no NUL, 1 MB max, the old file too)
+ * anywhere the OS lets us write; same path rules as /fs/read (inside /data
+ * and /mnt/usb*|ext* no symlinks). Outside those writable areas the page has
+ * to send system=1 (it asks the user first). The version being replaced is
+ * kept in EDIT_BK_DIR/<full original path>/<unix time>-<n>.bak, newest
+ * EDIT_BK_KEEP per file. The new text goes to a temp file next to the
+ * original and is renamed over it. mtime= (from /fs/read) refuses with 409
+ * when the file changed since the page read it. Restore = the same save
+ * with a backup's text (and backs up the current version first). */
+#define FS_WRITE_MAX (1024 * 1024)
+#define EDIT_BK_DIR LAUNCHER_DIR "/edit-backups"
+#define EDIT_BK_KEEP 5
+#define EDIT_BK_MAXV 64
+
+static int fs_write_all(const char *path, const char *buf, size_t n, mode_t mode) {
+  int fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, mode & 07777);
+  size_t off = 0;
+  if (fd < 0)
+    return -1;
+  while (off < n) {
+    ssize_t w = write(fd, buf + off, n - off);
+    if (w <= 0) {
+      int e = w < 0 ? errno : ENOSPC;
+      close(fd);
+      unlink(path);
+      errno = e;
+      return -1;
+    }
+    off += (size_t)w;
+  }
+  fsync(fd);
+  if (close(fd)) {
+    int e = errno;
+    unlink(path);
+    errno = e;
+    return -1;
+  }
+  return 0;
+}
+
+/* whole file (<= FS_WRITE_MAX) into a malloc'd buffer; -2 too big, -3 binary */
+static int fs_slurp_text(const char *path, char **out, size_t *outn) {
+  struct stat st;
+  size_t n = 0;
+  ssize_t r;
+  char *b;
+  int fd = open(path, O_RDONLY);
+  if (fd < 0)
+    return -1;
+  if (fstat(fd, &st) || !S_ISREG(st.st_mode)) {
+    close(fd);
+    errno = EINVAL;
+    return -1;
+  }
+  if (st.st_size > FS_WRITE_MAX) {
+    close(fd);
+    return -2;
+  }
+  b = malloc((size_t)st.st_size + 1);
+  if (!b) {
+    close(fd);
+    errno = ENOMEM;
+    return -1;
+  }
+  while (n < (size_t)st.st_size && (r = read(fd, b + n, (size_t)st.st_size - n)) > 0)
+    n += (size_t)r;
+  close(fd);
+  b[n] = 0;
+  if (memchr(b, 0, n)) {
+    free(b);
+    return -3;
+  }
+  *out = b;
+  *outn = n;
+  return 0;
+}
+
+static int bk_dir_for(const char *real, char *out, size_t outsz) {
+  return snprintf(out, outsz, "%s%s", EDIT_BK_DIR, real) >= (int)outsz ? -1 : 0;
+}
+
+static int bk_mkdirs(const char *dir) {
+  char p[PATH_MAX];
+  size_t i, l = strlen(dir);
+  if (l >= sizeof(p))
+    return -1;
+  memcpy(p, dir, l + 1);
+  for (i = 1; i <= l; i++) {
+    if (p[i] == '/' || p[i] == 0) {
+      char save = p[i];
+      struct stat st;
+      p[i] = 0;
+      if (lstat(p, &st)) {
+        if (mkdir(p, 0755) && errno != EEXIST)
+          return -1;
+      } else if (!S_ISDIR(st.st_mode)) {
+        errno = ENOTDIR;
+        return -1;
+      }
+      p[i] = save;
+    }
+  }
+  return 0;
+}
+
+/* "<digits>-<digits>.bak" */
+static int bk_id_ok(const char *s) {
+  const char *p = s;
+  if (!(*p >= '0' && *p <= '9'))
+    return 0;
+  while (*p >= '0' && *p <= '9')
+    p++;
+  if (*p++ != '-' || !(*p >= '0' && *p <= '9'))
+    return 0;
+  while (*p >= '0' && *p <= '9')
+    p++;
+  return !strcmp(p, ".bak") && p - s < 40;
+}
+
+static int bk_cmp(const void *a, const void *b) {
+  long long x = atoll(*(char *const *)a), y = atoll(*(char *const *)b);
+  if (x != y)
+    return x < y ? -1 : 1;
+  return atoi(strchr(*(char *const *)a, '-') + 1) - atoi(strchr(*(char *const *)b, '-') + 1);
+}
+
+/* version names in dir, oldest first; returns count */
+static int bk_versions(const char *dir, char names[][48], int max) {
+  DIR *d = opendir(dir);
+  struct dirent *de;
+  char *ptr[EDIT_BK_MAXV], tmp[EDIT_BK_MAXV][48];
+  int n = 0, i;
+  if (!d)
+    return 0;
+  while ((de = readdir(d)) != NULL && n < EDIT_BK_MAXV) {
+    char f[PATH_MAX + 64];
+    struct stat st;
+    if (!bk_id_ok(de->d_name))
+      continue;
+    snprintf(f, sizeof(f), "%s/%s", dir, de->d_name);
+    if (lstat(f, &st) || !S_ISREG(st.st_mode))
+      continue;
+    snprintf(tmp[n], sizeof(tmp[n]), "%s", de->d_name);
+    ptr[n] = tmp[n];
+    n++;
+  }
+  closedir(d);
+  qsort(ptr, (size_t)n, sizeof(ptr[0]), bk_cmp);
+  for (i = 0; i < n && i < max; i++)
+    snprintf(names[i], 48, "%s", ptr[i]);
+  return n < max ? n : max;
+}
+
+/* drop empty backup folders up to EDIT_BK_DIR */
+static void bk_prune_dirs(const char *dir) {
+  char p[PATH_MAX];
+  snprintf(p, sizeof(p), "%s", dir);
+  while (strlen(p) > strlen(EDIT_BK_DIR) && under_root(p, EDIT_BK_DIR)) {
+    char *s;
+    if (rmdir(p))
+      break;
+    s = strrchr(p, '/');
+    if (!s)
+      break;
+    *s = 0;
+  }
+}
+
+/* Keep `cur` (current contents) as a new backup version, then put `buf`
+ * in place via temp + rename. Returns 0, or -1 with *what and errno. */
+static int edit_replace(const char *real, const struct stat *st, const char *cur, size_t curn,
+                        const char *buf, size_t n, const char **what, char *bkid, size_t bkidsz) {
+  char dir[PATH_MAX], bk[PATH_MAX + 64], tmp[PATH_MAX + 16], names[EDIT_BK_MAXV][48];
+  int i, cnt, e;
+  time_t now = time(0);
+  *what = "path too long";
+  errno = ENAMETOOLONG;
+  if (bk_dir_for(real, dir, sizeof(dir)) ||
+      snprintf(tmp, sizeof(tmp), "%s.elfl-tmp", real) >= (int)sizeof(tmp))
+    return -1;
+  *what = "cannot keep a backup";
+  if (bk_mkdirs(dir))
+    return -1;
+  /* names sort by time then counter: continue after the newest one */
+  cnt = bk_versions(dir, names, EDIT_BK_MAXV);
+  i = 0;
+  if (cnt && atoll(names[cnt - 1]) >= (long long)now) {
+    now = (time_t)atoll(names[cnt - 1]);
+    i = atoi(strchr(names[cnt - 1], '-') + 1) + 1;
+  }
+  snprintf(bk, sizeof(bk), "%s/%lld-%d.bak", dir, (long long)now, i);
+  {
+    char btmp[PATH_MAX + 80];
+    snprintf(btmp, sizeof(btmp), "%s.part", bk);
+    if (fs_write_all(btmp, cur, curn, 0644) || rename(btmp, bk)) {
+      e = errno;
+      unlink(btmp);
+      errno = e;
+      return -1;
+    }
+  }
+  *what = "cannot save";
+  if (fs_write_all(tmp, buf, n, st->st_mode) || rename(tmp, real)) {
+    e = errno;
+    unlink(tmp);
+    unlink(bk); /* nothing changed: no new version */
+    bk_prune_dirs(dir);
+    errno = e;
+    return -1;
+  }
+  snprintf(bkid, bkidsz, "%s", strrchr(bk, '/') + 1);
+  cnt = bk_versions(dir, names, EDIT_BK_MAXV);
+  for (i = 0; i + EDIT_BK_KEEP < cnt; i++) {
+    snprintf(bk, sizeof(bk), "%s/%s", dir, names[i]);
+    unlink(bk);
+  }
+  return 0;
+}
+
+static void fs_write_fail(int c, const char *what, int e) {
+  char m[160];
+  int code = (e == EROFS || e == EACCES || e == EPERM) ? 403 : e == ENAMETOOLONG ? 400 : 507;
+  snprintf(m, sizeof(m), "%s%s%s", what, e ? ": " : "", e ? strerror(e) : "");
+  fs_reply_bad(c, code, m);
+}
+
+/* common checks for write/restore: the file, system confirm, mtime, current text */
+static int edit_target(int c, const char *qs, char *real, size_t realsz, struct stat *st, int *sys,
+                       char **cur, size_t *curn) {
+  char in[1024], v[32];
+  int rc;
+  if (fs_qget(qs, "path", in, sizeof(in))) {
+    fs_reply_bad(c, 400, "no path");
+    return -1;
+  }
+  rc = path_readable(in, real, realsz);
+  if (rc) {
+    fs_reply_bad(c, rc == -2 ? 404 : 403, rc == -2 ? "not found" : "path not allowed");
+    return -1;
+  }
+  if (under_root(real, EDIT_BK_DIR)) {
+    fs_reply_bad(c, 403, "edit backups are managed by Restore");
+    return -1;
+  }
+  if (lstat(real, st) || S_ISLNK(st->st_mode) || !S_ISREG(st->st_mode)) {
+    fs_reply_bad(c, 404, "not a file");
+    return -1;
+  }
+  *sys = !writable_root_len(real);
+  if (*sys && (qget(qs, "system", v, sizeof(v)) || strcmp(v, "1"))) {
+    fs_reply_bad(c, 428, "system path: confirm first");
+    return -1;
+  }
+  if (!qget(qs, "mtime", v, sizeof(v)) && v[0] && atoll(v) != (long long)st->st_mtime) {
+    fs_reply_bad(c, 409, "file changed on the console since it was opened");
+    return -1;
+  }
+  rc = fs_slurp_text(real, cur, curn);
+  if (rc == -2) {
+    fs_reply_bad(c, 413, "file too big to edit (1 MB max)");
+    return -1;
+  }
+  if (rc == -3) {
+    fs_reply_bad(c, 415, "binary file (text files only)");
+    return -1;
+  }
+  if (rc) {
+    fs_write_fail(c, "cannot read", errno);
+    return -1;
+  }
+  return 0;
+}
+
+static void edit_reply(int c, const char *real, size_t n, int sys, const char *verb,
+                       const char *bkid) {
+  char out[240];
+  struct stat st2;
+  if (stat(real, &st2))
+    st2.st_mtime = 0;
+  evlog("info", "%s %s (%zu bytes%s)", verb, real, n, sys ? ", system path" : "");
+  snprintf(out, sizeof(out),
+           "{\"ok\":true,\"bytes\":%zu,\"mtime\":%lld,\"system\":%s,\"backup\":\"%s\"}", n,
+           (long long)st2.st_mtime, sys ? "true" : "false", bkid);
+  send_json_code(c, 200, out);
+}
+
+static void handle_fs_write(int c, const char *qs, const char *req, size_t hlen, size_t got,
+                            const char *hdrs, const char *hend) {
+  char real[PATH_MAX], v[32], bkid[48] = "";
+  struct stat st;
+  char *body, *cur = 0;
+  size_t n, cl, curn = 0;
+  ssize_t r;
+  const char *what;
+  int sys;
+  if (hdr_get(hdrs, hend, "Content-Length", v, sizeof(v)) || atoll(v) < 0) {
+    fs_reply_bad(c, 411, "length required");
+    return;
+  }
+  if (atoll(v) > FS_WRITE_MAX) {
+    fs_reply_bad(c, 413, "text too big (1 MB max)");
+    return;
+  }
+  cl = (size_t)atoll(v);
+  if (edit_target(c, qs, real, sizeof(real), &st, &sys, &cur, &curn))
+    return;
+  body = malloc(cl + 1);
+  if (!body) {
+    free(cur);
+    fs_reply_bad(c, 500, "no memory");
+    return;
+  }
+  n = got > hlen ? got - hlen : 0;
+  if (n > cl)
+    n = cl;
+  memcpy(body, req + hlen, n);
+  while (n < cl && (r = recv(c, body + n, cl - n, 0)) > 0)
+    n += (size_t)r;
+  body[n] = 0;
+  if (n != cl) {
+    free(body);
+    free(cur);
+    fs_reply_bad(c, 400, "incomplete body");
+    return;
+  }
+  if (memchr(body, 0, n)) {
+    free(body);
+    free(cur);
+    fs_reply_bad(c, 415, "binary data refused (text files only)");
+    return;
+  }
+  if (edit_replace(real, &st, cur, curn, body, n, &what, bkid, sizeof(bkid))) {
+    int e = errno;
+    evlog("error", "edit %s: %s: %s", real, what, strerror(e));
+    fs_write_fail(c, what, e);
+  } else
+    edit_reply(c, real, n, sys, "edited", bkid);
+  free(body);
+  free(cur);
+}
+
+/* backup file of ?path=&id= ; 0 ok */
+static int bk_file_from_qs(int c, const char *qs, char *real, size_t realsz, char *bk,
+                           size_t bksz) {
+  char in[1024], id[64], dir[PATH_MAX];
+  if (fs_qget(qs, "path", in, sizeof(in)) || fs_qget(qs, "id", id, sizeof(id))) {
+    fs_reply_bad(c, 400, "no path or id");
+    return -1;
+  }
+  if (path_norm(in, real, realsz, &(size_t){0}) || bk_dir_for(real, dir, sizeof(dir))) {
+    fs_reply_bad(c, 403, "path not allowed");
+    return -1;
+  }
+  if (!bk_id_ok(id) && strcmp(id, "all")) {
+    fs_reply_bad(c, 400, "bad backup id");
+    return -1;
+  }
+  if (snprintf(bk, bksz, "%s/%s", dir, id) >= (int)bksz) {
+    fs_reply_bad(c, 400, "path too long");
+    return -1;
+  }
+  return 0;
+}
+
+/* GET /fs/backups?path= : versions of one file (newest first);
+ * GET /fs/backups : every file that has versions. */
+static void bk_list_walk(const char *dir, int depth, char *out, size_t outsz, size_t *pos,
+                         int *first, int *count) {
+  DIR *d;
+  struct dirent *de;
+  char names[EDIT_BK_MAXV][48];
+  int n, i;
+  if (depth > 64 || *count >= 1000 || !(d = opendir(dir)))
+    return;
+  n = bk_versions(dir, names, EDIT_BK_MAXV);
+  if (n && *pos + 1200 < outsz) {
+    struct stat st;
+    char f[PATH_MAX + 64];
+    long long total = 0;
+    for (i = 0; i < n; i++) {
+      snprintf(f, sizeof(f), "%s/%s", dir, names[i]);
+      if (!stat(f, &st))
+        total += st.st_size;
+    }
+    *pos += (size_t)snprintf(out + *pos, outsz - *pos, "%s{\"path\":", *first ? "" : ",");
+    json_str(out, outsz, pos, dir + strlen(EDIT_BK_DIR));
+    *pos += (size_t)snprintf(out + *pos, outsz - *pos,
+                             ",\"versions\":%d,\"newest\":%lld,\"bytes\":%lld,\"exists\":%s}", n,
+                             atoll(names[n - 1]), total,
+                             access(dir + strlen(EDIT_BK_DIR), F_OK) ? "false" : "true");
+    *first = 0;
+    (*count)++;
+  }
+  while ((de = readdir(d)) != NULL) {
+    char child[PATH_MAX];
+    struct stat st;
+    if (de->d_name[0] == '.' && (!de->d_name[1] || (de->d_name[1] == '.' && !de->d_name[2])))
+      continue;
+    if (snprintf(child, sizeof(child), "%s/%s", dir, de->d_name) >= (int)sizeof(child))
+      continue;
+    if (lstat(child, &st) || !S_ISDIR(st.st_mode))
+      continue;
+    bk_list_walk(child, depth + 1, out, outsz, pos, first, count);
+  }
+  closedir(d);
+}
+
+static void handle_fs_backups(int c, const char *qs) {
+  char in[1024], real[PATH_MAX], dir[PATH_MAX], names[EDIT_BK_MAXV][48];
+  size_t pos = 0, outsz = 256 * 1024, o;
+  char *out = malloc(outsz);
+  int n, i, first = 1, count = 0;
+  if (!out) {
+    fs_reply_bad(c, 500, "no memory");
+    return;
+  }
+  if (qs && !fs_qget(qs, "path", in, sizeof(in))) {
+    if (path_norm(in, real, sizeof(real), &o) || bk_dir_for(real, dir, sizeof(dir))) {
+      free(out);
+      fs_reply_bad(c, 403, "path not allowed");
+      return;
+    }
+    n = bk_versions(dir, names, EDIT_BK_MAXV);
+    pos += (size_t)snprintf(out, outsz, "{\"ok\":true,\"keep\":%d,\"path\":", EDIT_BK_KEEP);
+    json_str(out, outsz, &pos, real);
+    pos += (size_t)snprintf(out + pos, outsz - pos, ",\"versions\":[");
+    for (i = n - 1; i >= 0; i--) {
+      char f[PATH_MAX + 64];
+      struct stat st;
+      snprintf(f, sizeof(f), "%s/%s", dir, names[i]);
+      if (stat(f, &st))
+        continue;
+      pos += (size_t)snprintf(out + pos, outsz - pos, "%s{\"id\":\"%s\",\"time\":%lld,\"size\":%lld}",
+                              first ? "" : ",", names[i], atoll(names[i]), (long long)st.st_size);
+      first = 0;
+    }
+    pos += (size_t)snprintf(out + pos, outsz - pos, "]}");
+  } else {
+    pos += (size_t)snprintf(out, outsz, "{\"ok\":true,\"keep\":%d,\"files\":[", EDIT_BK_KEEP);
+    bk_list_walk(EDIT_BK_DIR, 0, out, outsz, &pos, &first, &count);
+    pos += (size_t)snprintf(out + pos, outsz - pos, "]}");
+  }
+  send_json_code(c, 200, out);
+  free(out);
+}
+
+/* GET /fs/backup_read?path=&id= : a backup's text (to compare before restoring) */
+static void handle_fs_backup_read(int c, const char *qs) {
+  char real[PATH_MAX], bk[PATH_MAX + 64], *buf = 0;
+  size_t n = 0;
+  int rc;
+  if (bk_file_from_qs(c, qs, real, sizeof(real), bk, sizeof(bk)))
+    return;
+  rc = fs_slurp_text(bk, &buf, &n);
+  if (rc) {
+    fs_reply_bad(c, 404, "backup not found");
+    return;
+  }
+  send_code(c, 200, "text/plain; charset=utf-8", g_cors, buf, n);
+  free(buf);
+}
+
+/* POST /fs/restore?path=&id=&system=1&mtime= */
+static void handle_fs_restore(int c, const char *qs) {
+  char real[PATH_MAX], bk[PATH_MAX + 64], bkid[48] = "";
+  struct stat st;
+  char *cur = 0, *old = 0;
+  size_t curn = 0, oldn = 0;
+  const char *what;
+  int sys;
+  if (bk_file_from_qs(c, qs, real, sizeof(real), bk, sizeof(bk)))
+    return;
+  if (!strcmp(strrchr(bk, '/') + 1, "all")) {
+    fs_reply_bad(c, 400, "bad backup id");
+    return;
+  }
+  if (fs_slurp_text(bk, &old, &oldn)) {
+    fs_reply_bad(c, 404, "backup not found");
+    return;
+  }
+  if (edit_target(c, qs, real, sizeof(real), &st, &sys, &cur, &curn)) {
+    free(old);
+    return;
+  }
+  if (edit_replace(real, &st, cur, curn, old, oldn, &what, bkid, sizeof(bkid))) {
+    int e = errno;
+    evlog("error", "restore %s: %s: %s", real, what, strerror(e));
+    fs_write_fail(c, what, e);
+  } else
+    edit_reply(c, real, oldn, sys, "restored", bkid);
+  free(cur);
+  free(old);
+}
+
+/* POST /fs/backup_delete?path=&id=<id>|all */
+static void handle_fs_backup_delete(int c, const char *qs) {
+  char real[PATH_MAX], bk[PATH_MAX + 64], dir[PATH_MAX], names[EDIT_BK_MAXV][48];
+  int n, i, gone = 0;
+  if (bk_file_from_qs(c, qs, real, sizeof(real), bk, sizeof(bk)))
+    return;
+  bk_dir_for(real, dir, sizeof(dir));
+  if (!strcmp(strrchr(bk, '/') + 1, "all")) {
+    n = bk_versions(dir, names, EDIT_BK_MAXV);
+    for (i = 0; i < n; i++) {
+      snprintf(bk, sizeof(bk), "%s/%s", dir, names[i]);
+      gone += !unlink(bk);
+    }
+  } else
+    gone = !unlink(bk);
+  bk_prune_dirs(dir);
+  if (!gone) {
+    fs_reply_bad(c, 404, "backup not found");
+    return;
+  }
+  {
+    char out[64];
+    snprintf(out, sizeof(out), "{\"ok\":true,\"deleted\":%d}", gone);
+    send_json_code(c, 200, out);
+  }
 }
 
 /* GET /icon?url=https://... : a catalog payload's icon, fetched once from
@@ -4288,6 +4814,35 @@ static void serve(void) {
     }
     if (!strcmp(p, "icon")) {
       handle_icon(c, q ? q + 1 : "");
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "fs/write")) {
+      if (!is_post)
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+      else
+        handle_fs_write(c, q ? q + 1 : "", req, hlen, got, hdrs, hend);
+      drain_briefly(c);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "fs/backups")) {
+      handle_fs_backups(c, q ? q + 1 : 0);
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "fs/backup_read")) {
+      handle_fs_backup_read(c, q ? q + 1 : "");
+      close(c);
+      continue;
+    }
+    if (!strcmp(p, "fs/restore") || !strcmp(p, "fs/backup_delete")) {
+      if (!is_post)
+        send_json_code(c, 405, "{\"ok\":false,\"message\":\"use POST\"}");
+      else if (p[3] == 'r')
+        handle_fs_restore(c, q ? q + 1 : "");
+      else
+        handle_fs_backup_delete(c, q ? q + 1 : "");
       close(c);
       continue;
     }
