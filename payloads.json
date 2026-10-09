@@ -119,6 +119,7 @@
     },
     {
       "name": "wk-autoloader.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/wk-autoloader/HEAD/assets/icon0.png",
       "filename": "wk-autoloader.elf",
       "path": "hen/wk-autoloader.elf",
       "url": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.0.16/installer.elf",
@@ -135,6 +136,7 @@
     },
     {
       "name": "HearBridge-PS5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/HEAD/assets/icon0.png",
       "filename": "HearBridge-PS5.elf",
       "path": "apps/HearBridge-PS5.elf",
       "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0.elf",
@@ -153,6 +155,7 @@
     },
     {
       "name": "HearBridge-PS5-mtk-test.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/HEAD/assets/icon0.png",
       "filename": "HearBridge-PS5-mtk-test.elf",
       "path": "apps/HearBridge-PS5-mtk-test.elf",
       "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0-mtk-test.elf",
