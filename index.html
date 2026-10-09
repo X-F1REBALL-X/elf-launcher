@@ -663,6 +663,11 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 .elf .pinb:focus:before{box-shadow:0 0 0 3px var(--pri)}
 .qkpin svg{width:1.2rem;height:1.2rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-inline-end:.5rem;vertical-align:-.2rem}
 .qkpin.on svg{fill:currentColor}
+.lg.lgp{grid-template-columns:auto minmax(0,1fr) auto auto}
+@media(max-width:860px){.lg.lgp{grid-template-columns:auto minmax(0,1fr) auto}.lg.lgp time{grid-column:2}.lg.lgp .pinb{grid-column:3;grid-row:1}}
+.lg .pinb{min-width:0;width:2.1rem;min-height:2.1rem;height:2.1rem;padding:0;display:inline-flex;align-items:center;justify-content:center;color:var(--mute);border-radius:999px}
+.lg .pinb svg{width:.95rem;height:.95rem;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.lg .pinb.on{color:var(--onp)}.lg .pinb.on:before{background:var(--pri);border-color:var(--pri)}.lg .pinb.on svg{fill:currentColor}
 /* AutoPayload start delay slider (controller: left/right moves it) */
 .dslide{display:flex;align-items:center;flex:0 0 auto;min-width:15rem}
 .dslide input[type=range]{flex:1 1 auto;min-width:10rem;height:2.4rem;margin:0;background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer;--fill:30%}
@@ -1589,7 +1594,10 @@ function fetchRemoteCatalog(done){
     }
     if(!live){ done(null, live, names); return; }
     out=dedupePayloads(out);
-    applyLatest(out, function(){ done(out, live, names); });
+    applyCachedReleases(out);
+    if(GH_FORCE_NEXT){ GH_FORCE_NEXT=false; applyLatest(out, function(){ done(out, live, names); }, true); return; }
+    done(out, live, names);
+    if(releasesStale(out)) setTimeout(function(){ bgReleaseCheck(out); }, 0);
   }, function(){ done(null, 0, []); });
 }
 
@@ -1806,6 +1814,7 @@ function updateOneFile(u){
 }
 function applyCatalogUpdate(){
   if(catalogUpdating) return;
+  GH_FORCE_NEXT=true; /* Update = check GitHub releases now, not the 6 h cache */
   catalogUpdating=true;
   paintSideUpdate();
   clearCatalogCache();
@@ -1855,6 +1864,7 @@ function applyCatalogUpdate(){
 function sideUpdateClick(){
   if(catalogUpdating) return;
   if(isConsoleHost()){ applyCatalogUpdate(); return; }
+  GH_FORCE_NEXT=true; /* Update = check GitHub releases now, not the 6 h cache */
   catalogUpdating=true;
   paintSideUpdate();
   clearCatalogCache();
@@ -2885,7 +2895,7 @@ function paintDownloaded(found){
     item=found[i];
     p=item.p;
     pend=pendingFor(p.path);
-    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom pk cat">'+pickBtn('cat:'+p.path,0,0,iconFor(p),FOLDER_ICO[p.folder]);
+    html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom pk cat">'+pickBtn('cat:'+p.path,0,0,iconFor(p),FOLDER_ICO[p.folder])+pinBtnHtml(p.name);
     html+='<div class="n">'+nameHtml(p)+'</div>';
     html+='<div class="v">'+esc(p.version||'')+'</div>';
     html+='<div class="a">';
@@ -3930,12 +3940,14 @@ function paintRecent(){
   if(!box) return;
   a=readRecent();
   if(!a.length){ box.innerHTML='<p class="empty">'+esc(t('noRecent'))+'</p>'; return; }
+  var known={}, all=allPayloads(), k;
+  for(k=0;k<all.length;k++) known[all[k].name]=1;
   p2=function(n){ return (n<10?'0':'')+n; };
   for(i=0;i<a.length;i++){
     e=a[i]; d=new Date(e.at||0);
     if(e.ok) det=(e.src==='up' ? t('srcUpload') : (e.src==='cat' ? t('srcCatalog') : (e.where||'')))+(e.pid ? ' \u00b7 '+t('pidN',{n:e.pid}) : '')+(e.sha ? ' \u00b7 '+e.sha : '');
     else det=e.why||'';
-    html+='<div class="lg"><s class="'+(e.ok?'ok':'bad')+'">'+(e.ok?'OK':'FAIL')+'</s><span><b>'+esc(e.name||'')+'</b> \u00b7 '+esc(det)+'</span><time>'+p2(d.getHours())+':'+p2(d.getMinutes())+'</time></div>';
+    html+='<div class="lg'+(known[e.name]?' lgp':'')+'"><s class="'+(e.ok?'ok':'bad')+'">'+(e.ok?'OK':'FAIL')+'</s><span><b>'+esc(e.name||'')+'</b> \u00b7 '+esc(det)+'</span><time>'+p2(d.getHours())+':'+p2(d.getMinutes())+'</time>'+(known[e.name]?pinBtnHtml(e.name):'')+'</div>';
   }
   box.innerHTML=html;
 }
@@ -4759,12 +4771,13 @@ function bindSearch(){
   };
 }
 /* ---- catalog: follow the latest GitHub release for entries that ask for it ----
-   Runs on every catalog fetch (page load/refresh, sidebar Update, background
-   re-checks). No time cache: only one request per repo in flight at a time.
-   If GitHub fails (rate limit, offline) the last release seen is used. */
+   Page load/refresh: the last known release is applied at once and GitHub is
+   asked in the background at most every 6 hours (never holds up the page).
+   Sidebar Update: always asks GitHub first (bypasses the 6 h cache). One request per
+   repo in flight; on a rate limit or offline the last release seen is used. */
 var ghInflight={};
 var GH_LATEST_WAIT_MS=9000;
-function applyLatest(list, done){
+function applyLatest(list, done, force){
   var i, repos={}, r, pending=1, finished=false, timer;
   function settle(){ if(finished) return; finished=true; if(timer) clearTimeout(timer); if(done) done(list); }
   function one(){ pending--; if(pending<=0) settle(); }
@@ -4773,7 +4786,7 @@ function applyLatest(list, done){
     if(!repos.hasOwnProperty(r)) continue;
     pending++;
     (function(items){
-      ghLatest(items[0].latest.repo, function(rel){ if(!finished) applyRelease(items, rel); one(); });
+      ghLatest(items[0].latest.repo, function(rel){ if(!finished) applyRelease(items, rel); one(); }, force);
     })(repos[r]);
   }
   timer=setTimeout(settle, GH_LATEST_WAIT_MS);
@@ -4797,9 +4810,11 @@ function applyRelease(items, rel){
     }
   }
 }
-function ghLatest(repo, cb){
-  var key='ps5elfs-gh-'+repo;
-  function lastKnown(){ var c=null; try{ c=JSON.parse(localStorage.getItem(key)||'null'); }catch(e){} return c && c.rel ? c.rel : null; }
+var GH_TTL_MS=6*3600*1000, GH_FORCE_NEXT=false;
+function ghCached(repo){ var c=null; try{ c=JSON.parse(localStorage.getItem('ps5elfs-gh-'+repo)||'null'); }catch(e){} return (c && c.rel) ? c : null; }
+function ghLatest(repo, cb, force){
+  var key='ps5elfs-gh-'+repo, c=ghCached(repo);
+  if(!force && c && c.at && Date.now()-c.at>=0 && Date.now()-c.at<GH_TTL_MS){ cb(c.rel); return; }
   if(ghInflight[repo]){ ghInflight[repo].push(cb); return; }
   ghInflight[repo]=[cb];
   function finish(rel){ var w=ghInflight[repo]||[], i; delete ghInflight[repo]; for(i=0;i<w.length;i++) try{ w[i](rel); }catch(e){} }
@@ -4809,7 +4824,21 @@ function ghLatest(repo, cb){
     for(i=0;i<j.assets.length;i++) slim.assets.push({name:j.assets[i].name,size:j.assets[i].size,digest:j.assets[i].digest,browser_download_url:j.assets[i].browser_download_url});
     try{ localStorage.setItem(key, JSON.stringify({at:Date.now(),rel:slim})); }catch(e){}
     finish(slim);
-  }).catch(function(){ finish(lastKnown()); });
+  }).catch(function(){ var k=ghCached(repo); finish(k ? k.rel : null); });
+}
+function latestRepos(list){ var r={}, i; for(i=0;list && i<list.length;i++) if(list[i] && list[i].latest && list[i].latest.repo) (r[list[i].latest.repo]=r[list[i].latest.repo]||[]).push(list[i]); return r; }
+/* Last known releases, applied right away (no network). */
+function applyCachedReleases(list){ var r=latestRepos(list), k, c; for(k in r){ if(!r.hasOwnProperty(k)) continue; c=ghCached(k); if(c) applyRelease(r[k], c.rel); } }
+function releasesStale(list){ var r=latestRepos(list), k, c; for(k in r){ if(!r.hasOwnProperty(k)) continue; c=ghCached(k); if(!c || !c.at || Date.now()-c.at<0 || Date.now()-c.at>=GH_TTL_MS) return true; } return false; }
+/* Background check (at most every 6 hours): never holds up the page. */
+function bgReleaseCheck(list){
+  var before=catalogFingerprint(list);
+  applyLatest(list, function(){
+    if(catalogFingerprint(list)===before || PAYLOADS!==list) return;
+    writeCatalogCache(PAYLOADS);
+    rerenderCatalogViews();
+    checkDownloadedUpdates(PAYLOADS);
+  });
 }
 /* ---- controller and keyboard ---- */
 function goBack(){
