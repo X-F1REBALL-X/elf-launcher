@@ -606,8 +606,12 @@ label.pick input{width:1.1rem;height:1.1rem;margin:0;accent-color:var(--pri)}
 .pwri{display:flex;align-items:center;justify-content:center;width:3.4rem;height:3.4rem;margin-bottom:.55rem;border-radius:13px;background:linear-gradient(160deg,rgba(255,255,255,.3),rgba(255,255,255,0) 50%,rgba(0,0,0,.2)),var(--c);box-shadow:0 3px 8px rgba(60,45,25,.18)}
 .pwri svg{width:1.9rem;height:1.9rem}
 .pwrl{position:relative;text-align:center;line-height:1.15}
-#home{grid-template-areas:"upd upd" "mine run" "quick sys" "cats pwr" "cats set"}
-@media (max-width:1179px){#home{grid-template-areas:"upd" "mine" "quick" "run" "sys" "pwr" "cats" "set"}}
+/* Home: two independent columns so a tall left panel never leaves a hole on the right. */
+#home{grid-template-areas:"upd upd" "colL colR"}
+.hColL{grid-area:colL}.hColR{grid-area:colR}
+.hCol{display:flex;flex-direction:column;min-width:0}
+.hCol>.panel{margin:0}.hCol>.panel+.panel{margin-top:var(--gap)}
+@media (max-width:1179px){#home{grid-template-areas:"upd" "mine" "quick" "run" "sys" "pwr" "cats" "set"}.hCol{display:contents}.hCol>.panel+.panel{margin-top:0}}
 
 /* ===== themes (Settings > Theme). Pearl is :root. Dark themes use light accents with dark text on accent fills (--onp). ===== */
 html[data-theme=gray]{--bg:#eceef1;--void:#e2e5ea;--deck:#f7f8fa;--card:#f8f9fb;--card2:#eef0f3;--edge:#d6dae1;--edge2:#b9c0cb;--ink:#15191f;--ink2:#343b47;--mute:#525b69}
@@ -1571,7 +1575,9 @@ function fetchRemoteCatalog(done){
         out.push(m);
       }
     }
-    done(live ? dedupePayloads(out) : null, live, names);
+    if(!live){ done(null, live, names); return; }
+    out=dedupePayloads(out);
+    applyLatest(out, function(){ done(out, live, names); });
   }, function(){ done(null, 0, []); });
 }
 
@@ -4348,18 +4354,20 @@ function showHome(){
   stay=browserStayOpen();
   adelay=autoDelaySec();
   mine=mineList();
+  html+='<section class="panel hUpd" id="homeUpd" style="display:none"></section>';
+  html+='<div class="hCol hColL">';
   html+='<section class="panel hMine"><div class="mineHead"><img src="icons/launcher-home.jpg?v=8" width="54" height="54" alt=""><div><b>'+esc(OWNER)+'</b><span>'+esc(t('mineDesc'))+'</span></div></div>';
   html+='<div class="cards" id="homeMine">';
   for(i=0;i<mine.length;i++) html+=rowHtml(mine[i]);
   if(!mine.length) html+='<p class="empty">'+esc(t('emptyFolder'))+'</p>';
   html+='</div></section>';
-  html+='<section class="panel hUpd" id="homeUpd" style="display:none"></section>';
-  if(isConsoleHost()) html+='<section class="panel hSys"><p class="label">'+esc(t('sysTitle'))+'</p><div id="homeSys"><p class="empty">'+esc(t('tvLoading'))+'</p></div></section>';
-  if(isConsoleHost()) html+=pwrPanelHtml();
+  var side='';
+  if(isConsoleHost()) side+='<section class="panel hSys"><p class="label">'+esc(t('sysTitle'))+'</p><div id="homeSys"><p class="empty">'+esc(t('tvLoading'))+'</p></div></section>';
+  if(isConsoleHost()) side+=pwrPanelHtml();
   html+='<section class="panel hQuick"><p class="label">'+esc(t('quick'))+'</p><div class="cards" id="homeQuick"></div></section>';
-  html+='<section class="panel hRun"><p class="label">'+esc(t('running'))+'</p><div id="homeRun"><p class="empty">'+esc(isConsoleHost()?t('checkingLoaded'):t('noLoaded'))+'</p></div>'+
-    (isConsoleHost()?'<button type="button" class="more" id="homeRunMore">'+esc(t('manage'))+'</button>':'')+'</section>';
-  html+='<section class="panel hCats"><p class="label">'+esc(t('categories'))+'</p>'+catChipsHtml()+'</section>';
+  side='<section class="panel hRun"><p class="label">'+esc(t('running'))+'</p><div id="homeRun"><p class="empty">'+esc(isConsoleHost()?t('checkingLoaded'):t('noLoaded'))+'</p></div>'+
+    (isConsoleHost()?'<button type="button" class="more" id="homeRunMore">'+esc(t('manage'))+'</button>':'')+'</section>'+side;
+  html+='<section class="panel hCats"><p class="label">'+esc(t('categories'))+'</p>'+catChipsHtml()+'</section></div><div class="hCol hColR">'+side;
   html+='<section class="panel hSet"><p class="label">'+esc(t('autoPayload'))+'</p>'+(PROF?profChipsHtml(false):'')+'<div class="homeOpt">'+
     '<div class="optrow"><div><b>'+esc(t('openAfterJb'))+'</b><small>'+esc(t('openAfterJbHint'))+'</small></div><div class="homeChoices seg">'+
     '<button type="button" data-brows="open" data-state="'+(stay?'on':'off')+'"'+(stay?' class="selected"':'')+'>'+esc(t('yes'))+'</button>'+
@@ -4368,7 +4376,7 @@ function showHome(){
     '<div class="dslide"><input type="range" id="adelay" min="0" max="'+DELAY_MAX+'" step="'+DELAY_STEP+'" value="'+adelay+'" aria-label="'+esc(t('startDelay'))+'"><output id="adelayv" for="adelay"></output></div></div>'+
     '<div class="optrow"><div><b>'+esc(t('autoCountN',{n:autoCount()}))+'</b><small>'+esc(t('autoListHint'))+'</small></div><button type="button" id="homeAutoEdit">'+esc(t('editList'))+'</button></div>'+
     '<div class="optrow"><div><b>'+esc(t('bkTitle'))+'</b><small>'+esc(t('bkHomeHint'))+'</small></div><button type="button" id="homeBackup">'+esc(t('bkOpen'))+'</button></div>'+
-    '</div></section>';
+    '</div></section></div>';
   homeEl.innerHTML=html;
   el=homeEl.querySelectorAll('button[data-brows]');
   for(ci=0;ci<el.length;ci++) el[ci].onclick=function(){ var on=this.getAttribute('data-brows')==='open'; paintBrowserChoice(on); setBrowserStayOpen(on); };
@@ -4693,48 +4701,58 @@ function bindSearch(){
     else if(k==='Escape'){ ev.preventDefault(); ev.stopPropagation(); q.value=''; q.oninput(); q.blur(); }
   };
 }
-/* ---- catalog: follow the latest GitHub release for entries that ask for it ---- */
-var ghDone={};
-function trackLatest(){
-  var all=PAYLOADS, i, repos={}, r;
-  for(i=0;i<all.length;i++) if(all[i] && all[i].latest && all[i].latest.repo) (repos[all[i].latest.repo]=repos[all[i].latest.repo]||[]).push(all[i]);
+/* ---- catalog: follow the latest GitHub release for entries that ask for it ----
+   Runs on every catalog fetch (page load/refresh, sidebar Update, background
+   re-checks). No time cache: only one request per repo in flight at a time.
+   If GitHub fails (rate limit, offline) the last release seen is used. */
+var ghInflight={};
+var GH_LATEST_WAIT_MS=9000;
+function applyLatest(list, done){
+  var i, repos={}, r, pending=1, finished=false, timer;
+  function settle(){ if(finished) return; finished=true; if(timer) clearTimeout(timer); if(done) done(list); }
+  function one(){ pending--; if(pending<=0) settle(); }
+  for(i=0;list && i<list.length;i++) if(list[i] && list[i].latest && list[i].latest.repo) (repos[list[i].latest.repo]=repos[list[i].latest.repo]||[]).push(list[i]);
   for(r in repos){
-    if(!repos.hasOwnProperty(r) || ghDone[r]) continue;
-    ghDone[r]=1;
-    (function(repo, items){
-      ghLatest(repo, function(rel){
-        var i, k, a, re, sha, changed=false;
-        if(!rel || !rel.assets) return;
-        for(i=0;i<items.length;i++){
-          try{ re=new RegExp(items[i].latest.asset); }catch(e){ continue; }
-          for(k=0;k<rel.assets.length;k++){
-            a=rel.assets[k];
-            if(!re.test(a.name||'')) continue;
-            sha=String(a.digest||'').replace(/^sha256:/,'').toLowerCase();
-            if(sha.length!==64 || !a.browser_download_url) break;
-            if(sha!==items[i].checksum){
-              items[i].checksum=sha; items[i].url=a.browser_download_url;
-              items[i].size=a.size|0; items[i].version=String(rel.tag_name||items[i].version).replace(/^v(?=\d)/,'');
-              changed=true;
-            }
-            break;
-          }
-        }
-        if(changed){ if(!currentFolder) showHome(); else if(currentFolder==='search' || isCatalogId(currentFolder)) showFolder(currentFolder); }
-      });
-    })(r, repos[r]);
+    if(!repos.hasOwnProperty(r)) continue;
+    pending++;
+    (function(items){
+      ghLatest(items[0].latest.repo, function(rel){ if(!finished) applyRelease(items, rel); one(); });
+    })(repos[r]);
+  }
+  timer=setTimeout(settle, GH_LATEST_WAIT_MS);
+  one();
+}
+function applyRelease(items, rel){
+  var i, k, a, re, sha;
+  if(!rel || !rel.assets) return;
+  for(i=0;i<items.length;i++){
+    try{ re=new RegExp(items[i].latest.asset); }catch(e){ continue; }
+    for(k=0;k<rel.assets.length;k++){
+      a=rel.assets[k];
+      if(!re.test(a.name||'')) continue;
+      sha=String(a.digest||'').replace(/^sha256:/,'').toLowerCase();
+      if(sha.length!==64 || !a.browser_download_url) break;
+      if(sha!==String(items[i].checksum||'').toLowerCase()){
+        items[i].checksum=sha; items[i].sha256=sha; items[i].url=a.browser_download_url;
+        items[i].size=a.size|0; items[i].version=String(rel.tag_name||items[i].version).replace(/^v(?=\d)/,'');
+      }
+      break;
+    }
   }
 }
 function ghLatest(repo, cb){
-  var key='ps5elfs-gh-'+repo, c=null;
-  try{ c=JSON.parse(localStorage.getItem(key)||'null'); }catch(e){}
-  if(c && c.at && Date.now()-c.at<6*3600*1000 && c.rel){ cb(c.rel); return; }
+  var key='ps5elfs-gh-'+repo;
+  function lastKnown(){ var c=null; try{ c=JSON.parse(localStorage.getItem(key)||'null'); }catch(e){} return c && c.rel ? c.rel : null; }
+  if(ghInflight[repo]){ ghInflight[repo].push(cb); return; }
+  ghInflight[repo]=[cb];
+  function finish(rel){ var w=ghInflight[repo]||[], i; delete ghInflight[repo]; for(i=0;i<w.length;i++) try{ w[i](rel); }catch(e){} }
   fetchCatalogText('https://api.github.com/repos/'+repo+'/releases/latest').then(function(txt){
     var j=JSON.parse(txt), slim={tag_name:j.tag_name,assets:[]}, i;
-    for(i=0;j.assets && i<j.assets.length;i++) slim.assets.push({name:j.assets[i].name,size:j.assets[i].size,digest:j.assets[i].digest,browser_download_url:j.assets[i].browser_download_url});
+    if(!j || !j.tag_name || !j.assets) throw new Error('no release');
+    for(i=0;i<j.assets.length;i++) slim.assets.push({name:j.assets[i].name,size:j.assets[i].size,digest:j.assets[i].digest,browser_download_url:j.assets[i].browser_download_url});
     try{ localStorage.setItem(key, JSON.stringify({at:Date.now(),rel:slim})); }catch(e){}
-    cb(slim);
-  }).catch(function(){ cb(c && c.rel); });
+    finish(slim);
+  }).catch(function(){ finish(lastKnown()); });
 }
 /* ---- controller and keyboard ---- */
 function goBack(){
@@ -6365,7 +6383,6 @@ function bootAfterCatalog(){
   (function(){ var q=document.getElementById('qkbtn'); if(q){ q.onclick=qkToggle; q.title=t('qkTitle'); q.setAttribute('aria-label', t('qkTitle')); } })();
   profLoad(function(){ if(!currentFolder) showHome(); else if(currentFolder==='auto') showAutoPayloadFolder(); });
   bindSearch();
-  setTimeout(trackLatest, 2500);
   if(isConsoleHost()){ watchRunning(); pollProcs(true); }
   var start=getHashFolder();
   if(start)showFolder(start); else showHome();
