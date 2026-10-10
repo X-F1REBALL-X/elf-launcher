@@ -690,13 +690,13 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 .dslide output{flex:0 0 auto;min-width:3.6rem;margin-inline-start:.6rem;padding:.2rem .55rem;text-align:center;font-weight:800;font-size:.92rem;color:#fff;background:var(--pri2);border-radius:999px;font-variant-numeric:tabular-nums}
 
 /* All payloads: big folder tiles and larger payload banners (controller friendly) */
-.foldgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:.7rem;margin:0 0 var(--s5)}
-.foldgrid button,[dir=rtl] .foldgrid button{display:flex;align-items:center;min-height:4.4rem;margin:0;padding:.55rem .8rem .55rem .65rem;font-size:1.08rem;font-weight:800;letter-spacing:.005em;border-radius:16px;text-align:start;white-space:nowrap}
-[dir=rtl] .foldgrid button{padding:.55rem .65rem .55rem .8rem}
+.foldgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:.6rem;max-width:56rem;margin:0 auto var(--s5)}
+.foldgrid button,[dir=rtl] .foldgrid button{display:flex;align-items:center;min-height:3.7rem;margin:0;padding:.45rem .7rem .45rem .55rem;font-size:1rem;font-weight:800;letter-spacing:.005em;border-radius:16px;text-align:start;white-space:nowrap}
+[dir=rtl] .foldgrid button{padding:.45rem .55rem .45rem .7rem}
 .foldgrid button:before{box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 3px 10px rgba(60,45,25,.16)}
-.foldgrid button>span:not(.ncount){flex:1 1 auto;min-width:0;padding:0 .4rem;text-align:center;overflow:hidden;text-overflow:ellipsis}
-.foldgrid .subfold .fico{width:3rem;height:3rem;margin:0;margin-inline-end:.75rem;border-radius:12px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.18)}
-.foldgrid button .ncount{min-width:2.2rem;margin-inline-start:.6rem;font-size:.9rem;line-height:1.7}
+.foldgrid button>span:not(.ncount){flex:1 1 auto;min-width:0;padding:0 .3rem;text-align:center;white-space:normal;line-height:1.15;overflow-wrap:break-word}
+.foldgrid .subfold .fico{width:2.6rem;height:2.6rem;margin:0;margin-inline-end:.75rem;border-radius:12px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.18)}
+.foldgrid button .ncount{min-width:2rem;margin-inline-start:.5rem;font-size:.85rem;line-height:1.7}
 .foldgrid button.active:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--c,var(--pri)),0 4px 14px rgba(60,45,25,.2)}
 .foldgrid button:not(.active){opacity:.92}
 .foldgrid button:focus:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--pri)}
