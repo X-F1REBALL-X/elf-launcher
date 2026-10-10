@@ -1,4 +1,4 @@
-# Elf Launcher
+<img src="docs/img/banner.png" alt="Elf Launcher">
 
 Home screen and browser ELF payload launcher for a jailbroken PS5.
 
