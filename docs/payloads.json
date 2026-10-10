@@ -1,6 +1,6 @@
 {
   "name": "X-F1REBALL-X elf-launcher",
-  "app_version": "1.1.8",
+  "app_version": "2.0.0",
   "payloads": [
     {
       "name": "elf-launcher.elf",
@@ -8,12 +8,12 @@
       "path": "launcher/elf-launcher.elf",
       "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf",
       "description": "Installs the home screen tile and serves this page from the console.",
-      "version": "1.1.8",
+      "version": "2.0.0",
       "category": "Loader",
       "author": "X-F1REBALL-X",
-      "size": 1044160,
-      "checksum": "0d109ace6701321e00100234304989fa7edbc861695ee70868c9696745d222e5",
-      "sha256": "0d109ace6701321e00100234304989fa7edbc861695ee70868c9696745d222e5"
+      "size": 1441688,
+      "checksum": "876e6c1173149e82334c2bac133c94acece52547ad1c1d4be9e694323bf24bb5",
+      "sha256": "876e6c1173149e82334c2bac133c94acece52547ad1c1d4be9e694323bf24bb5"
     },
     {
       "name": "elfldr-ps5.elf",
@@ -271,14 +271,14 @@
       "icon": "https://raw.githubusercontent.com/drakmor/ShadowMountPlus/4cde42a2293756132735d8e4280eb71f089865ee/smp_icon.png",
       "filename": "shadowmountplus.elf",
       "path": "storage/shadowmountplus.elf",
-      "url": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta3/shadowmountplus.elf",
+      "url": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta4/shadowmountplus.elf",
       "description": "Mounts dumped games from internal storage or USB.",
-      "version": "1.7beta3",
+      "version": "1.7beta4",
       "category": "Game Storage",
       "author": "Drakmor",
-      "size": 2437848,
-      "checksum": "2a7427e20ba7a70bd8cd01e47eb00ee7ca82db82dff3da7884f48f9c3fcbe95a",
-      "source_direct": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta3/shadowmountplus.elf"
+      "size": 2475496,
+      "checksum": "fc4e5f715e76660ce34bde2adb10eaf1d069cb2cdf06f7a380896dfb62bd0c4a",
+      "source_direct": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta4/shadowmountplus.elf"
     },
     {
       "name": "SMPlusGui.elf",
@@ -393,14 +393,14 @@
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v6.6.1/ps5upload-6.6.1.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v6.7.4/ps5upload-6.7.4.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v6.6.1",
+      "version": "v6.7.4",
       "category": "Files",
       "author": "phantomptr",
-      "size": 3296952,
-      "checksum": "bca34345897b4332334c3da7b61b851eca884d3c0db5dca275b3327ac623b17a",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v6.6.1/ps5upload-6.6.1.elf"
+      "size": 3297392,
+      "checksum": "72b183a73082ff48f8a97e87c773e6c581e8ec80ba1747a338ffad67b2a2335d",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v6.7.4/ps5upload-6.7.4.elf"
     },
     {
       "name": "BFpilot.elf",
@@ -558,15 +558,15 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/6fff4b33cd92e82d65bfcabf6cde456fb0cc6138/assets/icon0.png",
       "filename": "HearBridge-PS5.elf",
       "path": "apps/HearBridge-PS5.elf",
-      "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0.elf",
+      "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.3.0/HearBridge-PS5-1.3.0.elf",
       "description": "Bluetooth headphones for a jailbroken PS5: game and system audio, no dongle. Page on port 8090.",
-      "version": "1.1.0",
+      "version": "1.3.0",
       "category": "Media",
       "author": "X-F1REBALL-X",
-      "size": 493768,
-      "checksum": "9dd8f616ae6ac26b91a91bfb3f95f96ac3a716324256f3fdc30646636d0790d5",
-      "sha256": "9dd8f616ae6ac26b91a91bfb3f95f96ac3a716324256f3fdc30646636d0790d5",
-      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.1.0/HearBridge-PS5-1.1.0.elf",
+      "size": 683368,
+      "checksum": "0867d014d0fca7250c0999dab6b575ee480c5f32dd8374e10634f8ff43b4ea5e",
+      "sha256": "0867d014d0fca7250c0999dab6b575ee480c5f32dd8374e10634f8ff43b4ea5e",
+      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.3.0/HearBridge-PS5-1.3.0.elf",
       "github_latest": {
         "repo": "X-F1REBALL-X/HearBridge-PS5",
         "asset": "^HearBridge-PS5-[0-9.]+\\.elf$"

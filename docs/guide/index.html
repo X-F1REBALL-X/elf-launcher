@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Elf Launcher 2.0.0: guide for the PS5 payload launcher</title>
+<meta name="description" content="Elf Launcher is a home screen and browser launcher for ELF payloads on a jailbroken PS5: catalog, AutoPayload, file manager, backups and more.">
+<link rel="icon" type="image/jpeg" href="../icons/launcher-home.jpg">
+<style>
+:root{--bg:#f7f4ee;--void:#efe9de;--deck:#fffdf9;--card:#fffdf8;--card2:#f4efe5;--edge:#e5ddcd;--edge2:#cfc2ab;
+--ink:#231c14;--ink2:#463b2d;--mute:#665a49;
+--pri:#4f46e5;--pri2:#7c3aed;--rose:#db2777;--mint:#047857;--amber:#b45309;--sky:#0369a1;--teal:#0f766e;--slate:#475569;--net:#c2410c;
+--r:16px;--max:1200px}
+*{box-sizing:border-box}
+html{background:var(--bg);font-size:16px;scroll-behavior:smooth;scroll-padding-top:5rem}
+body{margin:0;color:var(--ink);font:1rem/1.6 "Inter","Segoe UI","SF Pro Display","Helvetica Neue",system-ui,sans-serif;
+background:radial-gradient(70vw 60vh at 85% -10%,rgba(124,58,237,.07),transparent 60%),radial-gradient(60vw 55vh at -10% 110%,rgba(219,39,119,.05),transparent 60%),var(--bg);background-attachment:fixed}
+a{color:var(--pri)}
+code{font:600 .88em/1.4 ui-monospace,"Cascadia Mono","DejaVu Sans Mono",Menlo,Consolas,monospace;background:var(--card2);border:1px solid var(--edge);border-radius:6px;padding:.05em .4em;white-space:nowrap}
+.in{max-width:var(--max);margin:0 auto;padding:0 1.5rem}
+/* header */
+.top{position:sticky;top:0;z-index:50;background:rgba(255,253,248,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--edge)}
+.top .in{display:flex;align-items:center;height:4.4rem}
+.brand{display:flex;align-items:center;color:var(--ink);text-decoration:none;margin-inline-end:auto}
+.logo{width:2.7rem;height:2.7rem;margin-inline-end:.8rem;border-radius:13px;overflow:hidden;box-shadow:0 6px 18px rgba(79,70,229,.3)}
+.logo img{display:block;width:100%;height:100%}
+.name{font-size:1.35rem;font-weight:800;line-height:1.05;white-space:nowrap}
+.name b{background:linear-gradient(90deg,var(--pri),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.ver{display:inline-block;margin-top:.2rem;font-size:.72rem;font-weight:800;padding:.02rem .5rem;border-radius:999px;color:var(--ink2);background:var(--card2);border:1px solid var(--edge2)}
+.links{display:flex;align-items:center}
+.links a{color:var(--ink2);text-decoration:none;font-size:.9rem;font-weight:700;padding:.5rem .7rem;border-radius:10px}
+.links a:hover{background:var(--card2);color:var(--ink)}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:3rem;padding:.4rem 1.4rem;font-weight:800;font-size:1rem;text-decoration:none;border-radius:12px;color:var(--ink);background:var(--card);border:1px solid var(--edge2);margin:0 .6rem .6rem 0}
+.btn.pri{color:#fff;background:linear-gradient(135deg,var(--pri),var(--pri2));border-color:transparent;box-shadow:0 8px 20px rgba(79,70,229,.25)}
+.btn:hover{filter:brightness(1.05)}
+.btn small{font-weight:600;opacity:.8;margin-inline-start:.5rem;font-size:.8rem}
+/* hero */
+.hero{padding:4rem 0 3rem}
+.hero .in{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-gap:3rem;align-items:center}
+.kicker{display:inline-block;font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--pri2);background:rgba(124,58,237,.1);border-radius:999px;padding:.2rem .8rem;margin-bottom:1rem}
+h1{margin:0 0 1rem;font-size:3rem;line-height:1.08;font-weight:900;letter-spacing:-.01em}
+h1 b{background:linear-gradient(90deg,var(--pri),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:1.15rem;color:var(--ink2);margin:0 0 1.6rem}
+.shot{display:block;width:100%;border-radius:var(--r);border:1px solid var(--edge2);box-shadow:0 20px 50px rgba(60,45,25,.18)}
+.small{font-size:.86rem;color:var(--mute)}
+/* sections */
+section{padding:3.5rem 0}
+.band{background:rgba(255,253,248,.7);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)}
+h2{display:flex;align-items:center;margin:0 0 .6rem;font-size:1.8rem;font-weight:900;line-height:1.2}
+h2:before{content:"";width:.75rem;height:.75rem;margin-inline-end:.7rem;border-radius:4px;background:var(--c,var(--pri))}
+.sec-lead{margin:0 0 2rem;color:var(--ink2);max-width:48rem;font-size:1.05rem}
+h3{margin:0 0 .5rem;font-size:1.12rem;font-weight:800}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:1.2rem}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-gap:1.5rem}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:var(--r);padding:1.3rem 1.4rem;box-shadow:0 1px 2px rgba(60,45,25,.05),0 6px 20px rgba(60,45,25,.06)}
+.card p{margin:0;color:var(--ink2)}
+.ico{display:flex;align-items:center;justify-content:center;width:3rem;height:3rem;margin-bottom:.8rem;border-radius:13px;color:#fff;background:linear-gradient(160deg,rgba(255,255,255,.3),rgba(255,255,255,0) 50%,rgba(0,0,0,.2)),var(--c,var(--pri));box-shadow:0 3px 8px rgba(60,45,25,.18)}
+.ico svg{width:1.6rem;height:1.6rem;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* steps */
+.steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;grid-gap:.9rem}
+.steps li{position:relative;padding:1.1rem 1.3rem 1.1rem 4.2rem;background:var(--card);border:1px solid var(--edge);border-radius:var(--r)}
+.steps li:before{counter-increment:s;content:counter(s);position:absolute;left:1.2rem;top:1.05rem;width:2.1rem;height:2.1rem;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;background:var(--pri)}
+.steps b{display:block;margin-bottom:.15rem}
+.steps span{color:var(--ink2)}
+/* gallery */
+.gal figure{margin:0}
+.gal figcaption{margin-top:.6rem;font-weight:700;color:var(--ink2)}
+/* notes */
+.notes{columns:2;column-gap:1.5rem}
+.note{break-inside:avoid;margin:0 0 1.5rem;background:var(--card);border:1px solid var(--edge);border-top:4px solid var(--c);border-radius:var(--r);padding:1.2rem 1.4rem}
+.note h3{color:var(--c)}
+.note ul{margin:0;padding-inline-start:1.2rem}
+.note li{margin:.3rem 0;color:var(--ink2)}
+.note li ul{margin:.2rem 0}
+.callout{border-inline-start:4px solid var(--amber);background:rgba(180,83,9,.06);border-radius:12px;padding:1rem 1.2rem;color:var(--ink2);margin-top:1.5rem}
+footer{padding:2.5rem 0 3rem;color:var(--mute);font-size:.9rem;border-top:1px solid var(--edge)}
+footer a{color:var(--ink2);font-weight:700}
+@media(max-width:960px){.hero .in,.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.notes{columns:1}h1{font-size:2.3rem}.links{display:none}}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+<a class="brand" href="#"><span class="logo"><img src="../icons/launcher-home.jpg" alt="" width="54" height="54"></span><span><span class="name">Elf <b>Launcher</b></span><br><span class="ver">2.0.0</span></span></a>
+<nav class="links"><a href="#what">What it is</a><a href="#install">Install</a><a href="#use">Using it</a><a href="#new">What's new</a><a href="#screens">Screenshots</a></nav>
+</div></header>
+
+<section class="hero"><div class="in">
+<div>
+<span class="kicker">Version 2.0.0, a full overhaul</span>
+<h1>Every payload, one press away on your <b>PS5</b>.</h1>
+<p class="lead">Elf Launcher is a home screen and browser launcher for ELF payloads on a jailbroken PS5. Browse a curated catalog, keep your payloads on the console, run them automatically after every jailbreak, and manage files, backups and power from one page.</p>
+<a class="btn pri" href="https://github.com/X-F1REBALL-X/elf-launcher/releases/latest">Download 2.0.0</a>
+<a class="btn" href="https://x-f1reball-x.github.io/elf-launcher/">Open the live page</a>
+<a class="btn" href="https://github.com/X-F1REBALL-X/elf-launcher">Source on GitHub</a>
+<p class="small">Free and open source. Developed by <a href="https://github.com/X-F1REBALL-X">X-F1REBALL-X</a>.</p>
+</div>
+<img class="shot" src="img/home.png" alt="Elf Launcher home screen">
+</div></section>
+
+<section id="what" class="band" style="--c:var(--pri)"><div class="in">
+<h2>What it is</h2>
+<p class="sec-lead">A small payload that runs on the console, installs a home screen tile, and serves the launcher page on port 1000. Open it from the tile, from the PS5 browser, or from your phone or PC on the same network.</p>
+<div class="grid3">
+<div class="card" style="--c:var(--pri)"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></span><h3>Catalog of payloads</h3><p>About 60 payloads in nine colored folders: loaders, HEN, game library, mods, files, network, media, system and dev tools. Download once, load any time.</p></div>
+<div class="card" style="--c:var(--pri2)"><span class="ico"><svg viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></svg></span><h3>AutoPayload</h3><p>Mark payloads to load by themselves after every jailbreak, with profiles, a start delay and an option to go straight back to the home screen.</p></div>
+<div class="card" style="--c:var(--teal)"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg></span><h3>Console tools</h3><p>File manager for the whole console, text editor with backups, running processes, event log with crash watch, and power controls.</p></div>
+<div class="card" style="--c:var(--mint)"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span><h3>Always up to date</h3><p>Saved payloads are checked against their latest releases. Update one or all in a press. The launcher updates itself the same way.</p></div>
+<div class="card" style="--c:var(--rose)"><span class="ico"><svg viewBox="0 0 24 24"><path d="M9 3h6l-1 6 4 4v2h-5v6l-1 1-1-1v-6H6v-2l4-4z"/></svg></span><h3>Quick launch</h3><p>Pin up to 6 favorites to the home screen. Recent and downloaded payloads fill the rest.</p></div>
+<div class="card" style="--c:var(--amber)"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM8 7V4h8v3M9 13h6"/></svg></span><h3>Backup and Restore</h3><p>Save settings, profiles, pins and your payload list to USB or /data, and bring everything back on a clean console.</p></div>
+</div>
+</div></section>
+
+<section id="install" style="--c:var(--pri2)"><div class="in">
+<h2>Install</h2>
+<p class="sec-lead">You need a jailbroken PS5 with an ELF loader listening on port 9021 (elfldr). Elf Launcher does the rest.</p>
+<ol class="steps">
+<li><b>Jailbreak the console</b><span>Use your usual exploit (for example WK Autoloader) and make sure elfldr is running on port <code>9021</code>.</span></li>
+<li><b>Send the launcher once</b><span>Send <code>elf-launcher.elf</code> from the latest release to port 9021 with any payload sender, or load it from WK Autoloader. It starts the page on port <code>1000</code> and installs the Elf Launcher tile under Games.</span></li>
+<li><b>Open it</b><span>Press the Elf Launcher tile on the home screen, or open <code>http://&lt;PS5 IP&gt;:1000</code> in the PS5 browser or on your phone or PC.</span></li>
+<li><b>Pick your AutoPayload</b><span>In AutoPayload, tap the payloads that should load after every jailbreak, set the start delay, and choose whether the page opens afterwards or the console goes back to the home screen.</span></li>
+</ol>
+<div class="callout">Updating from 1.x: press Update in the launcher, or send the new <code>elf-launcher.elf</code> once. The new build takes over port 1000 from the old one, so no reboot is needed.</div>
+</div></section>
+
+<section id="use" class="band" style="--c:var(--sky)"><div class="in">
+<h2>Using it</h2>
+<p class="sec-lead">Everything works with the DualSense: the D-pad moves, Cross presses, Circle goes back, Square cancels AutoPayload, and holding Options opens the quick menu.</p>
+<div class="grid2">
+<div class="card"><h3>Home</h3><p>Your projects, Quick launch, the payload folders as colored tiles, what is running right now, Restart, Rest mode and Power off, AutoPayload settings and system info.</p></div>
+<div class="card"><h3>All payloads</h3><p>Pick a folder tile, then press Download to save a payload to the console or Payload to load it. Update appears when a newer build is out. Deleting is not offered here.</p></div>
+<div class="card"><h3>Downloaded</h3><p>Every payload saved on the console. Update all, load several at once (one every 0.6 seconds), pin to Quick launch, and Delete when you no longer need one.</p></div>
+<div class="card"><h3>AutoPayload</h3><p>Tap rows to switch auto load on or off, keep several profiles, and set a start delay from 0 to 10 seconds. AutoPayload runs once per jailbreak.</p></div>
+<div class="card"><h3>PS5 files and Load file</h3><p>Browse all drives, copy, move, rename and delete files, edit text files with automatic backups, and load any ELF from USB, from a path, or from your phone or PC.</p></div>
+<div class="card"><h3>Running and Event log</h3><p>See and stop running payloads. The event log lists every load, error and crash with its time.</p></div>
+</div>
+</div></section>
+
+<section id="new" style="--c:var(--rose)"><div class="in">
+<h2>What's new in 2.0.0</h2>
+<p class="sec-lead">2.0.0 rebuilds the page, the on-console server and the catalog. Here is everything that changed since 1.1.8.</p>
+<div class="notes">
+<article class="note" style="--c:var(--pri2)"><h3>New look</h3><ul><li>New interface in the HearBridge style: a left menu (Library, Console, Settings), a header with search, status, the running count, PS5 IP, clock and language.</li><li>Light Pearl theme by default, with bold colored category tiles. Seven themes in Settings &gt; Theme: Pearl, Gray, White, Lavender, Sky, Gold (dark) and Black (dark).</li><li>Bigger rows and bigger buttons everywhere, made for the DualSense: every action is reachable with the D-pad, nothing sits in a screen corner.</li><li>Real project icons for the catalog payloads. Payloads without their own icon use the icon of their folder instead of a generic badge.</li><li>Clean payload names: no ".elf", no version numbers and no "ps5" in names (PS5Upload and ps5debug keep their names), long names split and wrap instead of being cut.</li><li>11 languages: English, Arabic, Spanish, French, German, Portuguese, Russian, Japanese, Chinese, Italian and Hebrew (right to left). The choice is kept after reload. A small Hebrew font (Assistant, OFL) ships inside the launcher so Hebrew shows correctly on a clean console.</li><li>New home screen icon for the launcher tile, placed under Games.</li></ul></article>
+<article class="note" style="--c:var(--pri)"><h3>Home</h3><ul><li>A real home screen instead of a plain list:<ul><li>My projects: Elf Launcher and HearBridge, one press to download or load. Reboot and Rest mode moved to the Power tiles.</li><li>Quick launch: your pinned payloads first, then recently loaded ones, then downloaded ones (6 tiles).</li><li>Categories: the payload folders as colored rounded tiles with icon, centered name and count. One press opens the folder in All payloads.</li><li>Running: what is running on the console right now, with Manage to stop payloads.</li><li>Power: Restart, Rest mode and Power off tiles.</li><li>AutoPayload: profile, open after jailbreak, start delay and how many payloads load automatically.</li><li>Backup and Restore shortcut.</li></ul></li><li>System info: CPU, SoC, temperatures, memory, free space on /data and uptime.</li><li>On narrow screens and phones the home columns stack into one column.</li></ul></article>
+<article class="note" style="--c:var(--sky)"><h3>All payloads</h3><ul><li>The catalog is split into nine folders: Loaders, Jailbreak and HEN, Game Library, Mods and Saves, Files and Transfer, Network and Remote, Media and Audio, System, Dev Tools.</li><li>Folder tiles redesigned: a centered 3 by 3 grid of colored rounded tiles, each with a large folder icon, the folder name centered and the payload count on the right. The open folder gets a ring.</li><li>Bigger payload banners: taller cards, larger icons, bigger names and descriptions, larger Download, Payload and Update buttons.</li><li>Delete is no longer offered in All payloads. Deleting a saved payload is only possible from Downloaded, so nothing gets removed by accident while browsing.</li><li>Multi select: mark several payloads and load them in one go.</li><li>Search across the whole catalog from the header.</li></ul></article>
+<article class="note" style="--c:var(--mint)"><h3>Downloaded</h3><ul><li>Lists every payload saved on the console with its version, Update when the catalog has a newer build, and Delete.</li><li>Update all: updates every saved payload that has a newer catalog version in one press. The menu shows how many updates are waiting.</li><li>Load selected: loads the marked payloads one after another, 0.6 seconds apart.</li><li>Payloads can be pinned to Quick launch from here and from the recent list.</li></ul></article>
+<article class="note" style="--c:var(--pri)"><h3>Pinning (new)</h3><ul><li>Pin any payload to Quick launch on the home screen. Pinned payloads come first, in the order you pinned them.</li><li>Limit: up to 6 pins, the number of Quick launch tiles. With 6 pinned, a seventh pin is blocked and a short message says "Up to 6 pins. Unpin one first." Restoring a backup keeps at most 6 pins.</li></ul></article>
+<article class="note" style="--c:var(--pri2)"><h3>AutoPayload</h3><ul><li>Profiles: keep several AutoPayload lists (for example one for games and one for homebrew) and switch between them. Create, rename and delete profiles.</li><li>Tap a row to turn auto load on or off. Only payloads that are saved on the console can be auto loaded.</li><li>Start delay slider from 0 to 10 seconds in 0.5 second steps (default 3 seconds). Square cancels while it counts down.</li><li>Open this page after jailbreak: Yes opens the launcher page after AutoPayload, No (Leave closed) runs AutoPayload in the background.</li><li>Leave closed now really leaves: when the launcher page is not wanted, Elf Launcher goes back to the PS5 home screen after AutoPayload, the same way etaHEN and itsPLK loaders do. The WebKit (WK Autoloader) page closes by itself, no app is killed and no error dialog appears.</li><li>AutoPayload runs once per jailbreak, never twice, also when a new launcher build takes over.</li><li>Quieter: no "loader ready", "loader started", "AutoPayload N" or Loaded toasts any more. Toasts only appear when something needs attention (a payload was skipped, the loader is missing, setup failed).</li></ul></article>
+<article class="note" style="--c:var(--teal)"><h3>Console tools</h3><ul><li>PS5 files: a file manager for the console. Browse every drive (internal, USB, /data and the whole system read only), copy, move, rename, delete and create folders, with progress for long jobs.</li><li>Text viewer and editor: open text and config files, edit them, and every save keeps a backup you can restore.</li><li>Load file: send an ELF from your phone or PC (drag and drop or pick a file), from a USB drive or from a path on the console. Recent loads are listed.</li><li>Running: list running processes, show all or only payloads, stop a payload safely.</li><li>Event log: loads, errors and crashes with times. Crash watch reports when a loaded payload crashes. Clear log.</li><li>Quick menu: hold Options or press the menu button in the header. It shows the last loaded payload with Load again, the AutoPayload profile switch and pinning.</li></ul></article>
+<article class="note" style="--c:var(--pri2)"><h3>Backup and Restore (new)</h3><ul><li>Save your settings (language, AutoPayload profiles, delay, open after jailbreak, recent list, pins, catalog sources) and your payload list to USB or /data, or download the backup to a phone or PC.</li><li>Restore shows what will change before it happens, downloads catalog payloads again with sha256 checks and copies your own uploads back.</li></ul></article>
+<article class="note" style="--c:var(--amber)"><h3>Updates and catalog</h3><ul><li>Self update: the launcher checks GitHub for a new release on load and every 6 hours, downloads it and switches over live. New builds take over port 1000 from the old one.</li><li>Catalog payloads are checked against their latest upstream releases, with an Update banner when a saved payload is out of date.</li><li>HearBridge is in the catalog and tracks its latest release.</li><li>Catalog fixes: ShadowMount+ link and 47 broken download links fixed, Payload Manager moved to Loaders, 12 payloads (fetchpkg, pkg_install, dump_installer, dump_runner, mounter, actremotelink_agent, LinkDev, OffAct, reboot, suspend, elfldr and pin notify) served from the payload mirror release, byte identical to their catalog sha256.</li><li>Catalog payloads updated to their latest upstream releases:<ul><li>ShadowMount+ 1.7beta3 to 1.7beta4 (drakmor/ShadowMountPlus)</li><li>PS5Upload 6.6.1 to 6.7.4 (phantomptr/ps5upload, latest stable)</li><li>HearBridge 1.1.0 to 1.3.0 (X-F1REBALL-X/HearBridge-PS5)</li><li>Every other catalog payload was checked against its upstream release and is already on the latest version.</li></ul></li></ul></article>
+<article class="note" style="--c:var(--rose)"><h3>Fixes and safety</h3><ul><li>Safer sends: one send at a time, the loader is checked before sending, clear error messages.</li><li>Locked down server endpoints: sends, deletes and writes are checked on the console side.</li><li>Browsing works without realpath on firmwares where it fails; killing a process is limited to payloads.</li><li>Port 1000 stays up after jailbreak; a second copy of the launcher takes over cleanly and Quit stops it.</li><li>The home tile folders are created on a clean console and tile errors are logged instead of failing silently.</li><li>Show all processes fixed in Running.</li><li>No more cookies: settings are kept in local storage.</li><li>Phone layout fixes across all views.</li><li>Shorter, clearer toasts: "Home icon failed", "Skipped &lt;name&gt;", "Setup failed", "Elfldr Missing".</li></ul></article>
+</div>
+</div></section>
+
+<section id="screens" class="band" style="--c:var(--teal)"><div class="in">
+<h2>Screenshots</h2>
+<p class="sec-lead">The new interface in the default Pearl theme.</p>
+<div class="grid2 gal">
+<figure><img class="shot" src="img/home.png" alt="Home"><figcaption>Home with Quick launch, categories, power and AutoPayload</figcaption></figure>
+<figure><img class="shot" src="img/all-payloads.png" alt="All payloads"><figcaption>All payloads with the colored folder tiles</figcaption></figure>
+<figure><img class="shot" src="img/downloaded.png" alt="Downloaded"><figcaption>Downloaded: update, pin and delete saved payloads</figcaption></figure>
+<figure><img class="shot" src="img/autopayload.png" alt="AutoPayload"><figcaption>AutoPayload with profiles</figcaption></figure>
+<figure><img class="shot" src="img/themes.png" alt="Themes"><figcaption>Seven themes, light and dark</figcaption></figure>
+<figure><img class="shot" src="img/pin-limit.png" alt="Pin limit"><figcaption>Up to 6 pins on Quick launch</figcaption></figure>
+</div>
+</div></section>
+
+<footer><div class="in">Elf Launcher is developed by <a href="https://github.com/X-F1REBALL-X">X-F1REBALL-X</a>. Payloads in the catalog belong to their authors and link to their own releases. <a href="https://github.com/X-F1REBALL-X/elf-launcher/issues">Report an issue</a>.</div></footer>
+</body>
+</html>
