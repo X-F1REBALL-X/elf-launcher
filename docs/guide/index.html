@@ -76,6 +76,10 @@ h3{margin:0 0 .5rem;font-size:1.12rem;font-weight:800}
 .callout{border-inline-start:4px solid var(--amber);background:rgba(180,83,9,.06);border-radius:12px;padding:1rem 1.2rem;color:var(--ink2);margin-top:1.5rem}
 footer{padding:2.5rem 0 3rem;color:var(--mute);font-size:.9rem;border-top:1px solid var(--edge)}
 footer a{color:var(--ink2);font-weight:700}
+footer .kofi{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;margin-top:1.2rem}
+footer .kofi .btn{min-height:2.5rem;padding:.3rem 1.1rem;font-size:.92rem;margin:0;color:var(--pri);background:var(--card);border-color:var(--edge2)}
+footer .kofi .btn:hover{border-color:var(--pri)}
+footer .kofi svg{width:1.15rem;height:1.15rem;margin-inline-end:.5rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:960px){.hero .in,.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.notes{columns:1}h1{font-size:2.3rem}.links{display:none}}
 @media(max-width:600px){.grid3{grid-template-columns:1fr}}
 /* language switcher */
@@ -226,7 +230,7 @@ img{max-width:100%;height:auto}
 <figure><a class="zoom" href="img/pin-limit.png" target="_blank" rel="noopener"><img alt="Pin limit" class="shot" data-i18n-attr="alt:screens14a" src="img/pin-limit.png" loading="lazy"/></a><figcaption data-i18n="screens8">Up to 6 pins on Quick launch</figcaption></figure>
 </div>
 </div></section>
-<footer><div class="in" data-i18n="foot1">Elf Launcher is developed by <a href="https://github.com/X-F1REBALL-X">X-F1REBALL-X</a>. Payloads in the catalog belong to their authors and link to their own releases. <a href="https://github.com/X-F1REBALL-X/elf-launcher/issues">Report an issue</a>.</div></footer>
+<footer><div class="in" data-i18n="foot1">Elf Launcher is developed by <a href="https://github.com/X-F1REBALL-X">X-F1REBALL-X</a>. Payloads in the catalog belong to their authors and link to their own releases. <a href="https://github.com/X-F1REBALL-X/elf-launcher/issues">Report an issue</a>.</div><div class="in kofi" id="support"><a class="btn" href="https://ko-fi.com/xf1reballx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9.5h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3.5v2M12 3.5v2"/></svg><span data-i18n="kofi1">Support the project on Ko-fi</span></a><span data-i18n="kofi2">The project stays free and open source.</span></div></footer>
 <script>
 (function(){
 var LANGS=[{"code": "en", "name": "English", "flag": "us"}, {"code": "ar", "name": "العربية", "flag": "sa", "rtl": true}, {"code": "es", "name": "Español", "flag": "es"}, {"code": "fr", "name": "Français", "flag": "fr"}, {"code": "de", "name": "Deutsch", "flag": "de"}, {"code": "pt", "name": "Português", "flag": "br"}, {"code": "ru", "name": "Русский", "flag": "ru"}, {"code": "ja", "name": "日本語", "flag": "jp"}, {"code": "zh", "name": "中文", "flag": "cn"}, {"code": "it", "name": "Italiano", "flag": "it"}];
@@ -354,7 +358,9 @@ var I18N={
 "screens13a": "Themes",
 "screens14a": "Pin limit",
 "lang": "Language",
-"menu": "Menu"
+"menu": "Menu",
+"kofi1": "Support the project on Ko-fi",
+"kofi2": "The project stays free and open source."
 },
 "ar": {
 "title": "Elf Launcher 2.0.0: دليل مُشغِّل الحمولات لجهاز PS5",
@@ -478,7 +484,9 @@ var I18N={
 "screens13a": "السمات",
 "screens14a": "حد التثبيت",
 "lang": "اللغة",
-"menu": "القائمة"
+"menu": "القائمة",
+"kofi1": "ادعم المشروع على Ko-fi",
+"kofi2": "يبقى المشروع مجانيًا ومفتوح المصدر."
 },
 "es": {
 "title": "Elf Launcher 2.0.0: guía del lanzador de payloads para PS5",
@@ -602,7 +610,9 @@ var I18N={
 "screens13a": "Temas",
 "screens14a": "Límite de fijados",
 "lang": "Idioma",
-"menu": "Menú"
+"menu": "Menú",
+"kofi1": "Apoya el proyecto en Ko-fi",
+"kofi2": "El proyecto sigue siendo gratuito y de código abierto."
 },
 "fr": {
 "title": "Elf Launcher 2.0.0 : guide du lanceur de payloads pour PS5",
@@ -726,7 +736,9 @@ var I18N={
 "screens13a": "Thèmes",
 "screens14a": "Limite d'épingles",
 "lang": "Langue",
-"menu": "Menu"
+"menu": "Menu",
+"kofi1": "Soutenir le projet sur Ko-fi",
+"kofi2": "Le projet reste gratuit et open source."
 },
 "de": {
 "title": "Elf Launcher 2.0.0: Anleitung zum Payload-Launcher für die PS5",
@@ -850,7 +862,9 @@ var I18N={
 "screens13a": "Designs",
 "screens14a": "Anheft-Limit",
 "lang": "Sprache",
-"menu": "Menü"
+"menu": "Menü",
+"kofi1": "Das Projekt auf Ko-fi unterstützen",
+"kofi2": "Das Projekt bleibt kostenlos und Open Source."
 },
 "pt": {
 "title": "Elf Launcher 2.0.0: guia do lançador de payloads para PS5",
@@ -974,7 +988,9 @@ var I18N={
 "screens13a": "Temas",
 "screens14a": "Limite de fixados",
 "lang": "Idioma",
-"menu": "Menu"
+"menu": "Menu",
+"kofi1": "Apoie o projeto no Ko-fi",
+"kofi2": "O projeto continua gratuito e de código aberto."
 },
 "ru": {
 "title": "Elf Launcher 2.0.0: руководство по лаунчеру payload для PS5",
@@ -1098,7 +1114,9 @@ var I18N={
 "screens13a": "Темы",
 "screens14a": "Лимит закреплений",
 "lang": "Язык",
-"menu": "Меню"
+"menu": "Меню",
+"kofi1": "Поддержать проект на Ko-fi",
+"kofi2": "Проект остаётся бесплатным и с открытым исходным кодом."
 },
 "ja": {
 "title": "Elf Launcher 2.0.0: PS5用ペイロードランチャーのガイド",
@@ -1222,7 +1240,9 @@ var I18N={
 "screens13a": "テーマ",
 "screens14a": "ピン留めの上限",
 "lang": "言語",
-"menu": "メニュー"
+"menu": "メニュー",
+"kofi1": "Ko-fi でプロジェクトを支援",
+"kofi2": "このプロジェクトはこれからも無料のオープンソースです。"
 },
 "zh": {
 "title": "Elf Launcher 2.0.0：PS5 载荷启动器使用指南",
@@ -1346,7 +1366,9 @@ var I18N={
 "screens13a": "主题",
 "screens14a": "固定上限",
 "lang": "语言",
-"menu": "菜单"
+"menu": "菜单",
+"kofi1": "在 Ko-fi 上支持本项目",
+"kofi2": "本项目将继续免费并保持开源。"
 },
 "it": {
 "title": "Elf Launcher 2.0.0: guida al launcher di payload per PS5",
@@ -1470,7 +1492,9 @@ var I18N={
 "screens13a": "Temi",
 "screens14a": "Limite elementi fissati",
 "lang": "Lingua",
-"menu": "Menu"
+"menu": "Menu",
+"kofi1": "Sostieni il progetto su Ko-fi",
+"kofi2": "Il progetto resta gratuito e open source."
 }
 };
 var KEY='elfguide-lang';
