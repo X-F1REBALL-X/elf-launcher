@@ -293,6 +293,7 @@ out:
 
 /* The loader starts only when the page is opened, not during install. */
 int start_real_elfldr(void);
+pid_t elfldr_find_pid(const char *name);
 void notify(const char *fmt, ...);
 static void evlog(const char *kind, const char *fmt, ...);
 static int start_elfldr_guarded(void);
@@ -322,13 +323,12 @@ static void on_page_open(void) {
   fd = connect_port(9021);
   if (fd >= 0) {
     close(fd);
-    notify("loader ready");
+    /* Already up after jailbreak: no toast. */
     return;
   }
-  if (start_elfldr_guarded() == 0)
-    notify("loader started");
-  else
-    notify("loader missing");
+  /* elfldr shows its own toast when it starts; only report a failure. */
+  if (start_elfldr_guarded() != 0)
+    notify("Elfldr Missing");
 }
 
 static int send_all(int c, const void *buf, size_t n) {
@@ -770,7 +770,7 @@ static int local_file(const char *rel, char *out, size_t outsz) {
 
 static void tile_report(int err) {
   if (err) {
-    notify("Home icon install failed: 0x%08X", (unsigned)err);
+    notify("Home icon failed");
     evlog("error", "home tile install failed (0x%08X): %s", (unsigned)err, tile_fail[0] ? tile_fail : "unknown step");
   } else {
     notify("Home icon installed");
@@ -4664,7 +4664,7 @@ static void run_headless_auto(void) {
   if (e == 0) {
     if (from_list && n > 0) {
       for (i = 0; i < n; i++)
-        notify("Skipped %s (file missing)", listed[i]);
+        notify("Skipped %s", listed[i]);
     }
     return;
   }
@@ -4680,7 +4680,7 @@ static void run_headless_auto(void) {
         }
       }
       if (!found) {
-        notify("Skipped %s (file missing)", listed[i]);
+        notify("Skipped %s", listed[i]);
         skipped++;
       }
     }
@@ -4691,7 +4691,7 @@ static void run_headless_auto(void) {
 
   for (i = 0; i < e; i++) {
     if (auto_disk_path(use[i], path, sizeof(path))) {
-      notify("Skipped %s (file missing)", use[i]);
+      notify("Skipped %s", use[i]);
       evlog("error", "AutoPayload skipped %s (file missing)", use[i]);
       skipped++;
       continue;
@@ -4709,16 +4709,98 @@ static void run_headless_auto(void) {
       skipped++;
     }
   }
-  if (sent > 0)
-    notify("AutoPayload %d", sent);
-  else if (skipped > 0)
-    notify("AutoPayload skipped");
+  /* all AutoPayloads sent: no toast; only report skips */
+  if (sent == 0 && skipped > 0)
+    notify("Skipped");
 }
 
 static void *headless_auto_thread(void *arg) {
   (void)arg;
   run_headless_auto();
   return NULL;
+}
+
+typedef struct {
+  unsigned int size;
+  uint32_t userId;
+} el_launch_uri_param_t;
+int sceKernelLoadStartModule(const char *path, size_t args, const void *argp,
+                             uint32_t flags, const void *opt, int *res);
+int sceUserServiceInitialize(const void *params);
+int sceUserServiceGetForegroundUser(int *user_id);
+
+static int webkit_page_open(void) {
+  int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC, 0};
+  size_t sz = 0;
+  void *buf, *ptr;
+  int hit = 0;
+  if (sysctl(mib, 4, NULL, &sz, NULL, 0) || !sz)
+    return 0;
+  buf = malloc(sz);
+  if (!buf)
+    return 0;
+  if (sysctl(mib, 4, buf, &sz, NULL, 0)) {
+    free(buf);
+    return 0;
+  }
+  for (ptr = buf; ptr < (void *)((char *)buf + sz);) {
+    struct kinfo_proc *ki = (struct kinfo_proc *)ptr;
+    if (ki->ki_structsize <= 0)
+      break;
+    ptr = (char *)ptr + ki->ki_structsize;
+    if (!strncmp(ki->ki_comm, "SceNKWebProcess", sizeof(ki->ki_comm))) {
+      hit = 1;
+      break;
+    }
+  }
+  free(buf);
+  return hit;
+}
+
+/* Leave closed: once AutoPayload is done, go back to the home screen the way
+ * itsPLK / etaHEN do (ShellUI navigateToHome). The OS then closes the WebKit
+ * page itself; no app is killed, so no error dialog and never a game. */
+static void close_browser_if_front(void) {
+  int (*ui_init)(void);
+  int (*ui_launch)(const char *, el_launch_uri_param_t *);
+  el_launch_uri_param_t param;
+  int prio = 256, mod, rc;
+  if (!webkit_page_open()) {
+    evlog("info", "no web page open");
+    return;
+  }
+  (void)sceUserServiceInitialize(&prio);
+  mod = sceKernelLoadStartModule("/system_ex/common_ex/lib/libSceShellUIUtil.sprx", 0, 0, 0, 0, 0);
+  if (mod < 0) {
+    evlog("error", "shellui module 0x%x", (unsigned)mod);
+    return;
+  }
+  ui_init = (void *)kernel_dynlib_dlsym(-1, (uint32_t)mod, "sceShellUIUtilInitialize");
+  ui_launch = (void *)kernel_dynlib_dlsym(-1, (uint32_t)mod, "sceShellUIUtilLaunchByUri");
+  if (!ui_init || !ui_launch) {
+    evlog("error", "shellui symbols missing");
+    return;
+  }
+  memset(&param, 0, sizeof(param));
+  param.size = sizeof(param);
+  ui_init();
+  sceUserServiceGetForegroundUser((int *)&param.userId);
+  rc = ui_launch("pshomeui:navigateToHome?bootCondition=psButton", &param);
+  evlog("info", "back to home rc=0x%x", (unsigned)rc);
+}
+
+static void *headless_auto_close_thread(void *arg) {
+  (void)arg;
+  run_headless_auto();
+  sleep(1);
+  close_browser_if_front();
+  return NULL;
+}
+
+static void start_headless_auto_then_close(void) {
+  pthread_t th;
+  if (pthread_create(&th, NULL, headless_auto_close_thread, NULL) == 0)
+    pthread_detach(th);
 }
 
 static void start_headless_auto(void) {
@@ -4777,6 +4859,11 @@ static void serve(void) {
         run_headless_auto();
       if (wk_wants_open())
         launch_browser_now();
+      else {
+        evlog("info", "leave closed (live server)");
+        sleep(1);
+        close_browser_if_front();
+      }
       return;
     }
     kill_other_elf_launchers();
@@ -4828,9 +4915,9 @@ static void serve(void) {
   }
   puts("listening");
   /* Open browser: same disk Auto as Leave closed (do not gate on boot-auto-done
-   * here — flag was just cleared on fresh bind). Then open the WebView. */
+   * here: flag was just cleared on fresh bind). Then open the WebView. */
   if (takeover) {
-    notify("ELF Launcher updated");
+    notify("Elf Launcher updated");
     /* AutoPayload already ran this boot under the old server: never twice. */
     if (newbuild && !boot_auto_done())
       start_headless_auto();
@@ -4839,8 +4926,10 @@ static void serve(void) {
   } else if (want_open) {
     run_headless_auto();
     start_fresh_browser();
-  } else
-    start_headless_auto();
+  } else {
+    evlog("info", "leave closed");
+    start_headless_auto_then_close();
+  }
   /* Bind of :1000. Install the home icon once in the background. */
   start_home_icon_install_async(0);
   for (;;) {
@@ -5652,11 +5741,11 @@ static void make_data_dir(void) {
   FILE *f;
   mkdir("/data", 0755);
   if (mkdir("/data/elf-launcher", 0755) && errno != EEXIST) {
-    notify("Could not create /data/elf-launcher");
+    notify("Setup failed");
     return;
   }
   if (mkdir("/data/elf-launcher/mirror", 0755) && errno != EEXIST)
-    notify("Could not create /data/elf-launcher/mirror");
+    notify("Setup failed");
   f = fopen("/data/elf-launcher/path.txt", "w");
   if (f) {
     fputs(info, f);
