@@ -4,9 +4,9 @@ Home screen and browser ELF payload launcher for a jailbroken PS5.
 
 ![Elf Launcher 2.0.0](docs/screenshots/home.png)
 
-**Version 2.0.0**, a full overhaul. See the [guide and what's new](https://x-f1reball-x.github.io/elf-launcher/guide/).
+**Version 2.0.0**, a full overhaul. See the [guide and what's new](https://x-f1reball-x.github.io/elf-launcher/docs/guide/).
 
-- Guide: https://x-f1reball-x.github.io/elf-launcher/guide/
+- Guide: https://x-f1reball-x.github.io/elf-launcher/docs/guide/
 - Live page: https://x-f1reball-x.github.io/elf-launcher/
 - Release: https://github.com/X-F1REBALL-X/elf-launcher/releases/tag/2.0.0
 
