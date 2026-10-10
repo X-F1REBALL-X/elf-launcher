@@ -714,6 +714,16 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 [dir=rtl] #main[data-view=elf] .listgrid .elf .pinb,[dir=rtl] #main[data-view=downloaded] .listgrid .elf .pinb{left:auto;right:2.85rem}
 @media(max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(13rem,1fr))}}
 @media(max-width:700px){.foldgrid{grid-template-columns:1fr 1fr}.foldgrid button{min-height:3.8rem;font-size:.98rem}.foldgrid .subfold .fico{width:2.5rem;height:2.5rem}}
+/* Home categories: rounded tiles, same style as the All payloads folder tiles, compact footprint */
+.catchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:.5rem;margin:0}
+.catchips button,[dir=rtl] .catchips button{display:flex;align-items:center;min-width:0;min-height:3rem;margin:0;padding:.3rem .55rem .3rem .4rem;font-size:.92rem;font-weight:800;line-height:1.15;border-radius:12px;text-align:center;white-space:normal}
+[dir=rtl] .catchips button{padding:.3rem .4rem .3rem .55rem}
+.catchips button:before{box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 2px 7px rgba(60,45,25,.14)}
+.catchips button>span:not(.ncount){flex:1 1 auto;min-width:0;padding:0 .3rem;text-align:center;overflow-wrap:break-word}
+.catchips .subfold .fico{width:2.1rem;height:2.1rem;margin:0;margin-inline-end:.35rem;border-radius:9px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 1px 4px rgba(0,0,0,.18)}
+.catchips button .ncount{margin-inline-start:.35rem;min-width:1.9rem}
+.catchips button:focus:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--pri)}
+@media(max-width:700px){.catchips{grid-template-columns:1fr 1fr}}
 </style></head><body><div class="wrap">
 <header class="bar">
 <div class="brand"><span class="logo"><img src="icons/launcher-home.jpg?v=8" alt="" width="46" height="46"></span>
