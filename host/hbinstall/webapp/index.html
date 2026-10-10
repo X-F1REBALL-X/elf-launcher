@@ -690,13 +690,13 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 .dslide output{flex:0 0 auto;min-width:3.6rem;margin-inline-start:.6rem;padding:.2rem .55rem;text-align:center;font-weight:800;font-size:.92rem;color:#fff;background:var(--pri2);border-radius:999px;font-variant-numeric:tabular-nums}
 
 /* All payloads: big folder tiles and larger payload banners (controller friendly) */
-.foldgrid{display:flex;flex-wrap:wrap;justify-content:flex-start;margin:0 -.35rem var(--s5)}
-.foldgrid button,[dir=rtl] .foldgrid button{display:flex;flex:0 0 auto;align-items:center;min-height:4.4rem;margin:.35rem;padding:.55rem .8rem .55rem .65rem;font-size:1.08rem;font-weight:800;letter-spacing:.005em;border-radius:16px;text-align:start;white-space:nowrap}
+.foldgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:.7rem;margin:0 0 var(--s5)}
+.foldgrid button,[dir=rtl] .foldgrid button{display:flex;align-items:center;min-height:4.4rem;margin:0;padding:.55rem .8rem .55rem .65rem;font-size:1.08rem;font-weight:800;letter-spacing:.005em;border-radius:16px;text-align:start;white-space:nowrap}
 [dir=rtl] .foldgrid button{padding:.55rem .65rem .55rem .8rem}
 .foldgrid button:before{box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 3px 10px rgba(60,45,25,.16)}
-.foldgrid button>span:not(.ncount){flex:0 0 auto}
+.foldgrid button>span:not(.ncount){flex:1 1 auto;min-width:0;padding:0 .4rem;text-align:center;overflow:hidden;text-overflow:ellipsis}
 .foldgrid .subfold .fico{width:3rem;height:3rem;margin:0;margin-inline-end:.75rem;border-radius:12px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.18)}
-.foldgrid button .ncount{min-width:2.2rem;margin-inline-start:.9rem;font-size:.9rem;line-height:1.7}
+.foldgrid button .ncount{min-width:2.2rem;margin-inline-start:.6rem;font-size:.9rem;line-height:1.7}
 .foldgrid button.active:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--c,var(--pri)),0 4px 14px rgba(60,45,25,.2)}
 .foldgrid button:not(.active){opacity:.92}
 .foldgrid button:focus:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--pri)}
@@ -712,7 +712,8 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 #main[data-view=elf] .listgrid button.run,#main[data-view=downloaded] .listgrid button.run{min-height:2.9rem;min-width:6.2rem;font-size:.98rem}
 #main[data-view=elf] .listgrid .elf .pinb,#main[data-view=downloaded] .listgrid .elf .pinb{top:calc(50% + .75rem);left:2.85rem}
 [dir=rtl] #main[data-view=elf] .listgrid .elf .pinb,[dir=rtl] #main[data-view=downloaded] .listgrid .elf .pinb{left:auto;right:2.85rem}
-@media(max-width:700px){.foldgrid button{min-height:3.8rem;font-size:.98rem}.foldgrid .subfold .fico{width:2.5rem;height:2.5rem}}
+@media(max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(13rem,1fr))}}
+@media(max-width:700px){.foldgrid{grid-template-columns:1fr 1fr}.foldgrid button{min-height:3.8rem;font-size:.98rem}.foldgrid .subfold .fico{width:2.5rem;height:2.5rem}}
 </style></head><body><div class="wrap">
 <header class="bar">
 <div class="brand"><span class="logo"><img src="icons/launcher-home.jpg?v=8" alt="" width="46" height="46"></span>
