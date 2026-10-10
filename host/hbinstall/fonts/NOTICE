@@ -1,0 +1,5 @@
+he-400.woff and he-600.woff are Hebrew-only subsets (U+0590-05FF, U+FB1D-FB4F,
+U+20AA) of the Assistant variable font, fixed at weights 400 and 600.
+Assistant: https://github.com/hafontia/Assistant
+Licensed under the SIL Open Font License 1.1, see OFL.txt.
+They ship inside the launcher because a clean PS5 has no Hebrew font.
