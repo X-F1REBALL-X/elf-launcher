@@ -3,7 +3,7 @@
 
 Some payloads can't use the app's github_latest auto-update: upstream ships
 them only inside a ZIP, or hosts them off GitHub (Gitea/Forgejo, no sha256
-digests). For each one this script finds the newest upstream release,
+digests), or only as a file committed in the repo (github-raw). For each one this script finds the newest upstream release,
 downloads the asset (pulls the ELF out of the ZIP if needed) and compares
 its sha256 with payloads.json.
 
@@ -23,16 +23,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CATALOG = os.path.join(HERE, "..", "payloads.json")
 
 # catalog name -> upstream
-#   host:   "github" or a Gitea/Forgejo base URL
+#   host:   "github", "github-raw" (file in the repo, with path) or a Gitea/Forgejo base URL
 #   repo:   owner/name
 #   asset:  regex for the release asset
 #   member: regex for the ELF inside the asset when it is a ZIP
 #   skip:   reason; the item is left alone
 UPSTREAM = {
-    # skip: listed for reference but never synced (the reason is printed).
-    "elfldr-ps5.elf":          {"host": "github", "repo": "ps5-payload-dev/elfldr",   "asset": r"^elfldr-ps5\.elf$",
-                                "skip": "pinned: mirror copy = loader/elfldr-ps5.elf (448952 B, ?uri= fallback), "
-                                        "not byte-identical to upstream v0.26 asset (394480 B)"},
     "fetchpkg.elf":            {"host": "github", "repo": "ps5-payload-dev/fetchpkg", "asset": r"^PS5\.zip$", "member": r"(^|/)fetchpkg\.elf$"},
     "pkg_install.elf":         {"host": "github", "repo": "ps5-payload-dev/websrv",   "asset": r"^PKGInstall\.zip$", "member": r"(^|/)pkg_install\.elf$"},
     "dump_installer.elf":      {"host": "github", "repo": "EchoStretch/dump_installer", "asset": r"^dump_installer\.zip$", "member": r"(^|/)dump_installer\.elf$"},
@@ -44,7 +40,9 @@ UPSTREAM = {
     # off GitHub (no digests, so the app can't auto-update these itself)
     "garlic-savemgr-v1.13.1.elf": {"host": "https://git.etawen.dev", "repo": "earthonion/garlic-savemgr", "asset": r"^garlic-savemgr\.elf$"},
     "garlic-worker-ps5.elf":   {"host": "https://git.etawen.dev", "repo": "earthonion/garlic-worker", "asset": r"^garlic-worker-ps5\.elf$"},
-    "elfldr-autoldr.elf":      {"host": "https://git.etawen.dev", "repo": "earthonion/elfldr-autoldr", "asset": r"^elfldr-ps5\.elf$"},
+    # author ships the ELF committed in the repo, no releases: url points at the raw
+    # file pinned to the commit that last changed it (no mirror upload)
+    "Lapy-JB-Daemon.elf":      {"host": "github-raw", "repo": "ArkSama/PS5-Lapy-JB-Daemon", "path": "lapy_jb_daemon.elf"},
     "AnyPad-PS5.elf":          {"host": "https://codeberg.org", "repo": "elmonomalva0/Any-Pad-ps5", "asset": r"^AnyPad-PS5-[0-9][0-9A-Za-z.-]*\.elf$"},
 }
 # Built by us, no upstream.
@@ -56,6 +54,10 @@ def sh(*a):
 
 
 def latest_release(up):
+    if up["host"] == "github-raw":
+        c = json.loads(sh("gh", "api", "repos/%s/commits?path=%s&per_page=1" % (up["repo"], up["path"])))[0]
+        url = "https://raw.githubusercontent.com/%s/%s/%s" % (up["repo"], c["sha"], up["path"])
+        return {"tag_name": "git-" + c["sha"][:7], "raw": url}
     if up["host"] == "github":
         return json.loads(sh("gh", "api", "repos/%s/releases/latest" % up["repo"]))
     url = "%s/api/v1/repos/%s/releases/latest" % (up["host"], up["repo"])
@@ -70,6 +72,11 @@ def fetch(url):
 
 
 def upstream_bytes(up, rel):
+    if rel.get("raw"):
+        data = fetch(rel["raw"])
+        if data[:4] != b"\x7fELF":
+            raise RuntimeError(up["path"] + " is not an ELF")
+        return data, up["path"], rel["raw"]
     assets = [a for a in rel.get("assets", []) if re.search(up["asset"], a["name"])]
     if len(assets) != 1:
         raise RuntimeError("asset regex matched %d assets in %s" % (len(assets), rel.get("tag_name")))
@@ -135,7 +142,8 @@ def main():
         if sha == cur:
             print("  %-28s up to date  %-16s %s (%s)" % (name, tag, sha[:12], src))
             continue
-        new_url = MIRROR_URL + e["filename"]
+        raw = up["host"] == "github-raw"
+        new_url = upurl if raw else MIRROR_URL + e["filename"]
         print("  %-28s CHANGE  %s -> %s  size %s -> %d  sha %s -> %s  (%s %s)" % (
             name, e.get("version"), tag, e.get("size"), len(data), cur[:12], sha[:12], up["repo"], src))
         if e.get("url") != new_url:
@@ -144,7 +152,8 @@ def main():
             f = os.path.join(tmp, e["filename"])
             open(f, "wb").write(data)
             try:
-                sh("gh", "release", "upload", MIRROR_TAG, f, "--clobber", "-R", OWNER_REPO)
+                if not raw:
+                    sh("gh", "release", "upload", MIRROR_TAG, f, "--clobber", "-R", OWNER_REPO)
             except subprocess.CalledProcessError as ex:
                 problems.append((name, "upload failed: %s" % (ex.stderr or ex).strip()))
                 continue
