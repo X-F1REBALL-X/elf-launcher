@@ -4852,16 +4852,18 @@ function bindSearch(){
 var ghInflight={};
 var GH_LATEST_WAIT_MS=9000;
 function applyLatest(list, done, force){
-  var i, repos={}, r, pending=1, finished=false, timer;
+  var i, repos={}, r, keys=[], pending=1, finished=false, timer;
   function settle(){ if(finished) return; finished=true; if(timer) clearTimeout(timer); if(done) done(list); }
   function one(){ pending--; if(pending<=0) settle(); }
   for(i=0;list && i<list.length;i++) if(list[i] && list[i].latest && list[i].latest.repo) (repos[list[i].latest.repo]=repos[list[i].latest.repo]||[]).push(list[i]);
-  for(r in repos){
-    if(!repos.hasOwnProperty(r)) continue;
+  /* Oldest-cached repos first, so the per-load budget rotates through the catalog. */
+  for(r in repos) if(repos.hasOwnProperty(r)) keys.push(r);
+  keys.sort(function(a,b){ var x=ghCached(a), y=ghCached(b); return ((x&&x.at)||0)-((y&&y.at)||0); });
+  for(i=0;i<keys.length;i++){
     pending++;
     (function(items){
       ghLatest(items[0].latest.repo, function(rel){ if(!finished) applyRelease(items, rel); one(); }, force);
-    })(repos[r]);
+    })(repos[keys[i]]);
   }
   timer=setTimeout(settle, GH_LATEST_WAIT_MS);
   one();
@@ -4885,20 +4887,35 @@ function applyRelease(items, rel){
   }
 }
 var GH_TTL_MS=6*3600*1000, GH_FORCE_NEXT=false;
+/* The catalog is kept fresh by the daily catalog-sync action, so the app only tops up:
+   at most GH_LOAD_BUDGET API calls per page load, none for 6 h after a 403/429. */
+var GH_LOAD_BUDGET=20, GH_BACKOFF_KEY='ps5elfs-gh-backoff', ghActive=0, ghQueue=[];
+/* At most 3 requests at once, so a 403/429 stops the rest of the queue. */
+function ghPump(){ while(ghActive<3 && ghQueue.length){ ghActive++; ghQueue.shift()(function(){ ghActive--; ghPump(); }); } }
+function ghBackedOff(){ var u=0; try{ u=+localStorage.getItem(GH_BACKOFF_KEY)||0; }catch(e){} return u>Date.now() && u-Date.now()<=GH_TTL_MS; }
 function ghCached(repo){ var c=null; try{ c=JSON.parse(localStorage.getItem('ps5elfs-gh-'+repo)||'null'); }catch(e){} return (c && c.rel) ? c : null; }
 function ghLatest(repo, cb, force){
   var key='ps5elfs-gh-'+repo, c=ghCached(repo);
   if(!force && c && c.at && Date.now()-c.at>=0 && Date.now()-c.at<GH_TTL_MS){ cb(c.rel); return; }
   if(ghInflight[repo]){ ghInflight[repo].push(cb); return; }
+  if(GH_LOAD_BUDGET<=0 || ghBackedOff()){ cb(c ? c.rel : null); return; }
+  GH_LOAD_BUDGET--;
   ghInflight[repo]=[cb];
   function finish(rel){ var w=ghInflight[repo]||[], i; delete ghInflight[repo]; for(i=0;i<w.length;i++) try{ w[i](rel); }catch(e){} }
+  ghQueue.push(function(release){
+  if(ghBackedOff()){ release(); finish(c ? c.rel : null); return; }
   fetchCatalogText('https://api.github.com/repos/'+repo+'/releases/latest').then(function(txt){
     var j=JSON.parse(txt), slim={tag_name:j.tag_name,assets:[]}, i;
     if(!j || !j.tag_name || !j.assets) throw new Error('no release');
     for(i=0;i<j.assets.length;i++) slim.assets.push({name:j.assets[i].name,size:j.assets[i].size,digest:j.assets[i].digest,browser_download_url:j.assets[i].browser_download_url});
     try{ localStorage.setItem(key, JSON.stringify({at:Date.now(),rel:slim})); }catch(e){}
-    finish(slim);
-  }).catch(function(){ var k=ghCached(repo); finish(k ? k.rel : null); });
+    release(); finish(slim);
+  }).catch(function(e){
+    if(/\b(403|429)\b|rate limit/i.test(String(e && e.message))) try{ localStorage.setItem(GH_BACKOFF_KEY, String(Date.now()+GH_TTL_MS)); }catch(x){}
+    var k=ghCached(repo); release(); finish(k ? k.rel : null);
+  });
+  });
+  ghPump();
 }
 function latestRepos(list){ var r={}, i; for(i=0;list && i<list.length;i++) if(list[i] && list[i].latest && list[i].latest.repo) (r[list[i].latest.repo]=r[list[i].latest.repo]||[]).push(list[i]); return r; }
 /* Last known releases, applied right away (no network). */
