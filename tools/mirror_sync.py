@@ -7,7 +7,7 @@ digests). For each one this script finds the newest upstream release,
 downloads the asset (pulls the ELF out of the ZIP if needed) and compares
 its sha256 with payloads.json.
 
-Default is a dry run: it only prints what would change.
+Default is a dry run (--dry-run): it only prints what would change.
   --apply   upload changed files to the payload-mirror release
             (gh release upload --clobber) and update payloads.json
             url/size/checksum/sha256/version.
@@ -27,11 +27,12 @@ CATALOG = os.path.join(HERE, "..", "payloads.json")
 #   repo:   owner/name
 #   asset:  regex for the release asset
 #   member: regex for the ELF inside the asset when it is a ZIP
+#   skip:   reason; the item is left alone
 UPSTREAM = {
-    # NOTE: the mirrored elfldr-ps5.elf (448952 bytes, same as loader/elfldr-ps5.elf
-    # used for the ?uri= fallback) is not byte-identical to upstream's v0.26 release
-    # asset (394480 bytes). Check which build you want before --apply.
-    "elfldr-ps5.elf":          {"host": "github", "repo": "ps5-payload-dev/elfldr",   "asset": r"^elfldr-ps5\.elf$"},
+    # skip: listed for reference but never synced (the reason is printed).
+    "elfldr-ps5.elf":          {"host": "github", "repo": "ps5-payload-dev/elfldr",   "asset": r"^elfldr-ps5\.elf$",
+                                "skip": "pinned: mirror copy = loader/elfldr-ps5.elf (448952 B, ?uri= fallback), "
+                                        "not byte-identical to upstream v0.26 asset (394480 B)"},
     "fetchpkg.elf":            {"host": "github", "repo": "ps5-payload-dev/fetchpkg", "asset": r"^PS5\.zip$", "member": r"(^|/)fetchpkg\.elf$"},
     "pkg_install.elf":         {"host": "github", "repo": "ps5-payload-dev/websrv",   "asset": r"^PKGInstall\.zip$", "member": r"(^|/)pkg_install\.elf$"},
     "dump_installer.elf":      {"host": "github", "repo": "EchoStretch/dump_installer", "asset": r"^dump_installer\.zip$", "member": r"(^|/)dump_installer\.elf$"},
@@ -93,7 +94,10 @@ def upstream_bytes(up, rel):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--apply", action="store_true", help="upload and write payloads.json (default: dry run)")
+    g = ap.add_mutually_exclusive_group()
+    g.add_argument("--apply", action="store_true", help="upload and write payloads.json")
+    g.add_argument("--dry-run", action="store_true", help="only print (default)")
+    ap.add_argument("--names-out", help="write changed item names here, one per line")
     ap.add_argument("--only", nargs="*", help="limit to these catalog names")
     args = ap.parse_args()
 
@@ -110,6 +114,9 @@ def main():
     tmp = tempfile.mkdtemp(prefix="mirror_sync_")
     for name, up in UPSTREAM.items():
         if args.only and name not in args.only:
+            continue
+        if up.get("skip"):
+            print("  %-28s skip (%s)" % (name, up["skip"]))
             continue
         e = byname.get(name)
         if not e:
@@ -133,11 +140,14 @@ def main():
             name, e.get("version"), tag, e.get("size"), len(data), cur[:12], sha[:12], up["repo"], src))
         if e.get("url") != new_url:
             print("  %-28s         url %s -> %s" % ("", e.get("url"), new_url))
-        changed.append(name)
         if args.apply:
             f = os.path.join(tmp, e["filename"])
             open(f, "wb").write(data)
-            sh("gh", "release", "upload", MIRROR_TAG, f, "--clobber", "-R", OWNER_REPO)
+            try:
+                sh("gh", "release", "upload", MIRROR_TAG, f, "--clobber", "-R", OWNER_REPO)
+            except subprocess.CalledProcessError as ex:
+                problems.append((name, "upload failed: %s" % (ex.stderr or ex).strip()))
+                continue
             e["url"] = new_url
             e["size"] = len(data)
             e["checksum"] = sha
@@ -145,12 +155,17 @@ def main():
             e["version"] = tag
             if up["host"] != "github":
                 e["source_direct"] = upurl
+        changed.append(name)
     if args.apply and changed:
         open(CATALOG, "w", encoding="utf-8").write(json.dumps(cat, indent=2, ensure_ascii=False) + "\n")
         print("payloads.json updated (%d)" % len(changed))
     print("%d would change%s" % (len(changed), "" if not args.apply else " (applied)"))
+    if args.names_out:
+        with open(args.names_out, "w") as f:
+            f.write("".join(n + "\n" for n in changed))
+    warn = "::warning::" if os.environ.get("GITHUB_ACTIONS") else "  problem: "
     for n, why in problems:
-        print("  problem: %s: %s" % (n, why))
+        print("%s%s: %s" % (warn, n, why))
     return 1 if problems else 0
 
 
