@@ -2905,6 +2905,7 @@ var FOLDER_ICO={loader:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy
 function folderIco(id){ return FOLDER_ICO[id] ? '<img class="fico" alt="" src="'+FOLDER_ICO[id]+'">' : ''; }
 function folderChipsHtml(selected){
   var i, f, html='<div class="foldgrid">';
+  html+='<button type="button" class="subfold hasico'+(selected==='elf'?' active':'')+'" data-sub="elf"><i class="fico">'+icon('elf')+'</i><span>'+esc(t('allPayloads'))+'</span><span class="ncount">'+PAYLOADS.length+'</span></button>';
   for(i=0;i<FOLDERS.length;i++){
     f=FOLDERS[i];
     html+='<button type="button" class="subfold'+(FOLDER_ICO[f.id]?' hasico':'')+(selected===f.id?' active':'')+'" data-sub="'+esc(f.id)+'">'+folderIco(f.id)+'<span>'+esc(folderLabel(f.id))+'</span><span class="ncount">'+countIn(f.id)+'</span></button>';
@@ -3293,7 +3294,6 @@ function bindRows(box, markOnly){
 }
 function showFolder(id){
   var label,i,list=[],p,html,markOnly,catalogView;
-  if(id==='elf') id=lastElfFolder||'loader';
   if(id==='kill' || id==='run'){ showRunFolder(); return; }
   if(id==='ps5' && isConsoleHost()){ showFilesFolder(); return; }
   if((id==='search' && !searchQ) || id==='mine'){ if(id==='mine') setHashFolder(null); showHome(); return; }
@@ -3306,7 +3306,7 @@ function showFolder(id){
   label=folderTitle(id);
   if(isCatalogId(id)) lastElfFolder=id;
   markOnly=false;
-  catalogView=isCatalogId(id);
+  catalogView=(id==='elf' || isCatalogId(id));
   currentFolder=id;
   homeEl.className='';
   homeEl.innerHTML='';
@@ -4287,14 +4287,27 @@ function searchList(q){
   return out;
 }
 function folderLabelSafe(id){ return isCatalogId(id) ? folderLabel(id) : ''; }
+/* All payloads and the catalog folders: pinned first (pin order), then folder order, then name. */
 function folderList(id){
-  var out=[], i;
+  var out=[], i, fo={}, pins, pk={};
   if(id==='search') return searchList(searchQ);
-  for(i=0;i<PAYLOADS.length;i++) if(PAYLOADS[i].folder===id) out.push(PAYLOADS[i]);
+  for(i=0;i<PAYLOADS.length;i++) if(id==='elf' || PAYLOADS[i].folder===id) out.push(PAYLOADS[i]);
+  for(i=0;i<FOLDERS.length;i++) fo[FOLDERS[i].id]=i;
+  pins=readPins();
+  for(i=0;i<pins.length;i++) if(!pk.hasOwnProperty(pins[i])) pk[pins[i]]=i;
+  out.sort(function(a,b){
+    var pa=pk.hasOwnProperty(a.name), pb=pk.hasOwnProperty(b.name), fa, fb, na, nb;
+    if(pa||pb) return pa&&pb ? pk[a.name]-pk[b.name] : (pa?-1:1);
+    fa=fo.hasOwnProperty(a.folder)?fo[a.folder]:99; fb=fo.hasOwnProperty(b.folder)?fo[b.folder]:99;
+    if(fa!==fb) return fa-fb;
+    na=displayName(a).toLowerCase(); nb=displayName(b).toLowerCase();
+    return na<nb?-1:(na>nb?1:0);
+  });
   return out;
 }
 function folderTitle(id){
   if(id==='search') return t('searchResults',{q:searchQ});
+  if(id==='elf') return t('allPayloads');
   return isCatalogId(id) ? folderLabel(id) : id;
 }
 /* ---- display names: catalog rows show a clean title (no version, no .elf, no PS5); the file name stays the id everywhere else ---- */
@@ -4381,7 +4394,6 @@ function renderNav(selected){
 function goFolder(id){
   if(searchQ && id!=='search'){ var q=document.getElementById('q'); if(q) q.value=''; searchQ=''; }
   if(!id){ setHashFolder(null); showHome(); return; }
-  if(id==='elf') id=lastElfFolder||'loader';
   setHashFolder(id);
   showFolder(id);
 }
@@ -5187,7 +5199,7 @@ function selStart(mode){
       for(j=0;j<selLog.length;j++) if(selLog[j].st==='fail') selAdd(selLog[j].it); /* keep failures picked for a retry */
       paintPicks(); paintSelBar();
       if(mode==='auto') syncAutoDisk();
-      refreshLocalFiles(function(){ renderNav(currentFolder); if(!currentFolder) showHome(); else if(currentFolder==='auto' || currentFolder==='downloaded' || currentFolder==='search' || isCatalogId(currentFolder)) showFolder(currentFolder); });
+      refreshLocalFiles(function(){ renderNav(currentFolder); if(!currentFolder) showHome(); else if(currentFolder==='auto' || currentFolder==='downloaded' || currentFolder==='search' || currentFolder==='elf' || isCatalogId(currentFolder)) showFolder(currentFolder); });
       if(isConsoleHost()) setTimeout(function(){ pollProcs(true); }, 600);
       return;
     }
