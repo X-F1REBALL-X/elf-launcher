@@ -573,6 +573,25 @@
       }
     },
     {
+      "name": "HearBridge-Browser.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-Browser/117666bc20e6ee4d7c57a45ae85b9d0ed4ae20ef/windows/winres/icon256.png",
+      "filename": "HearBridge-Browser.elf",
+      "path": "apps/HearBridge-Browser.elf",
+      "url": "https://github.com/X-F1REBALL-X/HearBridge-Browser/releases/download/v1.0.0/hearbridge-browser-1.0.0.elf",
+      "description": "PS5 audio in any browser on your network: phone, tablet or PC. Page on port 8096.",
+      "version": "1.0.0",
+      "category": "Media",
+      "author": "X-F1REBALL-X",
+      "size": 377232,
+      "checksum": "4cd1c146c5d85a3273fe7175e00f17d9603dc6b89d4c0717d545e677b435ed6f",
+      "sha256": "4cd1c146c5d85a3273fe7175e00f17d9603dc6b89d4c0717d545e677b435ed6f",
+      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-Browser/releases/download/v1.0.0/hearbridge-browser-1.0.0.elf",
+      "github_latest": {
+        "repo": "X-F1REBALL-X/HearBridge-Browser",
+        "asset": "^hearbridge-browser-[0-9.]+\\.elf$"
+      }
+    },
+    {
       "name": "bfplayer-standalone.elf",
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/bfplayer-standalone.png",
       "filename": "bfplayer-standalone.elf",
