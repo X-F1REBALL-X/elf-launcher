@@ -153,8 +153,8 @@ button[disabled]{cursor:default;opacity:.45}
 .foldgrid button.active{color:#fff}.foldgrid button.active:before{background:var(--c,var(--sky));border-color:var(--c,var(--sky))}
 .foldgrid button.active>span:first-child:before{background:#fff}
 .foldgrid button.active .ncount{background:rgba(0,0,0,.26);color:#fff}
-.subfold[data-sub=loader]{--c:var(--pri)}.subfold[data-sub=hen]{--c:var(--rose)}.subfold[data-sub=mods]{--c:var(--mint)}.subfold[data-sub=files]{--c:var(--amber)}.subfold[data-sub=net]{--c:#fb923c}
-.subfold[data-sub=storage]{--c:var(--pri2)}.subfold[data-sub=media]{--c:var(--sky)}.subfold[data-sub=system]{--c:#94a3b8}.subfold[data-sub=tools]{--c:var(--teal)}
+/* every category tile uses the one primary accent (one color per folder was too busy) */
+.subfold{--c:var(--pri)}
 /* payload rows */
 .listgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-gap:.55rem var(--s3);align-items:stretch}
 .elfwrap{min-width:0}
@@ -583,8 +583,6 @@ button.run.del,button.run.kill{color:var(--bad)}button.run.del:before,button.run
 /* ===== light theme F: pearl + cream, espresso text, bold filled chips ===== */
 .bar,#selbar{box-shadow:0 2px 10px rgba(60,45,25,.07)}
 .panel{background:var(--card);box-shadow:0 1px 2px rgba(60,45,25,.05),0 6px 20px rgba(60,45,25,.06)}
-.subfold[data-sub=net]{--c:#c2410c}.subfold[data-sub=system]{--c:#475569}.subfold[data-sub=mods],.subfold[data-sub=apps]{--c:var(--mint)}
-.subfold[data-sub=dev]{--c:var(--teal)}
 .catchips button,.foldgrid button{color:#fff}
 .catchips button:before,.foldgrid button:before{background:var(--c,var(--pri));border-color:transparent}
 .catchips button>span:first-child:before,.foldgrid button>span:first-child:before{background:#fff;opacity:.9}
@@ -635,10 +633,8 @@ html[data-theme=black]{--bg:#000000;--void:#141416;--deck:#0b0b0c;--card:#0d0d0e
 --pri:#a5b4fc;--pri2:#c4b5fd;--onp:#0b0b1a;--rose:#f9a8d4;--mint:#6ee7b7;--amber:#fcd34d;--sky:#7dd3fc;--teal:#5eead4;--bad:#fca5a5}
 html[data-theme=gold] body,html[data-theme=black] body{background:var(--bg)}
 html[data-theme=gold] body{background:radial-gradient(70vw 60vh at 85% -10%,rgba(227,179,65,.07),transparent 60%),var(--bg);background-attachment:fixed}
-/* dark themes: category chips and power tiles keep their own (icon) colors with white text */
-html.dark .subfold[data-sub=loader]{--c:#4f46e5}html.dark .subfold[data-sub=hen]{--c:#db2777}html.dark .subfold[data-sub=storage]{--c:#7c3aed}
-html.dark .subfold[data-sub=mods]{--c:#047857}html.dark .subfold[data-sub=files]{--c:#b45309}html.dark .subfold[data-sub=media]{--c:#0369a1}
-html.dark .subfold[data-sub=tools]{--c:#0f766e}html.dark .subfold[data-sub=net]{--c:#c2410c}html.dark .subfold[data-sub=system]{--c:#475569}
+/* dark themes: the accent is too light under white text, so tiles use a deeper shade of it */
+html.dark .subfold{--c:#4f46e5}html[data-theme=gold] .subfold{--c:#9a6f12}
 /* dark themes: text on accent / status fills */
 html.dark .langopt[data-state=on],html.dark .navbtn.active .ncount,html.dark #loadsel,html.dark button.run.load,html.dark button.run.load.loaded,html.dark button.run.update,
 html.dark button.pri,html.dark .homeChoices button.selected,html.dark .tag.self,html.dark .places button.selected,html.dark .places button.selected svg,html.dark .drop button,
@@ -690,12 +686,12 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 .dslide output{flex:0 0 auto;min-width:3.6rem;margin-inline-start:.6rem;padding:.2rem .55rem;text-align:center;font-weight:800;font-size:.92rem;color:#fff;background:var(--pri2);border-radius:999px;font-variant-numeric:tabular-nums}
 
 /* All payloads: big folder tiles and larger payload banners (controller friendly) */
-.foldgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:.6rem;max-width:56rem;margin:0 auto var(--s5)}
-.foldgrid button,[dir=rtl] .foldgrid button{display:flex;align-items:center;min-height:3.7rem;margin:0;padding:.45rem .7rem .45rem .55rem;font-size:1rem;font-weight:800;letter-spacing:.005em;border-radius:16px;text-align:start;white-space:nowrap}
+.foldgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-gap:.7rem;max-width:72rem;margin:0 auto var(--s5)}
+.foldgrid button,[dir=rtl] .foldgrid button{display:flex;align-items:center;min-height:4.3rem;margin:0;padding:.5rem .75rem .5rem .6rem;font-size:1.05rem;font-weight:800;letter-spacing:.005em;border-radius:16px;text-align:start;white-space:nowrap}
 [dir=rtl] .foldgrid button{padding:.45rem .55rem .45rem .7rem}
 .foldgrid button:before{box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 3px 10px rgba(60,45,25,.16)}
 .foldgrid button>span:not(.ncount){flex:1 1 auto;min-width:0;padding:0 .3rem;text-align:center;white-space:normal;line-height:1.15;overflow-wrap:break-word}
-.foldgrid .subfold .fico{width:2.6rem;height:2.6rem;margin:0;margin-inline-end:.75rem;border-radius:12px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.18)}
+.foldgrid .subfold .fico{width:2.9rem;height:2.9rem;margin:0;margin-inline-end:.75rem;border-radius:12px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.18)}
 .foldgrid button .ncount{min-width:2rem;margin-inline-start:.5rem;font-size:.85rem;line-height:1.7}
 .foldgrid button.active:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--c,var(--pri)),0 4px 14px rgba(60,45,25,.2)}
 .foldgrid button:not(.active){opacity:.92}
@@ -712,7 +708,12 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 #main[data-view=elf] .listgrid button.run,#main[data-view=downloaded] .listgrid button.run{min-height:2.9rem;min-width:6.2rem;font-size:.98rem}
 #main[data-view=elf] .listgrid .elf .pinb,#main[data-view=downloaded] .listgrid .elf .pinb{top:calc(50% + .75rem);left:2.85rem}
 [dir=rtl] #main[data-view=elf] .listgrid .elf .pinb,[dir=rtl] #main[data-view=downloaded] .listgrid .elf .pinb{left:auto;right:2.85rem}
-@media(max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(13rem,1fr))}}
+@media(max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(12rem,1fr))}}
+/* folder art goes neutral so the tile color is the only color */
+.subfold img.fico{filter:grayscale(1) contrast(1.15) brightness(1.1)}
+/* the All tile has a line icon instead of folder art */
+.subfold i.fico{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.18);color:#fff}
+.subfold i.fico svg{width:58%;height:58%}
 @media(max-width:700px){.foldgrid{grid-template-columns:1fr 1fr}.foldgrid button{min-height:3.8rem;font-size:.98rem}.foldgrid .subfold .fico{width:2.5rem;height:2.5rem}}
 /* Home categories: rounded tiles, same style as the All payloads folder tiles, compact footprint */
 .catchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:.5rem;margin:0}
