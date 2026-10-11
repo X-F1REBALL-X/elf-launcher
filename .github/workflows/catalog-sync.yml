@@ -1,0 +1,55 @@
+name: catalog sync
+
+# Keeps payloads.json fresh so the app hardly needs the GitHub API:
+#  - github_latest items: tools/catalog_sync.py (releases/latest + sha256 digests)
+#  - payload-mirror and off-GitHub items: tools/mirror_sync.py (uploads to payload-mirror)
+# Commits payloads.json only when something changed. Never touches elf-launcher.elf.
+
+on:
+  schedule:
+    - cron: "17 3 * * *"   # 03:17 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: GitHub releases
+        run: python3 tools/catalog_sync.py --apply --names-out "$RUNNER_TEMP/gh-names.txt"
+
+      - name: Mirror and off-GitHub payloads
+        continue-on-error: true
+        run: python3 tools/mirror_sync.py --apply --names-out "$RUNNER_TEMP/mirror-names.txt"
+
+      - name: Commit
+        run: |
+          if git diff --quiet -- payloads.json; then echo "catalog up to date"; exit 0; fi
+          python3 -c "import json; json.load(open('payloads.json'))"
+          names=$(cat "$RUNNER_TEMP"/gh-names.txt "$RUNNER_TEMP"/mirror-names.txt 2>/dev/null | sed -E 's/\.(elf|bin)$//' | sort -u)
+          n=$(printf '%s\n' "$names" | grep -c .)
+          if [ "$n" -gt 5 ]; then
+            msg="catalog: sync $(printf '%s\n' "$names" | head -4 | paste -sd, - | sed 's/,/, /g') and $((n-4)) more"
+          else
+            msg="catalog: sync $(printf '%s\n' "$names" | paste -sd, - | sed 's/,/, /g')"
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add payloads.json
+          git commit -m "$msg" -m "$names"
+          git push
