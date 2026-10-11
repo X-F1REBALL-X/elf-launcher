@@ -61,16 +61,16 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/wk-autoloader/2548957950d227cb478f94f88d3389b25b957ff9/assets/icon0.png",
       "filename": "wk-autoloader.elf",
       "path": "hen/wk-autoloader.elf",
-      "url": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.0.16/installer.elf",
+      "url": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.1.0/wk-autoloader.elf",
       "description": "WK Autoloader installer for the home screen (no PC host needed).",
-      "version": "v1.0.16",
+      "version": "v1.1.0",
       "category": "Loader",
       "author": "X-F1REBALL-X",
-      "size": 6325504,
-      "checksum": "3d820c0d5db3639c11f07c0c0aa9881cd71b61bff33db8cd189573caa8f58a1c",
+      "size": 5571840,
+      "checksum": "1534bc837c651748f54b3b660b74fe8076333782e0828397c38cee40b7d9ff50",
       "github_latest": {
         "repo": "X-F1REBALL-X/wk-autoloader",
-        "asset": "^installer\\.elf$"
+        "asset": "^wk-autoloader\\.elf$"
       }
     },
     {
