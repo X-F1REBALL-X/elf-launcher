@@ -53,6 +53,7 @@ INCASSET(icon0_png, "sce_sys/icon0.png");
 INCASSET(pic1_png, "sce_sys/pic1.png");
 INCASSET(index_html, "webapp/index.html");
 INCASSET(ico_launcher_home, "icons/launcher-home.jpg");
+INCASSET(ico_owner_avatar, "icons/x-f1reball-x.jpg");
 /* Hebrew-only font subset (Assistant, OFL, fonts/OFL.txt + NOTICE): a clean console has no Hebrew glyphs */
 INCASSET(font_he_400, "fonts/he-400.woff");
 INCASSET(font_he_600, "fonts/he-600.woff");
@@ -65,6 +66,8 @@ static int send_icon(int c, const char *path) {
     name += 6;
   if (!strcmp(name, "launcher-home.jpg"))
     return send_blob(c, "image/jpeg", ico_launcher_home, ico_launcher_home_size);
+  if (!strcmp(name, "x-f1reball-x.jpg"))
+    return send_blob(c, "image/jpeg", ico_owner_avatar, ico_owner_avatar_size);
   if (!strncmp(path, "fonts/", 6)) {
     name = path + 6;
     if (!strcmp(name, "he-400.woff"))
