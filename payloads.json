@@ -20,14 +20,19 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/loader.png",
       "filename": "elfldr-ps5.elf",
       "path": "loader/elfldr-ps5.elf",
-      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/elfldr-ps5.elf",
+      "url": "https://github.com/ps5-payload-dev/elfldr/releases/download/v0.26/elfldr-ps5.elf",
       "description": "Loads ELF payloads sent to port 9021.",
       "version": "v0.26",
       "category": "Loader",
       "author": "ps5-payload-dev",
-      "size": 448952,
-      "checksum": "02543da21bb8168e3892004c7fa44c13b4c5dd6d6e9b7c79c18035bf69cd6a39",
-      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/elfldr-ps5.elf"
+      "size": 394480,
+      "checksum": "ed6d587a057c09d6a95b2176e336d9ffc605e547ac56462128b029e47b8ccea1",
+      "source_direct": "https://github.com/ps5-payload-dev/elfldr/releases/download/v0.26/elfldr-ps5.elf",
+      "sha256": "ed6d587a057c09d6a95b2176e336d9ffc605e547ac56462128b029e47b8ccea1",
+      "github_latest": {
+        "repo": "ps5-payload-dev/elfldr",
+        "asset": "^elfldr-ps5\\.elf$"
+      }
     },
     {
       "name": "Goldengames-PS5-Jailbreak.elf",
@@ -139,18 +144,15 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
       "filename": "Lapy-JB-Daemon.elf",
       "path": "hen/Lapy-JB-Daemon.elf",
-      "url": "https://github.com/itsPLK/PS5-Lapy-JB-Daemon/releases/download/v1.2/lapy_jb_daemon-v1.2.elf",
+      "url": "https://raw.githubusercontent.com/ArkSama/PS5-Lapy-JB-Daemon/c19666c0a0068feff8bbb2f8075b69a39a4c7dcf/lapy_jb_daemon.elf",
       "description": "Unsandboxes homebrew apps so they run without etaHEN.",
       "version": "v1.2",
       "category": "HEN",
       "author": "ArkSama",
-      "size": 154280,
-      "checksum": "13559b858fc33cc7fa3dc89e10dccf139070d99ee5d378dd75c969293700799e",
-      "source_direct": "https://github.com/itsPLK/PS5-Lapy-JB-Daemon/releases/download/v1.2/lapy_jb_daemon-v1.2.elf",
-      "github_latest": {
-        "repo": "itsPLK/PS5-Lapy-JB-Daemon",
-        "asset": "^lapy_jb_daemon(-v[0-9.]+)?\\.elf$"
-      }
+      "size": 543792,
+      "checksum": "e8230ac4597b8f0388e75d7515ad1a2e251c4589cc3b8d56a483ffae73627eed",
+      "source_direct": "https://raw.githubusercontent.com/ArkSama/PS5-Lapy-JB-Daemon/c19666c0a0068feff8bbb2f8075b69a39a4c7dcf/lapy_jb_daemon.elf",
+      "sha256": "e8230ac4597b8f0388e75d7515ad1a2e251c4589cc3b8d56a483ffae73627eed"
     },
     {
       "name": "onionHEN.elf",
@@ -185,23 +187,6 @@
       "source_direct": "https://github.com/EchoStretch/kstuff-lite/releases/download/v1.11/kstuff.elf",
       "github_latest": {
         "repo": "EchoStretch/kstuff-lite",
-        "asset": "^kstuff\\.elf$"
-      }
-    },
-    {
-      "name": "kstuff-v1.6.7.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
-      "filename": "kstuff-v1.6.7.elf",
-      "path": "hen/kstuff-v1.6.7.elf",
-      "url": "https://github.com/EchoStretch/kstuff/releases/download/v1.6.7/kstuff.elf",
-      "description": "kstuff build v1.6.7 from community mirror",
-      "version": "v1.6.7",
-      "category": "HEN",
-      "author": "itsPLK",
-      "size": 1550152,
-      "checksum": "f1c1f4b2b6395644af04cbe9828aba58586acf7aacb9e01113cac92ce16e3569",
-      "github_latest": {
-        "repo": "EchoStretch/kstuff",
         "asset": "^kstuff\\.elf$"
       }
     },
@@ -357,7 +342,7 @@
       "filename": "garlic-savemgr-v1.13.1.elf",
       "path": "storage/garlic-savemgr-v1.13.1.elf",
       "url": "https://git.etawen.dev/earthonion/garlic-savemgr/releases/download/v1.13.1/garlic-savemgr.elf",
-      "description": "Save manager, mirror build v1.13.1.",
+      "description": "Game save manager.",
       "version": "v1.13.1",
       "category": "Mods & Saves",
       "author": "earthonion",
@@ -1088,25 +1073,6 @@
       }
     },
     {
-      "name": "ftpsrv-ps5-ng.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
-      "filename": "ftpsrv-ps5-ng.elf",
-      "path": "files/ftpsrv-ps5-ng.elf",
-      "url": "https://github.com/drakmor/ftpsrv/releases/download/1.16-ng-stable/ftpsrv-ps5.elf",
-      "description": "Faster fork of the ftpsrv FTP server.",
-      "version": "1.16-ng-stable",
-      "category": "Files",
-      "author": "Drakmor",
-      "size": 230640,
-      "checksum": "f19ae469b25453a7a4af4529527521d31f143100f18a2c6839666e7121c8bd32",
-      "sha256": "f19ae469b25453a7a4af4529527521d31f143100f18a2c6839666e7121c8bd32",
-      "source_direct": "https://github.com/drakmor/ftpsrv/releases/download/1.16-ng-stable/ftpsrv-ps5.elf",
-      "github_latest": {
-        "repo": "drakmor/ftpsrv",
-        "asset": "^ftpsrv-ps5\\.elf$"
-      }
-    },
-    {
       "name": "pkg-receiver.elf",
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
       "filename": "pkg-receiver.elf",
@@ -1549,21 +1515,6 @@
         "repo": "TheCriicom/omega-dashboard-ps5",
         "asset": "^omega-installer\\.elf$"
       }
-    },
-    {
-      "name": "elfldr-autoldr.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/loader.png",
-      "filename": "elfldr-autoldr.elf",
-      "path": "loader/elfldr-autoldr.elf",
-      "url": "https://git.etawen.dev/earthonion/elfldr-autoldr/releases/download/v1.1/elfldr-ps5.elf",
-      "description": "elfldr replacement with a built-in autoloader.",
-      "version": "v1.1",
-      "category": "Loader",
-      "author": "earthonion",
-      "size": 529336,
-      "checksum": "817d0f2ee9a26845a6416b63df8507000877d29f18d19dad19efeab6fd33ae4b",
-      "sha256": "817d0f2ee9a26845a6416b63df8507000877d29f18d19dad19efeab6fd33ae4b",
-      "source_direct": "https://git.etawen.dev/earthonion/elfldr-autoldr/releases/download/v1.1/elfldr-ps5.elf"
     },
     {
       "name": "ps5-exporter.elf",
