@@ -4421,7 +4421,7 @@ function paintPins(){
     b[i].className='pinb'+(on?' on':''); b[i].setAttribute('aria-pressed', on?'true':'false'); b[i].title=l; b[i].setAttribute('aria-label', l); }
 }
 /* No pin limit. Pinned payloads lead All payloads and every folder list (pin order);
-   Quick launch on Home still shows its 6 tiles, pins first. */
+   Quick launch on Home shows every pin, then recent/downloaded fill up to 6 tiles. */
 function togglePin(name, keep){
   var a=readPins(), k=a.indexOf(name), on=k<0, f;
   if(on) a.push(name); else a.splice(k,1);
@@ -4459,7 +4459,7 @@ function quickList(){
   var seen={}, out=[], all=allPayloads(), byName={}, i, r, rec=readRecent(), n, pins;
   for(i=0;i<all.length;i++) byName[all[i].name]=all[i];
   pins=readPins();
-  for(i=0;i<pins.length && out.length<6;i++){
+  for(i=0;i<pins.length;i++){ /* all pins; extra rows wrap in the same .cards grid */
     if(seen[pins[i]] || !byName[pins[i]]) continue;
     seen[pins[i]]=1; out.push(byName[pins[i]]);
   }
