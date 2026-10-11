@@ -991,6 +991,374 @@
         "repo": "ps5-payload-dev/shsrv",
         "asset": "^shsrv-ps5\\.elf$"
       }
+    },
+    {
+      "name": "pegasus_dl.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "filename": "pegasus_dl.elf",
+      "path": "storage/pegasus_dl.elf",
+      "url": "https://github.com/pegasus-ps5/pegasus-dl/releases/download/v1.11.0/pegasus_dl.elf",
+      "description": "Downloads game packages straight to the console.",
+      "version": "v1.11.0",
+      "category": "Game Storage",
+      "author": "pegasus-ps5",
+      "size": 20612136,
+      "checksum": "32b69c2089bb545abfabd04d5827444698f9c4f1bc4915d72247cb781e8c23d9",
+      "sha256": "32b69c2089bb545abfabd04d5827444698f9c4f1bc4915d72247cb781e8c23d9",
+      "source_direct": "https://github.com/pegasus-ps5/pegasus-dl/releases/download/v1.11.0/pegasus_dl.elf",
+      "github_latest": {
+        "repo": "pegasus-ps5/pegasus-dl",
+        "asset": "^pegasus_dl\\.elf$"
+      }
+    },
+    {
+      "name": "orbit_store.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "filename": "orbit_store.elf",
+      "path": "storage/orbit_store.elf",
+      "url": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.2.0/orbit_store.elf",
+      "description": "Download manager with resumable downloads and phone control.",
+      "version": "v1.2.0",
+      "category": "Game Storage",
+      "author": "saawant12",
+      "size": 57994480,
+      "checksum": "86778d4fa830b1ff46379d167568c32294764cb05bc06ce6b05edc9db2a91691",
+      "sha256": "86778d4fa830b1ff46379d167568c32294764cb05bc06ce6b05edc9db2a91691",
+      "source_direct": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.2.0/orbit_store.elf",
+      "github_latest": {
+        "repo": "saawant12/orbit-store-ps5",
+        "asset": "^orbit_store\\.elf$"
+      }
+    },
+    {
+      "name": "ProsperoMgr.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "filename": "ProsperoMgr.elf",
+      "path": "files/ProsperoMgr.elf",
+      "url": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.1/ProsperoMgr.elf",
+      "description": "Web file manager: browse, unpack ZIP/RAR, upload and download.",
+      "version": "v1.1",
+      "category": "Files",
+      "author": "notmaj0r",
+      "size": 8841088,
+      "checksum": "e7a6bb544adb2fb2a61aa9cc83b0ad15f70b32d7511a3de0f1fb88812f11983c",
+      "sha256": "e7a6bb544adb2fb2a61aa9cc83b0ad15f70b32d7511a3de0f1fb88812f11983c",
+      "source_direct": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.1/ProsperoMgr.elf",
+      "github_latest": {
+        "repo": "notmaj0r/ProsperoMgr",
+        "asset": "^ProsperoMgr\\.elf$"
+      }
+    },
+    {
+      "name": "zftpd-ps5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "filename": "zftpd-ps5.elf",
+      "path": "files/zftpd-ps5.elf",
+      "url": "https://github.com/seregonwar/zftpd/releases/download/v1.6.0/zftpd-ps5-v1.6.0.elf",
+      "description": "Fast FTP and HTTP file server.",
+      "version": "v1.6.0",
+      "category": "Files",
+      "author": "seregonwar",
+      "size": 495456,
+      "checksum": "39ed57bef579282418f822da2e58ea5d56acfa5aa4cd38816744b1f610bfa14d",
+      "sha256": "39ed57bef579282418f822da2e58ea5d56acfa5aa4cd38816744b1f610bfa14d",
+      "source_direct": "https://github.com/seregonwar/zftpd/releases/download/v1.6.0/zftpd-ps5-v1.6.0.elf",
+      "github_latest": {
+        "repo": "seregonwar/zftpd",
+        "asset": "^zftpd-ps5(-v[0-9.]+)?\\.elf$"
+      }
+    },
+    {
+      "name": "ps5-linux-loader.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "filename": "ps5-linux-loader.elf",
+      "path": "system/ps5-linux-loader.elf",
+      "url": "https://github.com/ps5-linux/ps5-linux-loader/releases/download/v2.5/ps5-linux-loader.elf",
+      "description": "Boots Linux on the console.",
+      "version": "v2.5",
+      "category": "System",
+      "author": "ps5-linux",
+      "size": 180528,
+      "checksum": "9fc48733077145d1d204a4c9cdb879baaab1e711a604dd73af0dd4a807d6bc49",
+      "sha256": "9fc48733077145d1d204a4c9cdb879baaab1e711a604dd73af0dd4a807d6bc49",
+      "source_direct": "https://github.com/ps5-linux/ps5-linux-loader/releases/download/v2.5/ps5-linux-loader.elf",
+      "github_latest": {
+        "repo": "ps5-linux/ps5-linux-loader",
+        "asset": "^ps5-linux-loader\\.elf$"
+      }
+    },
+    {
+      "name": "ftpsrv-ps5-ng.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "filename": "ftpsrv-ps5-ng.elf",
+      "path": "files/ftpsrv-ps5-ng.elf",
+      "url": "https://github.com/drakmor/ftpsrv/releases/download/1.16-ng-stable/ftpsrv-ps5.elf",
+      "description": "Faster fork of the ftpsrv FTP server.",
+      "version": "1.16-ng-stable",
+      "category": "Files",
+      "author": "Drakmor",
+      "size": 230640,
+      "checksum": "f19ae469b25453a7a4af4529527521d31f143100f18a2c6839666e7121c8bd32",
+      "sha256": "f19ae469b25453a7a4af4529527521d31f143100f18a2c6839666e7121c8bd32",
+      "source_direct": "https://github.com/drakmor/ftpsrv/releases/download/1.16-ng-stable/ftpsrv-ps5.elf",
+      "github_latest": {
+        "repo": "drakmor/ftpsrv",
+        "asset": "^ftpsrv-ps5\\.elf$"
+      }
+    },
+    {
+      "name": "pkg-receiver.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "filename": "pkg-receiver.elf",
+      "path": "storage/pkg-receiver.elf",
+      "url": "https://github.com/Loopayeh/pkg-sender/releases/download/v1.2.9/pkg-receiver.elf",
+      "description": "Installs packages sent over the network from the PKG Sender PC app.",
+      "version": "v1.2.9",
+      "category": "Game Storage",
+      "author": "Loopayeh",
+      "size": 214528,
+      "checksum": "6946d52c6c04a3f43d3141a505394ba8e0c6923f17fe471054e11567c9a526c7",
+      "sha256": "6946d52c6c04a3f43d3141a505394ba8e0c6923f17fe471054e11567c9a526c7",
+      "source_direct": "https://github.com/Loopayeh/pkg-sender/releases/download/v1.2.9/pkg-receiver.elf",
+      "github_latest": {
+        "repo": "Loopayeh/pkg-sender",
+        "asset": "^pkg-receiver\\.elf$"
+      }
+    },
+    {
+      "name": "apr_emu_updater.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
+      "filename": "apr_emu_updater.elf",
+      "path": "tools/apr_emu_updater.elf",
+      "url": "https://github.com/tsuramatsu1/apr-emu-updater/releases/download/v2.0.6/apr_emu_updater_v2.0.6.elf",
+      "description": "Keeps APR Emu up to date on installed games. Web page.",
+      "version": "v2.0.6",
+      "category": "Mods & Saves",
+      "author": "tsuramatsu1",
+      "size": 493456,
+      "checksum": "4f04464283a6a551883e40e36b59134ecad0e38ecbb7ea89cbec3f91a3bd9122",
+      "sha256": "4f04464283a6a551883e40e36b59134ecad0e38ecbb7ea89cbec3f91a3bd9122",
+      "source_direct": "https://github.com/tsuramatsu1/apr-emu-updater/releases/download/v2.0.6/apr_emu_updater_v2.0.6.elf",
+      "github_latest": {
+        "repo": "tsuramatsu1/apr-emu-updater",
+        "asset": "^apr_emu_updater(_v[0-9.]+)?\\.elf$"
+      }
+    },
+    {
+      "name": "tailscale.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
+      "filename": "tailscale.elf",
+      "path": "tools/tailscale.elf",
+      "url": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.1/tailscale-0.7.1.elf",
+      "description": "Tailscale VPN, for Remote Play or Moonlight from anywhere.",
+      "version": "v0.7.1",
+      "category": "Network",
+      "author": "holdmysocks",
+      "size": 25196896,
+      "checksum": "af320493c8e2fc3443b8f42496ac11aa3db77b112e95777706d835eccd304cb9",
+      "sha256": "af320493c8e2fc3443b8f42496ac11aa3db77b112e95777706d835eccd304cb9",
+      "source_direct": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.1/tailscale-0.7.1.elf",
+      "github_latest": {
+        "repo": "holdmysocks/ps5-tailscale",
+        "asset": "^tailscale(-[0-9.]+)?\\.elf$"
+      }
+    },
+    {
+      "name": "ps5_suite_server.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "filename": "ps5_suite_server.elf",
+      "path": "files/ps5_suite_server.elf",
+      "url": "https://github.com/manos555555/PS5-Suite/releases/download/v7.3.0/ps5_suite_server.elf",
+      "description": "Server for the PS5-Suite PC/Android app: transfers, mounting, PKG installs.",
+      "version": "v7.3.0",
+      "category": "Files",
+      "author": "manos555555",
+      "size": 1589424,
+      "checksum": "ec06df61e0bae77dfa85ef54f586201b2b47f49ec2f79e3bc0aeee909224c046",
+      "sha256": "ec06df61e0bae77dfa85ef54f586201b2b47f49ec2f79e3bc0aeee909224c046",
+      "source_direct": "https://github.com/manos555555/PS5-Suite/releases/download/v7.3.0/ps5_suite_server.elf",
+      "github_latest": {
+        "repo": "manos555555/PS5-Suite",
+        "asset": "^ps5_suite_server\\.elf$"
+      }
+    },
+    {
+      "name": "romm-sync.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "filename": "romm-sync.elf",
+      "path": "storage/romm-sync.elf",
+      "url": "https://github.com/s0liton/RommPS/releases/download/v1.1.1/romm-sync.elf",
+      "description": "RomM client: get games from your RomM server and sync saves both ways.",
+      "version": "v1.1.1",
+      "category": "Game Storage",
+      "author": "s0liton",
+      "size": 8957856,
+      "checksum": "dc71f337c6d3cf99a6c005ff990717bcb9796d9ec2df7a6d19ae9d5f9b0a8041",
+      "sha256": "dc71f337c6d3cf99a6c005ff990717bcb9796d9ec2df7a6d19ae9d5f9b0a8041",
+      "source_direct": "https://github.com/s0liton/RommPS/releases/download/v1.1.1/romm-sync.elf",
+      "github_latest": {
+        "repo": "s0liton/RommPS",
+        "asset": "^romm-sync\\.elf$"
+      }
+    },
+    {
+      "name": "OmniPad-PS5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "filename": "OmniPad-PS5.elf",
+      "path": "system/OmniPad-PS5.elf",
+      "url": "https://github.com/diegobarbosaa/OmniPad-PS5/releases/download/v1.0.4-hotfix1/OmniPad-PS5-1.0.4.elf",
+      "description": "Use other controllers on the console. Web dashboard.",
+      "version": "v1.0.4-hotfix1",
+      "category": "System",
+      "author": "diegobarbosaa",
+      "size": 190768,
+      "checksum": "00677d6cfac752f1da395d2aeddfee1b5f8f3a3175c524bb0ca90afd9ea0d624",
+      "sha256": "00677d6cfac752f1da395d2aeddfee1b5f8f3a3175c524bb0ca90afd9ea0d624",
+      "source_direct": "https://github.com/diegobarbosaa/OmniPad-PS5/releases/download/v1.0.4-hotfix1/OmniPad-PS5-1.0.4.elf",
+      "github_latest": {
+        "repo": "diegobarbosaa/OmniPad-PS5",
+        "asset": "^OmniPad-PS5-[0-9][0-9A-Za-z.-]*\\.elf$"
+      }
+    },
+    {
+      "name": "AnyPad-PS5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "filename": "AnyPad-PS5.elf",
+      "path": "system/AnyPad-PS5.elf",
+      "url": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/releases/download/v0.8.1-beta/AnyPad-PS5-0.8.1-beta.elf",
+      "description": "Use other controllers on the console (beta).",
+      "version": "v0.8.1-beta",
+      "category": "System",
+      "author": "elmonomalva0",
+      "size": 510680,
+      "checksum": "e2e527cf69302646444ed7a7e8298eeb4b527b94c4ab5b7a803708f59a2bdf12",
+      "sha256": "e2e527cf69302646444ed7a7e8298eeb4b527b94c4ab5b7a803708f59a2bdf12",
+      "source_direct": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/releases/download/v0.8.1-beta/AnyPad-PS5-0.8.1-beta.elf"
+    },
+    {
+      "name": "garlic-worker-ps5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
+      "filename": "garlic-worker-ps5.elf",
+      "path": "tools/garlic-worker-ps5.elf",
+      "url": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.1.7/garlic-worker-ps5.elf",
+      "description": "Helper payload for garlic-savemgr.",
+      "version": "v1.1.7",
+      "category": "Mods & Saves",
+      "author": "earthonion",
+      "size": 189232,
+      "checksum": "2643f35cdfe9969cf775220dc4a65bc4ff0d08750c39bfb714b74dbbf29cd396",
+      "sha256": "2643f35cdfe9969cf775220dc4a65bc4ff0d08750c39bfb714b74dbbf29cd396",
+      "source_direct": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.1.7/garlic-worker-ps5.elf"
+    },
+    {
+      "name": "ps5-syslang-en-US.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "filename": "ps5-syslang-en-US.elf",
+      "path": "system/ps5-syslang-en-US.elf",
+      "url": "https://github.com/owendswang/ps5-syslang/releases/download/v0.2.1/ps5-syslang-en-US-v0.2.1.elf",
+      "description": "Switches the system language to English (US).",
+      "version": "v0.2.1",
+      "category": "System",
+      "author": "owendswang",
+      "size": 292696,
+      "checksum": "11e8a652b8ef3bb9d374e74e7be30b268e77849e9410d97ab5523fea7a91de16",
+      "sha256": "11e8a652b8ef3bb9d374e74e7be30b268e77849e9410d97ab5523fea7a91de16",
+      "source_direct": "https://github.com/owendswang/ps5-syslang/releases/download/v0.2.1/ps5-syslang-en-US-v0.2.1.elf",
+      "github_latest": {
+        "repo": "owendswang/ps5-syslang",
+        "asset": "^ps5-syslang-en-US(-v[0-9.]+)?\\.elf$"
+      }
+    },
+    {
+      "name": "ps5-date-time-sync.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "filename": "ps5-date-time-sync.elf",
+      "path": "system/ps5-date-time-sync.elf",
+      "url": "https://github.com/kerrdec97/ps5-date-time-sync/releases/download/v1.0.0/ps5-date-time-sync.elf",
+      "description": "Sets the date and time from internet time servers.",
+      "version": "v1.0.0",
+      "category": "System",
+      "author": "kerrdec97",
+      "size": 130240,
+      "checksum": "91806229803845930b2173174e1afeadf509e4c171f6396788f929558fad6849",
+      "sha256": "91806229803845930b2173174e1afeadf509e4c171f6396788f929558fad6849",
+      "source_direct": "https://github.com/kerrdec97/ps5-date-time-sync/releases/download/v1.0.0/ps5-date-time-sync.elf",
+      "github_latest": {
+        "repo": "kerrdec97/ps5-date-time-sync",
+        "asset": "^ps5-date-time-sync\\.elf$"
+      }
+    },
+    {
+      "name": "unrar_ps5.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "filename": "unrar_ps5.elf",
+      "path": "files/unrar_ps5.elf",
+      "url": "https://github.com/bizkut/unrar-ps5/releases/download/v1.4.0/unrar_ps5.elf",
+      "description": "Extracts RAR archives on the console.",
+      "version": "v1.4.0",
+      "category": "Files",
+      "author": "bizkut",
+      "size": 1537256,
+      "checksum": "2ef04b0bc8fc1932b29da1a53336c40ed0a3f6a945a0746bef2e5dde52149701",
+      "sha256": "2ef04b0bc8fc1932b29da1a53336c40ed0a3f6a945a0746bef2e5dde52149701",
+      "source_direct": "https://github.com/bizkut/unrar-ps5/releases/download/v1.4.0/unrar_ps5.elf",
+      "github_latest": {
+        "repo": "bizkut/unrar-ps5",
+        "asset": "^unrar_ps5\\.elf$"
+      }
+    },
+    {
+      "name": "LZ4-Game-Compressor.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "filename": "LZ4-Game-Compressor.elf",
+      "path": "storage/LZ4-Game-Compressor.elf",
+      "url": "https://github.com/gameboy829/PS5-LZ4-Game-Compressor/releases/download/beta.7/LZ4-Game-Compressor.elf",
+      "description": "Compresses games with LZ4 to save space (beta).",
+      "version": "beta.7",
+      "category": "Game Storage",
+      "author": "gameboy829",
+      "size": 5551856,
+      "checksum": "e29d2c8c3c1f8718af8706db09b845d3732cef22058931a8b5d590f530382cde",
+      "sha256": "e29d2c8c3c1f8718af8706db09b845d3732cef22058931a8b5d590f530382cde",
+      "source_direct": "https://github.com/gameboy829/PS5-LZ4-Game-Compressor/releases/download/beta.7/LZ4-Game-Compressor.elf"
+    },
+    {
+      "name": "ezremote-server.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "filename": "ezremote-server.elf",
+      "path": "files/ezremote-server.elf",
+      "url": "https://github.com/cy33hc/ps5-ezremote-server/releases/download/1.11/ezremote-server.elf",
+      "description": "Server for the ezRemote client app.",
+      "version": "1.11",
+      "category": "Files",
+      "author": "cy33hc",
+      "size": 10316768,
+      "checksum": "0f36b7ea3c3380303e2c74ec8d31a2c53d822cc4f4fd05cb5931d6b4f8b33c03",
+      "sha256": "0f36b7ea3c3380303e2c74ec8d31a2c53d822cc4f4fd05cb5931d6b4f8b33c03",
+      "source_direct": "https://github.com/cy33hc/ps5-ezremote-server/releases/download/1.11/ezremote-server.elf",
+      "github_latest": {
+        "repo": "cy33hc/ps5-ezremote-server",
+        "asset": "^ezremote-server\\.elf$"
+      }
+    },
+    {
+      "name": "unjail.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "filename": "unjail.elf",
+      "path": "tools/unjail.elf",
+      "url": "https://github.com/SvenGDK/unjail-ps5app-payload/releases/download/v1.2/unjail.elf",
+      "description": "Background service that gives apps more privileges (for developers).",
+      "version": "v1.2",
+      "category": "Dev Tools",
+      "author": "SvenGDK",
+      "size": 2669968,
+      "checksum": "e76deb661eaf218c5a684a6885f08c3d4defefe8534e426bfc8956dec6b174d5",
+      "sha256": "e76deb661eaf218c5a684a6885f08c3d4defefe8534e426bfc8956dec6b174d5",
+      "source_direct": "https://github.com/SvenGDK/unjail-ps5app-payload/releases/download/v1.2/unjail.elf",
+      "github_latest": {
+        "repo": "SvenGDK/unjail-ps5app-payload",
+        "asset": "^unjail\\.elf$"
+      }
     }
   ]
 }
