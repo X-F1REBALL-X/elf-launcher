@@ -1056,7 +1056,7 @@
     },
     {
       "name": "ps5-linux-loader.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/icons/payloads/ps5-linux-loader.png",
       "filename": "ps5-linux-loader.elf",
       "path": "system/ps5-linux-loader.elf",
       "url": "https://github.com/ps5-linux/ps5-linux-loader/releases/download/v2.5/ps5-linux-loader.elf",
@@ -1189,7 +1189,7 @@
     },
     {
       "name": "AnyPad-PS5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/raw/commit/52a3e8a1a661f90dff9d99a0067e08bd3b5ead8f/assets/icon0.png",
       "filename": "AnyPad-PS5.elf",
       "path": "system/AnyPad-PS5.elf",
       "url": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/releases/download/v0.8.1-beta/AnyPad-PS5-0.8.1-beta.elf",
