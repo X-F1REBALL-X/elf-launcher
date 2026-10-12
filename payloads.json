@@ -458,19 +458,19 @@
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v7.0.12/ps5upload-7.0.12.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v7.0.13/ps5upload-7.0.13.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v7.0.12",
+      "version": "v7.0.13",
       "category": "Files",
       "author": "phantomptr",
       "size": 3294736,
-      "checksum": "6291b53c92d5e1e0b0f44253439615254fd8a876970fbdb4e368a9ed01175648",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v7.0.12/ps5upload-7.0.12.elf",
+      "checksum": "579de1d0390925bd91fda3222ff98149b3e2425c6b5b16d6948dea8882744f66",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v7.0.13/ps5upload-7.0.13.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "6291b53c92d5e1e0b0f44253439615254fd8a876970fbdb4e368a9ed01175648"
+      "sha256": "579de1d0390925bd91fda3222ff98149b3e2425c6b5b16d6948dea8882744f66"
     },
     {
       "name": "BFpilot.elf",
@@ -1445,15 +1445,15 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/media.png",
       "filename": "nuvio-ps5.elf",
       "path": "media/nuvio-ps5.elf",
-      "url": "https://github.com/theghostonline/Nuvio-PS5/releases/download/v1.7.3/nuvio-ps5.elf",
+      "url": "https://github.com/theghostonline/Nuvio-PS5/releases/download/v1.8.0/nuvio-ps5.elf",
       "description": "Nuvio TV app with a 4K HDR player.",
-      "version": "v1.7.3",
+      "version": "v1.8.0",
       "category": "Media",
       "author": "theghostonline",
-      "size": 42911832,
-      "checksum": "a12758a431e94ff06430869a74dbae4e936503c5523fdfd5f5a2cafe3c89ebd2",
-      "sha256": "a12758a431e94ff06430869a74dbae4e936503c5523fdfd5f5a2cafe3c89ebd2",
-      "source_direct": "https://github.com/theghostonline/Nuvio-PS5/releases/download/v1.7.3/nuvio-ps5.elf",
+      "size": 57968728,
+      "checksum": "2c4812fdf411116652db756a5bd563cb4934f9df76373f59bdba3ff25a79cc3b",
+      "sha256": "2c4812fdf411116652db756a5bd563cb4934f9df76373f59bdba3ff25a79cc3b",
+      "source_direct": "https://github.com/theghostonline/Nuvio-PS5/releases/download/v1.8.0/nuvio-ps5.elf",
       "github_latest": {
         "repo": "theghostonline/Nuvio-PS5",
         "asset": "^nuvio-ps5\\.elf$"
