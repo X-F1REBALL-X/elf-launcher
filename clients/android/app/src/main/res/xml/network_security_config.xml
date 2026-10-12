@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The console serves plain http on the LAN (http://<console-ip>:1000/). LAN IPs
+     cannot be listed as domains, so cleartext is allowed app-wide; the app only
+     ever loads the console, external links open in the system browser. -->
+<network-security-config xmlns:tools="http://schemas.android.com/tools">
+    <base-config cleartextTrafficPermitted="true" tools:ignore="InsecureBaseConfiguration">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
