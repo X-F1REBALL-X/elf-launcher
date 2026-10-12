@@ -3119,18 +3119,18 @@ function loadedChanged(){
   loadedSig=sig;
   if(currentFolder==='loaded'){
     var f=document.activeElement, keep=f && f.getAttribute ? (f.closest && f.closest('[data-name]') ? f.closest('[data-name]').getAttribute('data-name') : '') : '';
-    showFolder('loaded');
+    showFolder('loaded'); renderNav('loaded');
     if(keep){ var r=viewEl.querySelector('[data-name="'+keep.replace(/"/g,'')+'"] button.run'); if(r) try{ r.focus(); }catch(e){} }
     else { var first=viewEl.querySelector('#view .listgrid button.run, .listgrid button.run'); if(f && f!==document.body && !document.body.contains(f) && first) try{ first.focus(); }catch(e){} }
     return;
   }
   if(currentFolder==='local' && !(document.activeElement && viewEl.contains(document.activeElement) && document.activeElement.closest('.listgrid'))){ showFolder('local'); return; }
   repaintFoldTiles();
+  renderNav(currentFolder||'');
 }
 function folderChipsHtml(selected){
   var i, f, html='<div class="foldgrid">';
   html+='<button type="button" class="subfold hasico'+(selected==='elf'?' active':'')+'" data-sub="elf"><i class="fico">'+icon('elf')+'</i><span>'+esc(t('allPayloads'))+'</span><span class="ncount">'+PAYLOADS.length+'</span></button>';
-  html+=extraFoldHtml('loaded', selected);
   for(i=0;i<FOLDERS.length;i++){
     f=FOLDERS[i];
     html+='<button type="button" class="subfold'+(FOLDER_ICO[f.id]?' hasico':'')+(selected===f.id?' active':'')+'" data-sub="'+esc(f.id)+'">'+folderIco(f.id)+'<span>'+esc(folderLabel(f.id))+'</span><span class="ncount">'+countIn(f.id)+'</span></button>';
@@ -3547,12 +3547,12 @@ function showFolder(id){
   list=folderList(id);
   setHdrActions(list.length ? selAllBtn() : '');
   if(!list.length && !(id==='loaded' && loadedOther().length)){
-    viewEl.innerHTML=(catalogView?folderChipsHtml(id):'')+'<p class="empty">'+esc(t(id==='search'?'noResults':(id==='loaded'?'noRunning':'emptyFolder')))+'</p>';
+    viewEl.innerHTML=((catalogView&&id!=='loaded')?folderChipsHtml(id):'')+'<p class="empty">'+esc(t(id==='search'?'noResults':(id==='loaded'?'noRunning':'emptyFolder')))+'</p>';
     bindSubfolds();
     return;
   }
   var onPs5=/PlayStation/i.test(navigator.userAgent);
-  html=(catalogView?folderChipsHtml(id):'')+headHtml(false);
+  html=((catalogView&&id!=='loaded')?folderChipsHtml(id):'')+headHtml(false);
   for(i=0;i<list.length;i++){
     p=list[i];
     html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom pk cat">'+pickBtn('cat:'+p.path,0,0,iconFor(p),FOLDER_ICO[p.folder])+(catalogView?pinBtnHtml(p.name):'');
@@ -4609,17 +4609,19 @@ function setHdrActions(html){ var x=document.getElementById('hdrx'); if(x) x.inn
 /* ---- menu ---- */
 var navBound=false, navHtmlLast='', runCount=0;
 function navItem(id, label, count, sel){
-  return '<button type="button" class="navbtn'+(sel?' active':'')+'" data-folder="'+id+'">'+icon(id||'home')+'<span>'+esc(label)+'</span>'+(count!=null?'<span class="ncount">'+count+'</span>':'')+'</button>';
+  return '<button type="button" class="navbtn'+(sel?' active':'')+'" data-folder="'+id+'">'+icon(id==='loaded'?'run':(id||'home'))+'<span>'+esc(label)+'</span>'+(count!=null?'<span class="ncount">'+count+'</span>':'')+'</button>';
 }
 function renderNav(selected){
   var nav=document.getElementById('nav'), html='', cat, mv;
   if(!nav) return;
-  cat=(selected==='elf' || isCatalogId(selected) || selected==='loaded' || selected==='local');
+  cat=(selected==='elf' || isCatalogId(selected) || selected==='local');
   html+='<p class="navgrp">'+esc(t('library'))+'</p>';
   html+=navItem('', t('home'), null, !selected);
   html+=navItem('elf', t('allPayloads'), PAYLOADS.length, cat);
   html+=navItem('downloaded', t('downloaded'), downloadedCount, selected==='downloaded');
   html+=navItem('auto', t('autoPayload'), autoCount(), selected==='auto');
+  /* Loaded: what is running from the library, with Kill buttons. Only when something runs. */
+  if(isConsoleHost() && (loadedCount() || selected==='loaded')) html+=navItem('loaded', t('loaded'), loadedCount(), selected==='loaded');
   if(isConsoleHost()){
     html+='<p class="navgrp">'+esc(t('consoleGrp'))+'</p>';
     html+=navItem('run', t('running'), runCount, selected==='run' || selected==='kill');
@@ -4658,7 +4660,7 @@ function goFolder(id){
 /* ---- home ---- */
 var DL_SET={};
 function catChipsHtml(){
-  var i, f, html='<div class="catchips">'+extraFoldHtml('loaded', '');
+  var i, f, html='<div class="catchips">';
   for(i=0;i<FOLDERS.length;i++){
     f=FOLDERS[i];
     html+='<button type="button" class="subfold'+(FOLDER_ICO[f.id]?' hasico':'')+'" data-sub="'+esc(f.id)+'">'+folderIco(f.id)+'<span>'+esc(folderLabel(f.id))+'</span><span class="ncount">'+countIn(f.id)+'</span></button>';
