@@ -4,6 +4,7 @@
   "payloads": [
     {
       "name": "elf-launcher.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/68a89fcf1399fa162a521839c3720a33acd5a5b1/icons/launcher-home.jpg",
       "filename": "elf-launcher.elf",
       "path": "launcher/elf-launcher.elf",
       "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf",
@@ -1017,7 +1018,7 @@
     },
     {
       "name": "ProsperoMgr.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "icon": "https://raw.githubusercontent.com/notmaj0r/ProsperoMgr/9dd11c5efc7f36bb85b3319348434e071ac99b21/source/frontend/public/icon-180.png",
       "filename": "ProsperoMgr.elf",
       "path": "files/ProsperoMgr.elf",
       "url": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.1/ProsperoMgr.elf",
@@ -1036,7 +1037,7 @@
     },
     {
       "name": "zftpd-ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "icon": "https://raw.githubusercontent.com/seregonwar/zftpd/8c3302284b73ee13b8d95671588c237c4ac7e334/web/img/zftpd-mark.png",
       "filename": "zftpd-ps5.elf",
       "path": "files/zftpd-ps5.elf",
       "url": "https://github.com/seregonwar/zftpd/releases/download/v1.6.0/zftpd-ps5-v1.6.0.elf",
@@ -1074,7 +1075,7 @@
     },
     {
       "name": "pkg-receiver.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://raw.githubusercontent.com/Loopayeh/pkg-sender/73804c41c079b1d32c60bf3fd555f90fba1af2e4/payload/icon0.png",
       "filename": "pkg-receiver.elf",
       "path": "storage/pkg-receiver.elf",
       "url": "https://github.com/Loopayeh/pkg-sender/releases/download/v1.2.9/pkg-receiver.elf",
@@ -1112,7 +1113,7 @@
     },
     {
       "name": "tailscale.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
+      "icon": "https://raw.githubusercontent.com/holdmysocks/ps5-tailscale/e4986b4d52af6a63f9be14d9de616d267c566de1/appicon/icon0.png",
       "filename": "tailscale.elf",
       "path": "tools/tailscale.elf",
       "url": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.1/tailscale-0.7.1.elf",
@@ -1131,7 +1132,7 @@
     },
     {
       "name": "ps5_suite_server.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "icon": "https://raw.githubusercontent.com/manos555555/PS5-Suite/650145210358642163acc9742b77c0effb6fb2f8/payload/ps5_icon.png",
       "filename": "ps5_suite_server.elf",
       "path": "files/ps5_suite_server.elf",
       "url": "https://github.com/manos555555/PS5-Suite/releases/download/v7.3.0/ps5_suite_server.elf",
@@ -1150,7 +1151,7 @@
     },
     {
       "name": "romm-sync.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://raw.githubusercontent.com/s0liton/RommPS/78d0c98a384633dabc6cbb0c320ded9e299b0429/assets/icon0.png",
       "filename": "romm-sync.elf",
       "path": "storage/romm-sync.elf",
       "url": "https://github.com/s0liton/RommPS/releases/download/v1.1.1/romm-sync.elf",
@@ -1275,7 +1276,7 @@
     },
     {
       "name": "LZ4-Game-Compressor.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://raw.githubusercontent.com/gameboy829/PS5-LZ4-Game-Compressor/a392b279de5dd7638ff0daa631043cd821c7486f/ampr-ps5/assets-app/icon0.png",
       "filename": "LZ4-Game-Compressor.elf",
       "path": "storage/LZ4-Game-Compressor.elf",
       "url": "https://github.com/gameboy829/PS5-LZ4-Game-Compressor/releases/download/beta.7/LZ4-Game-Compressor.elf",
@@ -1347,7 +1348,7 @@
     },
     {
       "name": "PS5_Cooling_System_Center.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://raw.githubusercontent.com/strongt1me/ps5-cooling-system-center-pro/87705e716e62a98d1134d02068aa29b9424ffb4b/tile/sce_sys/icon0.png",
       "filename": "PS5_Cooling_System_Center.elf",
       "path": "system/PS5_Cooling_System_Center.elf",
       "url": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.61.0/PS5_Cooling_System_Center_v1.61.0.elf",
@@ -1385,7 +1386,7 @@
     },
     {
       "name": "patchdl.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://raw.githubusercontent.com/knutwurst/ps5-patchdl/cb7a86551b5daed2916518ccb2b5af957501f155/assets/icon0.png",
       "filename": "patchdl.elf",
       "path": "storage/patchdl.elf",
       "url": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.0.6/patchdl_0.0.6.elf",
@@ -1404,7 +1405,7 @@
     },
     {
       "name": "glm.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://raw.githubusercontent.com/leedsy90/game-library-manager-ps5/616f1c0f9152c61b065e6681ee9a96e8b80f32b7/source/tile/icon0.png",
       "filename": "glm.elf",
       "path": "storage/glm.elf",
       "url": "https://github.com/leedsy90/game-library-manager-ps5/releases/download/v0.4.0/glm-0.4.0.elf",
@@ -1423,7 +1424,7 @@
     },
     {
       "name": "rar-to-ffpfsc-ps5-payload.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://raw.githubusercontent.com/rynmrde/ps5-rar-to-ffpfsc-payload/8e858591e245d627bc5da125ddda39a5c5a0e6da/assets/icon0.png",
       "filename": "rar-to-ffpfsc-ps5-payload.elf",
       "path": "storage/rar-to-ffpfsc-ps5-payload.elf",
       "url": "https://github.com/rynmrde/ps5-rar-to-ffpfsc-payload/releases/download/v0.4.8/rar-to-ffpfsc-ps5-payload.elf",
@@ -1442,7 +1443,7 @@
     },
     {
       "name": "nuvio-ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/media.png",
+      "icon": "https://raw.githubusercontent.com/theghostonline/Nuvio-PS5/2ee05a0ccc8016f13e3ca32550faa97adaee4149/app/sce_sys/icon0.png",
       "filename": "nuvio-ps5.elf",
       "path": "media/nuvio-ps5.elf",
       "url": "https://github.com/theghostonline/Nuvio-PS5/releases/download/v1.8.0/nuvio-ps5.elf",
@@ -1461,7 +1462,7 @@
     },
     {
       "name": "Snes9xPS5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/media.png",
+      "icon": "https://raw.githubusercontent.com/MisterTemaki/snes9xPS5/e1a8d0249f877e548feff347818d1ad13feb42c5/ps5/app/sce_sys/icon0.png",
       "filename": "Snes9xPS5.elf",
       "path": "media/Snes9xPS5.elf",
       "url": "https://github.com/MisterTemaki/snes9xPS5/releases/download/v2.3/Snes9xPS5-v2.3.elf",
@@ -1499,7 +1500,7 @@
     },
     {
       "name": "omega-installer.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/loader.png",
+      "icon": "https://raw.githubusercontent.com/TheCriicom/omega-dashboard-ps5/090120ec54d588484f02210a3001e54e7af0e94d/client/sce_sys/icon0.png",
       "filename": "omega-installer.elf",
       "path": "loader/omega-installer.elf",
       "url": "https://github.com/TheCriicom/omega-dashboard-ps5/releases/download/v2026.10.05.5/omega-installer.elf",
