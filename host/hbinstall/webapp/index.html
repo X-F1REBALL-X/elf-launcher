@@ -4,7 +4,7 @@
 <link rel="icon" type="image/jpeg" href="icons/launcher-home.jpg?v=8">
 <link rel="apple-touch-icon" href="icons/launcher-home.jpg?v=8">
 <meta name="color-scheme" content="dark">
-<script>(function(){ var v=""; try{ v=localStorage.getItem("ps5elfs-theme")||""; }catch(e){} if(!/^(gray|white|lavender|sky|gold|black)$/.test(v)) v=""; if(v){ document.documentElement.setAttribute("data-theme", v); if(v==="gold"||v==="black") document.documentElement.className+=" dark"; } })();</script>
+<script>if(/PlayStation/i.test(navigator.userAgent||""))document.documentElement.className+=" ps5";(function(){ var v=""; try{ v=localStorage.getItem("ps5elfs-theme")||""; }catch(e){} if(!/^(gray|white|lavender|sky|gold|black)$/.test(v)) v=""; if(v){ document.documentElement.setAttribute("data-theme", v); if(v==="gold"||v==="black") document.documentElement.className+=" dark"; } })();</script>
 <style>
 /* Hebrew glyphs ship inside the launcher: a clean PS5 has no Hebrew font (squares). Assistant subset, OFL, Hebrew block only.
    One face per weight (no weight ranges, older WebKit drops them) and no synthetic bold, so text never gets smeared */
@@ -732,8 +732,87 @@ html.dark .foldgrid button.subfold .ncount,html.dark .catchips button.subfold .n
 .catchips button .ncount{margin-inline-start:.35rem;min-width:1.9rem}
 .catchips button:focus:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--pri)}
 @media(max-width:700px){.catchips{grid-template-columns:1fr 1fr}}
+/* Loaded / My files folder tiles: own icon colors, same gray tile */
+.subfold[data-sub=loaded]{--c:#d946ef;--c2:#86198f}
+#view[data-f=loaded] .elf .a button.run.update{display:none}
+#main #view[data-f=loaded] .listgrid{grid-template-columns:minmax(0,1fr);max-width:62rem}
+#view[data-f=loaded] .elf .a button.run.kill{margin-inline-start:.5rem}
+.subfold[data-sub=local]{--c:#a1887f;--c2:#6d4c41}
+.subfold i.fico svg{width:58%;height:58%}
+.lproc .lpick{display:flex;color:var(--mint);background:rgba(4,120,87,.12);pointer-events:none}.lproc .lpick:after{display:none}.lproc .lpick svg{width:55%;height:55%}
+/* PS5 TV (html.ps5 set from the user agent): bigger payload cards. Desktop browsers keep the 2.0.2 size. */
+html.ps5 #main:not([data-view=home]) .elf.cat{min-height:6.6rem;padding:.85rem 1.1rem .85rem 1.15rem;grid-column-gap:1.15rem;border-radius:18px}
+html.ps5 #main:not([data-view=home]) .elf.cat .pick{width:4.7rem;height:4.7rem;border-radius:16px}
+html.ps5 #main:not([data-view=home]) .elf.cat .n{font-size:1.36rem;font-weight:800}
+html.ps5 #main:not([data-view=home]) .elf.cat .d{font-size:1.04rem;line-height:1.3;margin-top:.25rem}
+html.ps5 #main:not([data-view=home]) .elf.cat .v{font-size:.92rem;max-width:10rem}
+html.ps5 #main:not([data-view=home]) .elf.cat button.run{min-height:3.3rem;min-width:7.4rem;font-size:1.08rem}
+html.ps5 #main:not([data-view=home]) .elf.cat .pinb{width:1.85rem;height:1.85rem;top:calc(50% + 1.05rem);left:3.35rem}
+html.ps5 #main:not([data-view=home]) .elf.cat .pinb svg{width:1rem;height:1rem}
+[dir=rtl] html.ps5 #main:not([data-view=home]) .elf.cat .pinb,html[dir=rtl].ps5 #main:not([data-view=home]) .elf.cat .pinb{left:auto;right:3.35rem}
+html.ps5 #main:not([data-view=home]) .listgrid{grid-gap:1rem var(--s4)}
+html.ps5 #main:not([data-view=home]) .elf.cat:focus-within{box-shadow:0 0 0 3px var(--pri)}
+/* Phone / tablet browsers (the PS5 browser is >=1180px wide and never gets these) */
+#menubtn,#navscrim,#offnote{display:none}
+html.touch #offnote.show{display:flex;align-items:center;margin:0 0 var(--gap);padding:.6rem .8rem;font-size:.86rem;line-height:1.35;color:var(--ink2);background:var(--card);border:1px solid var(--edge2);border-inline-start:4px solid var(--amber);border-radius:12px}
+html.touch #offnote p{flex:1 1 auto;min-width:0;margin:0}html.touch #offnote b{direction:ltr;unicode-bidi:isolate}
+html.touch #offnote button{flex:0 0 auto;margin-inline-start:.6rem;min-width:2.9rem}
+@media(max-width:860px){
+#menubtn{display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:2.9rem;min-width:2.9rem;padding:0;margin-inline-end:var(--s2)}
+#menubtn svg{width:1.4rem;height:1.4rem}
+.brand{flex:1 1 auto}.brand>div{min-width:0}
+.meta{min-width:0}.by{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.sys>*{margin-inline-start:var(--s2)}
+#sidebar{position:fixed;top:0;bottom:0;inset-inline-start:0;left:0;z-index:70;width:min(19rem,86vw);margin:0;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:0 18px 18px 0;transform:translateX(-105%);visibility:hidden;transition:transform .2s ease,visibility 0s linear .2s}
+[dir=rtl] #sidebar{left:auto;right:0;border-radius:18px 0 0 18px;transform:translateX(105%)}
+html.navopen #sidebar{transform:none;visibility:visible;transition:transform .2s ease}
+html.navopen #navscrim{display:block;position:fixed;top:0;right:0;bottom:0;left:0;z-index:69;background:rgba(15,12,8,.42)}
+html.navopen,html.navopen body{overflow:hidden}
+#sidebar #nav{grid-template-columns:minmax(0,1fr)}
+#offnote.show{display:flex;align-items:center;margin:0 0 var(--gap);padding:.6rem .8rem;font-size:.86rem;line-height:1.35;color:var(--ink2);background:var(--card);border:1px solid var(--edge2);border-inline-start:4px solid var(--amber);border-radius:12px}
+#offnote p{flex:1 1 auto;min-width:0;margin:0}#offnote b{direction:ltr;unicode-bidi:isolate}
+#offnote button{flex:0 0 auto;margin-inline-start:.6rem;min-width:2.9rem}
+.catchips{grid-template-columns:repeat(auto-fill,minmax(11rem,1fr))}
+}
+@media(max-width:480px){
+.wrap{padding:.4rem .4rem var(--s4)}
+.bar{padding:.45rem .5rem}
+.logo{width:2.4rem;height:2.4rem;margin-inline-end:.5rem;border-radius:11px}
+.brand h1{font-size:1.1rem}
+.ver{font-size:.66rem;padding:0 .4rem;margin-inline-end:.4rem}.by{font-size:.74rem}.by:after{display:none}
+#corner{display:none}
+#langbtn{padding:.2rem .55rem}#langbtn [data-i18n]{display:none}#langbtn .flag{margin:0}
+#qkbtn{margin-inline-start:0}
+.search{margin-top:.45rem}
+.live{margin-top:.4rem;padding:.2rem .7rem;font-size:.8rem}
+.foldgrid,.catchips{grid-template-columns:repeat(2,minmax(0,1fr));grid-gap:.5rem}
+.foldgrid button,[dir=rtl] .foldgrid button{min-height:3.6rem;padding:.45rem .5rem;font-size:.9rem;white-space:normal;line-height:1.15}
+.foldgrid .subfold .fico{width:2.1rem;height:2.1rem;margin-inline-end:.5rem}
+.foldgrid button .ncount{min-width:1.7rem;margin-inline-start:.3rem;font-size:.74rem}
+.brand{flex:1 1 0;min-width:0}.meta{flex-wrap:wrap;margin-top:.15rem}.meta .by{flex:1 1 100%;margin-top:.1rem;font-size:.72rem}html.touch .meta .by{padding:.35rem 0;margin:-.25rem 0 -.35rem}.brand h1{overflow:hidden;text-overflow:ellipsis}
+#main[data-view=elf] .listgrid .elf,#main[data-view=downloaded] .listgrid .elf{padding:.6rem .65rem;grid-column-gap:.7rem}
+#main[data-view=elf] .listgrid .pick,#main[data-view=downloaded] .listgrid .pick{width:3rem;height:3rem}
+#main[data-view=elf] .listgrid .elf .n,#main[data-view=downloaded] .listgrid .elf .n{font-size:1.05rem}
+#main[data-view=elf] .listgrid button.run,#main[data-view=downloaded] .listgrid button.run{min-width:5.4rem;font-size:.92rem}
+#main[data-view=elf] .listgrid .elf .pinb,#main[data-view=downloaded] .listgrid .elf .pinb{top:calc(50% + .45rem);left:2.15rem}
+[dir=rtl] #main[data-view=elf] .listgrid .elf .pinb,[dir=rtl] #main[data-view=downloaded] .listgrid .elf .pinb{left:auto;right:2.15rem}
+#main #view[data-f=loaded] .listgrid .elf{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"i n v" "i d d" "a a a"}
+#main #view[data-f=loaded] .listgrid .elf .a{display:flex;margin-top:.5rem;justify-content:flex-end}
+#main #view[data-f=loaded] .listgrid .elf .pinb{top:2.55rem}
+}
+@media(max-width:1179px){.foldgrid button span:not(.ncount),.catchips button span:not(.ncount){flex:1 1 auto;min-width:0;word-break:normal;overflow-wrap:normal;hyphens:auto}}
+@media(min-width:701px) and (max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr))}.foldgrid button,[dir=rtl] .foldgrid button{padding:.45rem .55rem;font-size:.95rem;line-height:1.15}.foldgrid .subfold .fico{width:2.4rem;height:2.4rem;margin-inline-end:.55rem}.foldgrid button .ncount{min-width:1.8rem;margin-inline-start:.35rem}}
+@media(min-width:861px) and (max-width:1179px){.bar{flex-wrap:wrap}.search{order:5;flex:1 1 100%;max-width:none;margin:var(--s2) 0 0}.live{margin-inline-start:auto}}
+/* Touch screens that are not the PS5 (html.touch is set from JS): 44px targets */
+html.touch button,html.touch .navbtn,html.touch #q,html.touch .mlin{min-height:44px}
+html.touch #qkbtn,html.touch #langbtn,html.touch #menubtn{min-width:44px}
+html.touch .pick{width:44px;height:44px}
+html.touch .by{display:inline-block;padding:.7rem 0;margin:-.7rem 0}
+html.touch #langbtn,html.touch .homeChoices.seg button,html.touch input[type=range]{min-height:44px}
+html.touch .elf .pinb:after{content:"";position:absolute;top:-10px;right:-10px;bottom:-10px;left:-10px}
 </style></head><body><div class="wrap">
 <header class="bar">
+<button type="button" id="menubtn" aria-label="Menu" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 <div class="brand"><span class="logo"><img src="icons/launcher-home.jpg?v=8" alt="" width="46" height="46"></span>
 <div><h1>ELF <b>Launcher</b></h1><div class="meta"><span class="ver" id="appVer"></span><a class="by" id="credit" href="https://github.com/X-F1REBALL-X" target="_blank" rel="noopener">Developed by X-F1REBALL-X</a></div></div></div>
 <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Search payloads" aria-label="Search"></div>
@@ -752,6 +831,7 @@ html.dark .foldgrid button.subfold .ncount,html.dark .catchips button.subfold .n
 <div id="modal" role="alertdialog" aria-modal="true"><p id="modalt"></p><small id="modals"></small><div class="acts"><button type="button" id="modalno">Cancel</button><button type="button" id="modalok">OK</button></div></div>
 <div id="wkupd" role="status"><p id="wkupdtxt"></p><div class="acts"><button type="button" id="wkupddl">Update</button><button type="button" id="wkupdx">Later</button></div></div>
 <div id="selfupd" role="status"><p id="selfupdtxt"></p><div class="acts"><button type="button" id="selfupddl" data-i18n="update">Update</button><button type="button" id="selfupdx" data-i18n="selfUpdateLater">Later</button></div></div>
+<div id="navscrim"></div>
 <div id="shell">
 <aside id="sidebar" class="panel"><p class="label" data-i18n="menu">Menu</p>
 <nav id="nav" aria-label="Folders"></nav>
@@ -760,6 +840,7 @@ html.dark .foldgrid button.subfold .ncount,html.dark .catchips button.subfold .n
 <div class="menufoot"><b>elfldr :9021</b><span>UI :1000</span></div>
 </aside>
 <main id="main">
+<div id="offnote" role="note"><p id="offnotetxt"></p><button type="button" id="offnotex" aria-label="Close">&#x2715;</button></div>
 <div id="home" class="show"></div>
 <section class="panel" id="viewpanel">
 <div id="hdr"><h2 id="ftitle" class="label"></h2><div id="hdrx"></div></div>
@@ -1599,16 +1680,35 @@ function keepOurFolder(w, a, b){
   c.folder=folder; c.icon=icon;
   return c;
 }
+/* Product id for matching copies of one payload across catalogs and files on
+   disk: lower case, no extension, no trailing version (_1.7-beta5fix1, -v0.26,
+   Beta5fix1), no ps5- / -ps5, no separators. ShadowMountPlus_1.7-beta5fix1.elf,
+   shadowmountplus.elf and "ShadowMountPlus Beta5fix1" are all "shadowmountplus". */
+function prodKey(s){
+  var b=String(s==null?'':s).toLowerCase().split('/').pop().split('\\').pop().replace(/\.(elf|bin|self)$/,''), prev;
+  do {
+    prev=b;
+    b=b.replace(/[\s_-]+v?\d+(?:\.\d+)*(?:[-_.]?[a-z]+\d*)*$/,'').replace(/[\s_-]+(?:alpha|beta|rc)\d*[a-z0-9]*$/,'')
+       .replace(/[\s_-]+ps5$/,'').replace(/^ps5[\s_-]+/,'');
+  } while(b!==prev);
+  return b.replace(/[^a-z0-9]+/g,'');
+}
 function dedupePayloads(list){
-  var map={}, order=[], i, m, k, prev;
+  /* One row per product: same file stem, same product id, or same sha256. */
+  var map={}, order=[], alias={}, i, j, m, k, prev, keys, sum, pk;
   for(i=0;i<list.length;i++){
     m=list[i];
     if(!m) continue;
-    k=dedupeKey(m);
-    if(!k){ order.push('raw:'+i); map['raw:'+i]=m; continue; }
-    prev=map[k];
-    if(!prev){ map[k]=m; order.push(k); }
-    else map[k]=keepOurFolder(betterEntry(prev, m), prev, m);
+    keys=[];
+    k=dedupeKey(m); if(k) keys.push(k);
+    pk=prodKey(m.name||m.path||''); if(pk) keys.push('p:'+pk+'|ch:'+productChannel(m));
+    sum=String(m.checksum||m.sha256||'').toLowerCase(); if(sum.length===64) keys.push('s:'+sum);
+    if(!keys.length){ order.push('raw:'+i); map['raw:'+i]=m; continue; }
+    k=null;
+    for(j=0;j<keys.length && !k;j++) if(alias[keys[j]]) k=alias[keys[j]];
+    if(!k){ k=keys[0]; map[k]=m; order.push(k); }
+    else { prev=map[k]; map[k]=keepOurFolder(betterEntry(prev, m), prev, m); }
+    for(j=0;j<keys.length;j++) if(!alias[keys[j]]) alias[keys[j]]=k;
   }
   var out=[], j;
   for(j=0;j<order.length;j++) out.push(map[order[j]]);
@@ -2481,13 +2581,13 @@ function endBar(btn, state, name){
   btn.style.backgroundSize='100% 100%';
   setTimeout(function(){
     finishPrimary(btn, state);
-    if(name && state==='loaded') rememberActive(name);
+    if(name && state==='loaded'){ rememberActive(name); setTimeout(function(){ pollProcs(true); }, 1200); }
   }, 380);
 }
 function isProtectedKillName(name){
   var n=(name||'').toLowerCase();
   var base=n.split('/').pop().replace(/\.(elf|bin)$/,'');
-  return base==='elfldr-ps5' || base==='elfldr' || base==='payload-manager' || base==='pldmgr';
+  return base==='elfldr-ps5' || base==='elfldr' || base==='payload-manager' || base==='pldmgr' || base==='elf-launcher' || base==='elflauncher';
 }
 function normBase(s){
   s=String(s==null?'':s).replace(/^\s+|\s+$/g,'').toLowerCase();
@@ -2609,6 +2709,7 @@ function killByPid(name, pid, sendBtn, path){
       hideKillForName(name);
       dbgKill('Kill OK '+name+' pid='+pid+' http='+res.status+' '+body);
       if(currentFolder==='kill') showKillFolder();
+      setTimeout(function(){ pollProcs(true); }, 300);
     } else {
       dbgKill('Kill FAIL '+name+' pid='+pid+' http='+res.status+' '+body);
     }
@@ -2916,13 +3017,103 @@ function folderTileIco(id){
   return folderTinted[id];
 }
 function folderIco(id){ return FOLDER_ICO[id] ? '<img class="fico" alt="" src="'+folderTileIco(id)+'">' : ''; }
+/* Loaded and My files: extra folder tiles, only on the console and only when not empty.
+   Loaded = catalog/My files payloads that /processes_list shows running (same
+   rule as the Loaded badge on rows), plus any other killable user ELF. */
+function loadedPayloads(){
+  var out=[], all=allPayloads(), i, p, b, seen={};
+  if(!isConsoleHost() || !lastProcs) return out;
+  for(i=0;i<all.length;i++){
+    p=all[i]; b=elfFileBase(p);
+    if(!b || seen[b] || isProtectedKillName(p.name) || isProtectedKillName(p.path)) continue;
+    if(payloadIsRunning(b, lastProcs)){ seen[b]=1; out.push(p); }
+  }
+  return out;
+}
+function loadedOther(){
+  var out=[], list, i, j, pr, hit, mine=loadedPayloads(), pids={};
+  if(!isConsoleHost() || !lastProcs) return out;
+  for(j=0;j<mine.length;j++){ pr=findRunningProc(elfFileBase(mine[j]), lastProcs); if(pr) pids[pr.pid|0]=1; }
+  list=userProcs(lastProcs);
+  for(i=0;i<list.length;i++){
+    pr=list[i];
+    if(pr.self || !killable(pr) || pids[pr.pid|0]) continue;
+    hit=false;
+    for(j=0;j<mine.length && !hit;j++) if(processNameMatches(pr.name, elfFileBase(mine[j]))) hit=true;
+    if(!hit) out.push(pr);
+  }
+  return out;
+}
+/* Kill button for a Loaded row: the live pid from /processes_list; never the launcher or elfldr. */
+function loadedKillHtml(p){
+  var pr=lastProcs ? findRunningProc(elfFileBase(p), lastProcs) : null;
+  if(!pr || pr.self || !killable(pr) || isProtectedKillName(p.name) || isProtectedKillName(p.path)) return '';
+  return '<button type="button" class="run kill" data-pid="'+(pr.pid|0)+'" data-pname="'+esc(pr.name||p.name)+'">'+esc(t('killBtn'))+'</button>';
+}
+function loadedCount(){ return loadedPayloads().length+loadedOther().length; }
+function loadedOtherHtml(){
+  var list=loadedOther(), html='', i, p;
+  for(i=0;i<list.length;i++){
+    p=list[i];
+    html+='<div class="elfwrap lproc"><div class="elf nom"><span class="pick lpick">'+icon('run')+'</span><div class="n"><b>'+esc(procBase(p.name))+'</b></div>'+
+      '<div class="v">pid '+(p.pid|0)+'</div><div class="d">'+esc(t('memMb',{n:(p.memory!=null?p.memory:'?')}))+'</div><div class="a">'+
+      '<button type="button" class="run kill" data-pid="'+(p.pid|0)+'" data-pname="'+esc(p.name)+'">'+esc(t('killBtn'))+'</button></div></div></div>';
+  }
+  return html;
+}
+function extraFoldHtml(id, selected){
+  var n;
+  if(!isConsoleHost()) return '';
+  n=(id==='loaded') ? loadedCount() : LOCAL_PAYLOADS.length;
+  if(!n && selected!==id) return '';
+  return '<button type="button" class="subfold hasico'+(selected===id?' active':'')+'" data-sub="'+id+'"><i class="fico">'+icon(id==='loaded'?'run':'ps5')+'</i><span>'+esc(folderLabel(id))+'</span><span class="ncount">'+n+'</span></button>';
+}
+/* Repaint the folder tiles (and the Loaded list) when what is loaded changes. */
+var loadedSig='';
+function loadedSigNow(){
+  var a=loadedPayloads().map(function(p){ return p.name; }), b=loadedOther().map(function(p){ return p.pid; });
+  return a.join('|')+'#'+b.join('|')+'#'+LOCAL_PAYLOADS.length;
+}
+function repaintFoldTiles(){
+  var boxes=document.querySelectorAll('.foldgrid,.catchips'), i, el, tmp, sel, home;
+  for(i=0;i<boxes.length;i++){
+    el=boxes[i]; home=el.className==='catchips';
+    sel=home ? '' : (currentFolder||'');
+    tmp=document.createElement('div');
+    tmp.innerHTML=home ? catChipsHtml() : folderChipsHtml(sel);
+    tmp=tmp.firstChild;
+    if(!tmp || tmp.innerHTML===el.innerHTML) continue;
+    if(document.activeElement && el.contains(document.activeElement)) continue; /* never yank D-pad focus */
+    el.parentNode.replaceChild(tmp, el);
+    (function(box, isHome){
+      var b=box.querySelectorAll('.subfold'), j;
+      for(j=0;j<b.length;j++) b[j].onclick=function(){ var sid=this.getAttribute('data-sub'); if(!sid) return; if(isHome) goFolder(sid); else { setHashFolder(sid); showFolder(sid); } };
+    })(tmp, home);
+  }
+}
+function loadedChanged(){
+  var sig=loadedSigNow();
+  if(sig===loadedSig) return;
+  loadedSig=sig;
+  if(currentFolder==='loaded'){
+    var f=document.activeElement, keep=f && f.getAttribute ? (f.closest && f.closest('[data-name]') ? f.closest('[data-name]').getAttribute('data-name') : '') : '';
+    showFolder('loaded');
+    if(keep){ var r=viewEl.querySelector('[data-name="'+keep.replace(/"/g,'')+'"] button.run'); if(r) try{ r.focus(); }catch(e){} }
+    else { var first=viewEl.querySelector('#view .listgrid button.run, .listgrid button.run'); if(f && f!==document.body && !document.body.contains(f) && first) try{ first.focus(); }catch(e){} }
+    return;
+  }
+  if(currentFolder==='local' && !(document.activeElement && viewEl.contains(document.activeElement) && document.activeElement.closest('.listgrid'))){ showFolder('local'); return; }
+  repaintFoldTiles();
+}
 function folderChipsHtml(selected){
   var i, f, html='<div class="foldgrid">';
   html+='<button type="button" class="subfold hasico'+(selected==='elf'?' active':'')+'" data-sub="elf"><i class="fico">'+icon('elf')+'</i><span>'+esc(t('allPayloads'))+'</span><span class="ncount">'+PAYLOADS.length+'</span></button>';
+  html+=extraFoldHtml('loaded', selected);
   for(i=0;i<FOLDERS.length;i++){
     f=FOLDERS[i];
     html+='<button type="button" class="subfold'+(FOLDER_ICO[f.id]?' hasico':'')+(selected===f.id?' active':'')+'" data-sub="'+esc(f.id)+'">'+folderIco(f.id)+'<span>'+esc(folderLabel(f.id))+'</span><span class="ncount">'+countIn(f.id)+'</span></button>';
   }
+  html+=extraFoldHtml('local', selected);
   return html+'</div>';
 }
 /* Two header cells, one above each list column, using the same grid as the rows. */
@@ -3319,7 +3510,7 @@ function showFolder(id){
   label=folderTitle(id);
   if(isCatalogId(id)) lastElfFolder=id;
   markOnly=false;
-  catalogView=(id==='elf' || isCatalogId(id));
+  catalogView=(id==='elf' || isCatalogId(id) || id==='loaded' || id==='local');
   currentFolder=id;
   homeEl.className='';
   homeEl.innerHTML='';
@@ -3333,8 +3524,8 @@ function showFolder(id){
   renderNav(id);
   list=folderList(id);
   setHdrActions(list.length ? selAllBtn() : '');
-  if(!list.length){
-    viewEl.innerHTML=(catalogView?folderChipsHtml(id):'')+'<p class="empty">'+esc(t(id==='search'?'noResults':'emptyFolder'))+'</p>';
+  if(!list.length && !(id==='loaded' && loadedOther().length)){
+    viewEl.innerHTML=(catalogView?folderChipsHtml(id):'')+'<p class="empty">'+esc(t(id==='search'?'noResults':(id==='loaded'?'noRunning':'emptyFolder')))+'</p>';
     bindSubfolds();
     return;
   }
@@ -3350,14 +3541,17 @@ function showFolder(id){
     var state;
     if(isConsoleHost()) state='unknown'; /* Disk check fills Download or Load. */
     else state=on?'loaded':(onPs5?'send':'download');
-    html+='<div class="a"><button type="button" class="run" data-state="'+state+'">\u2026</button></div>';
+    html+='<div class="a"><button type="button" class="run" data-state="'+state+'">\u2026</button>'+(id==='loaded'?loadedKillHtml(p):'')+'</div>';
     html+='</div></div>';
   }
+  if(id==='loaded') html+=loadedOtherHtml();
+  viewEl.setAttribute('data-f', id);
   viewEl.innerHTML=html;
   wrapListGrid();
   bindSubfolds();
   stripAutoChecks();
   bindRows(viewEl, markOnly);
+  if(id==='loaded') bindKillButtons(viewEl);
   refreshKillButtons();
   watchRunning();
   if(id==='auto' && isConsoleHost()) filterAutoToDownloaded();
@@ -3828,6 +4022,21 @@ var WKU_I18N={
  he:{wkUpd:'WK Autoloader {ver} \u05d6\u05de\u05d9\u05df',wkUpdInstalling:'\u05de\u05ea\u05e7\u05d9\u05df \u05d0\u05ea WK Autoloader {ver}...',wkUpdDone:'WK Autoloader {ver} \u05d4\u05d5\u05ea\u05e7\u05df',wkUpdFail:'\u05e2\u05d3\u05db\u05d5\u05df WK Autoloader \u05e0\u05db\u05e9\u05dc: {msg}'}
 };
 (function(){ var l,k; for(l in WKU_I18N){ if(!I18N[l]) continue; for(k in WKU_I18N[l]) I18N[l][k]=WKU_I18N[l][k]; } })();
+var RSP_I18N={
+ en:{offNote:'Not on the console: Download saves the ELF to this device. To load payloads from here, open {url} (same network as the PS5).',f_local:'My files'},
+ ar:{offNote:'\u0644\u0633\u062a \u0639\u0644\u0649 \u0627\u0644\u062c\u0647\u0627\u0632: \u00ab\u062a\u0646\u0632\u064a\u0644\u00bb \u064a\u062d\u0641\u0638 \u0645\u0644\u0641 ELF \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u062c\u0647\u0627\u0632. \u0644\u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u062d\u0645\u0648\u0644\u0627\u062a \u0645\u0646 \u0647\u0646\u0627 \u0627\u0641\u062a\u062d {url} (\u0646\u0641\u0633 \u0634\u0628\u0643\u0629 PS5).',f_local:'\u0645\u0644\u0641\u0627\u062a\u064a'},
+ es:{offNote:'No est\u00e1s en la consola: Descargar guarda el ELF en este dispositivo. Para cargar payloads desde aqu\u00ed, abre {url} (misma red que la PS5).',f_local:'Mis archivos'},
+ fr:{offNote:'Hors console : T\u00e9l\u00e9charger enregistre l\u2019ELF sur cet appareil. Pour charger des payloads d\u2019ici, ouvrez {url} (m\u00eame r\u00e9seau que la PS5).',f_local:'Mes fichiers'},
+ de:{offNote:'Nicht auf der Konsole: Herunterladen speichert die ELF auf diesem Ger\u00e4t. Um Payloads von hier zu laden, \u00f6ffne {url} (gleiches Netzwerk wie die PS5).',f_local:'Meine Dateien'},
+ pt:{offNote:'Fora do console: Baixar salva o ELF neste aparelho. Para carregar payloads daqui, abra {url} (mesma rede do PS5).',f_local:'Meus arquivos'},
+ ru:{offNote:'\u041d\u0435 \u043d\u0430 \u043a\u043e\u043d\u0441\u043e\u043b\u0438: \u00ab\u0421\u043a\u0430\u0447\u0430\u0442\u044c\u00bb \u0441\u043e\u0445\u0440\u0430\u043d\u044f\u0435\u0442 ELF \u043d\u0430 \u044d\u0442\u043e \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u043e. \u0427\u0442\u043e\u0431\u044b \u0437\u0430\u043f\u0443\u0441\u043a\u0430\u0442\u044c payload\u2019\u044b \u043e\u0442\u0441\u044e\u0434\u0430, \u043e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 {url} (\u0442\u0430 \u0436\u0435 \u0441\u0435\u0442\u044c, \u0447\u0442\u043e \u0438 \u0443 PS5).',f_local:'\u041c\u043e\u0438 \u0444\u0430\u0439\u043b\u044b'},
+ ja:{offNote:'\u30b3\u30f3\u30bd\u30fc\u30eb\u5916\u3067\u3059\uff1a\u300c\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u300d\u306f\u3053\u306e\u7aef\u672b\u306b ELF \u3092\u4fdd\u5b58\u3057\u307e\u3059\u3002\u3053\u3053\u304b\u3089\u30da\u30a4\u30ed\u30fc\u30c9\u3092\u8aad\u307f\u8fbc\u3080\u306b\u306f {url} \u3092\u958b\u3044\u3066\u304f\u3060\u3055\u3044\uff08PS5 \u3068\u540c\u3058\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\uff09\u3002',f_local:'\u30de\u30a4\u30d5\u30a1\u30a4\u30eb'},
+ zh:{offNote:'\u4e0d\u5728\u4e3b\u673a\u4e0a\uff1a\u201c\u4e0b\u8f7d\u201d\u4f1a\u628a ELF \u4fdd\u5b58\u5230\u6b64\u8bbe\u5907\u3002\u8981\u4ece\u8fd9\u91cc\u52a0\u8f7d payload\uff0c\u8bf7\u6253\u5f00 {url}\uff08\u4e0e PS5 \u540c\u4e00\u7f51\u7edc\uff09\u3002',f_local:'\u6211\u7684\u6587\u4ef6'},
+ it:{offNote:'Non sei sulla console: Scarica salva l\u2019ELF su questo dispositivo. Per caricare payload da qui, apri {url} (stessa rete della PS5).',f_local:'I miei file'},
+ he:{offNote:'\u05dc\u05d0 \u05e2\u05dc \u05d4\u05e7\u05d5\u05e0\u05e1\u05d5\u05dc\u05d4: \u00ab\u05d4\u05d5\u05e8\u05d3\u05d4\u00bb \u05e9\u05d5\u05de\u05e8\u05ea \u05d0\u05ea \u05d4-ELF \u05d1\u05de\u05db\u05e9\u05d9\u05e8 \u05d4\u05d6\u05d4. \u05db\u05d3\u05d9 \u05dc\u05d8\u05e2\u05d5\u05df \u05de\u05d8\u05e2\u05e0\u05d9\u05dd \u05de\u05db\u05d0\u05df, \u05e4\u05ea\u05d7\u05d5 \u05d0\u05ea {url} (\u05d0\u05d5\u05ea\u05d4 \u05e8\u05e9\u05ea \u05e9\u05dc \u05d4-PS5).',f_local:'\u05d4\u05e7\u05d1\u05e6\u05d9\u05dd \u05e9\u05dc\u05d9'}
+};
+/* Loaded folder reuses each language's existing 'Loaded' word. */
+(function(){ var l,k; for(l in RSP_I18N){ if(!I18N[l]) continue; for(k in RSP_I18N[l]) I18N[l][k]=RSP_I18N[l][k]; if(I18N[l].loaded && !I18N[l].f_loaded) I18N[l].f_loaded=I18N[l].loaded; } })();
 var WKUPD_GH='https://api.github.com/repos/X-F1REBALL-X/wk-autoloader/releases/latest';
 var WKUPD_VER_KEY='elf-wk-installed-ver';
 var WKUPD_DISMISS_KEY='elf-wk-upd-dismiss';
@@ -4021,14 +4230,25 @@ function refreshLocalFiles(cb){
   var fin=function(){ if(cb){ var c=cb; cb=null; try{ c(); }catch(e){} } };
   if(!isConsoleHost()){ fin(); return; }
   fetch('/browse?dir='+encodeURIComponent('/data/elf-launcher/mirror')).then(function(r){ return r.json(); }).then(function(j){
-    var known={}, i, f, list=[];
-    for(i=0;i<PAYLOADS.length;i++) known[String(PAYLOADS[i].path||'').split('/').pop()]=1;
+    var known={}, i, f, list=[], q, k;
+    /* A file that is a copy of a catalog payload (same name in any case, same
+       product id or title, same sha256) belongs to that tile, not its own. */
+    for(i=0;i<PAYLOADS.length;i++){
+      q=PAYLOADS[i];
+      known['n:'+String(q.path||'').split('/').pop().toLowerCase()]=1;
+      known['n:'+String(q.name||'').toLowerCase()]=1;
+      k=prodKey(q.path||q.name); if(k) known['p:'+k]=1;
+      k=prodKey(displayName(q)); if(k) known['p:'+k]=1;
+      if(q.checksum) known['s:'+String(q.checksum).toLowerCase()]=1;
+    }
     for(i=0;j && j.files && i<j.files.length;i++){
       f=j.files[i];
-      if(known[f.name] || f.ok===false || isProtectedKillName(f.name)) continue;
+      if(f.ok===false || isProtectedKillName(f.name)) continue;
+      if(known['n:'+String(f.name).toLowerCase()] || known['p:'+prodKey(f.name)] || (f.sha256 && known['s:'+String(f.sha256).toLowerCase()])) continue;
       list.push({name:f.name,path:'mirror/'+f.name,version:'',folder:'local',info:'',local:true,size:f.size});
     }
     LOCAL_PAYLOADS=list;
+    loadedChanged();
     fin();
   }).catch(fin);
   setTimeout(fin, 4000);
@@ -4304,7 +4524,9 @@ function folderLabelSafe(id){ return isCatalogId(id) ? folderLabel(id) : ''; }
 function folderList(id){
   var out=[], i, fo={}, pins, pk={};
   if(id==='search') return searchList(searchQ);
-  for(i=0;i<PAYLOADS.length;i++) if(id==='elf' || PAYLOADS[i].folder===id) out.push(PAYLOADS[i]);
+  if(id==='loaded') out=loadedPayloads();
+  else if(id==='local') out=LOCAL_PAYLOADS.slice();
+  else for(i=0;i<PAYLOADS.length;i++) if(id==='elf' || PAYLOADS[i].folder===id) out.push(PAYLOADS[i]);
   for(i=0;i<FOLDERS.length;i++) fo[FOLDERS[i].id]=i;
   pins=readPins();
   for(i=0;i<pins.length;i++) if(!pk.hasOwnProperty(pins[i])) pk[pins[i]]=i;
@@ -4321,6 +4543,7 @@ function folderList(id){
 function folderTitle(id){
   if(id==='search') return t('searchResults',{q:searchQ});
   if(id==='elf') return t('allPayloads');
+  if(id==='loaded' || id==='local') return folderLabel(id);
   return isCatalogId(id) ? folderLabel(id) : id;
 }
 /* ---- display names: catalog rows show a clean title (no version, no .elf, no PS5); the file name stays the id everywhere else ---- */
@@ -4369,7 +4592,7 @@ function navItem(id, label, count, sel){
 function renderNav(selected){
   var nav=document.getElementById('nav'), html='', cat, mv;
   if(!nav) return;
-  cat=(selected==='elf' || isCatalogId(selected));
+  cat=(selected==='elf' || isCatalogId(selected) || selected==='loaded' || selected==='local');
   html+='<p class="navgrp">'+esc(t('library'))+'</p>';
   html+=navItem('', t('home'), null, !selected);
   html+=navItem('elf', t('allPayloads'), PAYLOADS.length, cat);
@@ -4413,12 +4636,12 @@ function goFolder(id){
 /* ---- home ---- */
 var DL_SET={};
 function catChipsHtml(){
-  var i, f, html='<div class="catchips">';
+  var i, f, html='<div class="catchips">'+extraFoldHtml('loaded', '');
   for(i=0;i<FOLDERS.length;i++){
     f=FOLDERS[i];
     html+='<button type="button" class="subfold'+(FOLDER_ICO[f.id]?' hasico':'')+'" data-sub="'+esc(f.id)+'">'+folderIco(f.id)+'<span>'+esc(folderLabel(f.id))+'</span><span class="ncount">'+countIn(f.id)+'</span></button>';
   }
-  return html+'</div>';
+  return html+extraFoldHtml('local', '')+'</div>';
 }
 /* ---- Quick launch pins: pinned payloads come first, in pin order ---- */
 var PIN_KEY='ps5elfs-pins';
@@ -4632,6 +4855,7 @@ function pollProcs(force){
     if(!currentFolder) paintHomeRun(procs);
     if(currentFolder==='run') paintRunList(procs, force);
     if(document.querySelector('[data-name]')) refreshKillButtons(procs);
+    loadedChanged();
   }).catch(function(){ procBusy=false; if(currentFolder==='run' && force) paintRunList([], true); });
 }
 function showRunFolder(){
@@ -6642,6 +6866,42 @@ function backgroundCatalogRefresh(tries){
     if(ok) setTimeout(function(){ checkDownloadedUpdates(PAYLOADS); }, 1500);
     else setTimeout(function(){ backgroundCatalogRefresh(2); }, 8000);
   });
+})();
+/* Phone / tablet browsers: slide-out menu, 44px touch targets, and a note when
+   the page is opened off the console (Pages or a file), where only Download works. */
+(function(){
+  var root=document.documentElement, btn=document.getElementById('menubtn'),
+      scrim=document.getElementById('navscrim'), side=document.getElementById('sidebar'),
+      note=document.getElementById('offnote'), NOTE_KEY='elf-offnote-x';
+  var mq=window.matchMedia ? window.matchMedia('(max-width:860px)') : null;
+  if(!onPs5Browser() && window.matchMedia && matchMedia('(pointer:coarse)').matches) root.classList.add('touch');
+  function setNav(open){
+    root.classList.toggle('navopen', !!open);
+    if(btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  if(btn) btn.addEventListener('click', function(){ setNav(!root.classList.contains('navopen')); });
+  if(scrim) scrim.addEventListener('click', function(){ setNav(false); });
+  if(side) side.addEventListener('click', function(e){
+    var b=e.target && e.target.closest ? e.target.closest('button') : null;
+    if(b && mq && mq.matches) setTimeout(function(){ setNav(false); }, 60);
+  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && root.classList.contains('navopen')) setNav(false); });
+  window.addEventListener('resize', function(){ if(mq && !mq.matches) setNav(false); });
+  function paintNote(){
+    if(btn) btn.setAttribute('aria-label', t('menu'));
+    if(!note) return;
+    var show=!isConsoleHost() && !onPs5Browser();
+    try{ if(localStorage.getItem(NOTE_KEY)) show=false; }catch(e){}
+    note.classList.toggle('show', show);
+    if(show){
+      var parts=t('offNote').split('{url}'), p=document.getElementById('offnotetxt');
+      p.textContent=parts[0]; if(parts.length>1){ var b=document.createElement('b'); b.textContent='http://<PS5 IP>:1000'; p.appendChild(b); p.appendChild(document.createTextNode(parts[1])); }
+    }
+  }
+  var x=document.getElementById('offnotex');
+  if(x) x.addEventListener('click', function(){ try{ localStorage.setItem(NOTE_KEY,'1'); }catch(e){} note.classList.remove('show'); });
+  paintNote();
+  if(typeof setLang==='function'){ var orig=setLang; setLang=function(){ var r=orig.apply(this, arguments); paintNote(); return r; }; }
 })();
 })();
 </script>
