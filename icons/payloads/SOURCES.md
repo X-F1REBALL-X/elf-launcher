@@ -20,3 +20,4 @@ Sources are in src/, built by icons/categories/src/make_icons.py.
 
 Payloads with no original icon anywhere use the shared icon of their folder,
 icons/categories/<folder>.png, built by icons/categories/src/make_icons.py.
+| ps5-linux-loader.png | logo.webp from ps5-linux/ps5-linux-loader @ 64637c177eaed277fb6ccce394cbb29dd047b893, WebP to PNG, 1254 to 256 |
