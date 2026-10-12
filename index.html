@@ -1714,6 +1714,27 @@ function dedupePayloads(list){
   for(j=0;j<order.length;j++) out.push(map[order[j]]);
   return out;
 }
+/* Block-list for the external itsPLK mirror catalog only: unofficial forks and
+   re-uploads Ohad removed from our catalog must not come back through it.
+   Matched by product id (prodKey of the file name) or by the upstream repo.
+   Never applied to our own catalog or to files on the console (My files). */
+var EXT_BLOCK=[
+  {key:'ftpsrvdrakmor', repo:'drakmor/ftpsrv'},          /* fork of ps5-payload-dev/ftpsrv (was ftpsrv-ps5-ng) */
+  {key:'ftpsrvps5ng'},                                     /* same fork, the name we used to list it under */
+  {key:'lapyjbdaemon', repo:'itsplk/ps5-lapy-jb-daemon'},  /* re-upload; we list ArkSama's original */
+  {key:'elfldrautoldr'}                                    /* fork of elfldr, removed from our catalog */
+];
+function isExternalSource(src){ return /itsplk/i.test(String(src && src.url || '')); }
+function extRepo(u){ var m=String(u||'').toLowerCase().match(/github\.com\/([^\/]+\/[^\/]+)/); return m ? m[1] : ''; }
+function extBlocked(item){
+  var k=prodKey(item && (item.filename||item.name) || ''), r1=extRepo(item && item.source), r2=extRepo(item && item.source_direct), i, b;
+  for(i=0;i<EXT_BLOCK.length;i++){
+    b=EXT_BLOCK[i];
+    if(k && b.key===k) return true;
+    if(b.repo && (r1===b.repo || r2===b.repo)) return true;
+  }
+  return false;
+}
 /* Fetch every source and build the merged list. Does not touch PAYLOADS. */
 function fetchRemoteCatalog(done){
   var sources=CATALOG_SOURCES && CATALOG_SOURCES.length ? CATALOG_SOURCES : [{name:'catalog',url:CATALOG_SOURCE}];
@@ -1742,6 +1763,7 @@ function fetchRemoteCatalog(done){
       names.push(r.src.name||('src'+i));
       var j;
       for(j=0;j<r.arr.length;j++){
+        if(isExternalSource(r.src) && extBlocked(r.arr[j])) continue;
         m=mapRemotePayload(r.arr[j], r.src.name||'');
         if(!m) continue;
         out.push(m);
