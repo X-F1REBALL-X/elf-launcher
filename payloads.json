@@ -1,6 +1,6 @@
 {
   "name": "X-F1REBALL-X elf-launcher",
-  "app_version": "2.0.3",
+  "app_version": "2.0.4",
   "payloads": [
     {
       "name": "elf-launcher.elf",
@@ -9,12 +9,12 @@
       "path": "launcher/elf-launcher.elf",
       "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf",
       "description": "Installs the home screen tile and serves this page from the console.",
-      "version": "2.0.3",
+      "version": "2.0.4",
       "category": "Loader",
       "author": "X-F1REBALL-X",
-      "size": 1441824,
-      "checksum": "6d038b51ebfe772ff035faa68465e5cd4c1c943caafb95092d01fbfb4ba2f2e8",
-      "sha256": "6d038b51ebfe772ff035faa68465e5cd4c1c943caafb95092d01fbfb4ba2f2e8"
+      "size": 1474592,
+      "checksum": "541a6ca4437173601881bdb90e4c27c8b5a9d62351cafb96f291c63dca7245ec",
+      "sha256": "541a6ca4437173601881bdb90e4c27c8b5a9d62351cafb96f291c63dca7245ec"
     },
     {
       "name": "elfldr-ps5.elf",
