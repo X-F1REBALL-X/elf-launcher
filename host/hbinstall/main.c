@@ -54,11 +54,78 @@ INCASSET(pic1_png, "sce_sys/pic1.png");
 INCASSET(index_html, "webapp/index.html");
 INCASSET(ico_launcher_home, "icons/launcher-home.jpg");
 INCASSET(ico_owner_avatar, "icons/x-f1reball-x.jpg");
-/* Hebrew-only font subset (Assistant, OFL, fonts/OFL.txt + NOTICE): a clean console has no Hebrew glyphs */
-INCASSET(font_he_400, "fonts/he-400.woff");
-INCASSET(font_he_600, "fonts/he-600.woff");
 
 static int send_blob(int c, const char *ctype, const void *body, size_t n);
+
+/* ---- APP_VERSION of this build (embedded webapp) and of the mirror copy ----
+ * A launcher sent straight to elfldr (:9021) only lives in RAM; boot loaders
+ * (WK Autoloader) start mirror/elf-launcher.elf. /version reports both so a
+ * caller never "updates" a newer running launcher with an older mirror. */
+static int find_app_ver(const uint8_t *b, size_t n, char *out, size_t outsz) {
+  static const char k[] = "APP_VERSION=\"";
+  size_t kl = sizeof(k) - 1, i, j;
+  out[0] = 0;
+  for (i = 0; i + kl < n; i++) {
+    if (b[i] != 'A' || memcmp(b + i, k, kl))
+      continue;
+    for (j = 0; i + kl + j < n && j + 1 < outsz && j < 31; j++) {
+      char ch = (char)b[i + kl + j];
+      if (ch == '"')
+        break;
+      if (!((ch >= '0' && ch <= '9') || ch == '.' || ch == '-' ||
+            (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')))
+        break;
+      out[j] = ch;
+    }
+    out[j] = 0;
+    if (j && i + kl + j < n && b[i + kl + j] == '"')
+      return 0;
+    out[0] = 0;
+  }
+  return -1;
+}
+static const char *self_app_ver(void) {
+  static char v[32];
+  if (!v[0] && find_app_ver(index_html, index_html_size, v, sizeof(v)))
+    snprintf(v, sizeof(v), "?");
+  return v;
+}
+static int file_app_ver(const char *path, char *out, size_t outsz) {
+  struct stat st;
+  uint8_t *b;
+  size_t n = 0;
+  ssize_t r;
+  int fd, rc;
+  out[0] = 0;
+  if (stat(path, &st) || !S_ISREG(st.st_mode) || st.st_size <= 0 || st.st_size > 16 * 1024 * 1024)
+    return -1;
+  fd = open(path, O_RDONLY);
+  if (fd < 0)
+    return -1;
+  b = malloc((size_t)st.st_size);
+  if (!b) {
+    close(fd);
+    return -1;
+  }
+  while (n < (size_t)st.st_size && (r = read(fd, b + n, (size_t)st.st_size - n)) > 0)
+    n += (size_t)r;
+  close(fd);
+  rc = find_app_ver(b, n, out, outsz);
+  free(b);
+  return rc;
+}
+/* -1 a<b, 0 equal/unknown, 1 a>b (numeric x.y.z) */
+static int ver_cmp(const char *a, const char *b) {
+  int i;
+  for (i = 0; i < 3; i++) {
+    long x = strtol(a, (char **)&a, 10), y = strtol(b, (char **)&b, 10);
+    if (x != y)
+      return x > y ? 1 : -1;
+    if (*a == '.') a++;
+    if (*b == '.') b++;
+  }
+  return 0;
+}
 
 static int send_icon(int c, const char *path) {
   const char *name = path;
@@ -68,13 +135,6 @@ static int send_icon(int c, const char *path) {
     return send_blob(c, "image/jpeg", ico_launcher_home, ico_launcher_home_size);
   if (!strcmp(name, "x-f1reball-x.jpg"))
     return send_blob(c, "image/jpeg", ico_owner_avatar, ico_owner_avatar_size);
-  if (!strncmp(path, "fonts/", 6)) {
-    name = path + 6;
-    if (!strcmp(name, "he-400.woff"))
-      return send_blob(c, "font/woff", font_he_400, font_he_400_size);
-    if (!strcmp(name, "he-600.woff"))
-      return send_blob(c, "font/woff", font_he_600, font_he_600_size);
-  }
   return -1;
 }
 
@@ -5164,9 +5224,11 @@ static void serve(void) {
       continue;
     }
     if (!strcmp(p, "version")) {
-      char vb[160];
-      snprintf(vb, sizeof(vb), "{\"ok\":true,\"pid\":%d,\"build\":\"%s\",\"icon\":\"%s\"}",
-               (int)getpid(), LAUNCHER_BUILD_ID, HOME_ICON_VERSION);
+      char vb[256], mv[32];
+      if (file_app_ver(MIRROR_DIR "/elf-launcher.elf", mv, sizeof(mv)))
+        mv[0] = 0;
+      snprintf(vb, sizeof(vb), "{\"ok\":true,\"pid\":%d,\"build\":\"%s\",\"icon\":\"%s\",\"app\":\"%s\",\"mirror_app\":\"%s\"}",
+               (int)getpid(), LAUNCHER_BUILD_ID, HOME_ICON_VERSION, self_app_ver(), mv);
       send_json(c, 1, vb, strlen(vb));
       close(c);
       continue;
@@ -5762,6 +5824,13 @@ int main(void) {
   make_data_dir();
   ev_started = (long long)time(NULL);
   evlog("info", "launcher started");
+  {
+    char mv[32];
+    if (file_app_ver(MIRROR_DIR "/elf-launcher.elf", mv, sizeof(mv)))
+      evlog("info", "Elf Launcher %s: no mirror copy - not persistent until saved (Upload: Save, or /upload?name=elf-launcher.elf&save=1)", self_app_ver());
+    else if (ver_cmp(self_app_ver(), mv) > 0)
+      evlog("error", "Elf Launcher %s running but mirror copy is %s - boot loaders will start %s; save this ELF to mirror/elf-launcher.elf", self_app_ver(), mv, mv);
+  }
   (void)update_http_init(); /* optional; Update uses sceHttp when available */
   serve();
   return 0;
