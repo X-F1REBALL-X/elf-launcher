@@ -75,17 +75,18 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/wk-autoloader/2548957950d227cb478f94f88d3389b25b957ff9/assets/icon0.png",
       "filename": "wk-autoloader.elf",
       "path": "hen/wk-autoloader.elf",
-      "url": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.1.1/wk-autoloader.elf",
+      "url": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.1.2/wk-autoloader.elf",
       "description": "WK Autoloader installer for the home screen (no PC host needed).",
-      "version": "v1.1.1",
+      "version": "v1.1.2",
       "category": "Loader",
       "author": "X-F1REBALL-X",
       "size": 5604608,
-      "checksum": "55170680ce4b3e2487d9ec99d976e71e3ffc03708959c2a1b23ae0cccb7649f9",
+      "checksum": "c5489f708e0e19769fd8d84c667942916778af39924d23c13e42f9a8f93c544c",
       "github_latest": {
         "repo": "X-F1REBALL-X/wk-autoloader",
         "asset": "^wk-autoloader\\.elf$"
-      }
+      },
+      "sha256": "c5489f708e0e19769fd8d84c667942916778af39924d23c13e42f9a8f93c544c"
     },
     {
       "name": "launchpad-install.elf",
@@ -459,19 +460,19 @@
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v7.0.13/ps5upload-7.0.13.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v7.0.22/ps5upload-7.0.22.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v7.0.13",
+      "version": "v7.0.22",
       "category": "Files",
       "author": "phantomptr",
-      "size": 3294736,
-      "checksum": "579de1d0390925bd91fda3222ff98149b3e2425c6b5b16d6948dea8882744f66",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v7.0.13/ps5upload-7.0.13.elf",
+      "size": 3299976,
+      "checksum": "e382353612fdf85b2fdbfea75f4f5ebad260c767faa51b0446118646a6db0267",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v7.0.22/ps5upload-7.0.22.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "579de1d0390925bd91fda3222ff98149b3e2425c6b5b16d6948dea8882744f66"
+      "sha256": "e382353612fdf85b2fdbfea75f4f5ebad260c767faa51b0446118646a6db0267"
     },
     {
       "name": "BFpilot.elf",
@@ -1192,15 +1193,15 @@
       "icon": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/raw/commit/52a3e8a1a661f90dff9d99a0067e08bd3b5ead8f/assets/icon0.png",
       "filename": "AnyPad-PS5.elf",
       "path": "system/AnyPad-PS5.elf",
-      "url": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/releases/download/v0.8.1-beta/AnyPad-PS5-0.8.1-beta.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/AnyPad-PS5.elf",
       "description": "Use other controllers on the console (beta).",
-      "version": "v0.8.1-beta",
+      "version": "v0.9.1-beta",
       "category": "System",
       "author": "elmonomalva0",
-      "size": 510680,
-      "checksum": "e2e527cf69302646444ed7a7e8298eeb4b527b94c4ab5b7a803708f59a2bdf12",
-      "sha256": "e2e527cf69302646444ed7a7e8298eeb4b527b94c4ab5b7a803708f59a2bdf12",
-      "source_direct": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/releases/download/v0.8.1-beta/AnyPad-PS5-0.8.1-beta.elf"
+      "size": 577096,
+      "checksum": "358a3b75c1c74b813a5eae3ceef9000c9913321a0f88261d969dd89f5373a1c1",
+      "sha256": "358a3b75c1c74b813a5eae3ceef9000c9913321a0f88261d969dd89f5373a1c1",
+      "source_direct": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/releases/download/v0.9.1-beta/AnyPad-PS5-0.9.1-beta.elf"
     },
     {
       "name": "garlic-worker-ps5.elf",
@@ -1408,15 +1409,15 @@
       "icon": "https://raw.githubusercontent.com/leedsy90/game-library-manager-ps5/616f1c0f9152c61b065e6681ee9a96e8b80f32b7/source/tile/icon0.png",
       "filename": "glm.elf",
       "path": "storage/glm.elf",
-      "url": "https://github.com/leedsy90/game-library-manager-ps5/releases/download/v0.4.0/glm-0.4.0.elf",
+      "url": "https://github.com/leedsy90/game-library-manager-ps5/releases/download/v0.5.0/glm-0.5.0.elf",
       "description": "Finds, moves, extracts and fixes games for ShadowMountPlus. Web page.",
-      "version": "v0.4.0",
+      "version": "v0.5.0",
       "category": "Game Storage",
       "author": "leedsy90",
-      "size": 590032,
-      "checksum": "cd70ac6a8f84799625d3d93666ff2675ce24ff3196bdf1ff1b4782f82da7c9b5",
-      "sha256": "cd70ac6a8f84799625d3d93666ff2675ce24ff3196bdf1ff1b4782f82da7c9b5",
-      "source_direct": "https://github.com/leedsy90/game-library-manager-ps5/releases/download/v0.4.0/glm-0.4.0.elf",
+      "size": 606640,
+      "checksum": "79343fc3074124b45ba165f7800a72ae2710ccb13d10f5493fd9f68a7db20d8e",
+      "sha256": "79343fc3074124b45ba165f7800a72ae2710ccb13d10f5493fd9f68a7db20d8e",
+      "source_direct": "https://github.com/leedsy90/game-library-manager-ps5/releases/download/v0.5.0/glm-0.5.0.elf",
       "github_latest": {
         "repo": "leedsy90/game-library-manager-ps5",
         "asset": "^glm(-[0-9.]+)?\\.elf$"
