@@ -48,8 +48,8 @@ jobs:
           else
             msg="catalog: sync $(printf '%s\n' "$names" | paste -sd, - | sed 's/,/, /g')"
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "X-F1REBALL-X"
+          git config user.email "55192632+X-F1REBALL-X@users.noreply.github.com"
           git add payloads.json
           git commit -m "$msg" -m "$names"
           git push
