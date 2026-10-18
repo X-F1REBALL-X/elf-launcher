@@ -1,0 +1,11 @@
+# Duplicate of /index.html, synced by hand into the installer build
+host/hbinstall/webapp/index.html linguist-generated=true
+
+# .inc here is plain C code
+*.inc linguist-language=C
+
+# Language bar: keep it to the launcher's own code
+tools/** linguist-detectable=false
+icons/categories/src/** linguist-detectable=false
+clients/** linguist-detectable=false
+host/hbinstall/Makefile linguist-detectable=false
