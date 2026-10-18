@@ -663,18 +663,18 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/6fff4b33cd92e82d65bfcabf6cde456fb0cc6138/assets/icon0.png",
       "filename": "HearBridge-PS5.elf",
       "path": "apps/HearBridge-PS5.elf",
-      "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.3.0/HearBridge-PS5-1.3.0.elf",
+      "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.3.6/HearBridge-1.3.6.elf",
       "description": "Bluetooth headphones for a jailbroken PS5: game and system audio, no dongle. Page on port 8090.",
-      "version": "1.3.0",
+      "version": "1.3.6",
       "category": "Media",
       "author": "X-F1REBALL-X",
-      "size": 683368,
-      "checksum": "0867d014d0fca7250c0999dab6b575ee480c5f32dd8374e10634f8ff43b4ea5e",
-      "sha256": "0867d014d0fca7250c0999dab6b575ee480c5f32dd8374e10634f8ff43b4ea5e",
-      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.3.0/HearBridge-PS5-1.3.0.elf",
+      "size": 744056,
+      "checksum": "7b1a1b4a9a44db0723692a83718ebca63ecef38875a53a41328950f2cfa6877c",
+      "sha256": "7b1a1b4a9a44db0723692a83718ebca63ecef38875a53a41328950f2cfa6877c",
+      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.3.6/HearBridge-1.3.6.elf",
       "github_latest": {
         "repo": "X-F1REBALL-X/HearBridge-PS5",
-        "asset": "^HearBridge-PS5-[0-9.]+\\.elf$"
+        "asset": "^HearBridge-(PS5-)?[0-9.]+\\.elf$"
       }
     },
     {
