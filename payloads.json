@@ -464,38 +464,38 @@
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v7.2.0/ps5upload-7.2.0.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v7.5.1/ps5upload-7.5.1.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v7.2.0",
+      "version": "v7.5.1",
       "category": "Files",
       "author": "phantomptr",
-      "size": 6004376,
-      "checksum": "a8a20057b43fae225df7adfdda046911d81886a72fc3223e831c2999db948331",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v7.2.0/ps5upload-7.2.0.elf",
+      "size": 5946304,
+      "checksum": "021c03c15d1b077558f8966ca46f38636f1934c084b930545098167e11abbc7b",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v7.5.1/ps5upload-7.5.1.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "a8a20057b43fae225df7adfdda046911d81886a72fc3223e831c2999db948331"
+      "sha256": "021c03c15d1b077558f8966ca46f38636f1934c084b930545098167e11abbc7b"
     },
     {
       "name": "BFpilot.elf",
       "icon": "https://raw.githubusercontent.com/ItsBlurf/BFpilot/93acd4b9486ba7d11208a26ff2db7dbb7386666f/assets-app/icon0.png",
       "filename": "BFpilot.elf",
       "path": "files/BFpilot.elf",
-      "url": "https://github.com/ItsBlurf/BFpilot/releases/download/v0.5.0/bfpilot.elf",
+      "url": "https://github.com/ItsBlurf/BFpilot/releases/download/v0.4.4/bfpilot.elf",
       "description": "File manager that opens in the browser.",
-      "version": "v0.5.0",
+      "version": "v0.4.4",
       "category": "Files",
       "author": "ItsBlurf",
-      "size": 3529144,
-      "checksum": "b9226a4321de09d434579d651b9fdbb5ce0ccbe5c65f86bb2e951c324da4df9f",
-      "source_direct": "https://github.com/ItsBlurf/BFpilot/releases/download/v0.5.0/bfpilot.elf",
+      "size": 1810632,
+      "checksum": "5a8237630260026ad054d71fbbe661e433ac9ffa2cb4eea2785769c1eb7ee1c1",
+      "source_direct": "https://github.com/ItsBlurf/BFpilot/releases/download/v0.4.4/bfpilot.elf",
       "github_latest": {
         "repo": "ItsBlurf/BFpilot",
         "asset": "^bfpilot\\.elf$"
       },
-      "sha256": "b9226a4321de09d434579d651b9fdbb5ce0ccbe5c65f86bb2e951c324da4df9f"
+      "sha256": "5a8237630260026ad054d71fbbe661e433ac9ffa2cb4eea2785769c1eb7ee1c1"
     },
     {
       "name": "ftpsrv-ps5-install.elf",
@@ -1010,15 +1010,15 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
       "filename": "orbit_store.elf",
       "path": "storage/orbit_store.elf",
-      "url": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.4.0/orbit_store.elf",
+      "url": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.5.0/orbit_store.elf",
       "description": "Download manager with resumable downloads and phone control.",
-      "version": "v1.4.0",
+      "version": "v1.5.0",
       "category": "Game Storage",
       "author": "saawant12",
-      "size": 42598944,
-      "checksum": "e43c6272b3519fc2ec8b9373a484f2c2adb9669d7652567661149da741ab6d94",
-      "sha256": "e43c6272b3519fc2ec8b9373a484f2c2adb9669d7652567661149da741ab6d94",
-      "source_direct": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.4.0/orbit_store.elf",
+      "size": 47141064,
+      "checksum": "9590ef2cfa8764eb96fbe52dec302f1d9c8ba7d51101f031a69ac1279d20e579",
+      "sha256": "9590ef2cfa8764eb96fbe52dec302f1d9c8ba7d51101f031a69ac1279d20e579",
+      "source_direct": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.5.0/orbit_store.elf",
       "github_latest": {
         "repo": "saawant12/orbit-store-ps5",
         "asset": "^orbit_store\\.elf$"
