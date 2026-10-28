@@ -57,18 +57,19 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/webkit-autoloader-installer.png",
       "filename": "webkit-autoloader-installer.elf",
       "path": "hen/webkit-autoloader-installer.elf",
-      "url": "https://github.com/itsPLK/ps5-webkit-autoloader/releases/download/v0.6.1/webkit-autoloader-installer_v0.6.1.elf",
+      "url": "https://github.com/itsPLK/ps5-webkit-autoloader/releases/download/v0.6.2/webkit-autoloader-installer_v0.6.2.elf",
       "description": "Installs the WK-AutoLoader tile on the home screen.",
-      "version": "v0.6.1",
+      "version": "v0.6.2",
       "category": "Loader",
       "author": "itsPLK",
-      "size": 3556608,
-      "checksum": "f662c75a502e4f1bc41b055dcb490625f8222c499ce437dc80f439a3a279e93f",
-      "source_direct": "https://github.com/itsPLK/ps5-webkit-autoloader/releases/download/v0.6.1/webkit-autoloader-installer_v0.6.1.elf",
+      "size": 3900672,
+      "checksum": "27fd335764270716972faea399a5cc7810b9e49a21abf4966d9759580756cb19",
+      "source_direct": "https://github.com/itsPLK/ps5-webkit-autoloader/releases/download/v0.6.2/webkit-autoloader-installer_v0.6.2.elf",
       "github_latest": {
         "repo": "itsPLK/ps5-webkit-autoloader",
         "asset": "^webkit-autoloader-installer(_v[0-9.]+)?\\.elf$"
-      }
+      },
+      "sha256": "27fd335764270716972faea399a5cc7810b9e49a21abf4966d9759580756cb19"
     },
     {
       "name": "wk-autoloader.elf",
@@ -309,19 +310,19 @@
       "icon": "https://raw.githubusercontent.com/drakmor/ShadowMountPlus/4cde42a2293756132735d8e4280eb71f089865ee/smp_icon.png",
       "filename": "shadowmountplus.elf",
       "path": "storage/shadowmountplus.elf",
-      "url": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta7/shadowmountplus.elf",
+      "url": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta9/shadowmountplus.elf",
       "description": "Mounts dumped games from internal storage or USB.",
-      "version": "1.7beta7",
+      "version": "1.7beta9",
       "category": "Game Storage",
       "author": "Drakmor",
-      "size": 2517288,
-      "checksum": "a8f9d7f76e8749912508ade0cd5c78076b5bbf1271813c78c80c3d3d9d4777ee",
-      "source_direct": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta7/shadowmountplus.elf",
+      "size": 3542864,
+      "checksum": "928a5a7e33d2801c1c14a5ed8ad83fcab07957ba3a5daccd382dba67d408b3e2",
+      "source_direct": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta9/shadowmountplus.elf",
       "github_latest": {
         "repo": "drakmor/ShadowMountPlus",
         "asset": "^shadowmountplus\\.elf$"
       },
-      "sha256": "a8f9d7f76e8749912508ade0cd5c78076b5bbf1271813c78c80c3d3d9d4777ee"
+      "sha256": "928a5a7e33d2801c1c14a5ed8ad83fcab07957ba3a5daccd382dba67d408b3e2"
     },
     {
       "name": "SMPlusGui.elf",
@@ -447,36 +448,37 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/kura-loader-ps5.png",
       "filename": "kura-loader-ps5.elf",
       "path": "apps/kura-loader-ps5.elf",
-      "url": "https://github.com/NookieAI/kura/releases/download/v1.6.50/kura-loader-ps5.elf",
+      "url": "https://github.com/NookieAI/kura/releases/download/v1.6.51/kura-loader-ps5.elf",
       "description": "Console side of Kura. Receives installs from the Kura app.",
-      "version": "v1.6.50",
+      "version": "v1.6.51",
       "category": "Files",
       "author": "NookieAI",
-      "size": 8581600,
-      "checksum": "8bac520b2b99dcda8109838884380605736d8b1c23793754250bcef00536b6ab",
+      "size": 11878560,
+      "checksum": "57f96e4ad256a53ca812129d0ed7f3e104afb7088d0d4b24876dff78050a4547",
       "github_latest": {
         "repo": "NookieAI/kura",
         "asset": "^kura-loader-ps5\\.elf$"
-      }
+      },
+      "sha256": "57f96e4ad256a53ca812129d0ed7f3e104afb7088d0d4b24876dff78050a4547"
     },
     {
       "name": "ps5upload.elf",
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v8.5.0/ps5upload-8.5.0.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v8.6.1/ps5upload-8.6.1.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v8.5.0",
+      "version": "v8.6.1",
       "category": "Files",
       "author": "phantomptr",
-      "size": 5995600,
-      "checksum": "7436b12f9cf402f381df4f086ec33bef43bcbb9d4a78fc04c12b59575bd982c3",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v8.5.0/ps5upload-8.5.0.elf",
+      "size": 6066216,
+      "checksum": "3e7d67537a2eac9f92ae9330a90682499610b06a5058dd47cb99c2b567c62671",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v8.6.1/ps5upload-8.6.1.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "7436b12f9cf402f381df4f086ec33bef43bcbb9d4a78fc04c12b59575bd982c3"
+      "sha256": "3e7d67537a2eac9f92ae9330a90682499610b06a5058dd47cb99c2b567c62671"
     },
     {
       "name": "BFpilot.elf",
@@ -1048,15 +1050,15 @@
       "icon": "https://raw.githubusercontent.com/seregonwar/zftpd/8c3302284b73ee13b8d95671588c237c4ac7e334/web/img/zftpd-mark.png",
       "filename": "zftpd-ps5.elf",
       "path": "files/zftpd-ps5.elf",
-      "url": "https://github.com/seregonwar/zftpd/releases/download/v1.6.0/zftpd-ps5-v1.6.0.elf",
+      "url": "https://github.com/seregonwar/zftpd/releases/download/v1.7.0/zftpd-ps5-v1.7.0.elf",
       "description": "Fast FTP and HTTP file server.",
-      "version": "v1.6.0",
+      "version": "v1.7.0",
       "category": "Files",
       "author": "seregonwar",
-      "size": 495456,
-      "checksum": "39ed57bef579282418f822da2e58ea5d56acfa5aa4cd38816744b1f610bfa14d",
-      "sha256": "39ed57bef579282418f822da2e58ea5d56acfa5aa4cd38816744b1f610bfa14d",
-      "source_direct": "https://github.com/seregonwar/zftpd/releases/download/v1.6.0/zftpd-ps5-v1.6.0.elf",
+      "size": 484136,
+      "checksum": "533ef2ea5f56af392419b6ce6d05112da79428c2fef252a1a2bcf388be617484",
+      "sha256": "533ef2ea5f56af392419b6ce6d05112da79428c2fef252a1a2bcf388be617484",
+      "source_direct": "https://github.com/seregonwar/zftpd/releases/download/v1.7.0/zftpd-ps5-v1.7.0.elf",
       "github_latest": {
         "repo": "seregonwar/zftpd",
         "asset": "^zftpd-ps5(-v[0-9.]+)?\\.elf$"
@@ -1397,15 +1399,15 @@
       "icon": "https://raw.githubusercontent.com/knutwurst/ps5-patchdl/cb7a86551b5daed2916518ccb2b5af957501f155/assets/icon0.png",
       "filename": "patchdl.elf",
       "path": "storage/patchdl.elf",
-      "url": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.7/patchdl_0.3.7.elf",
+      "url": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.10/patchdl_0.3.10.elf",
       "description": "Finds and downloads official game updates from your browser.",
-      "version": "v0.3.7",
+      "version": "v0.3.10",
       "category": "Game Storage",
       "author": "knutwurst",
-      "size": 10395944,
-      "checksum": "8201130bb9834860fcfd289ccffec6a45d99becc5678b0bdb0860cf4bd60a888",
-      "sha256": "8201130bb9834860fcfd289ccffec6a45d99becc5678b0bdb0860cf4bd60a888",
-      "source_direct": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.7/patchdl_0.3.7.elf",
+      "size": 10422040,
+      "checksum": "4903a63406a7cad5ba47380ff43fb957133d71da6ff883ffa29c9fd55fda08b2",
+      "sha256": "4903a63406a7cad5ba47380ff43fb957133d71da6ff883ffa29c9fd55fda08b2",
+      "source_direct": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.10/patchdl_0.3.10.elf",
       "github_latest": {
         "repo": "knutwurst/ps5-patchdl",
         "asset": "^patchdl(_[0-9.]+)?\\.elf$"
