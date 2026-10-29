@@ -310,19 +310,19 @@
       "icon": "https://raw.githubusercontent.com/drakmor/ShadowMountPlus/4cde42a2293756132735d8e4280eb71f089865ee/smp_icon.png",
       "filename": "shadowmountplus.elf",
       "path": "storage/shadowmountplus.elf",
-      "url": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta9/shadowmountplus.elf",
+      "url": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta10/shadowmountplus.elf",
       "description": "Mounts dumped games from internal storage or USB.",
-      "version": "1.7beta9",
+      "version": "1.7beta10",
       "category": "Game Storage",
       "author": "Drakmor",
-      "size": 3542864,
-      "checksum": "928a5a7e33d2801c1c14a5ed8ad83fcab07957ba3a5daccd382dba67d408b3e2",
-      "source_direct": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta9/shadowmountplus.elf",
+      "size": 3580320,
+      "checksum": "8c6798232ae2a8fbcd209ab97fc4f8d4d47cf23b7eecfaa6349c0bfeb8e4a3d3",
+      "source_direct": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta10/shadowmountplus.elf",
       "github_latest": {
         "repo": "drakmor/ShadowMountPlus",
         "asset": "^shadowmountplus\\.elf$"
       },
-      "sha256": "928a5a7e33d2801c1c14a5ed8ad83fcab07957ba3a5daccd382dba67d408b3e2"
+      "sha256": "8c6798232ae2a8fbcd209ab97fc4f8d4d47cf23b7eecfaa6349c0bfeb8e4a3d3"
     },
     {
       "name": "SMPlusGui.elf",
@@ -466,19 +466,19 @@
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v8.6.1/ps5upload-8.6.1.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v8.10.0/ps5upload-8.10.0.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v8.6.1",
+      "version": "v8.10.0",
       "category": "Files",
       "author": "phantomptr",
-      "size": 6066216,
-      "checksum": "3e7d67537a2eac9f92ae9330a90682499610b06a5058dd47cb99c2b567c62671",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v8.6.1/ps5upload-8.6.1.elf",
+      "size": 6198704,
+      "checksum": "d863502e034ccb7d632b296305c4cb121b0716619b9cf14b8c6a88c511b6f473",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v8.10.0/ps5upload-8.10.0.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "3e7d67537a2eac9f92ae9330a90682499610b06a5058dd47cb99c2b567c62671"
+      "sha256": "d863502e034ccb7d632b296305c4cb121b0716619b9cf14b8c6a88c511b6f473"
     },
     {
       "name": "BFpilot.elf",
@@ -1399,15 +1399,15 @@
       "icon": "https://raw.githubusercontent.com/knutwurst/ps5-patchdl/cb7a86551b5daed2916518ccb2b5af957501f155/assets/icon0.png",
       "filename": "patchdl.elf",
       "path": "storage/patchdl.elf",
-      "url": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.10/patchdl_0.3.10.elf",
+      "url": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.11/patchdl_0.3.11.elf",
       "description": "Finds and downloads official game updates from your browser.",
-      "version": "v0.3.10",
+      "version": "v0.3.11",
       "category": "Game Storage",
       "author": "knutwurst",
-      "size": 10422040,
-      "checksum": "4903a63406a7cad5ba47380ff43fb957133d71da6ff883ffa29c9fd55fda08b2",
-      "sha256": "4903a63406a7cad5ba47380ff43fb957133d71da6ff883ffa29c9fd55fda08b2",
-      "source_direct": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.10/patchdl_0.3.10.elf",
+      "size": 10459040,
+      "checksum": "c008acd9fd7560a91c895e83a1042a1f5f9a689f910dcd7e57c3739dc378da92",
+      "sha256": "c008acd9fd7560a91c895e83a1042a1f5f9a689f910dcd7e57c3739dc378da92",
+      "source_direct": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.11/patchdl_0.3.11.elf",
       "github_latest": {
         "repo": "knutwurst/ps5-patchdl",
         "asset": "^patchdl(_[0-9.]+)?\\.elf$"
