@@ -1,6 +1,6 @@
 {
   "name": "X-F1REBALL-X elf-launcher",
-  "app_version": "2.0.5",
+  "app_version": "2.0.6",
   "payloads": [
     {
       "name": "elf-launcher.elf",
@@ -9,12 +9,12 @@
       "path": "launcher/elf-launcher.elf",
       "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf",
       "description": "Installs the home screen tile and serves this page from the console.",
-      "version": "2.0.5",
+      "version": "2.0.6",
       "category": "Loader",
       "author": "X-F1REBALL-X",
-      "size": 1409032,
-      "checksum": "1b4494e669ef07525c77036777d36a20f1eb81a708fe8262b26ffffa9452f547",
-      "sha256": "1b4494e669ef07525c77036777d36a20f1eb81a708fe8262b26ffffa9452f547"
+      "size": 1424864,
+      "checksum": "530dd1e02d966f24932a10c96918ed36848718c352dc94f1e497084cf2ff4fde",
+      "sha256": "530dd1e02d966f24932a10c96918ed36848718c352dc94f1e497084cf2ff4fde"
     },
     {
       "name": "elfldr-ps5.elf",
@@ -76,18 +76,19 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/wk-autoloader/2548957950d227cb478f94f88d3389b25b957ff9/assets/icon0.png",
       "filename": "wk-autoloader.elf",
       "path": "hen/wk-autoloader.elf",
-      "url": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.1.2/wk-autoloader.elf",
-      "description": "WK Autoloader installer for the home screen (no PC host needed).",
-      "version": "v1.1.2",
+      "url": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.2.1/WK_Autoloader_Store_V1.2.1.elf",
+      "description": "WK Autoloader store installer (X-F1REBALL-X)",
+      "version": "v1.2.1",
       "category": "Loader",
       "author": "X-F1REBALL-X",
-      "size": 5604608,
-      "checksum": "c5489f708e0e19769fd8d84c667942916778af39924d23c13e42f9a8f93c544c",
+      "size": 6583752,
+      "checksum": "83296e5c68d8eb55470973285438058527c8a7055d53d5c651bbdd5d6a268089",
       "github_latest": {
         "repo": "X-F1REBALL-X/wk-autoloader",
-        "asset": "^wk-autoloader\\.elf$"
+        "asset": "^WK_Autoloader_Store_V[0-9.]+\\.elf$"
       },
-      "sha256": "c5489f708e0e19769fd8d84c667942916778af39924d23c13e42f9a8f93c544c"
+      "sha256": "83296e5c68d8eb55470973285438058527c8a7055d53d5c651bbdd5d6a268089",
+      "source_direct": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.2.1/WK_Autoloader_Store_V1.2.1.elf"
     },
     {
       "name": "launchpad-install.elf",
@@ -194,6 +195,51 @@
         "repo": "EchoStretch/kstuff-lite",
         "asset": "^kstuff\\.elf$"
       }
+    },
+    {
+      "name": "kstuff1.13-fpkg-dr-test8-rest.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
+      "filename": "kstuff1.13-fpkg-dr-test8-rest.elf",
+      "path": "hen/kstuff1.13-fpkg-dr-test8-rest.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/kstuff1.13-fpkg-dr-test8-rest.elf",
+      "description": "kstuff 1.13 FPKG rest-mode resume (test8). Pair with ShadowMountPlus 1.7 beta 10/11.",
+      "version": "1.13-test8-rest",
+      "category": "HEN",
+      "author": "community",
+      "size": 1845320,
+      "checksum": "127332652374157b8ee0f5eb1128976f9055b88df5da89c0c54183e9c326fc7f",
+      "sha256": "127332652374157b8ee0f5eb1128976f9055b88df5da89c0c54183e9c326fc7f",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/kstuff1.13-fpkg-dr-test8-rest.elf"
+    },
+    {
+      "name": "kstuff1.13-fpkg-dr-test8-rest-fast.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
+      "filename": "kstuff1.13-fpkg-dr-test8-rest-fast.elf",
+      "path": "hen/kstuff1.13-fpkg-dr-test8-rest-fast.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/kstuff1.13-fpkg-dr-test8-rest-fast.elf",
+      "description": "kstuff 1.13 FPKG rest-mode resume, experimental fast build (test8).",
+      "version": "1.13-test8-rest-fast",
+      "category": "HEN",
+      "author": "community",
+      "size": 1845320,
+      "checksum": "221fa41c43597677c1153d5224174be9062105c0c9a3379e96cb45d278aa52fc",
+      "sha256": "221fa41c43597677c1153d5224174be9062105c0c9a3379e96cb45d278aa52fc",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/kstuff1.13-fpkg-dr-test8-rest-fast.elf"
+    },
+    {
+      "name": "a53_ppr_install_fast.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "filename": "a53_ppr_install_fast.elf",
+      "path": "system/a53_ppr_install_fast.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/a53_ppr_install_fast.elf",
+      "description": "A53 PPR install (fast). Used with kstuff FPKG rest-mode resume.",
+      "version": "fast",
+      "category": "System",
+      "author": "community",
+      "size": 287632,
+      "checksum": "1d556b9353f73b00ed4b1a11d5cc5d331d64cb1f5b1d2b67f1861e5e0b70d1df",
+      "sha256": "1d556b9353f73b00ed4b1a11d5cc5d331d64cb1f5b1d2b67f1861e5e0b70d1df",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/a53_ppr_install_fast.elf"
     },
     {
       "name": "fetchpkg.elf",
@@ -466,19 +512,19 @@
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v10.3.0/ps5upload-10.3.0.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v10.4.1/ps5upload-10.4.1.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v10.3.0",
+      "version": "v10.4.1",
       "category": "Files",
       "author": "phantomptr",
-      "size": 6314176,
-      "checksum": "e3da25330b0b3aeba1ad1eab628726a7b7526bd2be2d5f9a40dba59527dfb155",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v10.3.0/ps5upload-10.3.0.elf",
+      "size": 6513952,
+      "checksum": "7e52589212fb2a5da387d1cdfb5e245909316bab9fe6ae6c5a0e1d15ba34254d",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v10.4.1/ps5upload-10.4.1.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "e3da25330b0b3aeba1ad1eab628726a7b7526bd2be2d5f9a40dba59527dfb155"
+      "sha256": "7e52589212fb2a5da387d1cdfb5e245909316bab9fe6ae6c5a0e1d15ba34254d"
     },
     {
       "name": "BFpilot.elf",
@@ -1126,15 +1172,15 @@
       "icon": "https://raw.githubusercontent.com/holdmysocks/ps5-tailscale/e4986b4d52af6a63f9be14d9de616d267c566de1/appicon/icon0.png",
       "filename": "tailscale.elf",
       "path": "tools/tailscale.elf",
-      "url": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.1/tailscale-0.7.1.elf",
+      "url": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.2/tailscale-0.7.2.elf",
       "description": "Tailscale VPN, for Remote Play or Moonlight from anywhere.",
-      "version": "v0.7.1",
+      "version": "v0.7.2",
       "category": "Network",
       "author": "holdmysocks",
       "size": 25196896,
-      "checksum": "af320493c8e2fc3443b8f42496ac11aa3db77b112e95777706d835eccd304cb9",
-      "sha256": "af320493c8e2fc3443b8f42496ac11aa3db77b112e95777706d835eccd304cb9",
-      "source_direct": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.1/tailscale-0.7.1.elf",
+      "checksum": "47294aa593644d1e86f07d7faac71e40ae737b536c1b56261b2b7287238f37c8",
+      "sha256": "47294aa593644d1e86f07d7faac71e40ae737b536c1b56261b2b7287238f37c8",
+      "source_direct": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.2/tailscale-0.7.2.elf",
       "github_latest": {
         "repo": "holdmysocks/ps5-tailscale",
         "asset": "^tailscale(-[0-9.]+)?\\.elf$"
