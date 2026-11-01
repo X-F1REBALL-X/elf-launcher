@@ -1,4 +1,4 @@
-<img src="docs/img/banner.png" alt="Elf Launcher">
+﻿<img src="docs/img/banner.png" alt="Elf Launcher">
 
 Home screen and browser ELF payload launcher for a jailbroken PS5.
 
@@ -18,7 +18,7 @@ Everything else is in the [guide](https://x-f1reball-x.github.io/elf-launcher/do
 - [Gallery](#gallery)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [What's new in 2.0.5](#whats-new-in-205)
+- [What's new in 2.0.6](#whats-new-in-206)
 - [Payload catalog and mirror](#payload-catalog-and-mirror)
 - [Companion apps](#companion-apps)
 - [Building from source](#building-from-source)
@@ -81,12 +81,14 @@ Updating: press Update in the launcher, or send the new `elf-launcher.elf` once.
 
 More details are in the [guide](https://x-f1reball-x.github.io/elf-launcher/docs/guide/).
 
-## What's new in 2.0.5
+## What's new in 2.0.6
 
-- Opens faster. It no longer goes online every time you open it. Payload and update checks only run when you press Update, or once every 6 hours.
-- `/version` now also reports the app version and the version of the copy saved on the console (`app` and `mirror_app`).
+- Catalog: added kstuff 1.13 FPKG rest-mode builds (normal + fast) and A53 PPR install (fast).
+- Catalog sync: updated Tailscale to v0.7.2 and ps5upload to v10.4.1.
+- Catalog: WK Autoloader pointed at Store v1.2.1.
 
 Every version has its own notes on the [releases page](https://github.com/X-F1REBALL-X/elf-launcher/releases).
+
 
 ## Payload catalog and mirror
 
@@ -133,3 +135,4 @@ Payloads in the catalog are not part of this project. They keep their own author
 Developed by X-F1REBALL-X.
 
 [Support the project on Ko-fi](https://ko-fi.com/xf1reballx). The project stays free and open source.
+
