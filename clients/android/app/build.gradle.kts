@@ -1,4 +1,4 @@
-import java.util.Properties
+﻿import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -18,8 +18,8 @@ android {
         applicationId = "com.xf1rebalx.elflauncher"
         minSdk = 24
         targetSdk = 35
-        versionCode = 204
-        versionName = "2.0.4"
+        versionCode = 206
+        versionName = "2.0.6"
     }
 
     signingConfigs {

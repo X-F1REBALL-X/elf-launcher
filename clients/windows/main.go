@@ -1,4 +1,4 @@
-//go:build windows
+﻿//go:build windows
 
 // Elf Launcher for Windows: a native window hosting Edge WebView2 that loads
 // the Elf Launcher page served by the console at http://<console-ip>:1000/.
@@ -21,7 +21,7 @@ import (
 
 const (
 	appName     = "Elf Launcher"
-	appVersion  = "2.0.4"
+	appVersion = "2.0.6"
 	defaultIP   = ""
 	defaultPort = "1000"
 )
