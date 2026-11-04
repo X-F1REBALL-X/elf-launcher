@@ -439,19 +439,19 @@
       "icon": "https://raw.githubusercontent.com/notmaj0r/CheatRunner/ad582ab34f575be66e39a6d4dbc47cc7d284d135/CheatRunner.png",
       "filename": "CheatRunner.elf",
       "path": "tools/CheatRunner.elf",
-      "url": "https://github.com/notmaj0r/CheatRunner/releases/download/v0.18/CheatRunner.elf",
+      "url": "https://github.com/notmaj0r/CheatRunner/releases/download/v0.18.1/CheatRunner.elf",
       "description": "Loads cheats into a running game.",
-      "version": "v0.18",
+      "version": "v0.18.1",
       "category": "Mods & Saves",
       "author": "notmaj0r",
-      "size": 8272800,
-      "checksum": "4ae1ea4e37b2e67d5487355ddf671f166861ed6dceea348c048ad060770c0140",
-      "source_direct": "https://github.com/notmaj0r/CheatRunner/releases/download/v0.18/CheatRunner.elf",
+      "size": 8289200,
+      "checksum": "80535260027983f09fc9d131e11e13591de61ef5eeea458825598263862d2ce8",
+      "source_direct": "https://github.com/notmaj0r/CheatRunner/releases/download/v0.18.1/CheatRunner.elf",
       "github_latest": {
         "repo": "notmaj0r/CheatRunner",
         "asset": "^CheatRunner\\.elf$"
       },
-      "sha256": "4ae1ea4e37b2e67d5487355ddf671f166861ed6dceea348c048ad060770c0140"
+      "sha256": "80535260027983f09fc9d131e11e13591de61ef5eeea458825598263862d2ce8"
     },
     {
       "name": "Common_FPS_PS5.elf",
@@ -512,19 +512,19 @@
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v10.7.6/ps5upload-10.7.6.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v11.0.8/ps5upload-11.0.8.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v10.7.6",
+      "version": "v11.0.8",
       "category": "Files",
       "author": "phantomptr",
-      "size": 6576968,
-      "checksum": "354053806db54695837576bbe7f80740420884486eef00b4a6b4c77f654035e0",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v10.7.6/ps5upload-10.7.6.elf",
+      "size": 6614240,
+      "checksum": "f315f5645d7be6cc0736ec3183cfa67ec9d7ec689321295fb222f5b699b2542e",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v11.0.8/ps5upload-11.0.8.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "354053806db54695837576bbe7f80740420884486eef00b4a6b4c77f654035e0"
+      "sha256": "f315f5645d7be6cc0736ec3183cfa67ec9d7ec689321295fb222f5b699b2542e"
     },
     {
       "name": "BFpilot.elf",
@@ -1263,15 +1263,15 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
       "filename": "garlic-worker-ps5.elf",
       "path": "tools/garlic-worker-ps5.elf",
-      "url": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.1.7/garlic-worker-ps5.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/garlic-worker-ps5.elf",
       "description": "Helper payload for garlic-savemgr.",
-      "version": "v1.1.7",
+      "version": "v1.1.8",
       "category": "Mods & Saves",
       "author": "earthonion",
-      "size": 189232,
-      "checksum": "2643f35cdfe9969cf775220dc4a65bc4ff0d08750c39bfb714b74dbbf29cd396",
-      "sha256": "2643f35cdfe9969cf775220dc4a65bc4ff0d08750c39bfb714b74dbbf29cd396",
-      "source_direct": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.1.7/garlic-worker-ps5.elf"
+      "size": 190488,
+      "checksum": "7d50cfca84e2f456e1b0bd6e60ab2291e81fdeeb04e7816fbf900b2dba3b69db",
+      "sha256": "7d50cfca84e2f456e1b0bd6e60ab2291e81fdeeb04e7816fbf900b2dba3b69db",
+      "source_direct": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.1.8/garlic-worker-ps5.elf"
     },
     {
       "name": "ps5-syslang-en-US.elf",
@@ -1407,15 +1407,15 @@
       "icon": "https://raw.githubusercontent.com/strongt1me/ps5-cooling-system-center-pro/87705e716e62a98d1134d02068aa29b9424ffb4b/tile/sce_sys/icon0.png",
       "filename": "PS5_Cooling_System_Center.elf",
       "path": "system/PS5_Cooling_System_Center.elf",
-      "url": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.75.5/PS5_Cooling_System_Center_v1.75.5.elf",
+      "url": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.76.0/PS5_Cooling_System_Center_v1.76.0.elf",
       "description": "Fan control and temperature monitor with a web page.",
-      "version": "v1.75.5",
+      "version": "v1.76.0",
       "category": "System",
       "author": "strongt1me",
-      "size": 9932736,
-      "checksum": "a778f716c12ccf857d2f2a76b647028c091c5261c476da7b592b749aa1e9bf31",
-      "sha256": "a778f716c12ccf857d2f2a76b647028c091c5261c476da7b592b749aa1e9bf31",
-      "source_direct": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.75.5/PS5_Cooling_System_Center_v1.75.5.elf",
+      "size": 9605056,
+      "checksum": "e3750e4d3d1e423fa8d7d5c443702bbae75fcfc74838616db5759185deb74b7d",
+      "sha256": "e3750e4d3d1e423fa8d7d5c443702bbae75fcfc74838616db5759185deb74b7d",
+      "source_direct": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.76.0/PS5_Cooling_System_Center_v1.76.0.elf",
       "github_latest": {
         "repo": "strongt1me/ps5-cooling-system-center-pro",
         "asset": "^PS5_Cooling_System_Center(_v[0-9.]+)?\\.elf$"
