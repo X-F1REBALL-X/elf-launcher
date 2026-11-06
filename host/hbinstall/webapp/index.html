@@ -382,17 +382,34 @@ a:focus{outline:none;border-radius:6px;box-shadow:var(--ring)}
 
 /* AutoPayload: the whole row is the switch, marked rows stand out */
 .elf.pk{cursor:pointer}
-.elf.autorow{cursor:pointer;-webkit-user-select:none;user-select:none;min-height:3.9rem}
+.elf.autorow{cursor:pointer;-webkit-user-select:none;user-select:none;min-height:1.9rem;padding:.2rem .7rem}
 .elf.autorow:before{display:none}
 .ack{grid-area:i;position:relative;display:block;width:2.4rem;height:2.4rem;border-radius:9px;border:2px solid var(--edge2);background:var(--deck)}
-.elf.autorow.ison{background:rgba(124,58,237,.17);border-color:var(--pri2)}
-.elf.autorow.ison .n b{color:#fff}
+.elf.autorow.ison{background:var(--card)}
+.elf.autorow.ison .n b{color:var(--ink)}
 .elf.autorow.ison .ack{background:var(--pri2);border-color:var(--pri2)}
 .elf.autorow.ison .ack:before{content:"";position:absolute;left:50%;top:44%;width:.5rem;height:.95rem;border:solid #fff;border-width:0 .22rem .22rem 0;-webkit-transform:translate(-50%,-50%) rotate(45deg);transform:translate(-50%,-50%) rotate(45deg)}
 .atag{display:inline-block;padding:.32rem .75rem;border-radius:999px;font-size:.8rem;font-weight:800;color:var(--ink2);background:rgba(35,28,20,.055);border:1px solid var(--edge2);white-space:nowrap}
 .elf.autorow.ison .atag{color:#fff;background:var(--pri2);border-color:var(--pri2)}
 .elf.autorow:focus{outline:none;border-color:var(--pri);box-shadow:var(--ring)}
 .elf.autorow:hover{border-color:var(--pri)}
+.elf.autorow .aidx{display:inline-flex;align-items:center;justify-content:center;min-width:1.6rem;margin-inline-end:.1rem;font-size:1.5rem;font-weight:800;color:var(--ink2);font-variant-numeric:tabular-nums}
+.elf.autorow.ison .aidx{color:var(--pri)}
+.autowrap{display:flex;align-items:center;gap:.5rem}
+.autowrap .elf{flex:1 1 auto;min-width:0}
+.autowrap>.ordcol{display:flex;align-items:center;gap:.45rem;min-width:4.2rem;flex:0 0 auto}
+.autowrap .autoord{display:flex;flex-direction:column;gap:.14rem}
+.elf.autorow .ack{display:none}.elf.autorow .d{display:none}
+.elf.autorow .aupick{cursor:pointer}
+.elf.autorow .aupick:after{display:none}
+#main[data-view=auto] .listgrid{grid-template-columns:minmax(0,1fr)!important;max-width:52rem!important;margin-left:0!important;margin-right:auto}
+.autowrap .aord{min-width:2.4rem;width:2.4rem;min-height:1.65rem;height:1.65rem;padding:0;display:flex;align-items:center;justify-content:center;font-size:.95rem;line-height:1;border:1px solid var(--edge2);background:var(--card);border-radius:8px;color:var(--ink2);cursor:pointer}
+.autowrap .aord:hover{border-color:var(--pri);color:var(--pri)}
+.elf.autorow .autodly{display:inline-flex;align-items:center;gap:.2rem;margin-inline-end:.45rem;font-size:.72rem;color:var(--ink2)}
+.elf.autorow .adlyin{width:3rem;padding:.25rem .3rem;font-size:.8rem;text-align:center;border:1px solid var(--edge2);background:var(--card);border-radius:8px;color:inherit}
+.elf.autorow.ison .aord{border-color:var(--edge2);background:var(--card);color:var(--ink2)}
+.elf.autorow.ison .adlyin{border-color:var(--edge2);background:var(--card);color:inherit}
+.elf.autorow.ison .autodly{color:var(--ink2)}
 .autohint{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:0 0 var(--s3);color:var(--mute);font-size:.85rem}
 .autohint b{color:var(--pri2);font-size:.9rem}
 
@@ -690,15 +707,15 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 .foldgrid button:not(.active){opacity:.92}
 .foldgrid button:focus:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--pri)}
 #main[data-view=elf] #view .listgrid,#main[data-view=downloaded] #view .listgrid{max-width:none;grid-gap:.8rem var(--s4)}
-#main[data-view=elf] .listgrid .elf,#main[data-view=downloaded] .listgrid .elf{min-height:5.6rem;padding:.75rem .9rem .75rem 1rem;grid-column-gap:var(--s4);border-radius:16px;box-shadow:0 1px 2px rgba(60,45,25,.05)}
-#main[data-view=elf] .listgrid .pick,#main[data-view=downloaded] .listgrid .pick{width:3.9rem;height:3.9rem;font-size:.8rem;border-radius:14px}
+#main[data-view=elf] .listgrid .elf,#main[data-view=downloaded] .listgrid .elf{min-height:4rem;padding:.5rem .8rem;grid-column-gap:var(--s3);border-radius:13px;box-shadow:0 1px 2px rgba(60,45,25,.05)}
+#main[data-view=elf] .listgrid .pick,#main[data-view=downloaded] .listgrid .pick{width:3rem;height:3rem;font-size:.72rem;border-radius:12px}
 #main[data-view=elf] .listgrid .pick:after,#main[data-view=downloaded] .listgrid .pick:after{width:1.05rem;height:1.05rem;top:-5px;right:-5px}
 [dir=rtl] #main[data-view=elf] .listgrid .pick:after,[dir=rtl] #main[data-view=downloaded] .listgrid .pick:after{right:auto;left:-5px}
 #main[data-view=elf] .listgrid .pick.on:before,#main[data-view=downloaded] .listgrid .pick.on:before{width:.7rem;height:1.35rem;border-width:0 .28rem .28rem 0}
-#main[data-view=elf] .listgrid .elf .n,#main[data-view=downloaded] .listgrid .elf .n{font-size:1.2rem;font-weight:800}
+#main[data-view=elf] .listgrid .elf .n,#main[data-view=downloaded] .listgrid .elf .n{font-size:1.06rem;font-weight:800}
 #main[data-view=elf] .listgrid .elf .d,#main[data-view=downloaded] .listgrid .elf .d{font-size:.9rem;margin-top:.2rem}
 #main[data-view=elf] .listgrid .elf .v,#main[data-view=downloaded] .listgrid .elf .v{font-size:.8rem;max-width:8.5rem}
-#main[data-view=elf] .listgrid button.run,#main[data-view=downloaded] .listgrid button.run{min-height:2.9rem;min-width:6.2rem;font-size:.98rem}
+#main[data-view=elf] .listgrid button.run,#main[data-view=downloaded] .listgrid button.run{min-height:2.4rem;min-width:5.6rem;font-size:.9rem}
 #main[data-view=elf] .listgrid .elf .pinb,#main[data-view=downloaded] .listgrid .elf .pinb{top:calc(50% + .75rem);left:2.85rem}
 [dir=rtl] #main[data-view=elf] .listgrid .elf .pinb,[dir=rtl] #main[data-view=downloaded] .listgrid .elf .pinb{left:auto;right:2.85rem}
 @media(max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(14rem,1fr))}}
@@ -918,7 +935,7 @@ var FOLDERS=[
 ];
 /* Old folder ids that still show up in saved links. */
 var FOLDER_ALIAS={apps:'loader',hen:'loader',mods:'storage',net:'files',media:'files',tools:'system'};
-var APP_VERSION="2.0.8";
+var APP_VERSION="2.0.15";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
@@ -1019,7 +1036,7 @@ en:{
  f_loader:'Loaders',f_hen:'Jailbreak & HEN',f_storage:'Games',f_mods:'Mods & Saves',f_files:'Files',f_net:'Network & Remote',f_media:'Media & Audio',f_system:'System',f_tools:'Dev Tools',
  homeDesc:'Open Elf Files on the left. Download saves the ELF. Payload sends it to elfldr (9021).',
  afterJb:'After jailbreak',openBrowser:'Open browser',leaveClosed:'Leave closed',
- autoDelay:'Auto delay',delay3s:'3 seconds',delay0:'0 seconds',
+ autoDelay:'Auto delay',delay3s:'3 seconds',delay0:'0 seconds',moveUp:'Move up',moveDown:'Move down',delayAfter:'Wait after (seconds)',autoOrderHint:'Use the arrows to set the order; set a wait after any payload for a pause before the next.',
  homeHint:'Mark Auto in AutoPayload. AutoPayload runs once after each jailbreak. Choose delay 3 seconds or 0. Cancel stops it. Leave closed closes this page afterwards.',
  autoStarts:'AutoPayload starts in {n} seconds',autoStartsNow:'AutoPayload starts now',autoRunning:'AutoPayload running',cancelHint:'Press Cancel or Square to stop.',cancel:'Cancel',
  autoCancelled:'Auto cancelled',autoDone:'AutoPayload done',closingBrowser:'Closing browser',
@@ -2137,10 +2154,18 @@ function writeStore(key, obj){
   try{ sessionStorage.setItem(key, s); }catch(e2){}
 }
 function loadAuto(){ return readStore('ps5elfs-auto'); }
+var lastAutoFound=null;
+function autoMeta(name){ var v=loadAuto()[name]; if(!v) return {on:false,o:0,d:0}; if(typeof v==='object') return {on:true,o:(v.o||0),d:(v.d||0)}; return {on:true,o:0,d:0}; }
+function autoNextOrder(m){ var mx=0,k,v; for(k in m){ if(!m.hasOwnProperty(k)||!m[k]) continue; v=(typeof m[k]==='object')?(m[k].o||0):0; if(v>mx) mx=v; } return mx+1; }
+function autoEnsureOrders(){ var m=loadAuto(), all=allPayloads(), i, name, changed=false, mx=0, k; for(k in m){ if(m.hasOwnProperty(k)&&m[k]&&typeof m[k]==='object'&&(m[k].o|0)>mx) mx=m[k].o|0; } for(i=0;i<all.length;i++){ name=all[i].name; if(!m[name]) continue; if(typeof m[name]!=='object'){ m[name]={o:++mx,d:0}; changed=true; } else if(!((m[name].o|0)>0)){ m[name].o=++mx; changed=true; } } if(changed) writeStore('ps5elfs-auto', m); }
+function autoOrderedNames(){ var m=loadAuto(), arr=[], k; for(k in m){ if(m.hasOwnProperty(k)&&m[k]) arr.push(k); } arr.sort(function(a,b){ var oa=(typeof m[a]==='object'?(m[a].o||0):0), ob=(typeof m[b]==='object'?(m[b].o||0):0); if(oa!==ob) return oa-ob; return a<b?-1:(a>b?1:0); }); return arr; }
+function autoMoveName(name, dir){ autoEnsureOrders(); var names=autoOrderedNames(), i=names.indexOf(name), j=i+dir; if(i<0||j<0||j>=names.length) return; var m=loadAuto(), a=names[i], b=names[j]; if(typeof m[a]!=='object'||typeof m[b]!=='object') return; var ta=m[a].o, tb=m[b].o; m[a].o=tb; m[b].o=ta; writeStore('ps5elfs-auto', m); syncAutoDisk(); }
+function setAutoDelayFor(name, sec){ var m=loadAuto(); if(!m[name]) return; if(typeof m[name]!=='object') m[name]={o:autoNextOrder(m),d:0}; sec=parseInt(sec,10); if(isNaN(sec)||sec<0) sec=0; if(sec>60) sec=60; m[name].d=sec; writeStore('ps5elfs-auto', m); syncAutoDisk(); }
+function bindAutoControls(){ if(!viewEl || !viewEl.querySelectorAll) return; var ups=viewEl.querySelectorAll('.aup'), dns=viewEl.querySelectorAll('.adn'), ins=viewEl.querySelectorAll('.adlyin'), i; function nm(el){ var n=el; while(n&&(!n.getAttribute||!n.getAttribute('data-name'))) n=n.parentNode; return n?n.getAttribute('data-name'):''; } for(i=0;i<ups.length;i++) ups[i].onclick=function(ev){ ev.preventDefault(); ev.stopPropagation(); autoMoveName(nm(this),-1); if(lastAutoFound) paintAutoPayload(lastAutoFound); }; for(i=0;i<dns.length;i++) dns[i].onclick=function(ev){ ev.preventDefault(); ev.stopPropagation(); autoMoveName(nm(this),1); if(lastAutoFound) paintAutoPayload(lastAutoFound); }; for(i=0;i<ins.length;i++){ ins[i].onclick=function(ev){ ev.stopPropagation(); }; ins[i].onchange=function(ev){ ev.stopPropagation(); setAutoDelayFor(nm(this), this.value); }; } }
 function isAutoName(name){ return !!loadAuto()[name]; }
 function setAuto(name, on){
   var m=loadAuto();
-  if(on) m[name]=1;
+  if(on){ if(!m[name] || typeof m[name]!=='object') m[name]={o:autoNextOrder(m),d:0}; }
   else delete m[name];
   writeStore('ps5elfs-auto', m);
   syncAutoDisk();
@@ -2493,10 +2518,12 @@ function watchElfldrThenAuto(){
   });
 }
 function runAuto(done){
-  var queue=[], i, p, all=allPayloads();
-  for(i=0;i<all.length;i++){
-    p=all[i];
-    if(!p || !isAutoName(p.name)) continue;
+  autoEnsureOrders();
+  var queue=[], i, p, names=autoOrderedNames(), all=allPayloads(), byName={};
+  for(i=0;i<all.length;i++) byName[all[i].name]=all[i];
+  for(i=0;i<names.length;i++){
+    p=byName[names[i]];
+    if(!p) continue;
     if(isProtectedKillName(p.name) || isProtectedKillName(p.path)) continue;
     queue.push(p);
   }
@@ -2537,7 +2564,8 @@ function runAuto(done){
       }
       setStatus(t('autoName',{name:item.name}));
       sendPayload(item.name, item.path, (item.url||item.path), function(){
-        setTimeout(step, 400);
+        var _d=autoMeta(item.name).d|0;
+        setTimeout(step, _d>0 ? _d*1000 : 400);
       });
     }).catch(function(){
       setStatus(t('skipMissing',{name:item.name}));
@@ -3149,7 +3177,7 @@ function paintDownloaded(found){
   var html, i, item, p, pend;
   noteDownloadedCount(found.length);
   if(currentFolder!=='downloaded') return;
-  html=folderChipsHtml('downloaded');
+  html='';
   if(!found.length){
     syncSideActions('');
     viewEl.innerHTML=html+'<p class="empty">'+esc(t('noSaved'))+'</p>';
@@ -3255,11 +3283,11 @@ function showDownloadedFolder(){
   syncSideActions('');
   renderNav('downloaded');
   if(!isConsoleHost()){
-    viewEl.innerHTML=folderChipsHtml('downloaded')+'<p class="empty">'+esc(t('savedOnConsole'))+'</p>';
+    viewEl.innerHTML='<p class="empty">'+esc(t('savedOnConsole'))+'</p>';
     bindSubfolds();
     return;
   }
-  viewEl.innerHTML=folderChipsHtml('downloaded')+'<p class="empty">'+esc(t('checkingSaved'))+'</p>';
+  viewEl.innerHTML='<p class="empty">'+esc(t('checkingSaved'))+'</p>';
   bindSubfolds();
   queue=[];
   found=[];
@@ -3328,12 +3356,15 @@ function paintAutoPayload(found){
     profBind(viewEl.querySelector('.profbar'));
     return;
   }
+  autoEnsureOrders();
+  lastAutoFound=found;
   found.sort(function(a,b){
-    var an=String((a.p&&a.p.name)||'').toLowerCase();
-    var bn=String((b.p&&b.p.name)||'').toLowerCase();
+    var an=String((a.p&&a.p.name)||''), bn=String((b.p&&b.p.name)||'');
     var aa=isAutoName(an)?0:1, bb=isAutoName(bn)?0:1;
     if(aa!==bb) return aa-bb;
-    return an<bn?-1:(an>bn?1:0);
+    if(aa===0){ var oa=autoMeta(an).o, ob=autoMeta(bn).o; if(oa!==ob) return oa-ob; }
+    var al=an.toLowerCase(), bl=bn.toLowerCase();
+    return al<bl?-1:(al>bl?1:0);
   });
   syncSideActions('');
   html+=headHtml(false);
@@ -3342,9 +3373,10 @@ function paintAutoPayload(found){
     p=item.p;
     html+=autoRowHtml(p);
   }
-  viewEl.innerHTML=(PROF?profChipsHtml(true):'')+'<p class="autohint"><span>'+esc(t('autoTapHint'))+'</span><b id="autohintn">'+esc(t('autoCountN',{n:autoCount()}))+'</b></p>'+html;
+  viewEl.innerHTML=(PROF?profChipsHtml(true):'')+'<p class="autohint"><span>'+esc(t('autoTapHint'))+' '+esc(t('autoOrderHint'))+'</span><b id="autohintn">'+esc(t('autoCountN',{n:autoCount()}))+'</b></p>'+html;
   wrapListGrid();
   profBind(viewEl.querySelector('.profbar'));
+  bindAutoControls();
 }
 function showAutoPayloadFolder(){
   var queue, found, inflight, idx;
@@ -3541,12 +3573,12 @@ function showFolder(id){
   list=folderList(id);
   setHdrActions(''); /* multi-select removed: tap banner to download/load */
   if(!list.length && !(id==='loaded' && loadedOther().length)){
-    viewEl.innerHTML=((catalogView&&id!=='loaded')?folderChipsHtml(id):'')+'<p class="empty">'+esc(t(id==='search'?'noResults':(id==='loaded'?'noRunning':'emptyFolder')))+'</p>';
+    viewEl.innerHTML=((catalogView&&id!=='loaded'&&id!=='elf')?folderChipsHtml(id):'')+'<p class="empty">'+esc(t(id==='search'?'noResults':(id==='loaded'?'noRunning':'emptyFolder')))+'</p>';
     bindSubfolds();
     return;
   }
   var onPs5=/PlayStation/i.test(navigator.userAgent);
-  html=((catalogView&&id!=='loaded')?folderChipsHtml(id):'')+(catalogView&&id!=='loaded'?'<p class="tapHint">'+esc(t('tapHint'))+'</p>':'')+headHtml(false);
+  html=((catalogView&&id!=='loaded'&&id!=='elf')?folderChipsHtml(id):'')+(catalogView&&id!=='loaded'?'<p class="tapHint">'+esc(t('tapHint'))+'</p>':'')+headHtml(false);
   for(i=0;i<list.length;i++){
     p=list[i];
     html+='<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom pk cat">'+pickBtn('cat:'+p.path,0,0,iconFor(p),FOLDER_ICO[p.folder])+(catalogView?pinBtnHtml(p.name):'');
@@ -4547,8 +4579,11 @@ function folderList(id){
   out.sort(function(a,b){
     var pa=pk.hasOwnProperty(a.name), pb=pk.hasOwnProperty(b.name), fa, fb, na, nb;
     if(pa||pb) return pa&&pb ? pk[a.name]-pk[b.name] : (pa?-1:1);
-    var af=a.folder,bf=b.folder; if(FOLDER_ALIAS.hasOwnProperty(af)) af=FOLDER_ALIAS[af]; if(FOLDER_ALIAS.hasOwnProperty(bf)) bf=FOLDER_ALIAS[bf]; fa=fo.hasOwnProperty(af)?fo[af]:99; fb=fo.hasOwnProperty(bf)?fo[bf]:99;
-    if(fa!==fb) return fa-fb;
+    /* All Payloads: flat, sorted by name. Specific folders keep folder order. */
+    if(id!=='elf'){
+      var af=a.folder,bf=b.folder; if(FOLDER_ALIAS.hasOwnProperty(af)) af=FOLDER_ALIAS[af]; if(FOLDER_ALIAS.hasOwnProperty(bf)) bf=FOLDER_ALIAS[bf]; fa=fo.hasOwnProperty(af)?fo[af]:99; fb=fo.hasOwnProperty(bf)?fo[bf]:99;
+      if(fa!==fb) return fa-fb;
+    }
     na=displayName(a).toLowerCase(); nb=displayName(b).toLowerCase();
     return na<nb?-1:(na>nb?1:0);
   });
@@ -4613,7 +4648,7 @@ function renderNav(selected){
   html+=navItem('downloaded', t('downloaded'), downloadedCount, selected==='downloaded');
   html+=navItem('auto', t('autoPayload'), autoCount(), selected==='auto');
   /* Loaded: what is running from the library, with Kill buttons. Only when something runs. */
-  if(isConsoleHost() && (loadedCount() || selected==='loaded')) html+=navItem('loaded', t('loaded'), loadedCount(), selected==='loaded');
+  /* Loaded tab removed: running payloads live under Running. */
   if(isConsoleHost()){
     html+='<p class="navgrp">'+esc(t('consoleGrp'))+'</p>';
     html+=navItem('run', t('running'), runCount, selected==='run' || selected==='kill');
@@ -4710,23 +4745,20 @@ document.addEventListener('click', function(ev){
   togglePin(b.getAttribute('data-pin'), inQuick ? '#homeQuick' : null);
 }, true);
 function quickList(){
-  var seen={}, out=[], all=allPayloads(), byName={}, i, r, rec=readRecent(), n, pins;
+  var seen={}, out=[], all=allPayloads(), byName={}, i, n, pins, dl;
   for(i=0;i<all.length;i++) byName[all[i].name]=all[i];
   pins=readPins();
-  for(i=0;i<pins.length;i++){ /* all pins; extra rows wrap in the same .cards grid */
+  for(i=0;i<pins.length;i++){ /* pinned payloads lead */
     if(seen[pins[i]] || !byName[pins[i]]) continue;
     seen[pins[i]]=1; out.push(byName[pins[i]]);
   }
-  for(i=0;i<rec.length && out.length<6;i++){
-    r=rec[i];
-    if(!r.ok || !r.name || seen[r.name] || !byName[r.name]) continue;
-    seen[r.name]=1; out.push(byName[r.name]);
-  }
-  for(n in DL_SET){
-    if(out.length>=6) break;
+  dl=[];
+  for(n in DL_SET){ /* then every downloaded payload, sorted by name, no cap */
     if(!DL_SET.hasOwnProperty(n) || seen[n] || !byName[n] || isProtectedKillName(n)) continue;
-    seen[n]=1; out.push(byName[n]);
+    seen[n]=1; dl.push(byName[n]);
   }
+  dl.sort(function(a,b){ var an=String(a.name||'').toLowerCase(), bn=String(b.name||'').toLowerCase(); return an<bn?-1:(an>bn?1:0); });
+  for(i=0;i<dl.length;i++) out.push(dl[i]);
   return out;
 }
 function paintQuick(){
@@ -4753,7 +4785,7 @@ function showHome(){
   html+='<div class="hCol hColL">';
   var side='';
   if(isConsoleHost()) side+=pwrPanelHtml();
-  html+='<section class="panel hCats"><p class="label">'+esc(t('categories'))+'</p>'+catChipsHtml()+'</section>';
+  /* categories panel removed from home */
   html+='<section class="panel hQuick"><p class="label">'+esc(t('quick'))+'</p><div class="cards" id="homeQuick"></div></section>';
   side='<section class="panel hRun"><p class="label">'+esc(t('running'))+'</p><div id="homeRun"><p class="empty">'+esc(isConsoleHost()?t('checkingLoaded'):t('noLoaded'))+'</p></div>'+
     (isConsoleHost()?'<button type="button" class="more" id="homeRunMore">'+esc(t('manage'))+'</button>':'')+'</section>'+side;
@@ -5543,10 +5575,17 @@ function selfHandoff(btn){
 }
 /* ---- AutoPayload rows: the whole row is the switch; elsewhere a row tap picks it ---- */
 function autoRowHtml(p){
-  var on=isAutoName(p.name);
-  return '<div class="elfwrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><div class="elf nom autorow cat'+(on?' ison':'')+'" tabindex="0" role="checkbox" aria-checked="'+(on?'true':'false')+'">'+
-    '<span class="ack" aria-hidden="true"></span><div class="n">'+(function(u){ return u ? '<span class="aico hasicon"><img class="picon" alt="" data-src="'+esc(iconSrc(u))+'"></span>' : ''; })(iconFor(p))+nameHtml(p)+'</div><div class="v">'+esc(p.version||'')+'</div>'+
-    '<div class="a"><span class="atag">'+esc(on?t('autoOnTag'):t('autoOffTag'))+'</span></div></div></div>';
+  var on=isAutoName(p.name), md=autoMeta(p.name), ctrl='', idx='', ord='', ico=iconFor(p), fb=FOLDER_ICO[p.folder];
+  if(on){
+    var _pos=autoOrderedNames().indexOf(p.name); idx='<span class="aidx">'+(_pos>=0?(_pos+1):'')+'</span>';
+    ord='<button type="button" class="aord aup" title="'+esc(t('moveUp'))+'" aria-label="'+esc(t('moveUp'))+'">&#9650;</button><button type="button" class="aord adn" title="'+esc(t('moveDown'))+'" aria-label="'+esc(t('moveDown'))+'">&#9660;</button>';
+    ctrl='<label class="autodly" title="'+esc(t('delayAfter'))+'"><input type="number" class="adlyin" min="0" max="60" step="1" value="'+(md.d||0)+'" aria-label="'+esc(t('delayAfter'))+'"><small>s</small></label>';
+  }
+  var tile='<span class="pick aupick'+(ico?' hasicon':'')+(fb?' fbico':'')+'"'+(fb?' style="--fb:url('+fb+')"':'')+' aria-hidden="true">'+(ico?'<img class="picon" alt="" data-src="'+esc(iconSrc(ico))+'">':'')+'<span>ELF</span></span>';
+  var info=(p.info && p.info!==p.name) ? '<div class="d">'+esc(p.info)+'</div>' : '';
+  return '<div class="elfwrap autowrap" data-path="'+esc(p.path)+'" data-name="'+esc(p.name)+'"><span class="ordcol">'+(on?(idx+'<span class="autoord">'+ord+'</span>'):'')+'</span><div class="elf nom pk cat autorow'+(on?' ison':'')+'" tabindex="0" role="checkbox" aria-checked="'+(on?'true':'false')+'">'+tile+
+    '<div class="n">'+nameHtml(p)+'</div><div class="v">'+esc(p.version||'')+'</div>'+info+
+    '<div class="a">'+ctrl+'<span class="atag">'+esc(on?t('autoOnTag'):t('autoOffTag'))+'</span></div></div></div>';
 }
 function paintAutoRow(row, on){
   var tg=row.querySelector('.atag');
@@ -5559,10 +5598,11 @@ function autoRowToggle(row){
   if(!name) return;
   on=!isAutoName(name);
   setAuto(name, on);
+  renderNav(currentFolder);
+  if(currentFolder==='auto' && lastAutoFound){ paintAutoPayload(lastAutoFound); return; }
   paintAutoRow(row, on);
   var c=document.getElementById('autohintn');
   if(c) c.textContent=t('autoCountN',{n:autoCount()});
-  renderNav(currentFolder);
 }
 function rowFromTarget(el){
   var i, tn;
