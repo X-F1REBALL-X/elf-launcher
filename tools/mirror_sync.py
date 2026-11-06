@@ -38,7 +38,7 @@ UPSTREAM = {
     "LinkDev.elf":             {"host": "github", "repo": "ps5-payload-dev/linkdev",  "asset": r"^LinkDev\.zip$", "member": r"(^|/)LinkDev\.elf$"},
     "OffAct.elf":              {"host": "github", "repo": "ps5-payload-dev/offact",   "asset": r"^OffAct\.zip$", "member": r"(^|/)OffAct\.elf$"},
     # off GitHub (no digests, so the app can't auto-update these itself)
-    "garlic-savemgr-v1.13.1.elf": {"host": "https://git.etawen.dev", "repo": "earthonion/garlic-savemgr", "asset": r"^garlic-savemgr\.elf$"},
+    "garlic-savemgr-v1.13.1.elf": {"host": "github", "repo": "earthonion/garlic-savemgr", "asset": r"^garlic-savemgr\.elf$"},
     "garlic-worker-ps5.elf":   {"host": "https://git.etawen.dev", "repo": "earthonion/garlic-worker", "asset": r"^garlic-worker-ps5\.elf$"},
     # author ships the ELF committed in the repo, no releases: url points at the raw
     # file pinned to the commit that last changed it (no mirror upload)
@@ -47,6 +47,8 @@ UPSTREAM = {
 }
 # Built by us, no upstream.
 OWN_BUILT = {"reboot.elf", "suspend.elf"}
+# nuvio upstream is theghostonline.dev (not console-allowlisted); keep on payload-mirror manually.
+
 
 
 def sh(*a):
@@ -143,7 +145,8 @@ def main():
             print("  %-28s up to date  %-16s %s (%s)" % (name, tag, sha[:12], src))
             continue
         raw = up["host"] == "github-raw"
-        new_url = upurl if raw else MIRROR_URL + e["filename"]
+        direct = raw or not up.get("member")
+        new_url = upurl if direct else MIRROR_URL + e["filename"]
         print("  %-28s CHANGE  %s -> %s  size %s -> %d  sha %s -> %s  (%s %s)" % (
             name, e.get("version"), tag, e.get("size"), len(data), cur[:12], sha[:12], up["repo"], src))
         if e.get("url") != new_url:
@@ -152,7 +155,7 @@ def main():
             f = os.path.join(tmp, e["filename"])
             open(f, "wb").write(data)
             try:
-                if not raw:
+                if not direct:
                     sh("gh", "release", "upload", MIRROR_TAG, f, "--clobber", "-R", OWNER_REPO)
             except subprocess.CalledProcessError as ex:
                 problems.append((name, "upload failed: %s" % (ex.stderr or ex).strip()))

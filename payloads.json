@@ -1502,19 +1502,15 @@
       "icon": "https://raw.githubusercontent.com/theghostonline/Nuvio-PS5/2ee05a0ccc8016f13e3ca32550faa97adaee4149/app/sce_sys/icon0.png",
       "filename": "nuvio-ps5.elf",
       "path": "media/nuvio-ps5.elf",
-      "url": "https://github.com/theghostonline/Nuvio-PS5/releases/download/v1.8.0/nuvio-ps5.elf",
-      "description": "Nuvio TV app with a 4K HDR player.",
-      "version": "v1.8.0",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/nuvio-ps5.elf",
+      "description": "Nuvio TV app with a 4K HDR player. Upstream moved to theghostonline.dev (v1.9.1); mirrored for console allowlist.",
+      "version": "v1.9.1",
       "category": "Media",
       "author": "theghostonline",
-      "size": 57968728,
-      "checksum": "2c4812fdf411116652db756a5bd563cb4934f9df76373f59bdba3ff25a79cc3b",
-      "sha256": "2c4812fdf411116652db756a5bd563cb4934f9df76373f59bdba3ff25a79cc3b",
-      "source_direct": "https://github.com/theghostonline/Nuvio-PS5/releases/download/v1.8.0/nuvio-ps5.elf",
-      "github_latest": {
-        "repo": "theghostonline/Nuvio-PS5",
-        "asset": "^nuvio-ps5\\.elf$"
-      }
+      "size": 58099800,
+      "checksum": "f79777c24c0105af008ea03333ed3090974715fe3cc89790eb1f51808e10d98d",
+      "sha256": "f79777c24c0105af008ea03333ed3090974715fe3cc89790eb1f51808e10d98d",
+      "source_direct": "https://theghostonline.dev/theghostonline/Nuvio-PS5/releases/download/v1.9.1/nuvio-ps5.elf"
     },
     {
       "name": "Snes9xPS5.elf",
