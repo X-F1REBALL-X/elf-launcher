@@ -679,12 +679,12 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 .dslide output{flex:0 0 auto;min-width:3.6rem;margin-inline-start:.6rem;padding:.2rem .55rem;text-align:center;font-weight:800;font-size:.92rem;color:#fff;background:var(--pri2);border-radius:999px;font-variant-numeric:tabular-nums}
 
 /* All payloads: big folder tiles and larger payload banners (controller friendly) */
-.foldgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-gap:.7rem;max-width:72rem;margin:0 auto var(--s5)}
-.foldgrid button,[dir=rtl] .foldgrid button{display:flex;align-items:center;min-height:4.3rem;margin:0;padding:.5rem .75rem .5rem .6rem;font-size:1.05rem;font-weight:800;letter-spacing:.005em;border-radius:16px;text-align:start;white-space:nowrap}
+.foldgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-gap:1rem;max-width:48rem;margin:0 auto var(--s5)}
+.foldgrid button,[dir=rtl] .foldgrid button{display:flex;align-items:center;min-height:5.1rem;margin:0;padding:.7rem .9rem .7rem .75rem;font-size:1.15rem;font-weight:800;letter-spacing:.005em;border-radius:18px;text-align:start;white-space:nowrap}
 [dir=rtl] .foldgrid button{padding:.45rem .55rem .45rem .7rem}
 .foldgrid button:before{box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 3px 10px rgba(60,45,25,.16)}
 .foldgrid button>span:not(.ncount){flex:1 1 auto;min-width:0;padding:0 .3rem;text-align:center;white-space:normal;line-height:1.15;overflow-wrap:break-word}
-.foldgrid .subfold .fico{width:2.9rem;height:2.9rem;margin:0;margin-inline-end:.75rem;border-radius:12px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.18)}
+.foldgrid .subfold .fico{width:3.3rem;height:3.3rem;margin:0;margin-inline-end:.9rem;border-radius:14px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.18)}
 .foldgrid button .ncount{min-width:2rem;margin-inline-start:.5rem;font-size:.85rem;line-height:1.7}
 .foldgrid button.active:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--c,var(--pri)),0 4px 14px rgba(60,45,25,.2)}
 .foldgrid button:not(.active){opacity:.92}
@@ -701,7 +701,7 @@ html.dark .bar,html.dark #selbar{background:var(--card)}
 #main[data-view=elf] .listgrid button.run,#main[data-view=downloaded] .listgrid button.run{min-height:2.9rem;min-width:6.2rem;font-size:.98rem}
 #main[data-view=elf] .listgrid .elf .pinb,#main[data-view=downloaded] .listgrid .elf .pinb{top:calc(50% + .75rem);left:2.85rem}
 [dir=rtl] #main[data-view=elf] .listgrid .elf .pinb,[dir=rtl] #main[data-view=downloaded] .listgrid .elf .pinb{left:auto;right:2.85rem}
-@media(max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(12rem,1fr))}}
+@media(max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(14rem,1fr))}}
 /* gray tiles with dark text (light text on dark themes); the colored icon carries the folder color */
 .foldgrid button.subfold,.catchips button.subfold,.foldgrid button.subfold.active{color:var(--tink)}
 .foldgrid button.subfold:before,.catchips button.subfold:before,.foldgrid button.subfold.active:before{background:var(--tile);border:1px solid rgba(0,0,0,.07)}
@@ -712,15 +712,15 @@ html.dark .foldgrid button.subfold .ncount,html.dark .catchips button.subfold .n
 /* the All tile has a line icon instead of folder art */
 .subfold i.fico{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--c2,var(--c)),var(--c));color:#fff}
 .subfold i.fico svg{width:58%;height:58%}
-@media(max-width:700px){.foldgrid{grid-template-columns:1fr 1fr}.foldgrid button{min-height:3.8rem;font-size:.98rem}.foldgrid .subfold .fico{width:2.5rem;height:2.5rem}}
-/* Home categories: rounded tiles, same style as the All payloads folder tiles, compact footprint */
-.catchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:.5rem;margin:0}
-.catchips button,[dir=rtl] .catchips button{display:flex;align-items:center;min-width:0;min-height:3rem;margin:0;padding:.3rem .55rem .3rem .4rem;font-size:.92rem;font-weight:800;line-height:1.15;border-radius:12px;text-align:center;white-space:normal}
-[dir=rtl] .catchips button{padding:.3rem .4rem .3rem .55rem}
+@media(max-width:700px){.foldgrid{grid-template-columns:1fr 1fr}.foldgrid button{min-height:4.6rem;font-size:1.05rem}.foldgrid .subfold .fico{width:3rem;height:3rem}}
+/* Home categories: roomier 2-column tiles (4 folders) */
+.catchips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-gap:.85rem;margin:0;max-width:36rem}
+.catchips button,[dir=rtl] .catchips button{display:flex;align-items:center;min-width:0;min-height:4rem;margin:0;padding:.55rem .75rem .55rem .55rem;font-size:1.05rem;font-weight:800;line-height:1.2;border-radius:16px;text-align:center;white-space:normal}
+[dir=rtl] .catchips button{padding:.55rem .55rem .55rem .75rem}
 .catchips button:before{box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 2px 7px rgba(60,45,25,.14)}
-.catchips button>span:not(.ncount){flex:1 1 auto;min-width:0;padding:0 .3rem;text-align:center;overflow-wrap:break-word}
-.catchips .subfold .fico{width:2.1rem;height:2.1rem;margin:0;margin-inline-end:.35rem;border-radius:9px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 1px 4px rgba(0,0,0,.18)}
-.catchips button .ncount{margin-inline-start:.35rem;min-width:1.9rem}
+.catchips button>span:not(.ncount){flex:1 1 auto;min-width:0;padding:0 .35rem;text-align:center;overflow-wrap:break-word}
+.catchips .subfold .fico{width:2.7rem;height:2.7rem;margin:0;margin-inline-end:.55rem;border-radius:12px;box-shadow:0 0 0 2px rgba(255,255,255,.35),0 1px 4px rgba(0,0,0,.18)}
+.catchips button .ncount{margin-inline-start:.45rem;min-width:2rem}
 .catchips button:focus:before{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--pri)}
 @media(max-width:700px){.catchips{grid-template-columns:1fr 1fr}}
 /* Loaded / My files folder tiles: own icon colors, same gray tile */
@@ -792,7 +792,7 @@ html.navopen,html.navopen body{overflow:hidden}
 #main #view[data-f=loaded] .listgrid .elf .pinb{top:2.55rem}
 }
 @media(max-width:1179px){.foldgrid button span:not(.ncount),.catchips button span:not(.ncount){flex:1 1 auto;min-width:0;word-break:normal;overflow-wrap:normal;hyphens:auto}}
-@media(min-width:701px) and (max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr))}.foldgrid button,[dir=rtl] .foldgrid button{padding:.45rem .55rem;font-size:.95rem;line-height:1.15}.foldgrid .subfold .fico{width:2.4rem;height:2.4rem;margin-inline-end:.55rem}.foldgrid button .ncount{min-width:1.8rem;margin-inline-start:.35rem}}
+@media(min-width:701px) and (max-width:1179px){.foldgrid{grid-template-columns:repeat(auto-fill,minmax(14rem,1fr))}.foldgrid button,[dir=rtl] .foldgrid button{padding:.45rem .55rem;font-size:.95rem;line-height:1.15}.foldgrid .subfold .fico{width:2.4rem;height:2.4rem;margin-inline-end:.55rem}.foldgrid button .ncount{min-width:1.8rem;margin-inline-start:.35rem}}
 @media(min-width:861px) and (max-width:1179px){.bar{flex-wrap:wrap}.search{order:5;flex:1 1 100%;max-width:none;margin:var(--s2) 0 0}.live{margin-inline-start:auto}}
 /* Touch screens that are not the PS5 (html.touch is set from JS): 44px targets */
 html.touch button,html.touch .navbtn,html.touch #q,html.touch .mlin{min-height:44px}
@@ -902,18 +902,13 @@ window.fetch=function(url, opts){
 })();
 var FOLDERS=[
 {id:"loader",label:"Loaders"},
-{id:"hen",label:"Jailbreak & HEN"},
-{id:"storage",label:"Game Library"},
-{id:"mods",label:"Mods & Saves"},
-{id:"files",label:"Files & Transfer"},
-{id:"net",label:"Network & Remote"},
-{id:"media",label:"Media & Audio"},
-{id:"system",label:"System"},
-{id:"tools",label:"Dev Tools"}
+{id:"storage",label:"Games"},
+{id:"files",label:"Files"},
+{id:"system",label:"System"}
 ];
 /* Old folder ids that still show up in saved links. */
-var FOLDER_ALIAS={apps:'loader'};
-var APP_VERSION="2.0.5";
+var FOLDER_ALIAS={apps:'loader',hen:'loader',mods:'storage',net:'files',media:'files',tools:'system'};
+var APP_VERSION="2.0.7";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
@@ -975,7 +970,7 @@ function setProgressPct(pct){
 function folderLabel(id){ return t('f_'+id); }
 function countIn(folder){
   var n=0,i;
-  for(i=0;i<PAYLOADS.length;i++){if(PAYLOADS[i].folder===folder)n++;}
+  for(i=0;i<PAYLOADS.length;i++){var pf=PAYLOADS[i].folder; if(FOLDER_ALIAS.hasOwnProperty(pf)) pf=FOLDER_ALIAS[pf]; if(pf===folder)n++;}
   return n;
 }
 
@@ -1011,7 +1006,7 @@ var FLAGS={
 var I18N={
 en:{
  menu:'Menu',ready:'Ready',language:'Language',home:'Home',elfFiles:'Elf Files',downloaded:'Downloaded',autoPayload:'AutoPayload',
- f_loader:'Loaders',f_hen:'Jailbreak & HEN',f_storage:'Game Library',f_mods:'Mods & Saves',f_files:'Files & Transfer',f_net:'Network & Remote',f_media:'Media & Audio',f_system:'System',f_tools:'Dev Tools',
+ f_loader:'Loaders',f_hen:'Jailbreak & HEN',f_storage:'Games',f_mods:'Mods & Saves',f_files:'Files',f_net:'Network & Remote',f_media:'Media & Audio',f_system:'System',f_tools:'Dev Tools',
  homeDesc:'Open Elf Files on the left. Download saves the ELF. Payload sends it to elfldr (9021).',
  afterJb:'After jailbreak',openBrowser:'Open browser',leaveClosed:'Leave closed',
  autoDelay:'Auto delay',delay3s:'3 seconds',delay0:'0 seconds',
@@ -1063,7 +1058,7 @@ ar:{
 },
 es:{
  menu:'Men\u00fa',ready:'Listo',language:'Idioma',home:'Inicio',elfFiles:'Archivos ELF',downloaded:'Descargados',autoPayload:'AutoPayload',
- f_loader:'Cargadores',f_hen:'Jailbreak y HEN',f_storage:'Biblioteca de juegos',f_mods:'Mods y partidas',f_files:'Archivos y transferencia',f_net:'Red y remoto',f_media:'Multimedia y audio',f_system:'Sistema',f_tools:'Herramientas dev',
+ f_loader:'Cargadores',f_hen:'Jailbreak y HEN',f_storage:'Juegos',f_mods:'Mods y partidas',f_files:'Archivos',f_net:'Red y remoto',f_media:'Multimedia y audio',f_system:'Sistema',f_tools:'Herramientas dev',
  homeDesc:'Abre Archivos ELF a la izquierda. Descargar guarda el ELF. Cargar lo env\u00eda a elfldr (9021).',
  afterJb:'Despu\u00e9s del jailbreak',openBrowser:'Abrir navegador',leaveClosed:'Dejar cerrado',
  autoDelay:'Retraso Auto',delay3s:'3 segundos',delay0:'0 segundos',
@@ -1089,7 +1084,7 @@ es:{
 },
 fr:{
  menu:'Menu',ready:'Pr\u00eat',language:'Langue',home:'Accueil',elfFiles:'Fichiers ELF',downloaded:'T\u00e9l\u00e9charg\u00e9s',autoPayload:'AutoPayload',
- f_loader:'Chargeurs',f_hen:'Jailbreak et HEN',f_storage:'Biblioth\u00e8que de jeux',f_mods:'Mods et sauvegardes',f_files:'Fichiers et transfert',f_net:'R\u00e9seau et distance',f_media:'M\u00e9dias et audio',f_system:'Syst\u00e8me',f_tools:'Outils dev',
+ f_loader:'Chargeurs',f_hen:'Jailbreak et HEN',f_storage:'Jeux',f_mods:'Mods et sauvegardes',f_files:'Fichiers',f_net:'R\u00e9seau et distance',f_media:'M\u00e9dias et audio',f_system:'Syst\u00e8me',f_tools:'Outils dev',
  homeDesc:'Ouvrez Fichiers ELF \u00e0 gauche. T\u00e9l\u00e9charger enregistre l\u2019ELF. Charger l\u2019envoie \u00e0 elfldr (9021).',
  afterJb:'Apr\u00e8s le jailbreak',openBrowser:'Ouvrir le navigateur',leaveClosed:'Laisser ferm\u00e9',
  autoDelay:'D\u00e9lai Auto',delay3s:'3 secondes',delay0:'0 seconde',
@@ -1115,7 +1110,7 @@ fr:{
 },
 de:{
  menu:'Men\u00fc',ready:'Bereit',language:'Sprache',home:'Start',elfFiles:'ELF-Dateien',downloaded:'Heruntergeladen',autoPayload:'AutoPayload',
- f_loader:'Loader',f_hen:'Jailbreak & HEN',f_storage:'Spielebibliothek',f_mods:'Mods & Spielst\u00e4nde',f_files:'Dateien & Transfer',f_net:'Netzwerk & Remote',f_media:'Medien & Audio',f_system:'System',f_tools:'Entwickler-Tools',
+ f_loader:'Loader',f_hen:'Jailbreak & HEN',f_storage:'Spiele',f_mods:'Mods & Spielst\u00e4nde',f_files:'Dateien',f_net:'Netzwerk & Remote',f_media:'Medien & Audio',f_system:'System',f_tools:'Entwickler-Tools',
  homeDesc:'\u00d6ffne links ELF-Dateien. Herunterladen speichert die ELF. Laden sendet sie an elfldr (9021).',
  afterJb:'Nach dem Jailbreak',openBrowser:'Browser \u00f6ffnen',leaveClosed:'Geschlossen lassen',
  autoDelay:'Auto-Verz\u00f6gerung',delay3s:'3 Sekunden',delay0:'0 Sekunden',
@@ -1141,7 +1136,7 @@ de:{
 },
 pt:{
  menu:'Menu',ready:'Pronto',language:'Idioma',home:'In\u00edcio',elfFiles:'Arquivos ELF',downloaded:'Baixados',autoPayload:'AutoPayload',
- f_loader:'Carregadores',f_hen:'Jailbreak e HEN',f_storage:'Biblioteca de jogos',f_mods:'Mods e saves',f_files:'Arquivos e transfer\u00eancia',f_net:'Rede e remoto',f_media:'M\u00eddia e \u00e1udio',f_system:'Sistema',f_tools:'Ferramentas dev',
+ f_loader:'Carregadores',f_hen:'Jailbreak e HEN',f_storage:'Jogos',f_mods:'Mods e saves',f_files:'Arquivos',f_net:'Rede e remoto',f_media:'M\u00eddia e \u00e1udio',f_system:'Sistema',f_tools:'Ferramentas dev',
  homeDesc:'Abra Arquivos ELF \u00e0 esquerda. Baixar salva o ELF. Carregar envia para o elfldr (9021).',
  afterJb:'Ap\u00f3s o jailbreak',openBrowser:'Abrir navegador',leaveClosed:'Deixar fechado',
  autoDelay:'Atraso Auto',delay3s:'3 segundos',delay0:'0 segundos',
@@ -1245,7 +1240,7 @@ zh:{
 },
 it:{
  menu:'Menu',ready:'Pronto',language:'Lingua',home:'Home',elfFiles:'File ELF',downloaded:'Scaricati',autoPayload:'AutoPayload',
- f_loader:'Loader',f_hen:'Jailbreak e HEN',f_storage:'Libreria giochi',f_mods:'Mod e salvataggi',f_files:'File e trasferimento',f_net:'Rete e remoto',f_media:'Media e audio',f_system:'Sistema',f_tools:'Strumenti dev',
+ f_loader:'Loader',f_hen:'Jailbreak e HEN',f_storage:'Giochi',f_mods:'Mod e salvataggi',f_files:'File',f_net:'Rete e remoto',f_media:'Media e audio',f_system:'Sistema',f_tools:'Strumenti dev',
  homeDesc:'Apri File ELF a sinistra. Scarica salva l\u2019ELF. Carica lo invia a elfldr (9021).',
  afterJb:'Dopo il jailbreak',openBrowser:'Apri il browser',leaveClosed:'Lascia chiuso',
  autoDelay:'Ritardo Auto',delay3s:'3 secondi',delay0:'0 secondi',
@@ -1483,33 +1478,33 @@ function isConsoleHost(){
 }
 
 /* Exact category names used by our payloads.json (and older ones). */
-var CATEGORY_FOLDER={'loader':'loader','hen':'hen','jailbreak':'hen','jailbreak & hen':'hen',
- 'game storage':'storage','game library':'storage','storage':'storage','mods & saves':'mods','mods':'mods',
- 'files':'files','files & transfer':'files','network':'net','network & remote':'net','media':'media','media & audio':'media',
- 'system':'system','dev tools':'tools','tools':'tools'};
+var CATEGORY_FOLDER={'loader':'loader','hen':'loader','jailbreak':'loader','jailbreak & hen':'loader',
+  'game storage':'storage','game library':'storage','storage':'storage','mods & saves':'storage','mods':'storage',
+  'files':'files','files & transfer':'files','network':'files','network & remote':'files','media':'files','media & audio':'files',
+  'system':'system','dev tools':'system','tools':'system'};
 function mapUpstreamFolder(cat, name){
   cat=String(cat||'').toLowerCase().trim();
   name=String(name||'').toLowerCase();
   if(CATEGORY_FOLDER.hasOwnProperty(cat)) return CATEGORY_FOLDER[cat];
   /* Other catalogs use broad groups, so look at the payload name first. */
   if(/linux|power|reboot|suspend|fan[-_ ]|syslang|date[-_ ]?time|state[-_ ]?manager/.test(name)) return 'system';
-  if(/etahen|onionhen|kstuff|jb[-_ ]?daemon|jailbreak/.test(name)) return 'hen';
+  if(/etahen|onionhen|kstuff|jb[-_ ]?daemon|jailbreak/.test(name)) return 'loader';
   if(/elfldr|autoload|pldmgr|payload[-_ ]?manager|launcher|launchpad|hostpayloads/.test(name)) return 'loader';
-  if(/cheat|fps|patch|backpork|save/.test(name)) return 'mods';
+  if(/cheat|fps|patch|backpork|save/.test(name)) return 'storage';
   if(/shadowmount|smplus|dump|mounter|compress|pkg/.test(name)) return 'storage';
-  if(/gdb|klog|shsrv|debug|pager|notify/.test(name)) return 'tools';
+  if(/gdb|klog|shsrv|debug|pager|notify/.test(name)) return 'system';
   if(/ftp|file|upload|kura|bfpilot|unrar|7zip/.test(name)) return 'files';
-  if(/websrv|dns|remote|rp[-_]|linkdev|offact|tailscale/.test(name)) return 'net';
-  if(/player|plutotv|svtplay|tv4play|hearbridge|media|audio|vlc/.test(name)) return 'media';
+  if(/websrv|dns|remote|rp[-_]|linkdev|offact|tailscale/.test(name)) return 'files';
+  if(/player|plutotv|svtplay|tv4play|hearbridge|media|audio|vlc/.test(name)) return 'files';
   if(cat.indexOf('load')>=0) return 'loader';
-  if(cat.indexOf('jail')>=0 || cat.indexOf('hen')>=0) return 'hen';
+  if(cat.indexOf('jail')>=0 || cat.indexOf('hen')>=0) return 'loader';
   if(cat.indexOf('system')>=0 || cat.indexOf('power')>=0) return 'system';
-  if(cat.indexOf('network')>=0 || cat.indexOf('server')>=0 || cat.indexOf('remote')>=0) return 'net';
+  if(cat.indexOf('network')>=0 || cat.indexOf('server')>=0 || cat.indexOf('remote')>=0) return 'files';
   if(cat.indexOf('file')>=0 || cat.indexOf('ftp')>=0) return 'files';
   if(cat.indexOf('stor')>=0 || cat.indexOf('dump')>=0 || cat.indexOf('mount')>=0 || cat.indexOf('game')>=0) return 'storage';
-  if(cat.indexOf('save')>=0 || cat.indexOf('cheat')>=0 || cat.indexOf('mod')>=0) return 'mods';
-  if(cat.indexOf('media')>=0 || cat.indexOf('player')>=0 || cat.indexOf('stream')>=0) return 'media';
-  return 'tools';
+  if(cat.indexOf('save')>=0 || cat.indexOf('cheat')>=0 || cat.indexOf('mod')>=0) return 'storage';
+  if(cat.indexOf('media')>=0 || cat.indexOf('player')>=0 || cat.indexOf('stream')>=0) return 'files';
+  return 'system';
 }
 function isItsplkMirrorUrl(url){
   url=String(url||'').toLowerCase();
@@ -4535,14 +4530,14 @@ function folderList(id){
   if(id==='search') return searchList(searchQ);
   if(id==='loaded') out=loadedPayloads();
   else if(id==='local') out=LOCAL_PAYLOADS.slice();
-  else for(i=0;i<PAYLOADS.length;i++) if(id==='elf' || PAYLOADS[i].folder===id) out.push(PAYLOADS[i]);
+  else for(i=0;i<PAYLOADS.length;i++){ var pf=PAYLOADS[i].folder; if(FOLDER_ALIAS.hasOwnProperty(pf)) pf=FOLDER_ALIAS[pf]; if(id==='elf' || pf===id) out.push(PAYLOADS[i]); }
   for(i=0;i<FOLDERS.length;i++) fo[FOLDERS[i].id]=i;
   pins=readPins();
   for(i=0;i<pins.length;i++) if(!pk.hasOwnProperty(pins[i])) pk[pins[i]]=i;
   out.sort(function(a,b){
     var pa=pk.hasOwnProperty(a.name), pb=pk.hasOwnProperty(b.name), fa, fb, na, nb;
     if(pa||pb) return pa&&pb ? pk[a.name]-pk[b.name] : (pa?-1:1);
-    fa=fo.hasOwnProperty(a.folder)?fo[a.folder]:99; fb=fo.hasOwnProperty(b.folder)?fo[b.folder]:99;
+    var af=a.folder,bf=b.folder; if(FOLDER_ALIAS.hasOwnProperty(af)) af=FOLDER_ALIAS[af]; if(FOLDER_ALIAS.hasOwnProperty(bf)) bf=FOLDER_ALIAS[bf]; fa=fo.hasOwnProperty(af)?fo[af]:99; fb=fo.hasOwnProperty(bf)?fo[bf]:99;
     if(fa!==fb) return fa-fb;
     na=displayName(a).toLowerCase(); nb=displayName(b).toLowerCase();
     return na<nb?-1:(na>nb?1:0);

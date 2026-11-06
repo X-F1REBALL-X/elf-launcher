@@ -1,4 +1,4 @@
-﻿<img src="docs/img/banner.png" alt="Elf Launcher">
+<img src="docs/img/banner.png" alt="Elf Launcher">
 
 Home screen and browser ELF payload launcher for a jailbroken PS5.
 
@@ -28,7 +28,7 @@ Everything else is in the [guide](https://x-f1reball-x.github.io/elf-launcher/do
 ## Features
 
 - Home screen tile and a launcher page served by the console on port `1000`. Open it from the tile, from the PS5 browser, or from a phone or PC on the same network.
-- Catalog of payloads in nine colored folders: Loaders, Jailbreak and HEN, Game Library, Mods and Saves, Files and Transfer, Network and Remote, Media and Audio, System, Dev Tools. Download once, load any time.
+- Catalog of payloads in four folders: Loaders (includes Jailbreak & HEN), Games (library + mods/saves), Files (transfer + network + media), and System (system + tools). Old folder links still open the right place. Download once, load any time.
 - AutoPayload: choose payloads that load by themselves after every jailbreak. Several profiles, a start delay from 0 to 10 seconds, and a choice between opening the page or going back to the home screen. It runs once per jailbreak.
 - Quick launch: pin as many payloads as you like. Pinned payloads come first in every list.
 - Updates: saved payloads are checked against their latest releases, and you can update one or all. The launcher can update itself.
