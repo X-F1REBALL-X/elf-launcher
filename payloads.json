@@ -1,6 +1,6 @@
 {
   "name": "X-F1REBALL-X elf-launcher",
-  "app_version": "2.0.6",
+  "app_version": "2.0.15",
   "payloads": [
     {
       "name": "elf-launcher.elf",
@@ -9,7 +9,7 @@
       "path": "launcher/elf-launcher.elf",
       "url": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/main/launcher/elf-launcher.elf",
       "description": "Installs the home screen tile and serves this page from the console.",
-      "version": "2.0.6",
+      "version": "2.0.15",
       "category": "Loader",
       "author": "X-F1REBALL-X",
       "size": 1424864,
@@ -82,12 +82,12 @@
       "category": "Loader",
       "author": "X-F1REBALL-X",
       "size": 6583752,
-      "checksum": "83296e5c68d8eb55470973285438058527c8a7055d53d5c651bbdd5d6a268089",
+      "checksum": "e26a319d58ecaae5bf0dbf7067e2e2480caacf02896cd2771e21167c90b373c7",
       "github_latest": {
         "repo": "X-F1REBALL-X/wk-autoloader",
         "asset": "^WK_Autoloader_Store_V[0-9.]+\\.elf$"
       },
-      "sha256": "83296e5c68d8eb55470973285438058527c8a7055d53d5c651bbdd5d6a268089",
+      "sha256": "e26a319d58ecaae5bf0dbf7067e2e2480caacf02896cd2771e21167c90b373c7",
       "source_direct": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.2.1/WK_Autoloader_Store_V1.2.1.elf"
     },
     {
@@ -392,15 +392,15 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
       "filename": "garlic-savemgr-v1.13.1.elf",
       "path": "storage/garlic-savemgr-v1.13.1.elf",
-      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/garlic-savemgr-v1.13.1.elf",
+      "url": "https://github.com/earthonion/garlic-savemgr/releases/download/v1.15-beta12/garlic-savemgr.elf",
       "description": "Game save manager.",
-      "version": "v1.15-beta4",
+      "version": "v1.15-beta12",
       "category": "Mods & Saves",
       "author": "earthonion",
-      "size": 1725296,
-      "checksum": "808599e129652b37d2d643a639d4e66dcabe585355ba12e4276f297cdbb94ee8",
-      "source_direct": "https://git.etawen.dev/earthonion/garlic-savemgr/releases/download/v1.15-beta4/garlic-savemgr.elf",
-      "sha256": "808599e129652b37d2d643a639d4e66dcabe585355ba12e4276f297cdbb94ee8"
+      "size": 1743736,
+      "checksum": "ad4b49a58375def0d1d4d3772b369ee5d50dc2ff571bdd4ea0c6294a822fe0fc",
+      "source_direct": "https://github.com/earthonion/garlic-savemgr/releases/download/v1.15-beta12/garlic-savemgr.elf",
+      "sha256": "ad4b49a58375def0d1d4d3772b369ee5d50dc2ff571bdd4ea0c6294a822fe0fc"
     },
     {
       "name": "mounter.elf",
@@ -512,19 +512,19 @@
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v11.1.0/ps5upload-11.1.0.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v11.2.6/ps5upload-11.2.6.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v11.1.0",
+      "version": "v11.2.6",
       "category": "Files",
       "author": "phantomptr",
-      "size": 6677960,
-      "checksum": "1aaf50efa91aac8d26d53ce27ec223a3646a880892834977615c2770ff17197b",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v11.1.0/ps5upload-11.1.0.elf",
+      "size": 6680256,
+      "checksum": "c0a549d34b9bd9c307aeca7eb211edea58c8a10142cd892e1f72fea7bfe7dcac",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v11.2.6/ps5upload-11.2.6.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "1aaf50efa91aac8d26d53ce27ec223a3646a880892834977615c2770ff17197b"
+      "sha256": "c0a549d34b9bd9c307aeca7eb211edea58c8a10142cd892e1f72fea7bfe7dcac"
     },
     {
       "name": "BFpilot.elf",
@@ -1191,15 +1191,15 @@
       "icon": "https://raw.githubusercontent.com/manos555555/PS5-Suite/650145210358642163acc9742b77c0effb6fb2f8/payload/ps5_icon.png",
       "filename": "ps5_suite_server.elf",
       "path": "files/ps5_suite_server.elf",
-      "url": "https://github.com/manos555555/PS5-Suite/releases/download/v7.8.0/ps5_suite_server.elf",
+      "url": "https://github.com/manos555555/PS5-Suite/releases/download/v8.0.0/ps5_suite_server.elf",
       "description": "Server for the PS5-Suite PC/Android app: transfers, mounting, PKG installs.",
-      "version": "v7.8.0",
+      "version": "v8.0.0",
       "category": "Files",
       "author": "manos555555",
-      "size": 1638576,
-      "checksum": "efce0675ce94beeec94bdc81ccfa55229ced52419655fcca99321917e60ef077",
-      "sha256": "efce0675ce94beeec94bdc81ccfa55229ced52419655fcca99321917e60ef077",
-      "source_direct": "https://github.com/manos555555/PS5-Suite/releases/download/v7.8.0/ps5_suite_server.elf",
+      "size": 1720736,
+      "checksum": "552d55578adfb4dd6db21864640c048bdbebef009c9a86e29c76de017f006bd7",
+      "sha256": "552d55578adfb4dd6db21864640c048bdbebef009c9a86e29c76de017f006bd7",
+      "source_direct": "https://github.com/manos555555/PS5-Suite/releases/download/v8.0.0/ps5_suite_server.elf",
       "github_latest": {
         "repo": "manos555555/PS5-Suite",
         "asset": "^ps5_suite_server\\.elf$"
@@ -1248,7 +1248,7 @@
       "icon": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/raw/commit/52a3e8a1a661f90dff9d99a0067e08bd3b5ead8f/assets/icon0.png",
       "filename": "AnyPad-PS5.elf",
       "path": "system/AnyPad-PS5.elf",
-      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/AnyPad-PS5.elf",
+      "url": "https://codeberg.org/elmonomalva0/Any-Pad-ps5/releases/download/v0.9.5-beta/AnyPad-PS5-0.9.5-beta.elf",
       "description": "Use other controllers on the console (beta).",
       "version": "v0.9.5-beta",
       "category": "System",
@@ -1263,15 +1263,15 @@
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
       "filename": "garlic-worker-ps5.elf",
       "path": "tools/garlic-worker-ps5.elf",
-      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/garlic-worker-ps5.elf",
+      "url": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.3.6/garlic-worker-ps5.elf",
       "description": "Helper payload for garlic-savemgr.",
-      "version": "v1.2.2",
+      "version": "v1.3.6",
       "category": "Mods & Saves",
       "author": "earthonion",
-      "size": 190536,
-      "checksum": "a1bbe4f4d07371b6eef228ff0f08b21044c77f17d2175c3c77028b3a3110cac7",
-      "sha256": "a1bbe4f4d07371b6eef228ff0f08b21044c77f17d2175c3c77028b3a3110cac7",
-      "source_direct": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.2.2/garlic-worker-ps5.elf"
+      "size": 208344,
+      "checksum": "f11b710e8e86d2818215219937f36bc9fb44ae880782c2865819bfacd3be11b2",
+      "sha256": "f11b710e8e86d2818215219937f36bc9fb44ae880782c2865819bfacd3be11b2",
+      "source_direct": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.3.6/garlic-worker-ps5.elf"
     },
     {
       "name": "ps5-syslang-en-US.elf",
@@ -1407,15 +1407,15 @@
       "icon": "https://raw.githubusercontent.com/strongt1me/ps5-cooling-system-center-pro/87705e716e62a98d1134d02068aa29b9424ffb4b/tile/sce_sys/icon0.png",
       "filename": "PS5_Cooling_System_Center.elf",
       "path": "system/PS5_Cooling_System_Center.elf",
-      "url": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.76.8/PS5_Cooling_System_Center_v1.76.8.elf",
+      "url": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.77.0/PS5_Cooling_System_Center_v1.77.0.elf",
       "description": "Fan control and temperature monitor with a web page.",
-      "version": "v1.76.8",
+      "version": "v1.77.0",
       "category": "System",
       "author": "strongt1me",
-      "size": 9588672,
-      "checksum": "cec2ca16a382e372ca10052a1f4c2191e495d82813a991db0cf1c86f83c69127",
-      "sha256": "cec2ca16a382e372ca10052a1f4c2191e495d82813a991db0cf1c86f83c69127",
-      "source_direct": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.76.8/PS5_Cooling_System_Center_v1.76.8.elf",
+      "size": 9874368,
+      "checksum": "5e6b8600a50c615539563b97f5825c9b567a155aad6eb3bdd0d946e6a51d725e",
+      "sha256": "5e6b8600a50c615539563b97f5825c9b567a155aad6eb3bdd0d946e6a51d725e",
+      "source_direct": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.77.0/PS5_Cooling_System_Center_v1.77.0.elf",
       "github_latest": {
         "repo": "strongt1me/ps5-cooling-system-center-pro",
         "asset": "^PS5_Cooling_System_Center(_v[0-9.]+)?\\.elf$"
