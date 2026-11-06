@@ -828,6 +828,53 @@ html.touch .elf .pinb:after{content:"";position:absolute;top:-10px;right:-10px;b
 body[data-sel] #selbar{display:none!important}
 #home .hCats{grid-area:cats}#home .hQuick{grid-area:quick}#home .hRun{grid-area:run}#home .hSet{grid-area:set}
 #home .hMine,#home .hSys{display:none}
+
+
+/* ---- Phone / narrow layout polish (2.0.17) ---- */
+/* Complements existing @media(max-width:860/480/1179). Do NOT override
+   .hCol{display:contents} or #home grid-template-areas from those rules. */
+@media (max-width: 720px){
+  html,body{ overflow-x:hidden; }
+  #shell,#main,#home,#view{ max-width:100vw; box-sizing:border-box; }
+  #sidebar{ width:min(19rem,86vw); }
+  .panel.hSet,.panel.hQuick,.panel.hRun,.panel.hUpd{ padding:12px; }
+  .panel .label{ font-size:.82rem; }
+  .homeOpt .optrow{
+    display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center;
+    padding:10px 0;
+  }
+  .homeOpt .optrow > div:first-child{ flex:1 1 140px; min-width:0; }
+  .homeOpt .optrow b{ font-size:.95rem; line-height:1.25; }
+  .homeOpt .optrow small{ display:block; font-size:.78rem; opacity:.78; margin-top:2px; line-height:1.3; }
+  .homeChoices.seg,.homeChoices{
+    display:flex; flex-wrap:wrap; gap:8px; width:100%;
+  }
+  .homeChoices button,.seg button{
+    flex:1 1 calc(50% - 6px); min-height:2.7rem; padding:.65rem .8rem;
+    font-size:.88rem; border-radius:12px;
+  }
+  .dslide{ width:100%; max-width:100%; flex:1 1 100%; }
+  .dslide input[type=range]{ width:100%; }
+  #homeAutoEdit,#homeRunMore,button.more{
+    min-height:2.6rem; padding:.55rem .9rem; border-radius:12px;
+  }
+  /* AutoPayload rows: keep order controls usable on touch */
+  .autowrap{ display:flex; flex-wrap:wrap; gap:8px; align-items:stretch; max-width:100%; }
+  .autowrap .ordcol{ flex:0 0 auto; }
+  .autowrap .elf{ flex:1 1 12rem; min-width:0; max-width:100%; }
+  .autorow .a{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .aord{ min-width:2.6rem; min-height:2.6rem; }
+  .autodly input{ width:3.6rem; min-height:2.3rem; }
+  .elf .n,.elf .n b{ overflow-wrap:anywhere; word-break:break-word; }
+  .proc{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  #banner,.banner{ max-width:100%; box-sizing:border-box; }
+}
+@media (max-width: 420px){
+  .homeChoices button,.seg button{ flex:1 1 100%; }
+  .autowrap .ordcol{ width:100%; display:flex; gap:8px; align-items:center; }
+  .homeOpt .optrow > div:first-child{ flex:1 1 100%; }
+}
+
 </style></head><body><div class="wrap">
 <header class="bar">
 <button type="button" id="menubtn" aria-label="Menu" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -935,7 +982,7 @@ var FOLDERS=[
 ];
 /* Old folder ids that still show up in saved links. */
 var FOLDER_ALIAS={apps:'loader',hen:'loader',mods:'storage',net:'files',media:'files',tools:'system'};
-var APP_VERSION="2.0.16";
+var APP_VERSION="2.0.17";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
@@ -2172,13 +2219,12 @@ function setAuto(name, on){
   profNoteAuto();
 }
 function syncAutoDisk(){
-  var m, k, parts, base;
+  var names, i, parts=[], base;
   if(!isConsoleHost()) return;
-  m=loadAuto();
-  parts=[];
-  for(k in m){
-    if(!m.hasOwnProperty(k) || !m[k]) continue;
-    base=String(k).split('/').pop().split('\\').pop();
+  autoEnsureOrders();
+  names=autoOrderedNames();
+  for(i=0;i<names.length;i++){
+    base=String(names[i]).split('/').pop().split('\\').pop();
     if(base) parts.push(base);
   }
   try{
@@ -4771,7 +4817,7 @@ function paintQuick(){
   bindRows(box, false);
 }
 function showHome(){
-  var adelay, html='', i, ci, el;
+  var stay, adelay, html='', i, ci, el;
   currentFolder=null;
   titleEl.className='';
   hdrEl.className='';
@@ -4780,6 +4826,7 @@ function showHome(){
   setHdrActions('');
   syncSideActions('');
   homeEl.className='show';
+  stay=browserStayOpen();
   adelay=autoDelaySec();
   html+='<section class="panel hUpd" id="homeUpd" style="display:none"></section>';
   html+='<div class="hCol hColL">';
@@ -4791,11 +4838,16 @@ function showHome(){
     (isConsoleHost()?'<button type="button" class="more" id="homeRunMore">'+esc(t('manage'))+'</button>':'')+'</section>'+side;
   html+='</div><div class="hCol hColR">'+side;
   html+='<section class="panel hSet"><p class="label">'+esc(t('autoPayload'))+'</p><div class="homeOpt">'+
+    '<div class="optrow"><div><b>'+esc(t('afterJb'))+'</b></div><div class="homeChoices seg">'+
+    '<button type="button" data-brows="open" data-state="'+(stay?'on':'off')+'"'+(stay?' class="selected"':'')+'>'+esc(t('openBrowser'))+'</button>'+
+    '<button type="button" data-brows="closed" data-state="'+(!stay?'on':'off')+'"'+(!stay?' class="selected"':'')+'>'+esc(t('leaveClosed'))+'</button></div></div>'+
     '<div class="optrow"><div><b>'+esc(t('autoCountN',{n:autoCount()}))+'</b><small>'+esc(t('tapHint'))+'</small></div><button type="button" id="homeAutoEdit">'+esc(t('editList'))+'</button></div>'+
     '<div class="optrow"><div><b>'+esc(t('startDelay'))+'</b><small>'+esc(t('startDelayHint'))+'</small></div>'+
     '<div class="dslide"><input type="range" id="adelay" min="0" max="'+DELAY_MAX+'" step="'+DELAY_STEP+'" value="'+adelay+'" aria-label="'+esc(t('startDelay'))+'"><output id="adelayv" for="adelay"></output></div></div>'+
     '</div></section></div>';
   homeEl.innerHTML=html;
+  el=homeEl.querySelectorAll('button[data-brows]');
+  for(ci=0;ci<el.length;ci++) el[ci].onclick=function(){ var on=this.getAttribute('data-brows')==='open'; paintBrowserChoice(on); setBrowserStayOpen(on); };
   bindPwr();
   el=document.getElementById('adelay');
   if(el){ el.oninput=function(){ paintAutoDelayChoice(+this.value); }; el.onchange=function(){ var v=normDelay(this.value); paintAutoDelayChoice(v); setAutoDelay(v); }; paintAutoDelayChoice(adelay); }
@@ -6130,7 +6182,7 @@ function fmtGb(n){ n=+n||0; if(n>=1073741824) return (n/1073741824).toFixed(n>=1
 
 /* ---------- AutoPayload profiles ---------- */
 var PROF=null, profSaveT=0;
-function autoNamesNow(){ var m=loadAuto(), k, out=[]; for(k in m){ if(m.hasOwnProperty(k) && m[k]) out.push(k); } return out; }
+function autoNamesNow(){ return autoOrderedNames().slice(); }
 function profDefault(){ var l={}; l[t('profDefault')]=autoNamesNow(); return {active:t('profDefault'), order:[t('profDefault')], list:l}; }
 function profValid(p){ return !!(p && p.list && p.order && p.order.length && p.list[p.active]); }
 function profLoad(cb){
@@ -6156,8 +6208,11 @@ function profSave(){
 /* setAuto() calls this: the active profile is the AutoPayload list. */
 function profNoteAuto(){ if(!PROF) return; PROF.list[PROF.active]=autoNamesNow(); profSave(); }
 function profApplyList(names){
-  var m={}, i;
-  for(i=0;i<names.length;i++) m[names[i]]=1;
+  var m={}, i, old=loadAuto(), prev;
+  for(i=0;i<names.length;i++){
+    prev=old[names[i]];
+    m[names[i]]={o:i+1,d:(prev && typeof prev==='object')?(prev.d|0):0};
+  }
   writeStore('ps5elfs-auto', m);
   syncAutoDisk();
 }
