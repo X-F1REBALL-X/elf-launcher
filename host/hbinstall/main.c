@@ -5875,7 +5875,7 @@ static void make_data_dir(void) {
 
 /* argv[0] basename contains "auto-run" (elfldr sets argv[0] to the URI
  * filename, e.g. file:///data/elf-launcher/auto-run.elf): headless
- * AutoPayload only. No :1000 server, no browser, no elfldr spawn. */
+ * AutoPayload + home icon repair. No :1000 server, browser or elfldr spawn. */
 static int is_auto_run_argv0(int argc, char **argv) {
   const char *b, *s;
   if (argc <= 0 || !argv || !argv[0])
@@ -5892,9 +5892,14 @@ int main(int argc, char **argv) {
     syscall(SYS_thr_set_name, -1, "auto-run");
     make_data_dir();
     ev_started = (long long)time(NULL);
-    evlog("info", "auto-run %s: AutoPayload only (no server)", self_app_ver());
+    evlog("info", "auto-run %s: AutoPayload + home icon repair (no server)", self_app_ver());
     run_headless_auto();
     write_auto_run_done();
+    /* Repair a deleted/outdated home tile without starting the UI. Do this
+     * after AutoPayload so AppInstUtil cannot delay payload loading. Keep it
+     * synchronous: a detached worker would be killed when main returns. */
+    if (!home_icon_up_to_date())
+      tile_report(install_home_icon());
     return 0;
   }
   /* So re-sends can find/kill us (elfldr default name is payload.elf). */

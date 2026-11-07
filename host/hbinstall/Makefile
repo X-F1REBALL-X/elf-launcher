@@ -10,7 +10,7 @@ LDADD := -lSceIpmi -lkernel_web -lSceLibcInternal -lSceNet -lSceSsl -lSceHttp -l
 
 all: $(ELF)
 
-$(ELF): main.c elfldr_boot.c
+$(ELF): main.c elfldr_boot.c update_impl.inc webapp/index.html
 	$(CC) $(CFLAGS) -o $@ main.c elfldr_boot.c /tmp/elfldr-src/elfldr.c /tmp/elfldr-src/pt.c /tmp/elfldr-src/notify.c $(LDADD)
 
 clean:
