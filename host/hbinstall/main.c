@@ -5825,7 +5825,29 @@ static void make_data_dir(void) {
   }
 }
 
-int main(void) {
+/* argv[0] basename contains "auto-run" (elfldr sets argv[0] to the URI
+ * filename, e.g. file:///data/elf-launcher/auto-run.elf): headless
+ * AutoPayload only. No :1000 server, no browser, no elfldr spawn. */
+static int is_auto_run_argv0(int argc, char **argv) {
+  const char *b, *s;
+  if (argc <= 0 || !argv || !argv[0])
+    return 0;
+  b = argv[0];
+  for (s = argv[0]; *s; s++)
+    if (*s == '/')
+      b = s + 1;
+  return strstr(b, "auto-run") != NULL;
+}
+
+int main(int argc, char **argv) {
+  if (is_auto_run_argv0(argc, argv)) {
+    syscall(SYS_thr_set_name, -1, "auto-run");
+    make_data_dir();
+    ev_started = (long long)time(NULL);
+    evlog("info", "auto-run %s: AutoPayload only (no server)", self_app_ver());
+    run_headless_auto();
+    return 0;
+  }
   /* So re-sends can find/kill us (elfldr default name is payload.elf). */
   syscall(SYS_thr_set_name, -1, "elf-launcher");
   make_data_dir();
