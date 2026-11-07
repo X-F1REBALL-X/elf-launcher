@@ -380,16 +380,22 @@ static int connect_port(int port) {
 
 static void on_page_open(void) {
   int fd;
+  int tries;
   if (loader_started)
     return;
   loader_started = 1;
-  fd = connect_port(9021);
-  if (fd >= 0) {
-    close(fd);
-    /* Already up after jailbreak: no toast. */
-    return;
+  /* After WK mirror tip: elfldr is already up from JB. Wait briefly so we
+   * never start a second elfldr just because :9021 was not ready for 1 poll. */
+  for (tries = 0; tries < 20; tries++) {
+    fd = connect_port(9021);
+    if (fd >= 0) {
+      close(fd);
+      /* Already up after jailbreak: no toast, do not restart. */
+      return;
+    }
+    usleep(100000); /* 100ms * 20 = 2s */
   }
-  /* elfldr shows its own toast when it starts; only report a failure. */
+  /* Cold start / home tile only: nothing answered. */
   if (start_elfldr_guarded() != 0)
     notify("Elfldr Missing");
 }
