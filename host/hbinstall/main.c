@@ -4696,7 +4696,8 @@ static void run_headless_auto(void) {
   char emsg[256];
   int from_list, rc;
 
-  sleep(1);
+  /* elfldr is already listening; start AutoPayload ASAP (was sleep(1)). */
+  usleep(200000);
   n = read_auto_list(listed, AUTO_MAX);
   e = existing_names(listed, n, use, AUTO_MAX);
   from_list = n > 0;
@@ -4854,9 +4855,10 @@ static void close_browser_if_front(void) {
 
 static void *headless_auto_close_thread(void *arg) {
   (void)arg;
-  run_headless_auto();
-  sleep(1);
+  /* Leave closed: close the jailbreak/Store page immediately after JB, then
+   * keep loading saved AutoPayloads headless (page JS is not required). */
   close_browser_if_front();
+  run_headless_auto();
   return NULL;
 }
 
@@ -4919,13 +4921,12 @@ static void serve(void) {
     if (from_wkal || !wk_wants_open()) {
       /* Open browser still needs disk Auto (auto.list); page localStorage often empty. */
       if (!boot_auto_done())
-        run_headless_auto();
+        start_headless_auto(); /* async: do not block close on payload sends */
       if (wk_wants_open())
         launch_browser_now();
       else {
         evlog("info", "leave closed (live server)");
-        sleep(1);
-        close_browser_if_front();
+        close_browser_if_front(); /* close now; AutoPayload continues in thread */
       }
       return;
     }

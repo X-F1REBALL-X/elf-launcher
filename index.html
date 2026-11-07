@@ -982,7 +982,7 @@ var FOLDERS=[
 ];
 /* Old folder ids that still show up in saved links. */
 var FOLDER_ALIAS={apps:'loader',hen:'loader',mods:'storage',net:'files',media:'files',tools:'system'};
-var APP_VERSION="2.0.17";
+var APP_VERSION="2.0.18";
 (function(){ var el=document.getElementById('appVer'); if(el) el.textContent='v'+APP_VERSION; var sv=document.getElementById('sideVer'); if(sv) sv.textContent='v'+APP_VERSION; try{ document.title='ELF Launcher v'+APP_VERSION; }catch(e){} })();
 var CATALOG_SOURCES=[
   {name:"itsPLK mirror",url:"https://itsplk.github.io/ps5-payloads-mirror/payloads.json"},
@@ -1084,7 +1084,7 @@ en:{
  homeDesc:'Open Elf Files on the left. Download saves the ELF. Payload sends it to elfldr (9021).',
  afterJb:'After jailbreak',openBrowser:'Open browser',leaveClosed:'Leave closed',
  autoDelay:'Auto delay',delay3s:'3 seconds',delay0:'0 seconds',moveUp:'Move up',moveDown:'Move down',delayAfter:'Wait after (seconds)',autoOrderHint:'Use the arrows to set the order; set a wait after any payload for a pause before the next.',
- homeHint:'Mark Auto in AutoPayload. AutoPayload runs once after each jailbreak. Choose delay 3 seconds or 0. Cancel stops it. Leave closed closes this page afterwards.',
+ homeHint:'Mark Auto in AutoPayload. AutoPayload runs once after each jailbreak. Choose delay 3 seconds or 0. Cancel stops it. Leave closed closes this page right after jailbreak while AutoPayload continues.',
  autoStarts:'AutoPayload starts in {n} seconds',autoStartsNow:'AutoPayload starts now',autoRunning:'AutoPayload running',cancelHint:'Press Cancel or Square to stop.',cancel:'Cancel',
  autoCancelled:'Auto cancelled',autoDone:'AutoPayload done',closingBrowser:'Closing browser',
  autoEmpty:'AutoPayload: nothing to run',autoAlreadyDone:'AutoPayload already ran this jailbreak',autoWaiting:'Waiting for elfldr...',autoWaitGiveUp:'AutoPayload: elfldr not found, nothing ran',
@@ -2484,6 +2484,17 @@ function startAutoRun(){
     quietAuto();
     return;
   }
+  /* Leave closed: close the page immediately after jailbreak. Headless C
+   * AutoPayload (trigger-auto / boot) keeps loading saved payloads. */
+  if(!browserStayOpen()){
+    markBootAutoDone();
+    autoWaitingElfldr=false;
+    try{ fetch('/trigger-auto?t='+Date.now(),{method:'GET',cache:'no-store',mode:'no-cors'}).catch(function(){}); }catch(eTrig){}
+    hideAutoBanner();
+    setStatus(t('closingBrowser'));
+    setTimeout(function(){ padClose(); }, 100);
+    return;
+  }
   markBootAutoDone();
   autoWaitingElfldr=false;
   autoRunning=true;
@@ -2493,10 +2504,6 @@ function startAutoRun(){
     autoRunning=false;
     hideAutoBanner();
     if(autoStop) return;
-    if(browserStayOpen()) return;
-    if(!loaded) return;
-    setStatus(t('closingBrowser'));
-    setTimeout(function(){ padClose(); }, 500);
   });
 }
 function beginAutoAfterPause(){
