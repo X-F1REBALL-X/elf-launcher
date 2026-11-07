@@ -58,7 +58,7 @@
       "filename": "webkit-autoloader-installer.elf",
       "path": "hen/webkit-autoloader-installer.elf",
       "url": "https://github.com/itsPLK/ps5-webkit-autoloader/releases/download/v0.6.2/webkit-autoloader-installer_v0.6.2.elf",
-      "description": "Installs the WK-AutoLoader tile on the home screen.",
+      "description": "Installs the WK Store tile on the home screen.",
       "version": "v0.6.2",
       "category": "Loader",
       "author": "itsPLK",
@@ -72,23 +72,23 @@
       "sha256": "27fd335764270716972faea399a5cc7810b9e49a21abf4966d9759580756cb19"
     },
     {
-      "name": "wk-autoloader.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/wk-autoloader/2548957950d227cb478f94f88d3389b25b957ff9/assets/icon0.png",
-      "filename": "wk-autoloader.elf",
-      "path": "hen/wk-autoloader.elf",
-      "url": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.2.1/WK_Autoloader_Store_V1.2.1.elf",
-      "description": "WK Autoloader store installer (X-F1REBALL-X)",
+      "name": "wk-store.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/wk-store/2548957950d227cb478f94f88d3389b25b957ff9/assets/icon0.png",
+      "filename": "wk-store.elf",
+      "path": "hen/wk-store.elf",
+      "url": "https://github.com/X-F1REBALL-X/wk-store/releases/latest/download/wk-store.elf",
+      "description": "WK Store store installer (X-F1REBALL-X)",
       "version": "v1.2.1",
       "category": "Loader",
       "author": "X-F1REBALL-X",
       "size": 6583752,
       "checksum": "e26a319d58ecaae5bf0dbf7067e2e2480caacf02896cd2771e21167c90b373c7",
       "github_latest": {
-        "repo": "X-F1REBALL-X/wk-autoloader",
+        "repo": "X-F1REBALL-X/wk-store",
         "asset": "^WK_Autoloader_Store_V[0-9.]+\\.elf$"
       },
       "sha256": "e26a319d58ecaae5bf0dbf7067e2e2480caacf02896cd2771e21167c90b373c7",
-      "source_direct": "https://github.com/X-F1REBALL-X/wk-autoloader/releases/download/v1.2.1/WK_Autoloader_Store_V1.2.1.elf"
+      "source_direct": "https://github.com/X-F1REBALL-X/wk-store/releases/latest/download/wk-store.elf"
     },
     {
       "name": "launchpad-install.elf",
