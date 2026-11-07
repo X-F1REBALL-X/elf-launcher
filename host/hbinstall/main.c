@@ -1012,6 +1012,33 @@ static int boot_auto_done(void) {
   return 1;
 }
 
+/* auto-run.elf (headless AutoPayload after JB) stamps this so a later
+ * fresh :1000 bind in the same boot (home tile) does not resend them. */
+#define AUTO_RUN_DONE_PATH "/data/elf-launcher/auto-run.done"
+static int auto_run_this_boot(void) {
+  FILE *f;
+  long long stamped = -1;
+  f = fopen(AUTO_RUN_DONE_PATH, "r");
+  if (!f)
+    return 0;
+  if (fscanf(f, "%lld", &stamped) != 1)
+    stamped = -1;
+  fclose(f);
+  if (stamped < 0 || (int64_t)stamped > mono_secs()) {
+    unlink(AUTO_RUN_DONE_PATH);
+    return 0;
+  }
+  return 1;
+}
+
+static void write_auto_run_done(void) {
+  FILE *f = fopen(AUTO_RUN_DONE_PATH, "w");
+  if (!f)
+    return;
+  fprintf(f, "%lld\n", (long long)mono_secs());
+  fclose(f);
+}
+
 static int write_boot_auto_done(void) {
   FILE *f;
   mkdir("/data", 0755);
@@ -4913,9 +4940,11 @@ static void serve(void) {
       usleep(300000);
     }
     already_up = 1; /* long bind retry below */
-  } else if (!already_up)
-    clear_boot_auto_done();
-  else if (from_wkal)
+  } else if (!already_up) {
+    /* auto-run.elf already loaded AutoPayload this boot: keep the one-shot. */
+    if (!auto_run_this_boot())
+      clear_boot_auto_done();
+  } else if (from_wkal)
     clear_boot_auto_done();
 
   /* Leave closed / open preference applies with or without the from-wkal
@@ -4993,11 +5022,15 @@ static void serve(void) {
     if (newbuild && want_open)
       start_fresh_browser();
   } else if (want_open) {
-    run_headless_auto();
+    if (!boot_auto_done())
+      run_headless_auto();
     start_fresh_browser();
   } else {
     evlog("info", "leave closed");
-    start_headless_auto_then_close();
+    if (boot_auto_done())
+      close_browser_if_front();
+    else
+      start_headless_auto_then_close();
   }
   /* Bind of :1000. Install the home icon once in the background. */
   start_home_icon_install_async(0);
@@ -5861,6 +5894,7 @@ int main(int argc, char **argv) {
     ev_started = (long long)time(NULL);
     evlog("info", "auto-run %s: AutoPayload only (no server)", self_app_ver());
     run_headless_auto();
+    write_auto_run_done();
     return 0;
   }
   /* So re-sends can find/kill us (elfldr default name is payload.elf). */
