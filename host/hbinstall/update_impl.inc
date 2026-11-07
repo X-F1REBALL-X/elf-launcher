@@ -180,6 +180,42 @@ static int write_atomic_under_data(const char *final_path, const uint8_t *data,
 }
 
 
+/* No .sha256 sidecars inside the console mirror folder: checksums for
+ * mirror files are computed from the file itself when needed. */
+#define SIDECAR_NO_DIR "/data/elf-launcher/mirror/"
+static int sidecar_in_mirror(const char *final_path) {
+  return final_path && !strncmp(final_path, SIDECAR_NO_DIR, sizeof(SIDECAR_NO_DIR) - 1);
+}
+
+static int sha256_path_hex(const char *path, char out[65]) {
+  sha256_ctx ctx;
+  uint8_t hash[32];
+  char *buf;
+  ssize_t r;
+  int fd, i;
+  out[0] = 0;
+  fd = open(path, O_RDONLY);
+  if (fd < 0)
+    return -1;
+  buf = malloc(65536);
+  if (!buf) {
+    close(fd);
+    return -1;
+  }
+  sha256_init(&ctx);
+  while ((r = read(fd, buf, 65536)) > 0)
+    sha256_update(&ctx, (const uint8_t *)buf, (size_t)r);
+  close(fd);
+  free(buf);
+  if (r < 0)
+    return -1;
+  sha256_final(&ctx, hash);
+  for (i = 0; i < 32; i++)
+    snprintf(out + i * 2, 3, "%02x", hash[i]);
+  out[64] = 0;
+  return 0;
+}
+
 static int write_sha256_sidecar(const char *final_path, const char *hex64) {
   char side[540];
   FILE *f;
@@ -187,6 +223,10 @@ static int write_sha256_sidecar(const char *final_path, const char *hex64) {
     return -1;
   if (snprintf(side, sizeof(side), "%s.sha256", final_path) >= (int)sizeof(side))
     return -2;
+  if (sidecar_in_mirror(final_path)) {
+    unlink(side); /* drop stale sidecar from older builds */
+    return 0;
+  }
   if (strncmp(side, DATA_ROOT, sizeof(DATA_ROOT) - 1))
     return -1;
   f = fopen(side, "wb");
@@ -211,6 +251,11 @@ static int read_sha256_sidecar(const char *final_path, char *out, size_t outsz) 
   if (!final_path || !out || outsz < 65)
     return -1;
   out[0] = 0;
+  if (sidecar_in_mirror(final_path)) {
+    if (snprintf(side, sizeof(side), "%s.sha256", final_path) < (int)sizeof(side))
+      unlink(side);
+    return sha256_path_hex(final_path, out) ? -3 : 0;
+  }
   if (snprintf(side, sizeof(side), "%s.sha256", final_path) >= (int)sizeof(side))
     return -2;
   f = fopen(side, "rb");

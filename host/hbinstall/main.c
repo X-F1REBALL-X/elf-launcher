@@ -4399,12 +4399,11 @@ static void handle_self_update(int c) {
     send_json_code(c, 404, "{\"ok\":false,\"message\":\"new launcher not downloaded\"}");
     return;
   }
-  f = fopen(SELF_ELF_PATH ".sha256", "r");
-  if (f) {
-    if (!fgets(want, sizeof(want), f))
-      want[0] = 0;
-    fclose(f);
-  }
+  /* No sidecar in mirror/: the /download handler verified the expected
+   * sha256 before writing, so hash the file on disk as the reference. */
+  (void)f;
+  if (read_sha256_sidecar(SELF_ELF_PATH, want, sizeof(want)) != 0)
+    want[0] = 0;
   want[64] = 0;
   fd = open(SELF_ELF_PATH, O_RDONLY);
   buf = malloc(65536);
@@ -5822,6 +5821,22 @@ static void make_data_dir(void) {
   if (f) {
     fputs(info, f);
     fclose(f);
+  }
+  /* Never keep .sha256 sidecars in the mirror folder. */
+  {
+    DIR *d = opendir("/data/elf-launcher/mirror");
+    struct dirent *de;
+    char p[600];
+    if (d) {
+      while ((de = readdir(d))) {
+        size_t L = strlen(de->d_name);
+        if (L > 7 && !strcmp(de->d_name + L - 7, ".sha256")) {
+          snprintf(p, sizeof(p), "/data/elf-launcher/mirror/%s", de->d_name);
+          unlink(p);
+        }
+      }
+      closedir(d);
+    }
   }
 }
 
