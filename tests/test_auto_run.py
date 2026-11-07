@@ -1,57 +1,72 @@
 #!/usr/bin/env python3
-"""Host-side regression test of the actual auto-run main branch with PS5 stubs."""
+"""Recovery regression tests: serve :1000 and never write mirror sidecars."""
 from pathlib import Path
 import subprocess
 import tempfile
-import textwrap
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-class AutoRunTest(unittest.TestCase):
-    def test_payload_first_then_missing_tile_repair(self):
-        source = (ROOT / "host/hbinstall/main.c").read_text()
-        branch = source.split("  if (is_auto_run_argv0(argc, argv)) {", 1)[1].split("\n  }", 1)[0]
-        for forbidden in ("serve(", "start_fresh_browser(", "spawn_elfldr("):
-            self.assertNotIn(forbidden, branch)
+
+def function(source, name):
+    start = source.index('static int ' + name + '(')
+    end = source.index('\n}', start) + 2
+    return source[start:end]
+
+
+class ServingRecoveryTest(unittest.TestCase):
+    def test_proven_serving_entrypoint(self):
+        source = (ROOT / 'host/hbinstall/main.c').read_text()
+        main = source.split('int main(void) {', 1)[1]
+        self.assertIn('make_data_dir();', main)
+        self.assertIn('serve();', main)
+        self.assertNotIn('is_auto_run_argv0', source)
+        self.assertIn('usleep(200000);', source)
+        self.assertIn('Never keep .sha256 sidecars', source)
+
+    def test_real_sidecar_helpers_never_open_mirror_sidecar(self):
+        source = (ROOT / 'host/hbinstall/update_impl.inc').read_text()
         harness = r"""
 #include <assert.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
-#define SYS_thr_set_name 0
-static long long ev_started;
-static int current, fail_install;
-static char calls[64];
-static void record(char c) { size_t n = strlen(calls); calls[n] = c; calls[n+1] = 0; }
-static int syscall(int n, ...) { (void)n; return 0; }
-static void make_data_dir(void) { record('D'); }
-static void evlog(const char *level, const char *fmt, ...) { (void)level; (void)fmt; }
-static const char *self_app_ver(void) { return "2.0.21"; }
-static void run_headless_auto(void) { record('A'); }
-static void write_auto_run_done(void) { record('S'); }
-static int home_icon_up_to_date(void) { record('C'); return current; }
-static int install_home_icon(void) { record('I'); return fail_install ? -1 : 0; }
-static void tile_report(int error) { record(error ? 'F' : 'R'); }
-static int auto_run(void) {
-""" + branch + r"""
+#include <unistd.h>
+#define DATA_ROOT "/data/elf-launcher/"
+#define SIDECAR_NO_DIR DATA_ROOT "mirror/"
+static int opens, unlinks, hashes;
+static FILE *mock_fopen(const char *p, const char *mode) {
+  (void)p; (void)mode; ++opens; return NULL;
 }
+static int mock_unlink(const char *p) {
+  assert(strstr(p, ".sha256")); ++unlinks; return 0;
+}
+static int sha256_path_hex(const char *p, char out[65]) {
+  assert(!strcmp(p, DATA_ROOT "mirror/test.elf"));
+  ++hashes; memset(out, 'a', 64); out[64] = 0; return 0;
+}
+#define fopen mock_fopen
+#define unlink mock_unlink
+"""
+        for name in ['sidecar_in_mirror', 'write_sha256_sidecar', 'read_sha256_sidecar']:
+            harness += '\n' + function(source, name)
+        harness += r"""
 int main(void) {
-  current = 1; assert(auto_run() == 0); assert(!strcmp(calls, "DASC"));
-  calls[0] = 0; current = 0;
-  assert(auto_run() == 0); assert(!strcmp(calls, "DASCIR"));
-  calls[0] = 0; fail_install = 1;
-  assert(auto_run() == 0); assert(!strcmp(calls, "DASCIF"));
-  puts("auto-run: current tile, missing/stale tile, install failure PASS");
+  char digest[65], result[65]; memset(digest, 'a', 64); digest[64] = 0;
+  assert(!write_sha256_sidecar(DATA_ROOT "mirror/test.elf", digest));
+  assert(opens == 0 && unlinks == 1);
+  assert(!read_sha256_sidecar(DATA_ROOT "mirror/test.elf", result, sizeof(result)));
+  assert(!strcmp(result, digest)); assert(opens == 0 && hashes == 1 && unlinks == 2);
+  assert(write_sha256_sidecar("/outside/test.elf", digest) < 0);
+  assert(write_sha256_sidecar(DATA_ROOT "mirror/test.elf", "bad") < 0);
+  puts("PASS: mirror checksums are on-demand, no sidecar fopen, stale sidecars removed");
 }
 """
         with tempfile.TemporaryDirectory() as tmp:
-            c = Path(tmp) / "test.c"
-            c.write_text(textwrap.dedent(harness))
-            binary = str(Path(tmp) / "test")
-            subprocess.run(["cc", "-Wall", "-Werror", str(c), "-o", binary], check=True)
-            subprocess.run([binary], check=True)
+            c = Path(tmp) / 'test.c'; c.write_text(harness)
+            exe = str(Path(tmp) / 'test')
+            subprocess.run(['cc', '-Wall', '-Werror', str(c), '-o', exe], check=True)
+            subprocess.run([exe], check=True)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     unittest.main()

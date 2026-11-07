@@ -380,22 +380,16 @@ static int connect_port(int port) {
 
 static void on_page_open(void) {
   int fd;
-  int tries;
   if (loader_started)
     return;
   loader_started = 1;
-  /* After WK mirror tip: elfldr is already up from JB. Wait briefly so we
-   * never start a second elfldr just because :9021 was not ready for 1 poll. */
-  for (tries = 0; tries < 20; tries++) {
-    fd = connect_port(9021);
-    if (fd >= 0) {
-      close(fd);
-      /* Already up after jailbreak: no toast, do not restart. */
-      return;
-    }
-    usleep(100000); /* 100ms * 20 = 2s */
+  fd = connect_port(9021);
+  if (fd >= 0) {
+    close(fd);
+    /* Already up after jailbreak: no toast. */
+    return;
   }
-  /* Cold start / home tile only: nothing answered. */
+  /* elfldr shows its own toast when it starts; only report a failure. */
   if (start_elfldr_guarded() != 0)
     notify("Elfldr Missing");
 }
@@ -1010,33 +1004,6 @@ static int boot_auto_done(void) {
     return 0;
   }
   return 1;
-}
-
-/* auto-run.elf (headless AutoPayload after JB) stamps this so a later
- * fresh :1000 bind in the same boot (home tile) does not resend them. */
-#define AUTO_RUN_DONE_PATH "/data/elf-launcher/auto-run.done"
-static int auto_run_this_boot(void) {
-  FILE *f;
-  long long stamped = -1;
-  f = fopen(AUTO_RUN_DONE_PATH, "r");
-  if (!f)
-    return 0;
-  if (fscanf(f, "%lld", &stamped) != 1)
-    stamped = -1;
-  fclose(f);
-  if (stamped < 0 || (int64_t)stamped > mono_secs()) {
-    unlink(AUTO_RUN_DONE_PATH);
-    return 0;
-  }
-  return 1;
-}
-
-static void write_auto_run_done(void) {
-  FILE *f = fopen(AUTO_RUN_DONE_PATH, "w");
-  if (!f)
-    return;
-  fprintf(f, "%lld\n", (long long)mono_secs());
-  fclose(f);
 }
 
 static int write_boot_auto_done(void) {
@@ -4426,8 +4393,7 @@ static void handle_self_update(int c) {
     send_json_code(c, 404, "{\"ok\":false,\"message\":\"new launcher not downloaded\"}");
     return;
   }
-  /* No sidecar in mirror/: the /download handler verified the expected
-   * sha256 before writing, so hash the file on disk as the reference. */
+  /* Mirror checksums are computed on demand; never create sidecars. */
   (void)f;
   if (read_sha256_sidecar(SELF_ELF_PATH, want, sizeof(want)) != 0)
     want[0] = 0;
@@ -4940,11 +4906,9 @@ static void serve(void) {
       usleep(300000);
     }
     already_up = 1; /* long bind retry below */
-  } else if (!already_up) {
-    /* auto-run.elf already loaded AutoPayload this boot: keep the one-shot. */
-    if (!auto_run_this_boot())
-      clear_boot_auto_done();
-  } else if (from_wkal)
+  } else if (!already_up)
+    clear_boot_auto_done();
+  else if (from_wkal)
     clear_boot_auto_done();
 
   /* Leave closed / open preference applies with or without the from-wkal
@@ -5022,15 +4986,11 @@ static void serve(void) {
     if (newbuild && want_open)
       start_fresh_browser();
   } else if (want_open) {
-    if (!boot_auto_done())
-      run_headless_auto();
+    run_headless_auto();
     start_fresh_browser();
   } else {
     evlog("info", "leave closed");
-    if (boot_auto_done())
-      close_browser_if_front();
-    else
-      start_headless_auto_then_close();
+    start_headless_auto_then_close();
   }
   /* Bind of :1000. Install the home icon once in the background. */
   start_home_icon_install_async(0);
@@ -5873,35 +5833,7 @@ static void make_data_dir(void) {
   }
 }
 
-/* argv[0] basename contains "auto-run" (elfldr sets argv[0] to the URI
- * filename, e.g. file:///data/elf-launcher/auto-run.elf): headless
- * AutoPayload + home icon repair. No :1000 server, browser or elfldr spawn. */
-static int is_auto_run_argv0(int argc, char **argv) {
-  const char *b, *s;
-  if (argc <= 0 || !argv || !argv[0])
-    return 0;
-  b = argv[0];
-  for (s = argv[0]; *s; s++)
-    if (*s == '/')
-      b = s + 1;
-  return strstr(b, "auto-run") != NULL;
-}
-
-int main(int argc, char **argv) {
-  if (is_auto_run_argv0(argc, argv)) {
-    syscall(SYS_thr_set_name, -1, "auto-run");
-    make_data_dir();
-    ev_started = (long long)time(NULL);
-    evlog("info", "auto-run %s: AutoPayload + home icon repair (no server)", self_app_ver());
-    run_headless_auto();
-    write_auto_run_done();
-    /* Repair a deleted/outdated home tile without starting the UI. Do this
-     * after AutoPayload so AppInstUtil cannot delay payload loading. Keep it
-     * synchronous: a detached worker would be killed when main returns. */
-    if (!home_icon_up_to_date())
-      tile_report(install_home_icon());
-    return 0;
-  }
+int main(void) {
   /* So re-sends can find/kill us (elfldr default name is payload.elf). */
   syscall(SYS_thr_set_name, -1, "elf-launcher");
   make_data_dir();
