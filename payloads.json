@@ -18,7 +18,7 @@
     },
     {
       "name": "elfldr-ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/loader.png",
+      "icon": "https://avatars.githubusercontent.com/u/166182419?v=4&s=256",
       "filename": "elfldr-ps5.elf",
       "path": "loader/elfldr-ps5.elf",
       "url": "https://github.com/ps5-payload-dev/elfldr/releases/download/v0.27/elfldr-ps5.elf",
@@ -33,7 +33,8 @@
       "github_latest": {
         "repo": "ps5-payload-dev/elfldr",
         "asset": "^elfldr-ps5\\.elf$"
-      }
+      },
+      "stars": 163
     },
     {
       "name": "Goldengames-PS5-Jailbreak.elf",
@@ -50,30 +51,12 @@
       "github_latest": {
         "repo": "robin2kk/Goldengames-PS5-Autoloader",
         "asset": "^Goldengames-PS5-Jailbreak(-v[0-9.]+)?\\.elf$"
-      }
-    },
-    {
-      "name": "webkit-autoloader-installer.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/webkit-autoloader-installer.png",
-      "filename": "webkit-autoloader-installer.elf",
-      "path": "hen/webkit-autoloader-installer.elf",
-      "url": "https://github.com/itsPLK/ps5-webkit-autoloader/releases/download/v0.6.2/webkit-autoloader-installer_v0.6.2.elf",
-      "description": "Installs the WK Store tile on the home screen.",
-      "version": "v0.6.2",
-      "category": "Loader",
-      "author": "itsPLK",
-      "size": 3900672,
-      "checksum": "27fd335764270716972faea399a5cc7810b9e49a21abf4966d9759580756cb19",
-      "source_direct": "https://github.com/itsPLK/ps5-webkit-autoloader/releases/download/v0.6.2/webkit-autoloader-installer_v0.6.2.elf",
-      "github_latest": {
-        "repo": "itsPLK/ps5-webkit-autoloader",
-        "asset": "^webkit-autoloader-installer(_v[0-9.]+)?\\.elf$"
       },
-      "sha256": "27fd335764270716972faea399a5cc7810b9e49a21abf4966d9759580756cb19"
+      "stars": 33
     },
     {
       "name": "wk-store.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/wk-store/2548957950d227cb478f94f88d3389b25b957ff9/assets/icon0.png",
+      "icon": "icons/wk-store.png?v=2.1.1",
       "filename": "wk-store.elf",
       "path": "hen/wk-store.elf",
       "url": "https://github.com/X-F1REBALL-X/wk-store/releases/latest/download/wk-store.elf",
@@ -88,7 +71,8 @@
         "asset": "^WK_Autoloader_Store_V[0-9.]+\\.elf$"
       },
       "sha256": "e26a319d58ecaae5bf0dbf7067e2e2480caacf02896cd2771e21167c90b373c7",
-      "source_direct": "https://github.com/X-F1REBALL-X/wk-store/releases/latest/download/wk-store.elf"
+      "source_direct": "https://github.com/X-F1REBALL-X/wk-store/releases/latest/download/wk-store.elf",
+      "stars": 36
     },
     {
       "name": "launchpad-install.elf",
@@ -105,7 +89,8 @@
       "github_latest": {
         "repo": "ps5-payload-dev/launchpad",
         "asset": "^launchpad-install\\.elf$"
-      }
+      },
+      "stars": 2
     },
     {
       "name": "payload-manager.elf",
@@ -124,7 +109,8 @@
         "repo": "itsPLK/ps5-payload-manager",
         "asset": "^pldmgr(_v[0-9.]+)?\\.elf$"
       },
-      "sha256": "2a42054fd9725e1d9595ff4add95abc30e5b49446fcdcb96c06775a376a841c4"
+      "sha256": "2a42054fd9725e1d9595ff4add95abc30e5b49446fcdcb96c06775a376a841c4",
+      "stars": 742
     },
     {
       "name": "etaHEN-2.5B.bin",
@@ -142,11 +128,12 @@
       "github_latest": {
         "repo": "etaHEN/etaHEN",
         "asset": "^etaHEN(-[0-9.]+[A-Za-z]?)?\\.bin$"
-      }
+      },
+      "stars": 841
     },
     {
       "name": "Lapy-JB-Daemon.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
+      "icon": "https://avatars.githubusercontent.com/u/60140407?v=4&s=256",
       "filename": "Lapy-JB-Daemon.elf",
       "path": "hen/Lapy-JB-Daemon.elf",
       "url": "https://raw.githubusercontent.com/ArkSama/PS5-Lapy-JB-Daemon/c19666c0a0068feff8bbb2f8075b69a39a4c7dcf/lapy_jb_daemon.elf",
@@ -176,11 +163,12 @@
         "repo": "aydencharles/onionHEN",
         "asset": "^[Oo]nionHEN\\.elf$"
       },
-      "sha256": "1f1f7c883d5d998be1d95d7d80b718f85180f8156f257661b0f445a7c6b7c212"
+      "sha256": "1f1f7c883d5d998be1d95d7d80b718f85180f8156f257661b0f445a7c6b7c212",
+      "stars": 512
     },
     {
       "name": "kstuff-lite.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
+      "icon": "https://avatars.githubusercontent.com/u/98502641?v=4&s=256",
       "filename": "kstuff-lite.elf",
       "path": "hen/kstuff-lite.elf",
       "url": "https://github.com/EchoStretch/kstuff-lite/releases/download/v1.11/kstuff.elf",
@@ -194,7 +182,8 @@
       "github_latest": {
         "repo": "EchoStretch/kstuff-lite",
         "asset": "^kstuff\\.elf$"
-      }
+      },
+      "stars": 935
     },
     {
       "name": "kstuff1.13-fpkg-dr-test8-rest.elf",
@@ -217,14 +206,15 @@
       "filename": "kstuff1.13-fpkg-dr-test8-rest-fast.elf",
       "path": "hen/kstuff1.13-fpkg-dr-test8-rest-fast.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/kstuff1.13-fpkg-dr-test8-rest-fast.elf",
-      "description": "kstuff 1.13 FPKG rest-mode resume, experimental fast build (test8).",
+      "description": "Experimental fast build of kstuff 1.13 FPKG rest-mode resume (test8).",
       "version": "1.13-test8-rest-fast",
       "category": "HEN",
       "author": "community",
       "size": 1845320,
       "checksum": "221fa41c43597677c1153d5224174be9062105c0c9a3379e96cb45d278aa52fc",
       "sha256": "221fa41c43597677c1153d5224174be9062105c0c9a3379e96cb45d278aa52fc",
-      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/kstuff1.13-fpkg-dr-test8-rest-fast.elf"
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/kstuff1.13-fpkg-dr-test8-rest-fast.elf",
+      "title": "kstuff 1.13 Rest Fast (Experimental)"
     },
     {
       "name": "a53_ppr_install_fast.elf",
@@ -243,7 +233,7 @@
     },
     {
       "name": "fetchpkg.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://avatars.githubusercontent.com/u/166182419?v=4&s=256",
       "filename": "fetchpkg.elf",
       "path": "apps/fetchpkg.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/fetchpkg.elf",
@@ -272,7 +262,8 @@
         "repo": "itsPLK/ps5-pkg-manager",
         "asset": "^pkg-manager(_v[0-9.]+)?\\.elf$"
       },
-      "sha256": "82e3548edcc41419b644482cccaef65689334fc0315dc20247f48b90bf182dca"
+      "sha256": "82e3548edcc41419b644482cccaef65689334fc0315dc20247f48b90bf182dca",
+      "stars": 252
     },
     {
       "name": "pkg_install.elf",
@@ -304,7 +295,7 @@
     },
     {
       "name": "dump_runner.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/ddbc4f231d44d2ef98630a656f39a5ddfca4634d/icons/payloads/dump_installer.png",
       "filename": "dump_runner.elf",
       "path": "storage/dump_runner.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/dump_runner.elf",
@@ -331,7 +322,8 @@
       "github_latest": {
         "repo": "juma-sayeh/PS5-Game-Compressor",
         "asset": "^game-compressor\\.elf$"
-      }
+      },
+      "stars": 297
     },
     {
       "name": "ps5-app-dumper.elf",
@@ -349,7 +341,8 @@
       "github_latest": {
         "repo": "EchoStretch/ps5-app-dumper",
         "asset": "^ps5-app-dumper(_v[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 197
     },
     {
       "name": "shadowmountplus.elf",
@@ -368,7 +361,8 @@
         "repo": "drakmor/ShadowMountPlus",
         "asset": "^shadowmountplus\\.elf$"
       },
-      "sha256": "08c843018750bef013fe3a4de5f80c5c9738c6c2dafa2406e6b6e68d7585f3da"
+      "sha256": "08c843018750bef013fe3a4de5f80c5c9738c6c2dafa2406e6b6e68d7585f3da",
+      "stars": 1361
     },
     {
       "name": "SMPlusGui.elf",
@@ -385,11 +379,12 @@
       "github_latest": {
         "repo": "KarnerF/SMPlusGui",
         "asset": "^SMPlusGui(_v[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 4
     },
     {
       "name": "garlic-savemgr-v1.13.1.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
+      "icon": "https://avatars.githubusercontent.com/u/3332298?v=4&s=256",
       "filename": "garlic-savemgr-v1.13.1.elf",
       "path": "storage/garlic-savemgr-v1.13.1.elf",
       "url": "https://github.com/earthonion/garlic-savemgr/releases/download/v1.15-beta12/garlic-savemgr.elf",
@@ -404,7 +399,7 @@
     },
     {
       "name": "mounter.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
+      "icon": "https://avatars.githubusercontent.com/u/189594288?v=4&s=256",
       "filename": "mounter.elf",
       "path": "storage/mounter.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/mounter.elf",
@@ -418,7 +413,7 @@
     },
     {
       "name": "BackPork.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
+      "icon": "https://avatars.githubusercontent.com/u/363342?v=4&s=256",
       "filename": "BackPork.elf",
       "path": "tools/BackPork.elf",
       "url": "https://github.com/BestPig/BackPork/releases/download/0.1/ps5-backpork.elf",
@@ -432,7 +427,8 @@
       "github_latest": {
         "repo": "BestPig/BackPork",
         "asset": "^ps5-backpork\\.elf$"
-      }
+      },
+      "stars": 280
     },
     {
       "name": "CheatRunner.elf",
@@ -451,11 +447,12 @@
         "repo": "notmaj0r/CheatRunner",
         "asset": "^CheatRunner\\.elf$"
       },
-      "sha256": "80535260027983f09fc9d131e11e13591de61ef5eeea458825598263862d2ce8"
+      "sha256": "80535260027983f09fc9d131e11e13591de61ef5eeea458825598263862d2ce8",
+      "stars": 302
     },
     {
       "name": "Common_FPS_PS5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
+      "icon": "https://avatars.githubusercontent.com/u/114869553?v=4&s=256",
       "filename": "Common_FPS_PS5.elf",
       "path": "tools/Common_FPS_PS5.elf",
       "url": "https://github.com/porhe911/Common-FPS-for-PS5/releases/download/v1.2.3/Common_FPS_PS5_v1.2.3.elf",
@@ -469,11 +466,12 @@
         "repo": "porhe911/Common-FPS-for-PS5",
         "asset": "^Common_FPS_PS5(_v[0-9.]+)?\\.elf$"
       },
-      "sha256": "bb74aa448952e9af4fb001f256f48b3b15fdedff88c2dec472ee9d16b20dbed5"
+      "sha256": "bb74aa448952e9af4fb001f256f48b3b15fdedff88c2dec472ee9d16b20dbed5",
+      "stars": 35
     },
     {
       "name": "patch-bundle-loader-prospero.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
+      "icon": "https://avatars.githubusercontent.com/u/37698908?v=4&s=256",
       "filename": "patch-bundle-loader-prospero.elf",
       "path": "tools/patch-bundle-loader-prospero.elf",
       "url": "https://github.com/illusionyy/ps-patch-system/releases/download/38108724867/patch-bundle-loader-prospero.elf",
@@ -487,7 +485,8 @@
         "repo": "illusionyy/ps-patch-system",
         "asset": "^patch-bundle-loader-prospero\\.elf$"
       },
-      "sha256": "10d8636e1b0f07f3f046aadb5c050a24ed9b0fae3585ec29a1ecabec07035589"
+      "sha256": "10d8636e1b0f07f3f046aadb5c050a24ed9b0fae3585ec29a1ecabec07035589",
+      "stars": 214
     },
     {
       "name": "kura-loader-ps5.elf",
@@ -505,26 +504,28 @@
         "repo": "NookieAI/kura",
         "asset": "^kura-loader-ps5\\.elf$"
       },
-      "sha256": "57f96e4ad256a53ca812129d0ed7f3e104afb7088d0d4b24876dff78050a4547"
+      "sha256": "57f96e4ad256a53ca812129d0ed7f3e104afb7088d0d4b24876dff78050a4547",
+      "stars": 88
     },
     {
       "name": "ps5upload.elf",
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v11.2.6/ps5upload-11.2.6.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v12.4.12/ps5upload-12.4.12.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v11.2.6",
+      "version": "v12.4.12",
       "category": "Files",
       "author": "phantomptr",
-      "size": 6680256,
-      "checksum": "c0a549d34b9bd9c307aeca7eb211edea58c8a10142cd892e1f72fea7bfe7dcac",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v11.2.6/ps5upload-11.2.6.elf",
+      "size": 7239488,
+      "checksum": "7ce3b5fc3b5815b8b39711aacc83df247d93947fc165810161f1336b8527f2e3",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v12.4.12/ps5upload-12.4.12.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "c0a549d34b9bd9c307aeca7eb211edea58c8a10142cd892e1f72fea7bfe7dcac"
+      "sha256": "7ce3b5fc3b5815b8b39711aacc83df247d93947fc165810161f1336b8527f2e3",
+      "stars": 1200
     },
     {
       "name": "BFpilot.elf",
@@ -543,61 +544,67 @@
         "repo": "ItsBlurf/BFpilot",
         "asset": "^bfpilot\\.elf$"
       },
-      "sha256": "5a8237630260026ad054d71fbbe661e433ac9ffa2cb4eea2785769c1eb7ee1c1"
+      "sha256": "5a8237630260026ad054d71fbbe661e433ac9ffa2cb4eea2785769c1eb7ee1c1",
+      "stars": 66
     },
     {
       "name": "ftpsrv-ps5-install.elf",
       "icon": "https://raw.githubusercontent.com/ps5-payload-dev/ftpsrv/23737c4738d15b9b9b036665bbf008d8fd6d82d2/assets/icon0.png",
       "filename": "ftpsrv-ps5-install.elf",
       "path": "files/ftpsrv-ps5-install.elf",
-      "url": "https://github.com/ps5-payload-dev/ftpsrv/releases/download/v0.21.1/ftpsrv-ps5-install.elf",
+      "url": "https://github.com/ps5-payload-dev/ftpsrv/releases/download/v0.22/ftpsrv-ps5-install.elf",
       "description": "Installs ftpsrv so it launches from the home screen.",
-      "version": "v0.21.1",
+      "version": "v0.22",
       "category": "Files",
       "author": "ps5-payload-dev",
-      "size": 717272,
-      "checksum": "0ccfe0097081be0514aabef34390a0f6776226e8b3eefbb047964584e0cfe3a9",
+      "size": 717832,
+      "checksum": "5e845b93dac8906f15f72dbe5b3ee07d3a4c47474a3afd4126d8ba4a280b106d",
       "github_latest": {
         "repo": "ps5-payload-dev/ftpsrv",
         "asset": "^ftpsrv-ps5-install\\.elf$"
-      }
+      },
+      "sha256": "5e845b93dac8906f15f72dbe5b3ee07d3a4c47474a3afd4126d8ba4a280b106d",
+      "stars": 217
     },
     {
       "name": "ftpsrv-ps5.elf",
       "icon": "https://raw.githubusercontent.com/ps5-payload-dev/ftpsrv/23737c4738d15b9b9b036665bbf008d8fd6d82d2/assets/icon0.png",
       "filename": "ftpsrv-ps5.elf",
       "path": "files/ftpsrv-ps5.elf",
-      "url": "https://github.com/ps5-payload-dev/ftpsrv/releases/download/v0.21.1/ftpsrv-ps5.elf",
+      "url": "https://github.com/ps5-payload-dev/ftpsrv/releases/download/v0.22/ftpsrv-ps5.elf",
       "description": "FTP server on port 2121, with SELF decrypt and system remount.",
-      "version": "v0.21.1",
+      "version": "v0.22",
       "category": "Files",
       "author": "ps5-payload-dev",
-      "size": 191864,
-      "checksum": "7d4b31c83eae4e056580482a3a074e1db25922efc74ac1e439473b45d71a5938",
-      "source_direct": "https://github.com/ps5-payload-dev/ftpsrv/releases/download/v0.21.1/ftpsrv-ps5.elf",
+      "size": 192432,
+      "checksum": "41148c2c1cad1ea9e7cfde03e389fa918e3338e896d06167346de09adbdc8757",
+      "source_direct": "https://github.com/ps5-payload-dev/ftpsrv/releases/download/v0.22/ftpsrv-ps5.elf",
       "github_latest": {
         "repo": "ps5-payload-dev/ftpsrv",
         "asset": "^ftpsrv-ps5\\.elf$"
-      }
+      },
+      "sha256": "41148c2c1cad1ea9e7cfde03e389fa918e3338e896d06167346de09adbdc8757",
+      "stars": 217
     },
     {
       "name": "web-file-mgr.elf",
       "icon": "https://raw.githubusercontent.com/owendswang/ps5-web-file-manager/3659cbbc40022e32229f9919f045018a988f2ef5/assets/icon0.png",
       "filename": "web-file-mgr.elf",
       "path": "files/web-file-mgr.elf",
-      "url": "https://github.com/owendswang/ps5-web-file-manager/releases/download/v1.12/web-file-mgr-v1.12.elf",
+      "url": "https://github.com/owendswang/ps5-web-file-manager/releases/download/v1.14/web-file-mgr-v1.14.elf",
       "description": "File manager with its own web page.",
-      "version": "v1.12",
+      "version": "v1.14",
       "category": "Files",
       "author": "owendswang",
-      "size": 477016,
-      "checksum": "f3461eb967da7afbbf0420d3294fbc8f999cc2ad53a756bed413aa80c7cfa67a",
-      "source_direct": "https://github.com/owendswang/ps5-web-file-manager/releases/download/v1.12/web-file-mgr-v1.12.elf",
+      "size": 854728,
+      "checksum": "8493c0bd11d77f9cce4b6c93564ffcae7185a5b530ecf856a768519c2514e231",
+      "source_direct": "https://github.com/owendswang/ps5-web-file-manager/releases/download/v1.14/web-file-mgr-v1.14.elf",
       "github_latest": {
         "repo": "owendswang/ps5-web-file-manager",
         "asset": "^web-file-mgr(-v[0-9.]+)?\\.elf$"
       },
-      "sha256": "f3461eb967da7afbbf0420d3294fbc8f999cc2ad53a756bed413aa80c7cfa67a"
+      "sha256": "8493c0bd11d77f9cce4b6c93564ffcae7185a5b530ecf856a768519c2514e231",
+      "stars": 312
     },
     {
       "name": "wfm-7zip-helper.elf",
@@ -615,11 +622,12 @@
         "repo": "owendswang/ps5-web-file-manager",
         "asset": "^wfm-7zip-helper\\.elf$"
       },
-      "sha256": "6acc2972d358dfc92b5ac66cf8cb9ca8613c096bde56ce790077a6831fb17825"
+      "sha256": "6acc2972d358dfc92b5ac66cf8cb9ca8613c096bde56ce790077a6831fb17825",
+      "stars": 312
     },
     {
       "name": "nanodns.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
+      "icon": "https://avatars.githubusercontent.com/u/1344732?v=4&s=256",
       "filename": "nanodns.elf",
       "path": "files/nanodns.elf",
       "url": "https://github.com/drakmor/nanoDNS/releases/download/0.4/nanodns.elf",
@@ -633,7 +641,8 @@
       "github_latest": {
         "repo": "drakmor/nanoDNS",
         "asset": "^nanodns\\.elf$"
-      }
+      },
+      "stars": 551
     },
     {
       "name": "websrv-ps5.elf",
@@ -652,7 +661,7 @@
     },
     {
       "name": "actremotelink_agent.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
+      "icon": "https://avatars.githubusercontent.com/u/26504139?v=4&s=256",
       "filename": "actremotelink_agent.elf",
       "path": "tools/actremotelink_agent.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/actremotelink_agent.elf",
@@ -694,7 +703,7 @@
     },
     {
       "name": "rp-get-pin.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
+      "icon": "https://avatars.githubusercontent.com/u/148508202?v=4&s=256",
       "filename": "rp-get-pin.elf",
       "path": "tools/rp-get-pin.elf",
       "url": "https://github.com/idlesauce/ps5-remoteplay-get-pin/releases/download/v0.1.1/rp-get-pin.elf",
@@ -707,7 +716,8 @@
       "github_latest": {
         "repo": "idlesauce/ps5-remoteplay-get-pin",
         "asset": "^rp-get-pin\\.elf$"
-      }
+      },
+      "stars": 55
     },
     {
       "name": "HearBridge-PS5.elf",
@@ -726,7 +736,8 @@
       "github_latest": {
         "repo": "X-F1REBALL-X/HearBridge-PS5",
         "asset": "^HearBridge-(PS5-)?[0-9.]+\\.elf$"
-      }
+      },
+      "stars": 193
     },
     {
       "name": "HearBridge-Browser.elf",
@@ -745,7 +756,8 @@
       "github_latest": {
         "repo": "X-F1REBALL-X/HearBridge-Browser",
         "asset": "^hearbridge-browser-[0-9.]+\\.elf$"
-      }
+      },
+      "stars": 3
     },
     {
       "name": "bfplayer-standalone.elf",
@@ -788,7 +800,8 @@
       "github_latest": {
         "repo": "KINGDKAK/ProsperoPlayer",
         "asset": "^ProsperoPlayer_MediaLauncher\\.elf$"
-      }
+      },
+      "stars": 23
     },
     {
       "name": "svtplay-install.elf",
@@ -818,7 +831,7 @@
     },
     {
       "name": "ps5-fan-control-v0.3.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://avatars.githubusercontent.com/u/9076865?v=4&s=256",
       "filename": "ps5-fan-control-v0.3.elf",
       "path": "system/ps5-fan-control-v0.3.elf",
       "url": "https://github.com/owendswang/ps5-fan-control/releases/download/v0.3/ps5-fan-control-v0.3.elf",
@@ -831,7 +844,8 @@
       "github_latest": {
         "repo": "owendswang/ps5-fan-control",
         "asset": "^ps5-fan-control(-v[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 18
     },
     {
       "name": "reboot.elf",
@@ -863,7 +877,7 @@
     },
     {
       "name": "SystemStateManager.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://avatars.githubusercontent.com/u/16449821?v=4&s=256",
       "filename": "SystemStateManager.elf",
       "path": "system/SystemStateManager.elf",
       "url": "https://github.com/StonedModder/PS5-SystemStateManager/releases/download/1.0.0/SystemStateManager.elf",
@@ -876,11 +890,12 @@
       "github_latest": {
         "repo": "StonedModder/PS5-SystemStateManager",
         "asset": "^SystemStateManager\\.elf$"
-      }
+      },
+      "stars": 5
     },
     {
       "name": "gdbsrv-ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/166182419?v=4&s=256",
       "filename": "gdbsrv-ps5.elf",
       "path": "tools/gdbsrv-ps5.elf",
       "url": "https://github.com/ps5-payload-dev/gdbsrv/releases/download/v0.9/gdbsrv-ps5.elf",
@@ -893,11 +908,12 @@
       "github_latest": {
         "repo": "ps5-payload-dev/gdbsrv",
         "asset": "^gdbsrv-ps5\\.elf$"
-      }
+      },
+      "stars": 17
     },
     {
       "name": "klogsrv-ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/166182419?v=4&s=256",
       "filename": "klogsrv-ps5.elf",
       "path": "tools/klogsrv-ps5.elf",
       "url": "https://github.com/ps5-payload-dev/klogsrv/releases/download/v0.9/klogsrv-ps5.elf",
@@ -911,11 +927,12 @@
       "github_latest": {
         "repo": "ps5-payload-dev/klogsrv",
         "asset": "^klogsrv-ps5\\.elf$"
-      }
+      },
+      "stars": 26
     },
     {
       "name": "notify_test.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/49209282?v=4&s=256",
       "filename": "notify_test.elf",
       "path": "tools/notify_test.elf",
       "url": "https://github.com/MasterPS0/PS5-Power-Payloads-Project/releases/download/1.0/notify_test.elf",
@@ -928,11 +945,12 @@
       "github_latest": {
         "repo": "MasterPS0/PS5-Power-Payloads-Project",
         "asset": "^notify_test\\.elf$"
-      }
+      },
+      "stars": 11
     },
     {
       "name": "ps5-self-pager-full-system.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/148508202?v=4&s=256",
       "filename": "ps5-self-pager-full-system.elf",
       "path": "tools/ps5-self-pager-full-system.elf",
       "url": "https://github.com/idlesauce/ps5-self-pager/releases/download/v1.2/ps5-self-pager-full-system.elf",
@@ -945,11 +963,12 @@
       "github_latest": {
         "repo": "idlesauce/ps5-self-pager",
         "asset": "^ps5-self-pager-full-system\\.elf$"
-      }
+      },
+      "stars": 50
     },
     {
       "name": "ps5-self-pager-game.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/148508202?v=4&s=256",
       "filename": "ps5-self-pager-game.elf",
       "path": "tools/ps5-self-pager-game.elf",
       "url": "https://github.com/idlesauce/ps5-self-pager/releases/download/v1.2/ps5-self-pager-game.elf",
@@ -962,11 +981,12 @@
       "github_latest": {
         "repo": "idlesauce/ps5-self-pager",
         "asset": "^ps5-self-pager-game\\.elf$"
-      }
+      },
+      "stars": 50
     },
     {
       "name": "ps5-self-pager-shellcore.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/148508202?v=4&s=256",
       "filename": "ps5-self-pager-shellcore.elf",
       "path": "tools/ps5-self-pager-shellcore.elf",
       "url": "https://github.com/idlesauce/ps5-self-pager/releases/download/v1.2/ps5-self-pager-shellcore.elf",
@@ -979,11 +999,12 @@
       "github_latest": {
         "repo": "idlesauce/ps5-self-pager",
         "asset": "^ps5-self-pager-shellcore\\.elf$"
-      }
+      },
+      "stars": 50
     },
     {
       "name": "ps5-self-pager-system-common-lib.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/148508202?v=4&s=256",
       "filename": "ps5-self-pager-system-common-lib.elf",
       "path": "tools/ps5-self-pager-system-common-lib.elf",
       "url": "https://github.com/idlesauce/ps5-self-pager/releases/download/v1.2/ps5-self-pager-system-common-lib.elf",
@@ -996,11 +1017,12 @@
       "github_latest": {
         "repo": "idlesauce/ps5-self-pager",
         "asset": "^ps5-self-pager-system-common-lib\\.elf$"
-      }
+      },
+      "stars": 50
     },
     {
       "name": "ps5debug-NG.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/5753365?v=4&s=256",
       "filename": "ps5debug-NG.elf",
       "path": "tools/ps5debug-NG.elf",
       "url": "https://github.com/Pharaoh2k/ps5debug-NG/releases/download/1.3.2/ps5debug-NG_v1.3.2.elf",
@@ -1014,11 +1036,12 @@
       "github_latest": {
         "repo": "Pharaoh2k/ps5debug-NG",
         "asset": "^ps5debug-NG(_v[0-9.]+(-revision[0-9]+)?)?\\.elf$"
-      }
+      },
+      "stars": 130
     },
     {
       "name": "shsrv-ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/166182419?v=4&s=256",
       "filename": "shsrv-ps5.elf",
       "path": "tools/shsrv-ps5.elf",
       "url": "https://github.com/ps5-payload-dev/shsrv/releases/download/v0.20/shsrv-ps5.elf",
@@ -1032,11 +1055,12 @@
       "github_latest": {
         "repo": "ps5-payload-dev/shsrv",
         "asset": "^shsrv-ps5\\.elf$"
-      }
+      },
+      "stars": 27
     },
     {
       "name": "pegasus_dl.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://avatars.githubusercontent.com/u/290043079?v=4&s=256",
       "filename": "pegasus_dl.elf",
       "path": "storage/pegasus_dl.elf",
       "url": "https://github.com/pegasus-ps5/pegasus-dl/releases/download/v1.11.0/pegasus_dl.elf",
@@ -1051,11 +1075,12 @@
       "github_latest": {
         "repo": "pegasus-ps5/pegasus-dl",
         "asset": "^pegasus_dl\\.elf$"
-      }
+      },
+      "stars": 466
     },
     {
       "name": "orbit_store.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/storage.png",
+      "icon": "https://avatars.githubusercontent.com/u/148706913?v=4&s=256",
       "filename": "orbit_store.elf",
       "path": "storage/orbit_store.elf",
       "url": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.8.5/orbit_store.elf",
@@ -1070,26 +1095,28 @@
       "github_latest": {
         "repo": "saawant12/orbit-store-ps5",
         "asset": "^orbit_store\\.elf$"
-      }
+      },
+      "stars": 1389
     },
     {
       "name": "ProsperoMgr.elf",
       "icon": "https://raw.githubusercontent.com/notmaj0r/ProsperoMgr/9dd11c5efc7f36bb85b3319348434e071ac99b21/source/frontend/public/icon-180.png",
       "filename": "ProsperoMgr.elf",
       "path": "files/ProsperoMgr.elf",
-      "url": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.1/ProsperoMgr.elf",
+      "url": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.2/ProsperoMgr.elf",
       "description": "Web file manager: browse, unpack ZIP/RAR, upload and download.",
-      "version": "v1.1",
+      "version": "v1.2",
       "category": "Files",
       "author": "notmaj0r",
-      "size": 8841088,
-      "checksum": "e7a6bb544adb2fb2a61aa9cc83b0ad15f70b32d7511a3de0f1fb88812f11983c",
-      "sha256": "e7a6bb544adb2fb2a61aa9cc83b0ad15f70b32d7511a3de0f1fb88812f11983c",
-      "source_direct": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.1/ProsperoMgr.elf",
+      "size": 9619040,
+      "checksum": "127394cc4f1ac7347fea509e010e80bab7b5ee13d820665474cdc3928d173bce",
+      "sha256": "127394cc4f1ac7347fea509e010e80bab7b5ee13d820665474cdc3928d173bce",
+      "source_direct": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.2/ProsperoMgr.elf",
       "github_latest": {
         "repo": "notmaj0r/ProsperoMgr",
         "asset": "^ProsperoMgr\\.elf$"
-      }
+      },
+      "stars": 338
     },
     {
       "name": "zftpd-ps5.elf",
@@ -1108,7 +1135,8 @@
       "github_latest": {
         "repo": "seregonwar/zftpd",
         "asset": "^zftpd-ps5(-v[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 140
     },
     {
       "name": "ps5-linux-loader.elf",
@@ -1127,7 +1155,8 @@
       "github_latest": {
         "repo": "ps5-linux/ps5-linux-loader",
         "asset": "^ps5-linux-loader\\.elf$"
-      }
+      },
+      "stars": 575
     },
     {
       "name": "pkg-receiver.elf",
@@ -1146,11 +1175,12 @@
       "github_latest": {
         "repo": "Loopayeh/pkg-sender",
         "asset": "^pkg-receiver\\.elf$"
-      }
+      },
+      "stars": 210
     },
     {
       "name": "apr_emu_updater.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
+      "icon": "https://avatars.githubusercontent.com/u/51437363?v=4&s=256",
       "filename": "apr_emu_updater.elf",
       "path": "tools/apr_emu_updater.elf",
       "url": "https://github.com/tsuramatsu1/apr-emu-updater/releases/download/v2.0.6/apr_emu_updater_v2.0.6.elf",
@@ -1165,7 +1195,8 @@
       "github_latest": {
         "repo": "tsuramatsu1/apr-emu-updater",
         "asset": "^apr_emu_updater(_v[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 121
     },
     {
       "name": "tailscale.elf",
@@ -1184,49 +1215,52 @@
       "github_latest": {
         "repo": "holdmysocks/ps5-tailscale",
         "asset": "^tailscale(-[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 65
     },
     {
       "name": "ps5_suite_server.elf",
       "icon": "https://raw.githubusercontent.com/manos555555/PS5-Suite/650145210358642163acc9742b77c0effb6fb2f8/payload/ps5_icon.png",
       "filename": "ps5_suite_server.elf",
       "path": "files/ps5_suite_server.elf",
-      "url": "https://github.com/manos555555/PS5-Suite/releases/download/v8.0.0/ps5_suite_server.elf",
+      "url": "https://github.com/manos555555/PS5-Suite/releases/download/v8.1.1/ps5_suite_server.elf",
       "description": "Server for the PS5-Suite PC/Android app: transfers, mounting, PKG installs.",
-      "version": "v8.0.0",
+      "version": "v8.1.1",
       "category": "Files",
       "author": "manos555555",
-      "size": 1720736,
-      "checksum": "552d55578adfb4dd6db21864640c048bdbebef009c9a86e29c76de017f006bd7",
-      "sha256": "552d55578adfb4dd6db21864640c048bdbebef009c9a86e29c76de017f006bd7",
-      "source_direct": "https://github.com/manos555555/PS5-Suite/releases/download/v8.0.0/ps5_suite_server.elf",
+      "size": 1901104,
+      "checksum": "5ced382872a503e43db856076c319113a00a25fdddf747e3e575813c9f565237",
+      "sha256": "5ced382872a503e43db856076c319113a00a25fdddf747e3e575813c9f565237",
+      "source_direct": "https://github.com/manos555555/PS5-Suite/releases/download/v8.1.1/ps5_suite_server.elf",
       "github_latest": {
         "repo": "manos555555/PS5-Suite",
         "asset": "^ps5_suite_server\\.elf$"
-      }
+      },
+      "stars": 111
     },
     {
       "name": "romm-sync.elf",
       "icon": "https://raw.githubusercontent.com/s0liton/RommPS/78d0c98a384633dabc6cbb0c320ded9e299b0429/assets/icon0.png",
       "filename": "romm-sync.elf",
       "path": "storage/romm-sync.elf",
-      "url": "https://github.com/s0liton/RommPS/releases/download/v1.4.0/romm-sync.elf",
+      "url": "https://github.com/s0liton/RommPS/releases/download/v1.4.3/romm-sync.elf",
       "description": "RomM client: get games from your RomM server and sync saves both ways.",
-      "version": "v1.4.0",
+      "version": "v1.4.3",
       "category": "Game Storage",
       "author": "s0liton",
-      "size": 9656056,
-      "checksum": "4e7b059d5ec0a74c5aa86b45a6826b19a5ca5d52a178da0355328250dce26c2c",
-      "sha256": "4e7b059d5ec0a74c5aa86b45a6826b19a5ca5d52a178da0355328250dce26c2c",
-      "source_direct": "https://github.com/s0liton/RommPS/releases/download/v1.4.0/romm-sync.elf",
+      "size": 9725208,
+      "checksum": "bb91c4e3944ce71e4d552b7c81477e595a6391a7ff1c3bf4d1117a372e1be4a1",
+      "sha256": "bb91c4e3944ce71e4d552b7c81477e595a6391a7ff1c3bf4d1117a372e1be4a1",
+      "source_direct": "https://github.com/s0liton/RommPS/releases/download/v1.4.3/romm-sync.elf",
       "github_latest": {
         "repo": "s0liton/RommPS",
         "asset": "^romm-sync\\.elf$"
-      }
+      },
+      "stars": 119
     },
     {
       "name": "OmniPad-PS5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://avatars.githubusercontent.com/u/42698260?v=4&s=256",
       "filename": "OmniPad-PS5.elf",
       "path": "system/OmniPad-PS5.elf",
       "url": "https://github.com/diegobarbosaa/OmniPad-PS5/releases/download/v1.0.4-hotfix1/OmniPad-PS5-1.0.4.elf",
@@ -1241,7 +1275,8 @@
       "github_latest": {
         "repo": "diegobarbosaa/OmniPad-PS5",
         "asset": "^OmniPad-PS5-[0-9][0-9A-Za-z.-]*\\.elf$"
-      }
+      },
+      "stars": 75
     },
     {
       "name": "AnyPad-PS5.elf",
@@ -1260,7 +1295,7 @@
     },
     {
       "name": "garlic-worker-ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/mods.png",
+      "icon": "https://avatars.githubusercontent.com/u/3332298?v=4&s=256",
       "filename": "garlic-worker-ps5.elf",
       "path": "tools/garlic-worker-ps5.elf",
       "url": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.3.6/garlic-worker-ps5.elf",
@@ -1275,7 +1310,7 @@
     },
     {
       "name": "ps5-syslang-en-US.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://avatars.githubusercontent.com/u/9076865?v=4&s=256",
       "filename": "ps5-syslang-en-US.elf",
       "path": "system/ps5-syslang-en-US.elf",
       "url": "https://github.com/owendswang/ps5-syslang/releases/download/v0.2.1/ps5-syslang-en-US-v0.2.1.elf",
@@ -1290,11 +1325,12 @@
       "github_latest": {
         "repo": "owendswang/ps5-syslang",
         "asset": "^ps5-syslang-en-US(-v[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 73
     },
     {
       "name": "ps5-date-time-sync.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://avatars.githubusercontent.com/u/278731968?v=4&s=256",
       "filename": "ps5-date-time-sync.elf",
       "path": "system/ps5-date-time-sync.elf",
       "url": "https://github.com/kerrdec97/ps5-date-time-sync/releases/download/v1.0.0/ps5-date-time-sync.elf",
@@ -1309,11 +1345,12 @@
       "github_latest": {
         "repo": "kerrdec97/ps5-date-time-sync",
         "asset": "^ps5-date-time-sync\\.elf$"
-      }
+      },
+      "stars": 33
     },
     {
       "name": "unrar_ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "icon": "https://avatars.githubusercontent.com/u/177014?v=4&s=256",
       "filename": "unrar_ps5.elf",
       "path": "files/unrar_ps5.elf",
       "url": "https://github.com/bizkut/unrar-ps5/releases/download/v1.4.0/unrar_ps5.elf",
@@ -1328,7 +1365,8 @@
       "github_latest": {
         "repo": "bizkut/unrar-ps5",
         "asset": "^unrar_ps5\\.elf$"
-      }
+      },
+      "stars": 29
     },
     {
       "name": "LZ4-Game-Compressor.elf",
@@ -1347,7 +1385,7 @@
     },
     {
       "name": "ezremote-server.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/files.png",
+      "icon": "https://avatars.githubusercontent.com/u/4947747?v=4&s=256",
       "filename": "ezremote-server.elf",
       "path": "files/ezremote-server.elf",
       "url": "https://github.com/cy33hc/ps5-ezremote-server/releases/download/1.13/ezremote-server.elf",
@@ -1362,11 +1400,12 @@
       "github_latest": {
         "repo": "cy33hc/ps5-ezremote-server",
         "asset": "^ezremote-server\\.elf$"
-      }
+      },
+      "stars": 8
     },
     {
       "name": "unjail.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/84620?v=4&s=256",
       "filename": "unjail.elf",
       "path": "tools/unjail.elf",
       "url": "https://github.com/SvenGDK/unjail-ps5app-payload/releases/download/v1.2/unjail.elf",
@@ -1381,11 +1420,12 @@
       "github_latest": {
         "repo": "SvenGDK/unjail-ps5app-payload",
         "asset": "^unjail\\.elf$"
-      }
+      },
+      "stars": 21
     },
     {
       "name": "keepawake_ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://avatars.githubusercontent.com/u/338174153?v=4&s=256",
       "filename": "keepawake_ps5.elf",
       "path": "system/keepawake_ps5.elf",
       "url": "https://github.com/mortyzip/KeepAwake/releases/download/v1.5.0/keepawake_ps5_v1.5.0.elf",
@@ -1400,30 +1440,32 @@
       "github_latest": {
         "repo": "mortyzip/KeepAwake",
         "asset": "^keepawake_ps5(_v[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 8
     },
     {
       "name": "PS5_Cooling_System_Center.elf",
       "icon": "https://raw.githubusercontent.com/strongt1me/ps5-cooling-system-center-pro/87705e716e62a98d1134d02068aa29b9424ffb4b/tile/sce_sys/icon0.png",
       "filename": "PS5_Cooling_System_Center.elf",
       "path": "system/PS5_Cooling_System_Center.elf",
-      "url": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.77.0/PS5_Cooling_System_Center_v1.77.0.elf",
+      "url": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.80.0/PS5_Cooling_System_Center_v1.80.0.elf",
       "description": "Fan control and temperature monitor with a web page.",
-      "version": "v1.77.0",
+      "version": "v1.80.0",
       "category": "System",
       "author": "strongt1me",
-      "size": 9874368,
-      "checksum": "5e6b8600a50c615539563b97f5825c9b567a155aad6eb3bdd0d946e6a51d725e",
-      "sha256": "5e6b8600a50c615539563b97f5825c9b567a155aad6eb3bdd0d946e6a51d725e",
-      "source_direct": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.77.0/PS5_Cooling_System_Center_v1.77.0.elf",
+      "size": 10103768,
+      "checksum": "cfc0ed6a51341e1f8cfad0489fa004147de60a0fb14942db859e08fed0c7ec5f",
+      "sha256": "cfc0ed6a51341e1f8cfad0489fa004147de60a0fb14942db859e08fed0c7ec5f",
+      "source_direct": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.80.0/PS5_Cooling_System_Center_v1.80.0.elf",
       "github_latest": {
         "repo": "strongt1me/ps5-cooling-system-center-pro",
         "asset": "^PS5_Cooling_System_Center(_v[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 8
     },
     {
       "name": "pad2c.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/system.png",
+      "icon": "https://avatars.githubusercontent.com/u/338603243?v=4&s=256",
       "filename": "pad2c.elf",
       "path": "system/pad2c.elf",
       "url": "https://github.com/sub0x00001/pad2c/releases/download/v0.2.1/pad2c-0.2.1.elf",
@@ -1438,7 +1480,8 @@
       "github_latest": {
         "repo": "sub0x00001/pad2c",
         "asset": "^pad2c(-[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 20
     },
     {
       "name": "patchdl.elf",
@@ -1457,7 +1500,8 @@
       "github_latest": {
         "repo": "knutwurst/ps5-patchdl",
         "asset": "^patchdl(_[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 266
     },
     {
       "name": "glm.elf",
@@ -1476,7 +1520,8 @@
       "github_latest": {
         "repo": "leedsy90/game-library-manager-ps5",
         "asset": "^glm(-[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 8
     },
     {
       "name": "rar-to-ffpfsc-ps5-payload.elf",
@@ -1495,7 +1540,8 @@
       "github_latest": {
         "repo": "rynmrde/ps5-rar-to-ffpfsc-payload",
         "asset": "^rar-to-ffpfsc-ps5-payload\\.elf$"
-      }
+      },
+      "stars": 1
     },
     {
       "name": "nuvio-ps5.elf",
@@ -1529,11 +1575,12 @@
       "github_latest": {
         "repo": "MisterTemaki/snes9xPS5",
         "asset": "^Snes9xPS5(-v[0-9.]+)?\\.elf$"
-      }
+      },
+      "stars": 66
     },
     {
       "name": "librespot-ps5.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/media.png",
+      "icon": "https://raw.githubusercontent.com/stupiditytries/librespot-ps5/480e1404fb2d133dd58ee62d4f35a7df5fbf9ef2/player/assets/icon.png",
       "filename": "librespot-ps5.elf",
       "path": "media/librespot-ps5.elf",
       "url": "https://github.com/stupiditytries/librespot-ps5/releases/download/v0.1.0/librespot-ps5.elf",
@@ -1548,7 +1595,8 @@
       "github_latest": {
         "repo": "stupiditytries/librespot-ps5",
         "asset": "^librespot-ps5\\.elf$"
-      }
+      },
+      "stars": 21
     },
     {
       "name": "omega-installer.elf",
@@ -1567,11 +1615,12 @@
       "github_latest": {
         "repo": "TheCriicom/omega-dashboard-ps5",
         "asset": "^omega-installer\\.elf$"
-      }
+      },
+      "stars": 50
     },
     {
       "name": "ps5-exporter.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
+      "icon": "https://avatars.githubusercontent.com/u/1991600?v=4&s=256",
       "filename": "ps5-exporter.elf",
       "path": "tools/ps5-exporter.elf",
       "url": "https://github.com/Marice/ps5-exporter/releases/download/v0.3.1/ps5-exporter.elf",
@@ -1586,11 +1635,12 @@
       "github_latest": {
         "repo": "Marice/ps5-exporter",
         "asset": "^ps5-exporter\\.elf$"
-      }
+      },
+      "stars": 12
     },
     {
       "name": "airpsx.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/net.png",
+      "icon": "https://raw.githubusercontent.com/barisyild/airpsx/aed9f7b54c45cd606969a6dceda5470528576803/pkgroot/sce_sys/icon0.png",
       "filename": "airpsx.elf",
       "path": "tools/airpsx.elf",
       "url": "https://github.com/barisyild/airpsx/releases/download/0.19/airpsx.elf",
@@ -1605,11 +1655,12 @@
       "github_latest": {
         "repo": "barisyild/airpsx",
         "asset": "^airpsx\\.elf$"
-      }
+      },
+      "stars": 37
     },
     {
       "name": "dump_monitor.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://avatars.githubusercontent.com/u/1683850?v=4&s=256",
       "filename": "dump_monitor.elf",
       "path": "tools/dump_monitor.elf",
       "url": "https://github.com/sparky3387/dump-monitor/releases/download/latest/dump_monitor_v1.0.elf",
@@ -1624,7 +1675,7 @@
     },
     {
       "name": "ps5lm.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/tools.png",
+      "icon": "https://raw.githubusercontent.com/cobanov/PS5LM/e2a8cf4001d4bd433aae20e6cf0477c1f7617a3c/brand/web/icon-512.png",
       "filename": "ps5lm.elf",
       "path": "tools/ps5lm.elf",
       "url": "https://github.com/cobanov/PS5LM/releases/download/v0.1.1/ps5lm.elf",
@@ -1639,7 +1690,8 @@
       "github_latest": {
         "repo": "cobanov/PS5LM",
         "asset": "^ps5lm\\.elf$"
-      }
+      },
+      "stars": 839
     }
   ]
 }

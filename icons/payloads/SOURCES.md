@@ -21,3 +21,14 @@ Sources are in src/, built by icons/categories/src/make_icons.py.
 Payloads with no original icon anywhere use the shared icon of their folder,
 icons/categories/<folder>.png, built by icons/categories/src/make_icons.py.
 | ps5-linux-loader.png | logo.webp from ps5-linux/ps5-linux-loader @ 64637c177eaed277fb6ccce394cbb29dd047b893, WebP to PNG, 1254 to 256 |
+| librespot-ps5.png | player/assets/icon.png from stupiditytries/librespot-ps5 @480e140 |
+| ps5lm.png | brand/web/icon-512.png from cobanov/PS5LM @e2a8cf4 |
+| airpsx.png | pkgroot/sce_sys/icon0.png from barisyild/airpsx @aed9f7b |
+| dump_runner | uses the same dump_installer.png (EchoStretch/dump_installer sce_sys/icon0) |
+
+## GitHub avatars (2.0.36)
+
+Payloads that still had only a folder icon now use the public GitHub avatar of the repo owner
+(or the known author, for mirrored files), for example https://avatars.githubusercontent.com/u/<id>?v=4&s=256.
+Left on the folder icon because there is no public GitHub owner:
+kstuff1.13-fpkg-dr-test8-rest.elf, kstuff1.13-fpkg-dr-test8-rest-fast.elf, a53_ppr_install_fast.elf.

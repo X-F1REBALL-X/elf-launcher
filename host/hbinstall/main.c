@@ -30,8 +30,11 @@ int sceSystemServiceLaunchWebBrowser(const char *uri, void *);
 #define IOVEC_SIZE(x) (sizeof(x) / sizeof(struct iovec))
 #define IOVEC_ENTRY(x) {x ? x : 0, x ? strlen(x) + 1 : 0}
 #define TITLE_ID "ELFL00001"
+#ifndef EL_HTTP_PORT
+#define EL_HTTP_PORT 1000
+#endif
 #ifndef PORT
-#define PORT 1000
+#define PORT EL_HTTP_PORT
 #endif
 #define HOME_ICON_VERSION "1.0.23"
 #define HOME_ICON_VER_PATH "/data/elf-launcher/home-icon.ver"
@@ -54,6 +57,7 @@ INCASSET(pic1_png, "sce_sys/pic1.png");
 INCASSET(index_html, "webapp/index.html");
 INCASSET(ico_launcher_home, "icons/launcher-home.jpg");
 INCASSET(ico_owner_avatar, "icons/x-f1reball-x.jpg");
+INCASSET(ico_wk_store, "icons/wk-store.png");
 
 static int send_blob(int c, const char *ctype, const void *body, size_t n);
 
@@ -135,6 +139,8 @@ static int send_icon(int c, const char *path) {
     return send_blob(c, "image/jpeg", ico_launcher_home, ico_launcher_home_size);
   if (!strcmp(name, "x-f1reball-x.jpg"))
     return send_blob(c, "image/jpeg", ico_owner_avatar, ico_owner_avatar_size);
+  if (!strcmp(name, "wk-store.png"))
+    return send_blob(c, "image/png", ico_wk_store, ico_wk_store_size);
   return -1;
 }
 
@@ -904,6 +910,9 @@ static int proc_has_thread_named(int pid, const char *tname) {
  * Bypasses is_protected_proc_name (Kill UI still protects the live server). */
 static void kill_other_elf_launchers(void) {
   int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC, 0};
+  /* A non-default port (test build) must not kill the live :1000 server. */
+  if (PORT != 1000)
+    return;
   size_t buf_size = 0;
   void *sysctl_buf = NULL;
   void *ptr;
@@ -933,6 +942,10 @@ static void kill_other_elf_launchers(void) {
   free(sysctl_buf);
 }
 
+static void local_ui_url(char *out, size_t n) {
+  snprintf(out, n, "http://127.0.0.1:%d/", PORT);
+}
+
 static int bind_http(int *out_sock) {
   int s = socket(AF_INET, SOCK_STREAM, 0);
   int yes = 1;
@@ -957,8 +970,10 @@ static void *launch_browser_thread(void *arg) {
   (void)arg;
   /* Default: Launch only (Fpkg). navigateToHome can leave nothing open if
      Launch fails right after; Launch-then-home kills the new browser. */
+  char url[64];
   sleep(1);
-  sceSystemServiceLaunchWebBrowser("http://127.0.0.1:1000/", 0);
+  local_ui_url(url, sizeof(url));
+  sceSystemServiceLaunchWebBrowser(url, 0);
   return NULL;
 }
 
@@ -1152,9 +1167,11 @@ static int running_build(char *out, size_t outsz) {
 #include "update_impl.inc"
 
 static void launch_browser_now(void) {
+  char url[64];
   /* Caller is about to exit, so this cannot be a detached thread. */
   sleep(1);
-  sceSystemServiceLaunchWebBrowser("http://127.0.0.1:1000/", 0);
+  local_ui_url(url, sizeof(url));
+  sceSystemServiceLaunchWebBrowser(url, 0);
 }
 
 #define AUTO_LIST_PATH "/data/elf-launcher/auto.list"
@@ -1733,8 +1750,12 @@ static int origin_allowed(int c, const char *origin) {
   colon = strchr(h, ':');
   if (!colon)
     return 0;
-  if (strcmp(colon + 1, "1000") && strcmp(colon + 1, "1022"))
-    return 0;
+  {
+    char pbuf[8];
+    snprintf(pbuf, sizeof(pbuf), "%d", PORT);
+    if (strcmp(colon + 1, "1000") && strcmp(colon + 1, "1022") && strcmp(colon + 1, pbuf))
+      return 0;
+  }
   (void)end;
   hl = (size_t)(colon - h);
   if (!hl || hl >= sizeof(host))
@@ -2177,8 +2198,8 @@ static void add_to_auto_list(const char *base) {
 }
 
 /* ---- /browse and /run_path: only under these roots ---- */
-static const char *browse_roots[] = {"/data", "/mnt/usb0", "/mnt/usb1",
-                                     "/mnt/ext0", "/mnt/ext1", 0};
+static const char *browse_roots[] = {"/", "/data", "/mnt/usb0", "/mnt/usb1",
+                                     "/mnt/ext0", 0};
 
 static int has_dotdot(const char *p) {
   const char *s = p;
@@ -2228,78 +2249,54 @@ static int path_norm(const char *in, char *norm, size_t nsz, size_t *olen) {
   return 0;
 }
 
-/* Writable areas: /data, /mnt/usbN, /mnt/extN. Returns the root length. */
+/* Writable: whole console FS from /. Returns the root length used for
+ * symlink checks (1 = "/"). Still refuses to treat non-absolute paths. */
 static size_t writable_root_len(const char *p) {
-  const char *q;
-  if (under_root(p, "/data"))
-    return 5;
-  if (strncmp(p, "/mnt/usb", 8) && strncmp(p, "/mnt/ext", 8))
+  if (!p || p[0] != '/')
     return 0;
-  q = p + 8;
-  if (*q < '0' || *q > '9')
-    return 0;
-  while (*q >= '0' && *q <= '9')
-    q++;
-  return (*q == 0 || *q == '/') ? (size_t)(q - p) : 0;
+  return 1;
 }
 
-/* No symlink may appear below index `from`; -2 when a part is missing. */
-static int path_nolinks(char *norm, size_t o, size_t from) {
-  size_t k;
-  struct stat st;
-  for (k = from; k <= o; k++) {
-    if (norm[k] == '/' || norm[k] == 0) {
-      char save = norm[k];
-      norm[k] = 0;
-      if (lstat(norm, &st)) {
-        norm[k] = save;
-        return -2;
-      }
-      norm[k] = save;
-      if (S_ISLNK(st.st_mode))
-        return -1;
-    }
-  }
-  return 0;
-}
-
-/* Write check: inside a writable area, no symlink below its root. */
+/* Write check: any absolute path the OS may change. Symlinks are allowed
+ * (delete unlinks the link; write follows it). A missing last component is
+ * fine when the parent exists, so mkdir/rename/upload can create. */
 static int path_allowed(const char *in, char *real, size_t realsz) {
-  char norm[PATH_MAX];
-  size_t o, rl;
+  char norm[PATH_MAX], parent[PATH_MAX];
+  size_t o;
   struct stat st;
-  int rc;
+  char *slash;
   if (path_norm(in, norm, sizeof(norm), &o))
     return -1;
-  rl = writable_root_len(norm);
-  if (!rl)
+  if (!writable_root_len(norm))
     return -1;
-  {
-    char save = norm[rl];
-    norm[rl] = 0;
-    rc = lstat(norm, &st) && stat(norm, &st);
-    norm[rl] = save;
-    if (rc)
+  if (lstat(norm, &st) && stat(norm, &st)) {
+    if (o <= 1)
+      return -2;
+    memcpy(parent, norm, o + 1);
+    slash = strrchr(parent, '/');
+    if (!slash)
+      return -2;
+    if (slash == parent)
+      slash[1] = 0;
+    else
+      *slash = 0;
+    if (stat(parent, &st))
       return -2;
   }
-  if (o > rl && (rc = path_nolinks(norm, o, rl + 1)))
-    return rc;
   if (o + 1 > realsz)
     return -1;
   memcpy(real, norm, o + 1);
   return 0;
 }
 
-/* Read check: anywhere on the console. Inside writable areas the same
- * no-symlink rule applies; system areas are read-only, links may resolve. */
+/* Read check: anywhere on the console. Symlinks may resolve so Root
+ * folders that are links can be opened. Writes still use path_allowed. */
 static int path_readable(const char *in, char *real, size_t realsz) {
   char norm[PATH_MAX];
   size_t o;
   struct stat st;
   if (path_norm(in, norm, sizeof(norm), &o))
     return -1;
-  if (writable_root_len(norm))
-    return path_allowed(in, real, realsz);
   if (stat(norm, &st))
     return -2;
   if (o + 1 > realsz)
@@ -2317,6 +2314,30 @@ static void json_str(char *out, size_t outsz, size_t *pos, const char *s) {
     *pos = outsz;
 }
 
+static void browse_fail(int c, int code, const char *msg, const char *path, int errn) {
+  char buf[1200];
+  size_t pos = 0;
+  pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, "{\"ok\":false,\"message\":");
+  json_str(buf, sizeof(buf), &pos, msg ? msg : "error");
+  if (path && path[0]) {
+    pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, ",\"path\":");
+    json_str(buf, sizeof(buf), &pos, path);
+  }
+  if (errn) {
+    const char *es = strerror(errn);
+    pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, ",\"errno\":%d,\"error\":", errn);
+    json_str(buf, sizeof(buf), &pos, es ? es : "");
+  }
+  if (pos + 1 < sizeof(buf)) {
+    buf[pos++] = '}';
+    buf[pos] = 0;
+  } else {
+    buf[sizeof(buf) - 2] = '}';
+    buf[sizeof(buf) - 1] = 0;
+  }
+  send_json_code(c, code, buf);
+}
+
 /* GET /browse            -> {"ok":true,"roots":[{"path","ok"}]}
  * GET /browse?dir=/data  -> {"ok":true,"dir","dirs":[...],
  *                            "files":[{"name","size","ok"}],"seen":n}
@@ -2327,7 +2348,7 @@ static void handle_browse(int c, const char *qs) {
   char *dbuf, *fbuf, *out;
   DIR *d;
   struct dirent *de;
-  int i, nd = 0, nf = 0, seen = 0, budget = 2000, all = 0, wr;
+  int i, nd = 0, nf = 0, seen = 0, budget = 4000, all = 0, wr;
   char allf[4];
   dir[0] = allf[0] = 0;
   if (qs) {
@@ -2352,19 +2373,19 @@ static void handle_browse(int c, const char *qs) {
   }
   i = path_readable(dir, real, sizeof(real));
   if (i) {
-    send_json_code(c, i == -2 ? 404 : 403,
-                   i == -2 ? "{\"ok\":false,\"message\":\"not found\"}"
-                           : "{\"ok\":false,\"message\":\"path not allowed\"}");
+    int e = errno;
+    const char *msg = i == -2 ? ((e == EACCES || e == EPERM) ? "permission denied" : "not found")
+                             : "invalid path";
+    int code = i != -2 ? 400 : (e == EACCES || e == EPERM) ? 403 : 404;
+    browse_fail(c, code, msg, dir, i == -2 ? e : 0);
     return;
   }
   wr = writable_root_len(real) != 0;
   d = opendir(real);
   if (!d) {
-    char m[120];
-    snprintf(m, sizeof(m),
-             "{\"ok\":false,\"message\":\"cannot open folder\",\"errno\":%d}",
-             errno);
-    send_json_code(c, errno == ENOENT ? 404 : 500, m);
+    int e = errno;
+    int code = e == ENOENT ? 404 : (e == EACCES || e == EPERM) ? 403 : 500;
+    browse_fail(c, code, "cannot open folder", real, e);
     return;
   }
   dbuf = malloc(cap);
@@ -2381,8 +2402,9 @@ static void handle_browse(int c, const char *qs) {
   while ((de = readdir(d)) != NULL && budget-- > 0) {
     char child[PATH_MAX];
     struct stat st;
-    int isdir = 0, isreg = 0, have_st = 0;
-    if (de->d_name[0] == '.' || !de->d_name[0])
+    int isdir = 0, isreg = 0, have_st = 0, derr = 0;
+    const char *dot;
+    if (!de->d_name[0] || !strcmp(de->d_name, ".") || !strcmp(de->d_name, ".."))
       continue;
     seen++;
     if (snprintf(child, sizeof(child), "%s/%s", strcmp(real, "/") ? real : "",
@@ -2393,15 +2415,44 @@ static void handle_browse(int c, const char *qs) {
     else if (de->d_type == DT_REG)
       isreg = 1;
     if (all) {
-      if (lstat(child, &st))
-        continue; /* unreadable: skip */
-      if (S_ISLNK(st.st_mode) && (wr || stat(child, &st)))
-        continue; /* links: hidden in writable areas, resolved elsewhere */
-      have_st = 1;
-      isdir = S_ISDIR(st.st_mode);
-      isreg = S_ISREG(st.st_mode);
+      if (lstat(child, &st)) {
+        derr = errno;
+        have_st = 0;
+        st.st_size = 0;
+        st.st_mtime = 0;
+        if (de->d_type == DT_DIR)
+          isdir = 1, isreg = 0;
+        else if (de->d_type == DT_REG)
+          isdir = 0, isreg = 1;
+        else if (de->d_type == DT_LNK)
+          isdir = 1, isreg = 0;
+        else {
+          dot = strrchr(de->d_name, '.');
+          if (dot && dot != de->d_name)
+            isdir = 0, isreg = 1;
+          else
+            isdir = 1, isreg = 0;
+        }
+      } else if (S_ISLNK(st.st_mode)) {
+        if (stat(child, &st)) {
+          derr = errno;
+          have_st = 0;
+          st.st_size = 0;
+          st.st_mtime = 0;
+          isdir = 1;
+          isreg = 0;
+        } else {
+          have_st = 1;
+          isdir = S_ISDIR(st.st_mode);
+          isreg = S_ISREG(st.st_mode);
+        }
+      } else {
+        have_st = 1;
+        isdir = S_ISDIR(st.st_mode);
+        isreg = S_ISREG(st.st_mode);
+      }
     }
-    if (!isdir && !isreg && !have_st) {
+    if (!isdir && !isreg && !have_st && !derr) {
       if (stat(child, &st))
         continue;
       have_st = 1;
@@ -2409,30 +2460,47 @@ static void handle_browse(int c, const char *qs) {
       isreg = S_ISREG(st.st_mode);
     }
     if (isdir) {
-      if (dpos + 700 >= cap)
+      if (dpos + 800 >= cap)
         continue;
       if (nd++)
         dbuf[dpos++] = ',';
       if (all) {
         dpos += (size_t)snprintf(dbuf + dpos, cap - dpos, "{\"name\":");
         json_str(dbuf, cap, &dpos, de->d_name);
-        dpos += (size_t)snprintf(dbuf + dpos, cap - dpos, ",\"mtime\":%lld}",
+        dpos += (size_t)snprintf(dbuf + dpos, cap - dpos, ",\"mtime\":%lld",
                                  have_st ? (long long)st.st_mtime : 0LL);
+        if (derr) {
+          const char *es = strerror(derr);
+          dpos += (size_t)snprintf(dbuf + dpos, cap - dpos,
+                                   ",\"denied\":true,\"errno\":%d,\"error\":", derr);
+          json_str(dbuf, cap, &dpos, es ? es : "");
+        }
+        if (dpos + 1 < cap)
+          dbuf[dpos++] = '}';
       } else
         json_str(dbuf, cap, &dpos, de->d_name);
     } else if (isreg && all) {
-      int pe = has_payload_ext(de->d_name);
-      if (fpos + 800 >= cap)
+      int pe = !derr && has_payload_ext(de->d_name);
+      if (fpos + 900 >= cap)
         continue;
       if (nf++)
         fbuf[fpos++] = ',';
       fpos += (size_t)snprintf(fbuf + fpos, cap - fpos, "{\"name\":");
       json_str(fbuf, cap, &fpos, de->d_name);
       fpos += (size_t)snprintf(fbuf + fpos, cap - fpos,
-                               ",\"size\":%lld,\"mtime\":%lld,\"elf\":%s,\"ok\":%s}",
-                               (long long)st.st_size, (long long)st.st_mtime,
+                               ",\"size\":%lld,\"mtime\":%lld,\"elf\":%s,\"ok\":%s",
+                               have_st ? (long long)st.st_size : 0LL,
+                               have_st ? (long long)st.st_mtime : 0LL,
                                pe ? "true" : "false",
                                pe && file_is_payload(child) ? "true" : "false");
+      if (derr) {
+        const char *es = strerror(derr);
+        fpos += (size_t)snprintf(fbuf + fpos, cap - fpos,
+                                 ",\"denied\":true,\"errno\":%d,\"error\":", derr);
+        json_str(fbuf, cap, &fpos, es ? es : "");
+      }
+      if (fpos + 1 < cap)
+        fbuf[fpos++] = '}';
     } else if (isreg && has_payload_ext(de->d_name)) {
       if (fpos + 800 >= cap)
         continue;
@@ -2467,10 +2535,10 @@ static void handle_browse(int c, const char *qs) {
 
 /* ---- file manager: /fs/mkdir, /fs/rename (sync); /fs/copy, /fs/move,
  * /fs/delete (one background job at a time, /fs/status shows progress).
- * Every path goes through path_allowed (only /data, /mnt/usb*, /mnt/ext*,
- * no "..", no symlinks). Roots themselves and the launcher's own state
- * (everything under /data/elf-launcher except Downloads contents) are off
- * limits. Symlinks met while walking are never followed. ---- */
+ * Every path goes through path_allowed (absolute, no ".."; the OS decides
+ * if the write or delete is allowed). Roots themselves and the launcher's
+ * own state (everything under /data/elf-launcher except Downloads contents)
+ * are off limits. ---- */
 #define FS_MAX_SRC 48
 #define FS_MAX_DEPTH 24
 #define LAUNCHER_DIR "/data/elf-launcher"
@@ -4694,8 +4762,8 @@ static void run_headless_auto(void) {
   char emsg[256];
   int from_list, rc;
 
-  /* elfldr is already listening; start AutoPayload ASAP (was sleep(1)). */
-  usleep(200000);
+  /* elfldr is already listening; brief settle before AutoPayload (0.6s). */
+  usleep(600000);
   n = read_auto_list(listed, AUTO_MAX);
   e = existing_names(listed, n, use, AUTO_MAX);
   from_list = n > 0;
@@ -4978,8 +5046,11 @@ static void serve(void) {
   puts("listening");
   /* Open browser: same disk Auto as Leave closed (do not gate on boot-auto-done
    * here: flag was just cleared on fresh bind). Then open the WebView. */
+  if (takeover)
+    notify("Elf Launcher %s updated", self_app_ver());
+  else
+    notify("Elf Launcher %s installed", self_app_ver());
   if (takeover) {
-    notify("Elf Launcher updated");
     /* AutoPayload already ran this boot under the old server: never twice. */
     if (newbuild && !boot_auto_done())
       start_headless_auto();
@@ -5494,7 +5565,7 @@ static void serve(void) {
         char hdr[448];
         int h = snprintf(hdr, sizeof(hdr),
                          "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n"
-                         "Content-Length: %zu\r\n%sConnection: close\r\n\r\n",
+                         "Content-Length: %zu\r\nCache-Control: no-store\r\n%sConnection: close\r\n\r\n",
                          blen, g_cors);
         if (h > 0)
           send_all(c, hdr, (size_t)h);

@@ -28,6 +28,15 @@ def token():
         return ""
 
 
+def repo_stars(repo, tok):
+    req = urllib.request.Request("https://api.github.com/repos/%s" % repo,
+                                 headers={"Accept": "application/vnd.github+json", "User-Agent": "elf-launcher-catalog-sync"})
+    if tok:
+        req.add_header("Authorization", "Bearer " + tok)
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return int(json.load(r).get("stargazers_count") or 0)
+
+
 def latest(repo, tok):
     req = urllib.request.Request("https://api.github.com/repos/%s/releases/latest" % repo,
                                  headers={"Accept": "application/vnd.github+json", "User-Agent": "elf-launcher-catalog-sync"})
@@ -59,6 +68,16 @@ def main():
                                                sum(len(v) for v in repos.values()), len(repos)))
     for repo in sorted(repos):
         try:
+            try:
+                stars = repo_stars(repo, tok)
+            except Exception:
+                stars = None
+            if stars is not None:
+                for p in repos[repo]:
+                    if p.get("stars") != stars:
+                        p["stars"] = stars
+                        if p["name"] not in changed:
+                            changed.append(p["name"])
             rel = latest(repo, tok)
         except urllib.error.HTTPError as e:
             problems.append("%s: HTTP %d" % (repo, e.code))

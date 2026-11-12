@@ -18,7 +18,7 @@ Everything else is in the [guide](https://x-f1reball-x.github.io/elf-launcher/do
 - [Gallery](#gallery)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [What's new in 2.0.6](#whats-new-in-206)
+- [What's new in 2.1.6](#whats-new-in-216)
 - [Payload catalog and mirror](#payload-catalog-and-mirror)
 - [Companion apps](#companion-apps)
 - [Building from source](#building-from-source)
@@ -74,18 +74,18 @@ Themes:
 ## Installation
 
 1. Jailbreak and start elfldr on port `9021`.
-2. Send `elf-launcher.elf` from the [latest release](https://github.com/X-F1REBALL-X/elf-launcher/releases/latest) to port `9021` with any payload sender, or load it from WK Autoloader. It starts the page on port `1000` and installs the Elf Launcher tile under Games.
+2. Send `elf-launcher.elf` from the [latest release](https://github.com/X-F1REBALL-X/elf-launcher/releases/latest) to port `9021` with any payload sender. It starts the page on port `1000` and installs the Elf Launcher tile under Games.
 3. Open the tile, or `http://<PS5 IP>:1000` from your phone or PC.
 
 Updating: press Update in the launcher, or send the new `elf-launcher.elf` once. The new build takes over port `1000` from the old one, so no reboot is needed.
 
 More details are in the [guide](https://x-f1reball-x.github.io/elf-launcher/docs/guide/).
 
-## What's new in 2.0.6
+## What's new in 2.1.6
 
-- Catalog: added kstuff 1.13 FPKG rest-mode builds (normal + fast) and A53 PPR install (fast).
-- Catalog sync: updated Tailscale to v0.7.2 and ps5upload to v10.4.1.
-- Catalog: WK Autoloader pointed at Store v1.2.1.
+- Cleaner top bar and Library, with the console IP at the bottom and status messages shown in full.
+- PS5 Files: Root lists all folders and files, text files can be edited, and write or delete work where the console allows it.
+- Clear log also clears Recent in Load file. Popular is sorted by GitHub stars, and the old WK Autoloader entry is gone.
 
 Every version has its own notes on the [releases page](https://github.com/X-F1REBALL-X/elf-launcher/releases).
 
