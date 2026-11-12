@@ -1,8 +1,6 @@
-<img src="docs/img/banner.png" alt="Elf Launcher">
+<img src="docs/img/banner-purple.png" alt="Elf Launcher">
 
 Home screen and browser ELF payload launcher for a jailbroken PS5.
-
-![Elf Launcher home screen](docs/screenshots/home.png)
 
 ## Quick start
 
@@ -65,8 +63,6 @@ Payloads in the catalog are not part of this project. They keep their own author
 - [elfldr](https://github.com/ps5-payload-dev/elfldr) by ps5-payload-dev. The repository includes the official `elfldr-ps5.elf` loader, and the console payload is built with elfldr sources.
 - [PS5 Payload SDK](https://github.com/ps5-payload-dev/sdk) by ps5-payload-dev, used to build the console payload.
 - [go-webview2](https://github.com/jchv/go-webview2) by jchv, used by the Windows app.
-- Payload icons are the original icons of each project. The sources are listed in [`icons/payloads/SOURCES.md`](icons/payloads/SOURCES.md).
-- The SHA-256 routine in the console payload is a compact public-domain implementation.
 
 Developed by X-F1REBALL-X.
 
