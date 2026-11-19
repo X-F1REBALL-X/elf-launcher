@@ -34,7 +34,7 @@
         "repo": "ps5-payload-dev/elfldr",
         "asset": "^elfldr-ps5\\.elf$"
       },
-      "stars": 163
+      "stars": 179
     },
     {
       "name": "Goldengames-PS5-Jailbreak.elf",
@@ -52,7 +52,7 @@
         "repo": "robin2kk/Goldengames-PS5-Autoloader",
         "asset": "^Goldengames-PS5-Jailbreak(-v[0-9.]+)?\\.elf$"
       },
-      "stars": 33
+      "stars": 32
     },
     {
       "name": "wk-store.elf",
@@ -72,7 +72,7 @@
       },
       "sha256": "e26a319d58ecaae5bf0dbf7067e2e2480caacf02896cd2771e21167c90b373c7",
       "source_direct": "https://github.com/X-F1REBALL-X/wk-store/releases/latest/download/wk-store.elf",
-      "stars": 36
+      "stars": 47
     },
     {
       "name": "launchpad-install.elf",
@@ -110,7 +110,7 @@
         "asset": "^pldmgr(_v[0-9.]+)?\\.elf$"
       },
       "sha256": "2a42054fd9725e1d9595ff4add95abc30e5b49446fcdcb96c06775a376a841c4",
-      "stars": 742
+      "stars": 788
     },
     {
       "name": "etaHEN-2.5B.bin",
@@ -129,7 +129,7 @@
         "repo": "etaHEN/etaHEN",
         "asset": "^etaHEN(-[0-9.]+[A-Za-z]?)?\\.bin$"
       },
-      "stars": 841
+      "stars": 851
     },
     {
       "name": "Lapy-JB-Daemon.elf",
@@ -164,7 +164,7 @@
         "asset": "^[Oo]nionHEN\\.elf$"
       },
       "sha256": "1f1f7c883d5d998be1d95d7d80b718f85180f8156f257661b0f445a7c6b7c212",
-      "stars": 512
+      "stars": 538
     },
     {
       "name": "kstuff-lite.elf",
@@ -183,7 +183,7 @@
         "repo": "EchoStretch/kstuff-lite",
         "asset": "^kstuff\\.elf$"
       },
-      "stars": 935
+      "stars": 974
     },
     {
       "name": "kstuff1.13-fpkg-dr-test8-rest.elf",
@@ -263,7 +263,7 @@
         "asset": "^pkg-manager(_v[0-9.]+)?\\.elf$"
       },
       "sha256": "82e3548edcc41419b644482cccaef65689334fc0315dc20247f48b90bf182dca",
-      "stars": 252
+      "stars": 264
     },
     {
       "name": "pkg_install.elf",
@@ -323,7 +323,7 @@
         "repo": "juma-sayeh/PS5-Game-Compressor",
         "asset": "^game-compressor\\.elf$"
       },
-      "stars": 297
+      "stars": 296
     },
     {
       "name": "ps5-app-dumper.elf",
@@ -342,27 +342,27 @@
         "repo": "EchoStretch/ps5-app-dumper",
         "asset": "^ps5-app-dumper(_v[0-9.]+)?\\.elf$"
       },
-      "stars": 197
+      "stars": 202
     },
     {
       "name": "shadowmountplus.elf",
       "icon": "https://raw.githubusercontent.com/drakmor/ShadowMountPlus/4cde42a2293756132735d8e4280eb71f089865ee/smp_icon.png",
       "filename": "shadowmountplus.elf",
       "path": "storage/shadowmountplus.elf",
-      "url": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta11/shadowmountplus.elf",
+      "url": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta12/shadowmountplus.elf",
       "description": "Mounts dumped games from internal storage or USB.",
-      "version": "1.7beta11",
+      "version": "1.7beta12",
       "category": "Game Storage",
       "author": "Drakmor",
-      "size": 3614944,
-      "checksum": "08c843018750bef013fe3a4de5f80c5c9738c6c2dafa2406e6b6e68d7585f3da",
-      "source_direct": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta11/shadowmountplus.elf",
+      "size": 3626576,
+      "checksum": "8755172ec9bef1bff5453ea75606e0caf7c41b5963f94f5a1087e7e8c6d9b1bd",
+      "source_direct": "https://github.com/drakmor/ShadowMountPlus/releases/download/1.7beta12/shadowmountplus.elf",
       "github_latest": {
         "repo": "drakmor/ShadowMountPlus",
         "asset": "^shadowmountplus\\.elf$"
       },
-      "sha256": "08c843018750bef013fe3a4de5f80c5c9738c6c2dafa2406e6b6e68d7585f3da",
-      "stars": 1361
+      "sha256": "8755172ec9bef1bff5453ea75606e0caf7c41b5963f94f5a1087e7e8c6d9b1bd",
+      "stars": 1434
     },
     {
       "name": "SMPlusGui.elf",
@@ -428,7 +428,7 @@
         "repo": "BestPig/BackPork",
         "asset": "^ps5-backpork\\.elf$"
       },
-      "stars": 280
+      "stars": 282
     },
     {
       "name": "CheatRunner.elf",
@@ -448,7 +448,7 @@
         "asset": "^CheatRunner\\.elf$"
       },
       "sha256": "80535260027983f09fc9d131e11e13591de61ef5eeea458825598263862d2ce8",
-      "stars": 302
+      "stars": 316
     },
     {
       "name": "Common_FPS_PS5.elf",
@@ -486,7 +486,7 @@
         "asset": "^patch-bundle-loader-prospero\\.elf$"
       },
       "sha256": "10d8636e1b0f07f3f046aadb5c050a24ed9b0fae3585ec29a1ecabec07035589",
-      "stars": 214
+      "stars": 225
     },
     {
       "name": "kura-loader-ps5.elf",
@@ -512,20 +512,20 @@
       "icon": "https://raw.githubusercontent.com/phantomptr/ps5upload/60bb7d2a21d1c0ccc2ad64709c7d7fbe8e52cba4/client/icons/linux/icon_256x256.png",
       "filename": "ps5upload.elf",
       "path": "apps/ps5upload.elf",
-      "url": "https://github.com/phantomptr/ps5upload/releases/download/v12.4.12/ps5upload-12.4.12.elf",
+      "url": "https://github.com/phantomptr/ps5upload/releases/download/v12.6.11/ps5upload-12.6.11.elf",
       "description": "Fast LAN transfer, PKG install, image mount, files, and payload send.",
-      "version": "v12.4.12",
+      "version": "v12.6.11",
       "category": "Files",
       "author": "phantomptr",
-      "size": 7239488,
-      "checksum": "7ce3b5fc3b5815b8b39711aacc83df247d93947fc165810161f1336b8527f2e3",
-      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v12.4.12/ps5upload-12.4.12.elf",
+      "size": 12077816,
+      "checksum": "c41ae74fb2cab8c6980b428a115b16d40dfbabde4627131b4fd5afea94a0dd3a",
+      "source_direct": "https://github.com/phantomptr/ps5upload/releases/download/v12.6.11/ps5upload-12.6.11.elf",
       "github_latest": {
         "repo": "phantomptr/ps5upload",
         "asset": "^ps5upload(-[0-9.]+)?\\.elf$"
       },
-      "sha256": "7ce3b5fc3b5815b8b39711aacc83df247d93947fc165810161f1336b8527f2e3",
-      "stars": 1200
+      "sha256": "c41ae74fb2cab8c6980b428a115b16d40dfbabde4627131b4fd5afea94a0dd3a",
+      "stars": 1300
     },
     {
       "name": "BFpilot.elf",
@@ -545,7 +545,7 @@
         "asset": "^bfpilot\\.elf$"
       },
       "sha256": "5a8237630260026ad054d71fbbe661e433ac9ffa2cb4eea2785769c1eb7ee1c1",
-      "stars": 66
+      "stars": 68
     },
     {
       "name": "ftpsrv-ps5-install.elf",
@@ -564,7 +564,7 @@
         "asset": "^ftpsrv-ps5-install\\.elf$"
       },
       "sha256": "5e845b93dac8906f15f72dbe5b3ee07d3a4c47474a3afd4126d8ba4a280b106d",
-      "stars": 217
+      "stars": 237
     },
     {
       "name": "ftpsrv-ps5.elf",
@@ -584,7 +584,7 @@
         "asset": "^ftpsrv-ps5\\.elf$"
       },
       "sha256": "41148c2c1cad1ea9e7cfde03e389fa918e3338e896d06167346de09adbdc8757",
-      "stars": 217
+      "stars": 237
     },
     {
       "name": "web-file-mgr.elf",
@@ -604,7 +604,7 @@
         "asset": "^web-file-mgr(-v[0-9.]+)?\\.elf$"
       },
       "sha256": "8493c0bd11d77f9cce4b6c93564ffcae7185a5b530ecf856a768519c2514e231",
-      "stars": 312
+      "stars": 338
     },
     {
       "name": "wfm-7zip-helper.elf",
@@ -623,7 +623,7 @@
         "asset": "^wfm-7zip-helper\\.elf$"
       },
       "sha256": "6acc2972d358dfc92b5ac66cf8cb9ca8613c096bde56ce790077a6831fb17825",
-      "stars": 312
+      "stars": 338
     },
     {
       "name": "nanodns.elf",
@@ -642,7 +642,7 @@
         "repo": "drakmor/nanoDNS",
         "asset": "^nanodns\\.elf$"
       },
-      "stars": 551
+      "stars": 587
     },
     {
       "name": "websrv-ps5.elf",
@@ -717,27 +717,27 @@
         "repo": "idlesauce/ps5-remoteplay-get-pin",
         "asset": "^rp-get-pin\\.elf$"
       },
-      "stars": 55
+      "stars": 56
     },
     {
       "name": "HearBridge-PS5.elf",
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/HearBridge-PS5/6fff4b33cd92e82d65bfcabf6cde456fb0cc6138/assets/icon0.png",
       "filename": "HearBridge-PS5.elf",
       "path": "apps/HearBridge-PS5.elf",
-      "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.4.0/HearBridge-1.4.0.elf",
+      "url": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.4.3/HearBridge-1.4.3.elf",
       "description": "Bluetooth headphones for a jailbroken PS5: game and system audio, no dongle. Page on port 8090.",
-      "version": "1.4.0",
+      "version": "1.4.3",
       "category": "Media",
       "author": "X-F1REBALL-X",
-      "size": 844232,
-      "checksum": "0c78332ac317541da12cb5998d1cab7f5b1b2778b3e835c4213b62278515d186",
-      "sha256": "0c78332ac317541da12cb5998d1cab7f5b1b2778b3e835c4213b62278515d186",
-      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.4.0/HearBridge-1.4.0.elf",
+      "size": 976144,
+      "checksum": "cc3ed39ee208ab76d0da2b3e99596a7037474f6d7238f98452c23130bdc7f379",
+      "sha256": "cc3ed39ee208ab76d0da2b3e99596a7037474f6d7238f98452c23130bdc7f379",
+      "source_direct": "https://github.com/X-F1REBALL-X/HearBridge-PS5/releases/download/v1.4.3/HearBridge-1.4.3.elf",
       "github_latest": {
         "repo": "X-F1REBALL-X/HearBridge-PS5",
         "asset": "^HearBridge-(PS5-)?[0-9.]+\\.elf$"
       },
-      "stars": 193
+      "stars": 213
     },
     {
       "name": "HearBridge-Browser.elf",
@@ -928,7 +928,7 @@
         "repo": "ps5-payload-dev/klogsrv",
         "asset": "^klogsrv-ps5\\.elf$"
       },
-      "stars": 26
+      "stars": 27
     },
     {
       "name": "notify_test.elf",
@@ -946,7 +946,7 @@
         "repo": "MasterPS0/PS5-Power-Payloads-Project",
         "asset": "^notify_test\\.elf$"
       },
-      "stars": 11
+      "stars": 12
     },
     {
       "name": "ps5-self-pager-full-system.elf",
@@ -964,7 +964,7 @@
         "repo": "idlesauce/ps5-self-pager",
         "asset": "^ps5-self-pager-full-system\\.elf$"
       },
-      "stars": 50
+      "stars": 51
     },
     {
       "name": "ps5-self-pager-game.elf",
@@ -982,7 +982,7 @@
         "repo": "idlesauce/ps5-self-pager",
         "asset": "^ps5-self-pager-game\\.elf$"
       },
-      "stars": 50
+      "stars": 51
     },
     {
       "name": "ps5-self-pager-shellcore.elf",
@@ -1000,7 +1000,7 @@
         "repo": "idlesauce/ps5-self-pager",
         "asset": "^ps5-self-pager-shellcore\\.elf$"
       },
-      "stars": 50
+      "stars": 51
     },
     {
       "name": "ps5-self-pager-system-common-lib.elf",
@@ -1018,7 +1018,7 @@
         "repo": "idlesauce/ps5-self-pager",
         "asset": "^ps5-self-pager-system-common-lib\\.elf$"
       },
-      "stars": 50
+      "stars": 51
     },
     {
       "name": "ps5debug-NG.elf",
@@ -1037,7 +1037,7 @@
         "repo": "Pharaoh2k/ps5debug-NG",
         "asset": "^ps5debug-NG(_v[0-9.]+(-revision[0-9]+)?)?\\.elf$"
       },
-      "stars": 130
+      "stars": 132
     },
     {
       "name": "shsrv-ps5.elf",
@@ -1076,47 +1076,47 @@
         "repo": "pegasus-ps5/pegasus-dl",
         "asset": "^pegasus_dl\\.elf$"
       },
-      "stars": 466
+      "stars": 474
     },
     {
       "name": "orbit_store.elf",
       "icon": "https://avatars.githubusercontent.com/u/148706913?v=4&s=256",
       "filename": "orbit_store.elf",
       "path": "storage/orbit_store.elf",
-      "url": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.8.5/orbit_store.elf",
+      "url": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.9.2/orbit_store.elf",
       "description": "Download manager with resumable downloads and phone control.",
-      "version": "v1.8.5",
+      "version": "v1.9.2",
       "category": "Game Storage",
       "author": "saawant12",
-      "size": 61059976,
-      "checksum": "935f81956acd3acba876977057c2ce77ded6a7fc72a98fd821cba2d1765e1f77",
-      "sha256": "935f81956acd3acba876977057c2ce77ded6a7fc72a98fd821cba2d1765e1f77",
-      "source_direct": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.8.5/orbit_store.elf",
+      "size": 66288488,
+      "checksum": "5fe4892269ebe940731d0236cd1bbca8d827e7690676f7b7af32fb9c5a775f5b",
+      "sha256": "5fe4892269ebe940731d0236cd1bbca8d827e7690676f7b7af32fb9c5a775f5b",
+      "source_direct": "https://github.com/saawant12/orbit-store-ps5/releases/download/v1.9.2/orbit_store.elf",
       "github_latest": {
         "repo": "saawant12/orbit-store-ps5",
         "asset": "^orbit_store\\.elf$"
       },
-      "stars": 1389
+      "stars": 1451
     },
     {
       "name": "ProsperoMgr.elf",
       "icon": "https://raw.githubusercontent.com/notmaj0r/ProsperoMgr/9dd11c5efc7f36bb85b3319348434e071ac99b21/source/frontend/public/icon-180.png",
       "filename": "ProsperoMgr.elf",
       "path": "files/ProsperoMgr.elf",
-      "url": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.2/ProsperoMgr.elf",
+      "url": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.2.1/ProsperoMgr.elf",
       "description": "Web file manager: browse, unpack ZIP/RAR, upload and download.",
-      "version": "v1.2",
+      "version": "v1.2.1",
       "category": "Files",
       "author": "notmaj0r",
-      "size": 9619040,
-      "checksum": "127394cc4f1ac7347fea509e010e80bab7b5ee13d820665474cdc3928d173bce",
-      "sha256": "127394cc4f1ac7347fea509e010e80bab7b5ee13d820665474cdc3928d173bce",
-      "source_direct": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.2/ProsperoMgr.elf",
+      "size": 9717896,
+      "checksum": "f9240e53ac5f035b36fb6eca2845dd49827eddfb133d1bbb2810b1a025db9c5b",
+      "sha256": "f9240e53ac5f035b36fb6eca2845dd49827eddfb133d1bbb2810b1a025db9c5b",
+      "source_direct": "https://github.com/notmaj0r/ProsperoMgr/releases/download/v1.2.1/ProsperoMgr.elf",
       "github_latest": {
         "repo": "notmaj0r/ProsperoMgr",
         "asset": "^ProsperoMgr\\.elf$"
       },
-      "stars": 338
+      "stars": 379
     },
     {
       "name": "zftpd-ps5.elf",
@@ -1136,7 +1136,7 @@
         "repo": "seregonwar/zftpd",
         "asset": "^zftpd-ps5(-v[0-9.]+)?\\.elf$"
       },
-      "stars": 140
+      "stars": 141
     },
     {
       "name": "ps5-linux-loader.elf",
@@ -1156,7 +1156,7 @@
         "repo": "ps5-linux/ps5-linux-loader",
         "asset": "^ps5-linux-loader\\.elf$"
       },
-      "stars": 575
+      "stars": 607
     },
     {
       "name": "pkg-receiver.elf",
@@ -1176,7 +1176,7 @@
         "repo": "Loopayeh/pkg-sender",
         "asset": "^pkg-receiver\\.elf$"
       },
-      "stars": 210
+      "stars": 220
     },
     {
       "name": "apr_emu_updater.elf",
@@ -1196,27 +1196,27 @@
         "repo": "tsuramatsu1/apr-emu-updater",
         "asset": "^apr_emu_updater(_v[0-9.]+)?\\.elf$"
       },
-      "stars": 121
+      "stars": 124
     },
     {
       "name": "tailscale.elf",
       "icon": "https://raw.githubusercontent.com/holdmysocks/ps5-tailscale/e4986b4d52af6a63f9be14d9de616d267c566de1/appicon/icon0.png",
       "filename": "tailscale.elf",
       "path": "tools/tailscale.elf",
-      "url": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.3/tailscale-0.7.3.elf",
+      "url": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.5/tailscale-0.7.5.elf",
       "description": "Tailscale VPN, for Remote Play or Moonlight from anywhere.",
-      "version": "v0.7.3",
+      "version": "v0.7.5",
       "category": "Network",
       "author": "holdmysocks",
-      "size": 25196896,
-      "checksum": "899c9f76994317171ab62a331a229b260e7c93aab68963502d79c861392e5801",
-      "sha256": "899c9f76994317171ab62a331a229b260e7c93aab68963502d79c861392e5801",
-      "source_direct": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.3/tailscale-0.7.3.elf",
+      "size": 25196944,
+      "checksum": "4a3ee8758115d16875eecc8b89443746097f55362e9fef2fae9c6392814efb5e",
+      "sha256": "4a3ee8758115d16875eecc8b89443746097f55362e9fef2fae9c6392814efb5e",
+      "source_direct": "https://github.com/holdmysocks/ps5-tailscale/releases/download/v0.7.5/tailscale-0.7.5.elf",
       "github_latest": {
         "repo": "holdmysocks/ps5-tailscale",
         "asset": "^tailscale(-[0-9.]+)?\\.elf$"
       },
-      "stars": 65
+      "stars": 70
     },
     {
       "name": "ps5_suite_server.elf",
@@ -1256,7 +1256,7 @@
         "repo": "s0liton/RommPS",
         "asset": "^romm-sync\\.elf$"
       },
-      "stars": 119
+      "stars": 127
     },
     {
       "name": "OmniPad-PS5.elf",
@@ -1276,7 +1276,7 @@
         "repo": "diegobarbosaa/OmniPad-PS5",
         "asset": "^OmniPad-PS5-[0-9][0-9A-Za-z.-]*\\.elf$"
       },
-      "stars": 75
+      "stars": 82
     },
     {
       "name": "AnyPad-PS5.elf",
@@ -1326,7 +1326,7 @@
         "repo": "owendswang/ps5-syslang",
         "asset": "^ps5-syslang-en-US(-v[0-9.]+)?\\.elf$"
       },
-      "stars": 73
+      "stars": 92
     },
     {
       "name": "ps5-date-time-sync.elf",
@@ -1346,7 +1346,7 @@
         "repo": "kerrdec97/ps5-date-time-sync",
         "asset": "^ps5-date-time-sync\\.elf$"
       },
-      "stars": 33
+      "stars": 34
     },
     {
       "name": "unrar_ps5.elf",
@@ -1366,7 +1366,7 @@
         "repo": "bizkut/unrar-ps5",
         "asset": "^unrar_ps5\\.elf$"
       },
-      "stars": 29
+      "stars": 30
     },
     {
       "name": "LZ4-Game-Compressor.elf",
@@ -1448,20 +1448,20 @@
       "icon": "https://raw.githubusercontent.com/strongt1me/ps5-cooling-system-center-pro/87705e716e62a98d1134d02068aa29b9424ffb4b/tile/sce_sys/icon0.png",
       "filename": "PS5_Cooling_System_Center.elf",
       "path": "system/PS5_Cooling_System_Center.elf",
-      "url": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.80.0/PS5_Cooling_System_Center_v1.80.0.elf",
+      "url": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.88.1/PS5_Cooling_System_Center_v1.88.1.elf",
       "description": "Fan control and temperature monitor with a web page.",
-      "version": "v1.80.0",
+      "version": "v1.88.1",
       "category": "System",
       "author": "strongt1me",
-      "size": 10103768,
-      "checksum": "cfc0ed6a51341e1f8cfad0489fa004147de60a0fb14942db859e08fed0c7ec5f",
-      "sha256": "cfc0ed6a51341e1f8cfad0489fa004147de60a0fb14942db859e08fed0c7ec5f",
-      "source_direct": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.80.0/PS5_Cooling_System_Center_v1.80.0.elf",
+      "size": 15556032,
+      "checksum": "b49782f084c82706539692d27b2a90610d7fcacb235a665842f9251650158a1a",
+      "sha256": "b49782f084c82706539692d27b2a90610d7fcacb235a665842f9251650158a1a",
+      "source_direct": "https://github.com/strongt1me/ps5-cooling-system-center-pro/releases/download/v1.88.1/PS5_Cooling_System_Center_v1.88.1.elf",
       "github_latest": {
         "repo": "strongt1me/ps5-cooling-system-center-pro",
         "asset": "^PS5_Cooling_System_Center(_v[0-9.]+)?\\.elf$"
       },
-      "stars": 8
+      "stars": 9
     },
     {
       "name": "pad2c.elf",
@@ -1481,27 +1481,27 @@
         "repo": "sub0x00001/pad2c",
         "asset": "^pad2c(-[0-9.]+)?\\.elf$"
       },
-      "stars": 20
+      "stars": 22
     },
     {
       "name": "patchdl.elf",
       "icon": "https://raw.githubusercontent.com/knutwurst/ps5-patchdl/cb7a86551b5daed2916518ccb2b5af957501f155/assets/icon0.png",
       "filename": "patchdl.elf",
       "path": "storage/patchdl.elf",
-      "url": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.12/patchdl_0.3.12.elf",
+      "url": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.13/patchdl_0.3.13.elf",
       "description": "Finds and downloads official game updates from your browser.",
-      "version": "v0.3.12",
+      "version": "v0.3.13",
       "category": "Game Storage",
       "author": "knutwurst",
-      "size": 10459040,
-      "checksum": "a8aeb6039825188561b7346bb6f0c9244f72d7be1412dc7dd6c2bea0dd3f396a",
-      "sha256": "a8aeb6039825188561b7346bb6f0c9244f72d7be1412dc7dd6c2bea0dd3f396a",
-      "source_direct": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.12/patchdl_0.3.12.elf",
+      "size": 10475456,
+      "checksum": "257cce632b9ad701094dad3f8c0206ff87ab6b417415a57ebfd558c5ee3b0c50",
+      "sha256": "257cce632b9ad701094dad3f8c0206ff87ab6b417415a57ebfd558c5ee3b0c50",
+      "source_direct": "https://github.com/knutwurst/ps5-patchdl/releases/download/v0.3.13/patchdl_0.3.13.elf",
       "github_latest": {
         "repo": "knutwurst/ps5-patchdl",
         "asset": "^patchdl(_[0-9.]+)?\\.elf$"
       },
-      "stars": 266
+      "stars": 285
     },
     {
       "name": "glm.elf",
@@ -1576,7 +1576,7 @@
         "repo": "MisterTemaki/snes9xPS5",
         "asset": "^Snes9xPS5(-v[0-9.]+)?\\.elf$"
       },
-      "stars": 66
+      "stars": 67
     },
     {
       "name": "librespot-ps5.elf",
@@ -1616,7 +1616,7 @@
         "repo": "TheCriicom/omega-dashboard-ps5",
         "asset": "^omega-installer\\.elf$"
       },
-      "stars": 50
+      "stars": 49
     },
     {
       "name": "ps5-exporter.elf",
@@ -1636,7 +1636,7 @@
         "repo": "Marice/ps5-exporter",
         "asset": "^ps5-exporter\\.elf$"
       },
-      "stars": 12
+      "stars": 13
     },
     {
       "name": "airpsx.elf",
@@ -1691,7 +1691,7 @@
         "repo": "cobanov/PS5LM",
         "asset": "^ps5lm\\.elf$"
       },
-      "stars": 839
+      "stars": 859
     }
   ]
 }
