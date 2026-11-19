@@ -1681,6 +1681,186 @@
         "asset": "^ps5lm\\.elf$"
       },
       "stars": 859
+    },
+    {
+      "name": "PlayBridge.elf",
+      "icon": "https://raw.githubusercontent.com/ramalhoboss/PlayBridge/main/docs/images/playbridge-icon.png",
+      "filename": "PlayBridge.elf",
+      "path": "media/PlayBridge.elf",
+      "url": "https://github.com/ramalhoboss/PlayBridge/releases/download/v1.9.0/PlayBridge.elf",
+      "description": "Stream PS5 video and audio to a Windows PC up to 4K. Firmware 13.60 only.",
+      "version": "v1.9.0",
+      "category": "Media",
+      "author": "ramalhoboss",
+      "size": 222744,
+      "checksum": "cd2c2b3e5b681361a1e195495cefc2f4eed995d961548b9457493daf225dd505",
+      "sha256": "cd2c2b3e5b681361a1e195495cefc2f4eed995d961548b9457493daf225dd505",
+      "source_direct": "https://github.com/ramalhoboss/PlayBridge/releases/download/v1.9.0/PlayBridge.elf",
+      "github_latest": {
+        "repo": "ramalhoboss/PlayBridge",
+        "asset": "^PlayBridge\\.elf$"
+      },
+      "stars": 38
+    },
+    {
+      "name": "heatline.elf",
+      "icon": "https://raw.githubusercontent.com/JunMoXiaoQiu/ps5-heatline/main/assets/icon0.png",
+      "filename": "heatline.elf",
+      "path": "tools/heatline.elf",
+      "url": "https://github.com/JunMoXiaoQiu/ps5-heatline/releases/download/v0.1.1/heatline.elf",
+      "description": "Temps, fan, power, clocks and FPS in a web dashboard on :8776, with an in-game overlay.",
+      "version": "v0.1.1",
+      "category": "System",
+      "author": "JunMoXiaoQiu",
+      "size": 1319800,
+      "checksum": "200c215e28ac98e544d81032fbb31b3717762abc9691cc9f12067412ae461d09",
+      "sha256": "200c215e28ac98e544d81032fbb31b3717762abc9691cc9f12067412ae461d09",
+      "source_direct": "https://github.com/JunMoXiaoQiu/ps5-heatline/releases/download/v0.1.1/heatline.elf",
+      "github_latest": {
+        "repo": "JunMoXiaoQiu/ps5-heatline",
+        "asset": "^heatline\\.elf$"
+      },
+      "stars": 1
+    },
+    {
+      "name": "launcher5.elf",
+      "icon": "https://raw.githubusercontent.com/cedsaill3/Launcher5/main/launcher/assets/fakeapp/icon0.png",
+      "filename": "launcher5.elf",
+      "path": "apps/launcher5.elf",
+      "url": "https://github.com/cedsaill3/Launcher5/releases/download/v2.5.8/launcher5.elf",
+      "description": "Game loader with Cover Flow, grid, carousel, themes and payload management.",
+      "version": "v2.5.8",
+      "category": "Loader",
+      "author": "cedsaill",
+      "size": 18024920,
+      "checksum": "97580f95015b0ff5c4ff78fa43e800ece5da009365ba58987a866d3f0c9aa6c5",
+      "sha256": "97580f95015b0ff5c4ff78fa43e800ece5da009365ba58987a866d3f0c9aa6c5",
+      "source_direct": "https://github.com/cedsaill3/Launcher5/releases/download/v2.5.8/launcher5.elf",
+      "github_latest": {
+        "repo": "cedsaill3/Launcher5",
+        "asset": "^launcher5\\.elf$"
+      },
+      "stars": 25
+    },
+    {
+      "name": "TabShifter.elf",
+      "icon": "https://avatars.githubusercontent.com/u/335660230?v=4&s=256",
+      "filename": "TabShifter.elf",
+      "path": "tools/TabShifter.elf",
+      "url": "https://github.com/xvvulcanvx/PS5-TabShifter/releases/download/v1.4.0/TabShifter.elf",
+      "description": "Move apps between Games and Media, pin or hide tiles, from a web page on :9095.",
+      "version": "v1.4.0",
+      "category": "System",
+      "author": "xvvulcanvx",
+      "size": 1387808,
+      "checksum": "f687372160a2ae564b2c401c5378fa5ae0902e9815f2f13fc6a07b9c34c1630f",
+      "sha256": "f687372160a2ae564b2c401c5378fa5ae0902e9815f2f13fc6a07b9c34c1630f",
+      "source_direct": "https://github.com/xvvulcanvx/PS5-TabShifter/releases/download/v1.4.0/TabShifter.elf",
+      "github_latest": {
+        "repo": "xvvulcanvx/PS5-TabShifter",
+        "asset": "^TabShifter\\.elf$"
+      },
+      "stars": 111
+    },
+    {
+      "name": "PrefBar.elf",
+      "icon": "https://avatars.githubusercontent.com/u/155997454?v=4&s=256",
+      "filename": "PrefBar.elf",
+      "path": "tools/PrefBar.elf",
+      "url": "https://github.com/X1NONs/PrefBar/releases/download/v0.3.0/Prefbar_V0.3.0.elf",
+      "description": "Standalone on-screen performance overlay: FPS, temps, clocks, fan, RAM.",
+      "version": "v0.3.0",
+      "category": "Mods & Saves",
+      "author": "X1NONs",
+      "size": 964272,
+      "checksum": "e4379590115ef87b2f0310b502321d7da30783536d939bfb1c4c0e511972af30",
+      "sha256": "e4379590115ef87b2f0310b502321d7da30783536d939bfb1c4c0e511972af30",
+      "source_direct": "https://github.com/X1NONs/PrefBar/releases/download/v0.3.0/Prefbar_V0.3.0.elf",
+      "github_latest": {
+        "repo": "X1NONs/PrefBar",
+        "asset": "^Prefbar_V[0-9.]+\\.elf$"
+      },
+      "stars": 49
+    },
+    {
+      "name": "ps5cleanup.elf",
+      "icon": "https://avatars.githubusercontent.com/u/223144107?v=4&s=256",
+      "filename": "ps5cleanup.elf",
+      "path": "files/ps5cleanup.elf",
+      "url": "https://github.com/xXBneutzerNameXx/PS5-Cleanup/releases/download/v1.2/ps5cleanup_v1.2.elf",
+      "description": "List and delete games, saves and leftover files by name. Starts in test mode.",
+      "version": "v1.2",
+      "category": "Files",
+      "author": "da_Chris86",
+      "size": 10005976,
+      "checksum": "476aa8c1b14d001108f78efec185347310eda969e0a4d75aeb4c377b07e1584f",
+      "sha256": "476aa8c1b14d001108f78efec185347310eda969e0a4d75aeb4c377b07e1584f",
+      "source_direct": "https://github.com/xXBneutzerNameXx/PS5-Cleanup/releases/download/v1.2/ps5cleanup_v1.2.elf",
+      "github_latest": {
+        "repo": "xXBneutzerNameXx/PS5-Cleanup",
+        "asset": "^ps5cleanup_v[0-9.]+\\.elf$"
+      },
+      "stars": 117
+    },
+    {
+      "name": "usb_format.elf",
+      "icon": "https://raw.githubusercontent.com/strongt1me/ps5-usb-formatierer/main/usb_format/app/sce_sys/icon0.png",
+      "filename": "usb_format.elf",
+      "path": "files/usb_format.elf",
+      "url": "https://github.com/strongt1me/ps5-usb-formatierer/releases/download/v2.6.70/usb_format.elf",
+      "description": "Format and test USB drives on the PS5, with exFAT for ShadowMountPlus.",
+      "version": "v2.6.70",
+      "category": "Files",
+      "author": "strongt1me",
+      "size": 4328576,
+      "checksum": "175ae50cfda40d8e9dd06f5f21b5c3db732343a2e825f2ac487bae12c03b38b2",
+      "sha256": "175ae50cfda40d8e9dd06f5f21b5c3db732343a2e825f2ac487bae12c03b38b2",
+      "source_direct": "https://github.com/strongt1me/ps5-usb-formatierer/releases/download/v2.6.70/usb_format.elf",
+      "github_latest": {
+        "repo": "strongt1me/ps5-usb-formatierer",
+        "asset": "^usb_format\\.elf$"
+      },
+      "stars": 12
+    },
+    {
+      "name": "ps5-backup-center.elf",
+      "icon": "https://raw.githubusercontent.com/consolecenterstudio/ps5-backup-center/main/app/package/PPSA99950/sce_sys/icon0.png",
+      "filename": "ps5-backup-center.elf",
+      "path": "files/ps5-backup-center.elf",
+      "url": "https://github.com/consolecenterstudio/ps5-backup-center/releases/download/v3.1.0/ps5-backup-center-3.1.0-engine.elf",
+      "description": "Back up, compare and restore games, saves and apps across USB, NAS and another PS5.",
+      "version": "v3.1.0",
+      "category": "Files",
+      "author": "Console Center Studio",
+      "size": 14862856,
+      "checksum": "d83f6e318b5999df303e9e05f9eb82a731045e2c2fdc3369bbd24f688788ab1b",
+      "sha256": "d83f6e318b5999df303e9e05f9eb82a731045e2c2fdc3369bbd24f688788ab1b",
+      "source_direct": "https://github.com/consolecenterstudio/ps5-backup-center/releases/download/v3.1.0/ps5-backup-center-3.1.0-engine.elf",
+      "github_latest": {
+        "repo": "consolecenterstudio/ps5-backup-center",
+        "asset": "^ps5-backup-center-[0-9.]+-engine\\.elf$"
+      },
+      "stars": 3
+    },
+    {
+      "name": "DualSense_Turbo.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/dualsense-turbo/main/web/turbo/icon0.png",
+      "filename": "DualSense_Turbo.elf",
+      "path": "tools/DualSense_Turbo.elf",
+      "url": "https://github.com/X-F1REBALL-X/dualsense-turbo/releases/download/1.0.0/DualSense_Turbo_1.0.0.elf",
+      "description": "Turbo and macros for the real DualSense on a jailbroken PS5, configured from a web page.",
+      "version": "1.0.0",
+      "category": "Mods & Saves",
+      "author": "X-F1REBALL-X",
+      "size": 1834896,
+      "checksum": "aa230372fabf735f3e707ef1144ec67d775c5717fd79c0b2fb075f6b54af31c4",
+      "sha256": "aa230372fabf735f3e707ef1144ec67d775c5717fd79c0b2fb075f6b54af31c4",
+      "source_direct": "https://github.com/X-F1REBALL-X/dualsense-turbo/releases/download/1.0.0/DualSense_Turbo_1.0.0.elf",
+      "github_latest": {
+        "repo": "X-F1REBALL-X/dualsense-turbo",
+        "asset": "^DualSense_Turbo(_[0-9.]+)?\\.elf$"
+      },
+      "stars": 5
     }
   ]
 }
