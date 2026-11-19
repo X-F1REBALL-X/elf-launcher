@@ -59,19 +59,19 @@
       "icon": "icons/wk-store.png?v=2.1.1",
       "filename": "wk-store.elf",
       "path": "hen/wk-store.elf",
-      "url": "https://github.com/X-F1REBALL-X/wk-store/releases/latest/download/wk-store.elf",
+      "url": "https://github.com/X-F1REBALL-X/wk-store/releases/download/v1.2.4/WK_Store_V1.2.4.elf",
       "description": "WK Store store installer (X-F1REBALL-X)",
-      "version": "v1.2.1",
+      "version": "v1.2.4",
       "category": "Loader",
       "author": "X-F1REBALL-X",
-      "size": 6583752,
-      "checksum": "e26a319d58ecaae5bf0dbf7067e2e2480caacf02896cd2771e21167c90b373c7",
+      "size": 4896200,
+      "checksum": "b1745b94445ffcc348dfd96158433b4ef8981917ad4c2da664828dbc4487b088",
       "github_latest": {
         "repo": "X-F1REBALL-X/wk-store",
-        "asset": "^WK_Autoloader_Store_V[0-9.]+\\.elf$"
+        "asset": "^WK_Store_V[0-9.]+\\.elf$"
       },
-      "sha256": "e26a319d58ecaae5bf0dbf7067e2e2480caacf02896cd2771e21167c90b373c7",
-      "source_direct": "https://github.com/X-F1REBALL-X/wk-store/releases/latest/download/wk-store.elf",
+      "sha256": "b1745b94445ffcc348dfd96158433b4ef8981917ad4c2da664828dbc4487b088",
+      "source_direct": "https://github.com/X-F1REBALL-X/wk-store/releases/download/v1.2.4/WK_Store_V1.2.4.elf",
       "stars": 47
     },
     {
@@ -184,21 +184,6 @@
         "asset": "^kstuff\\.elf$"
       },
       "stars": 974
-    },
-    {
-      "name": "kstuff1.13-fpkg-dr-test8-rest.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/5c3fa0ea5b856595bfc849c7b11822edf96708af/icons/categories/hen.png",
-      "filename": "kstuff1.13-fpkg-dr-test8-rest.elf",
-      "path": "hen/kstuff1.13-fpkg-dr-test8-rest.elf",
-      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/kstuff1.13-fpkg-dr-test8-rest.elf",
-      "description": "kstuff 1.13 FPKG rest-mode resume (test8). Pair with ShadowMountPlus 1.7 beta 10/11.",
-      "version": "1.13-test8-rest",
-      "category": "HEN",
-      "author": "community",
-      "size": 1845320,
-      "checksum": "127332652374157b8ee0f5eb1128976f9055b88df5da89c0c54183e9c326fc7f",
-      "sha256": "127332652374157b8ee0f5eb1128976f9055b88df5da89c0c54183e9c326fc7f",
-      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/kstuff1.13-fpkg-dr-test8-rest.elf"
     },
     {
       "name": "kstuff1.13-fpkg-dr-test8-rest-fast.elf",
@@ -383,10 +368,10 @@
       "stars": 4
     },
     {
-      "name": "garlic-savemgr-v1.13.1.elf",
+      "name": "garlic-savemgr.elf",
       "icon": "https://avatars.githubusercontent.com/u/3332298?v=4&s=256",
-      "filename": "garlic-savemgr-v1.13.1.elf",
-      "path": "storage/garlic-savemgr-v1.13.1.elf",
+      "filename": "garlic-savemgr.elf",
+      "path": "storage/garlic-savemgr.elf",
       "url": "https://github.com/earthonion/garlic-savemgr/releases/download/v1.15-beta12/garlic-savemgr.elf",
       "description": "Game save manager.",
       "version": "v1.15-beta12",
@@ -1298,15 +1283,19 @@
       "icon": "https://avatars.githubusercontent.com/u/3332298?v=4&s=256",
       "filename": "garlic-worker-ps5.elf",
       "path": "tools/garlic-worker-ps5.elf",
-      "url": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.3.6/garlic-worker-ps5.elf",
+      "url": "https://github.com/earthonion/garlic-worker/releases/download/v1.6.6/garlic-worker-ps5.elf",
       "description": "Helper payload for garlic-savemgr.",
-      "version": "v1.3.6",
+      "version": "v1.6.6",
       "category": "Mods & Saves",
       "author": "earthonion",
-      "size": 208344,
-      "checksum": "f11b710e8e86d2818215219937f36bc9fb44ae880782c2865819bfacd3be11b2",
-      "sha256": "f11b710e8e86d2818215219937f36bc9fb44ae880782c2865819bfacd3be11b2",
-      "source_direct": "https://git.etawen.dev/earthonion/garlic-worker/releases/download/v1.3.6/garlic-worker-ps5.elf"
+      "size": 227712,
+      "checksum": "91b340fd1ccd05b5ce93ddf5a8f40c13d9fa067e5b7e1bf408dc4bd1e7f17b29",
+      "sha256": "91b340fd1ccd05b5ce93ddf5a8f40c13d9fa067e5b7e1bf408dc4bd1e7f17b29",
+      "source_direct": "https://github.com/earthonion/garlic-worker/releases/download/v1.6.6/garlic-worker-ps5.elf",
+      "github_latest": {
+        "repo": "earthonion/garlic-worker",
+        "asset": "^garlic-worker-ps5\\.elf$"
+      }
     },
     {
       "name": "ps5-syslang-en-US.elf",
