@@ -1129,7 +1129,7 @@
       "filename": "ps5-linux-loader.elf",
       "path": "system/ps5-linux-loader.elf",
       "url": "https://github.com/ps5-linux/ps5-linux-loader/releases/download/v2.5/ps5-linux-loader.elf",
-      "description": "Boots Linux on the console.",
+      "description": "Official ps5-linux loader v2.5. Does NOT support FW 10.xx. Use ELF Linux for 10.00-13.60.",
       "version": "v2.5",
       "category": "System",
       "author": "ps5-linux",
@@ -1141,7 +1141,8 @@
         "repo": "ps5-linux/ps5-linux-loader",
         "asset": "^ps5-linux-loader\\.elf$"
       },
-      "stars": 607
+      "stars": 607,
+      "title": "ELF Linux (official, no 10.xx)"
     },
     {
       "name": "ps5-linux-loader-all10-13-pro.elf",
@@ -1149,7 +1150,7 @@
       "filename": "ps5-linux-loader-all10-13-pro.elf",
       "path": "system/ps5-linux-loader-all10-13-pro.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/ps5-linux-loader-all10-13-pro.elf",
-      "description": "ELF Linux loader. Supports FW 10.00 to 13.60 (Phat, Slim, Pro). Rest Mode then wake to boot.",
+      "description": "ELF Linux for FW 10.00-13.60 (Phat/Slim/Pro). Use this one on 10.20. Rest Mode then wake.",
       "version": "10.00-13.60",
       "category": "System",
       "author": "soniciso1 / ps5-linux",
