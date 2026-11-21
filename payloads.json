@@ -1144,6 +1144,22 @@
       "stars": 607
     },
     {
+      "name": "ps5-linux-loader-all10-13-pro.elf",
+      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/c50ee2603640dbb0fbc048495fe3d257e2f89765/icons/payloads/ps5-linux-loader.png",
+      "filename": "ps5-linux-loader-all10-13-pro.elf",
+      "path": "system/ps5-linux-loader-all10-13-pro.elf",
+      "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/ps5-linux-loader-all10-13-pro.elf",
+      "description": "Boots Linux on FW 10-13 (Pro/Slim/Phat). Rest Mode then wake.",
+      "version": "2026-11-03",
+      "category": "System",
+      "author": "soniciso1 / ps5-linux",
+      "size": 402104,
+      "checksum": "03a8f761e1ef8a4702be0818b55b9dc37361e3c4d515bc52fd59e19c2b130d49",
+      "sha256": "03a8f761e1ef8a4702be0818b55b9dc37361e3c4d515bc52fd59e19c2b130d49",
+      "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/ps5-linux-loader-all10-13-pro.elf",
+      "title": "Linux Loader 10-13 Pro"
+    },
+    {
       "name": "pkg-receiver.elf",
       "icon": "https://raw.githubusercontent.com/Loopayeh/pkg-sender/73804c41c079b1d32c60bf3fd555f90fba1af2e4/payload/icon0.png",
       "filename": "pkg-receiver.elf",
