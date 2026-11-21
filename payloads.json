@@ -1124,33 +1124,12 @@
       "stars": 141
     },
     {
-      "name": "ps5-linux-loader.elf",
-      "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/c50ee2603640dbb0fbc048495fe3d257e2f89765/icons/payloads/ps5-linux-loader.png",
-      "filename": "ps5-linux-loader.elf",
-      "path": "system/ps5-linux-loader.elf",
-      "url": "https://github.com/ps5-linux/ps5-linux-loader/releases/download/v2.5/ps5-linux-loader.elf",
-      "description": "Official ps5-linux loader v2.5. Does NOT support FW 10.xx. Use ELF Linux for 10.00-13.60.",
-      "version": "v2.5",
-      "category": "System",
-      "author": "ps5-linux",
-      "size": 180528,
-      "checksum": "9fc48733077145d1d204a4c9cdb879baaab1e711a604dd73af0dd4a807d6bc49",
-      "sha256": "9fc48733077145d1d204a4c9cdb879baaab1e711a604dd73af0dd4a807d6bc49",
-      "source_direct": "https://github.com/ps5-linux/ps5-linux-loader/releases/download/v2.5/ps5-linux-loader.elf",
-      "github_latest": {
-        "repo": "ps5-linux/ps5-linux-loader",
-        "asset": "^ps5-linux-loader\\.elf$"
-      },
-      "stars": 607,
-      "title": "ELF Linux (official, no 10.xx)"
-    },
-    {
-      "name": "ps5-linux-loader-all10-13-pro.elf",
+      "name": "ELF Linux",
       "icon": "https://raw.githubusercontent.com/X-F1REBALL-X/elf-launcher/c50ee2603640dbb0fbc048495fe3d257e2f89765/icons/payloads/ps5-linux-loader.png",
       "filename": "ps5-linux-loader-all10-13-pro.elf",
       "path": "system/ps5-linux-loader-all10-13-pro.elf",
       "url": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/ps5-linux-loader-all10-13-pro.elf",
-      "description": "ELF Linux for FW 10.00-13.60 (Phat/Slim/Pro). Use this one on 10.20. Rest Mode then wake.",
+      "description": "soniciso1 loader for FW 10.00-13.60. Rest Mode then wake.",
       "version": "10.00-13.60",
       "category": "System",
       "author": "soniciso1 / ps5-linux",
@@ -1158,7 +1137,7 @@
       "checksum": "03a8f761e1ef8a4702be0818b55b9dc37361e3c4d515bc52fd59e19c2b130d49",
       "sha256": "03a8f761e1ef8a4702be0818b55b9dc37361e3c4d515bc52fd59e19c2b130d49",
       "source_direct": "https://github.com/X-F1REBALL-X/elf-launcher/releases/download/payload-mirror/ps5-linux-loader-all10-13-pro.elf",
-      "title": "ELF Linux"
+      "title": "ELF Linux (soniciso1)"
     },
     {
       "name": "pkg-receiver.elf",
